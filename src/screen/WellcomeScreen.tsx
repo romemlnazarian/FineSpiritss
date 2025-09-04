@@ -15,18 +15,17 @@ export default function WellcomeScreen() {
       <LogoComponent width={300} style={styles.margintop} />
       <Text
         style={[
-          Styles.h2,
-          Styles.fontFamily,
+          styles.width,
+          Styles.h3_Bold,
           Styles.textAlign,
           Styles.alignSelf,
-          Styles.bold,
           styles.margintopTitle,
         ]}>
         {Language.wellcomTitle}
       </Text>
       <Text
           style={[
-            Styles.h4,
+            Styles.body_Regular,
             Styles.fontFamily,
             Styles.textAlign,
             Styles.alignSelf,
@@ -40,12 +39,12 @@ export default function WellcomeScreen() {
       <View style={styles.bottomStyles}>
         <BottomCardComponent
           title={Language.singUp}
-          onHandler={onSubmit}
+          onHandler={()=>onSubmit('signup')}
           style={styles.marginBottom}
         />
         <BottomCardComponent
           title={Language.singIn}
-          onHandler={() => console.log()}
+          onHandler={() => onSubmit('signin')}
           style={{backgroundColor: Color.white}}
           textStyle={{color: Color.primary}}
         />

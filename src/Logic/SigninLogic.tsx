@@ -4,11 +4,11 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
 import {AuthScreenNavigationProp} from '../navigation/types';
 
-export const SignupLogic = () => {
+export const SigninLogic = () => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().trim().required('Required'),
+    password: Yup.string().trim().required('Required'),
     email: Yup.string()
       .trim()
       .required('Email is required')
@@ -22,7 +22,7 @@ export const SignupLogic = () => {
     getValues,
   } = useForm({
     defaultValues: {
-      username: '',
+      password: '',
       email: '',
 
     },
@@ -36,12 +36,17 @@ export const SignupLogic = () => {
     navigation.navigate('VerificationCode')
   };
 
-
-
+  const onSubmitForgetPass = async () => {
+    const values = getValues();
+    console.log('==>', values);
+    navigation.navigate('ForgetPassword')
+  };
+  
   return {
     control,
     handleSubmit,
     errors,
     onSubmit,
+    onSubmitForgetPass
   };
 };

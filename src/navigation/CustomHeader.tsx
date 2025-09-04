@@ -1,8 +1,9 @@
 // src/components/CustomHeader.js
 import React from 'react';
-import { Appbar } from 'react-native-paper';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet } from 'react-native';
+import { Color } from '../utiles/color';
+import Arrow from '../assets/svg/Arrows.svg';
 
 type CustomHeaderProps = {
   title?: string;
@@ -10,27 +11,41 @@ type CustomHeaderProps = {
   showBack?: boolean;
 };
 
-export default function CustomHeader({ title, showMenu = true, showBack = false }:CustomHeaderProps) {
+export default function CustomHeader({ title, showBack = false }: CustomHeaderProps) {
   const navigation = useNavigation();
 
   return (
-    <Appbar.Header style={styles.header}>
-      {showMenu && (
-        <Appbar.Action
-          icon="menu"
-          // onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-        />
-      )}
+    <View style={styles.header}>
       {showBack && (
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Arrow width={30} height={30}/>
+        </TouchableOpacity>
       )}
-      <Appbar.Content title={title || ''} />
-    </Appbar.Header>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>{title || ''}</Text>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#6200ee',
+    backgroundColor: Color.background,
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 60,
+    paddingHorizontal: 16,
+  },
+  backButton: {
+    marginRight: 10,
+    padding: 8,
+  },
+  titleContainer: {
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Color.black,
   },
 });

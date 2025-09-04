@@ -1,52 +1,27 @@
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity,Text} from 'react-native';
 import React from 'react';
 import {Controller} from 'react-hook-form';
 import {StyleComponent} from '../utiles/styles';
 import TextInputComponent from '../component/TextInputComponent';
 import TextView from '../component/TextView';
-import {SignupLogic} from '../Logic/SignupLogic';
+import {SigninLogic} from '../Logic/SigninLogic';
 import {Color} from '../utiles/color';
 import BottomCardComponent from '../component/BottomCard';
 import {Language} from '../utiles/Language/i18n';
 import LogoComponent from '../component/LogoComponent';
-import User from '../assets/svg/User.svg';
+import Lock from '../assets/svg/Password.svg';
 import Email from '../assets/svg/Email.svg';
 import Gmail from '../assets/svg/gmail.svg';
 import Apple from '../assets/svg/apple.svg';
 import Facebook from '../assets/svg/facebook.svg';
 import AuthLogo from '../component/AuthLogo';
 
-export default function SignupScreen() {
+export default function SigninScreen() {
   const {Styles} = StyleComponent();
-  const {control, handleSubmit, errors, onSubmit} = SignupLogic();
+  const {control, handleSubmit, errors, onSubmit,onSubmitForgetPass} = SigninLogic();
   return (
     <View style={Styles.container}>
       <LogoComponent style={styles.logoComponentStyle} />
-      <View style={styles.inputContainer}>
-        <TextView
-          title={Language.Name_Surname}
-          color={Color.black}
-          style={[Styles.title_Regular, styles.textStyles]}
-        />
-        <Controller
-          control={control}
-          name="username"
-          render={({field: {onChange, onBlur, value}}) => (
-            <TextInputComponent
-              containerStyle={styles.textInputContainer}
-              onBlur={onBlur}
-              placeholder="Type your Name and Surname"
-              handlePasswordIconClick={() => console.log()}
-              onChangeText={onChange}
-              value={value}
-              errorMessage={errors.username?.message}
-              leftIcon={<User width={25} height={25} />}
-              showPass={true}
-            />
-          )}
-        />
-      </View>
-
       <View style={styles.inputContainerSmallMargin}>
         <TextView
           title={Language.Email}
@@ -71,15 +46,44 @@ export default function SignupScreen() {
           )}
         />
       </View>
+      <View style={styles.inputContainer}>
+        <TextView
+          title={Language.Password}
+          color={Color.black}
+          style={[Styles.title_Regular, styles.textStyles]}
+        />
+        <Controller
+          control={control}
+          name="password"
+          render={({field: {onChange, onBlur, value}}) => (
+            <TextInputComponent
+              containerStyle={styles.textInputContainer}
+              onBlur={onBlur}
+              placeholder={Language.Password_Placeholder}
+              handlePasswordIconClick={() => console.log()}
+              onChangeText={onChange}
+              value={value}
+              errorMessage={errors.password?.message}
+              leftIcon={<Lock width={25} height={25} />}
+              showPass={true}
+            />
+          )}
+        />
+      </View>
+      <TouchableOpacity
+       onPress={onSubmitForgetPass}
+      >
+      <Text style={[Styles.title_Regular,{marginLeft:'5%',marginTop:'5%'}]}>{Language.ForgetPass}</Text>
+      </TouchableOpacity>
       <BottomCardComponent
-        title={Language.singUp}
+        title={Language.singIn}
         onHandler={handleSubmit(onSubmit)}
         style={styles.buttonComponent}
       />
       <View style={styles.orSignUpWithContainer}>
         <View style={styles.lineStyle} />
         <TextView
-          title="Or sign up with"
+          title={Language.Singin_With}
           color={Color.black}
           style={[Styles.title_Regular]}
         />
@@ -88,13 +92,13 @@ export default function SignupScreen() {
 
       <View style={styles.alreadyHaveAccountContainer}>
         <TextView
-          title="Already have an account?"
+          title={Language.Acount_title}
           color={Color.black}
           style={[Styles.title_Regular]}
         />
         <TouchableOpacity activeOpacity={0.5} onPress={() => console.log()}>
           <TextView
-            title={Language.singIn}
+            title={Language.singUp}
             color={Color.primary}
             style={[Styles.title_Regular, styles.signInText]}
           />
@@ -142,7 +146,7 @@ const styles = StyleSheet.create({
     marginTop: '15%',
   },
   inputContainer: {
-    marginTop: '10%',
+    marginTop: '5%',
   },
   textInputContainer: {
     marginTop: 10,

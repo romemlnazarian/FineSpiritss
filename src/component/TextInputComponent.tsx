@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Animated,
 } from 'react-native';
+import Eye from '../assets/svg/Eye.svg';
+import EyeClose from '../assets/svg/EyeClose.svg';
 import {Color} from '../utiles/color';
 
 export interface Props {
@@ -124,11 +126,10 @@ const TextInputComponent = (props: Props) => {
           />
           {props.rightIcon && (
             <TouchableOpacity onPress={props.handlePasswordIconClick}>
-              {/* <Icon
-                                name={props.showPass ? "eye" : "eye-off"}
-                                size={20}
-                                color={'black'}
-                            /> */}
+              {props.showPass?
+                 <Eye/>:
+                  <EyeClose/>
+            }
             </TouchableOpacity>
           )}
         </View>

@@ -3,9 +3,16 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import SplashScreen from "../screen/SplashScreen";
+import SplashScreen from '../screen/SplashScreen';
 import WellcomeScreen from '../screen/WellcomeScreen';
 import SignupScreen from '../screen/SignupScreen';
+import SigninScreen from '../screen/SigninScreen';
+import VerificationCodeScreen from '../screen/VerificationCodeScreen';
+import PasswordVerificationScreen from '../screen/PasswordVerificationScreen';
+import NumberVerificationScreen from '../screen/NumberVerificationScreen'
+import ForgetPasswordScreen from '../screen/ForgetPasswordScreen'
+
+
 // import LoginScreen from '../screen/LoginScreen';
 // import AppTabs from "./TabNavigator";
 
@@ -18,6 +25,14 @@ export default function Navigation() {
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Wellcome" component={WellcomeScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
+        <Stack.Screen name="Signin" component={SigninScreen} />
+        <Stack.Screen name="VerificationCode" component={VerificationCodeScreen} />
+        <Stack.Screen name="PasswordVerification" component={PasswordVerificationScreen} />
+        <Stack.Screen name="NumberVerification" component={NumberVerificationScreen} />
+        <Stack.Screen name="ForgetPassword" component={ForgetPasswordScreen} />
+
+
+        
         {/* <Stack.Screen name="Login" component={LoginScreen} /> */}
         {/* <Stack.Screen name="AppTabs" component={AppTabs} /> */}
       </Stack.Navigator>

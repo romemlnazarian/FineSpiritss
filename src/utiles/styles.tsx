@@ -32,27 +32,239 @@ export const StyleComponent = () => {
       fontFamily:'Satoshi-Regular',
      },
 
-    h1:{
-      fontSize: 20,
+    h1_Bold:{
+      fontSize: 64,
+      fontFamily:'Satoshi-Bold',
     },
-
-    h2:{
-      fontSize: 40,
-    },
-
-    h3:{
-      fontSize: 16,
-      fontFamily:'Satoshi-Regular',
-    },
-
-    h4:{
-      fontSize: 18,
-      fontFamily:'Satoshi-Regular',
-    },
-    
-     bold:{
-      fontWeight:'bold',
+   
+     h1_SemiBold:{
+      fontSize: 64,
+      fontFamily:'Satoshi-Bold',
      },
+
+     h1_Medium:{
+      fontSize: 64,
+      fontFamily:'Satoshi-Medium',
+     },
+    
+     h1_Regular:{
+      fontSize: 64,
+      fontFamily:'Satoshi-Medium',
+     },
+     
+     h1_Light:{
+      fontSize: 64,
+      fontFamily:'Satoshi-Light',
+     },
+     
+
+
+     h2_Bold:{
+      fontSize: 64,
+      fontFamily:'Satoshi-Bold',
+    },
+   
+     h2_SemiBold:{
+      fontSize: 40,
+      fontFamily:'Satoshi-Bold',
+     },
+
+     h2_Medium:{
+      fontSize: 40,
+      fontFamily:'Satoshi-Medium',
+     },
+    
+     h2_Regular:{
+      fontSize: 40,
+      fontFamily:'Satoshi-Medium',
+     },
+     
+     h2_Light:{
+      fontSize: 40,
+      fontFamily:'Satoshi-Light',
+     },
+
+     h3_Bold:{
+      fontSize: 30,
+      fontFamily:'Satoshi-Bold',
+    },
+   
+     h3_SemiBold:{
+      fontSize: 30,
+      fontFamily:'Satoshi-Bold',
+     },
+
+     h3_Medium:{
+      fontSize: 30,
+      fontFamily:'Satoshi-Medium',
+     },
+    
+     h3_Regular:{
+      fontSize: 30,
+      fontFamily:'Satoshi-Medium',
+     },
+     
+    
+     h3_Light:{
+      fontSize: 30,
+      fontFamily:'Satoshi-Light',
+     },
+
+     h4_Bold:{
+      fontSize: 24,
+      fontFamily:'Satoshi-Bold',
+    },
+   
+     h4_SemiBold:{
+      fontSize: 24,
+      fontFamily:'Satoshi-Bold',
+     },
+
+     h4_Medium:{
+      fontSize: 24,
+      fontFamily:'Satoshi-Medium',
+     },
+    
+     h4_Regular:{
+      fontSize: 24,
+      fontFamily:'Satoshi-Medium',
+     },
+     
+     h4_Light:{
+      fontSize: 24,
+      fontFamily:'Satoshi-Light',
+     },
+
+     h5_Bold:{
+      fontSize: 22,
+      fontFamily:'Satoshi-Bold',
+    },
+   
+     h5_SemiBold:{
+      fontSize: 22,
+      fontFamily:'Satoshi-Bold',
+     },
+
+     h5_Medium:{
+      fontSize: 22,
+      fontFamily:'Satoshi-Medium',
+     },
+    
+     h5_Regular:{
+      fontSize: 22,
+      fontFamily:'Satoshi-Medium',
+     },
+     
+     h5_Light:{
+      fontSize: 22,
+      fontFamily:'Satoshi-Light',
+     },
+
+
+     h6_Bold:{
+      fontSize: 20,
+      fontFamily:'Satoshi-Bold',
+    },
+   
+     h6_SemiBold:{
+      fontSize: 20,
+      fontFamily:'Satoshi-Bold',
+     },
+
+     h6_Medium:{
+      fontSize: 20,
+      fontFamily:'Satoshi-Medium',
+     },
+    
+     h6_Regular:{
+      fontSize: 20,
+      fontFamily:'Satoshi-Medium',
+     },
+     
+     h6_Light:{
+      fontSize: 20,
+      fontFamily:'Satoshi-Light',
+     },
+
+     body_Bold:{
+      fontSize: 18,
+      fontFamily:'Satoshi-Bold',
+    },
+   
+    body_SemiBold:{
+      fontSize: 18,
+      fontFamily:'Satoshi-Bold',
+     },
+
+     body_Medium:{
+      fontSize: 18,
+      fontFamily:'Satoshi-Medium',
+     },
+    
+     body_Regular:{
+      fontSize: 18,
+      fontFamily:'Satoshi-Medium',
+     },
+     
+     body_Light:{
+      fontSize: 18,
+      fontFamily:'Satoshi-Light',
+     },
+
+
+     title_Bold:{
+      fontSize: 16,
+      fontFamily:'Satoshi-Bold',
+    },
+   
+    title_SemiBold:{
+      fontSize: 16,
+      fontFamily:'Satoshi-Bold',
+     },
+
+     title_Medium:{
+      fontSize: 16,
+      fontFamily:'Satoshi-Medium',
+     },
+    
+     title_Regular:{
+      fontSize: 16,
+      fontFamily:'Satoshi-Medium',
+     },
+     
+     title_Light:{
+      fontSize: 16,
+      fontFamily:'Satoshi-Light',
+     },
+
+
+     subtitle_Bold:{
+      fontSize: 14,
+      fontFamily:'Satoshi-Bold',
+    },
+   
+    subtitle_SemiBold:{
+      fontSize: 14,
+      fontFamily:'Satoshi-Bold',
+     },
+
+     subtitle_Medium:{
+      fontSize: 14,
+      fontFamily:'Satoshi-Medium',
+     },
+    
+     subtitle_Regular:{
+      fontSize: 14,
+      fontFamily:'Satoshi-Medium',
+     },
+     
+     subtitle_Light:{
+      fontSize: 14,
+      fontFamily:'Satoshi-Light',
+     },
+
+
+
 
     caption:{
       fontSize: 10,
@@ -104,7 +316,13 @@ export const StyleComponent = () => {
       alignSelf: 'flex-start',
     },
 
-
+    card:{
+    width:'90%',
+    padding:10,
+    borderWidth:1,
+    borderColor:Color.gray,
+    borderRadius:14,alignSelf:'center',marginTop:10,flexDirection:'row'
+    },
     image:{
       width:'100%',
       height:'100%',

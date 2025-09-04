@@ -1,27 +1,27 @@
-import {
-    Text,
-    StyleSheet,
-} from 'react-native';
-
+import {Text, StyleSheet,View} from 'react-native';
 
 interface Props {
   title: string;
   style?: any;
-  color?:string
+  color?: string;
+  icon?: any;
 }
 
+const TextView = (props: Props) => {
+  return (
+    <View style={{flexDirection:'row',alignItems:'center'}}>
+              {props.icon}
+      <Text style={[styles.textStyles, props.style, {color: props.color}]}>
+        {props.title}
+      </Text>
 
-const TextView = (props:Props) => {
-    return (
-        <Text style={[styles.textStyles,props.style,{color:props.color}]}>{props.title}</Text>
-    );
+    </View>
+  );
 };
 
-
 const styles = StyleSheet.create({
-    textStyles: {
-        textAlign: 'center',
-    },
-
+  textStyles: {
+    textAlign: 'center',
+  },
 });
 export default TextView;

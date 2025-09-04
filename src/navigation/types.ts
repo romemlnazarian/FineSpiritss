@@ -4,8 +4,12 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 export type AuthStackParamList = {
   login: undefined;
   Signup:undefined
-  Splash: undefined; 
-  Wellcome:undefined;
+  Signin:undefined
+  Splash: undefined 
+  VerificationCode:undefined
+  PasswordVerification:undefined,
+  NumberVerification:undefined,
+  ForgetPassword:undefined
 };
 
 
