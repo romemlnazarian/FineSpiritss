@@ -14,7 +14,7 @@ import ForgetPasswordScreen from '../screen/ForgetPasswordScreen'
 
 
 // import LoginScreen from '../screen/LoginScreen';
-// import AppTabs from "./TabNavigator";
+import AppTabs from "./TabNavigator";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,11 +30,7 @@ export default function Navigation() {
         <Stack.Screen name="PasswordVerification" component={PasswordVerificationScreen} />
         <Stack.Screen name="NumberVerification" component={NumberVerificationScreen} />
         <Stack.Screen name="ForgetPassword" component={ForgetPasswordScreen} />
-
-
-        
-        {/* <Stack.Screen name="Login" component={LoginScreen} /> */}
-        {/* <Stack.Screen name="AppTabs" component={AppTabs} /> */}
+        <Stack.Screen name="AppTabs" component={AppTabs} />
       </Stack.Navigator>
     </NavigationContainer>
   );

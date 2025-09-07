@@ -310,10 +310,13 @@ export const StyleComponent = () => {
       marginVertical: 24,
     },
     alignSelf:{
-            alignSelf:'center',
+    alignSelf:'center',
     },
     flexStart: {
       alignSelf: 'flex-start',
+    },
+     alignCenter: {
+      alignItems: 'center',
     },
 
     card:{

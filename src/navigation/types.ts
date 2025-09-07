@@ -12,5 +12,12 @@ export type AuthStackParamList = {
   ForgetPassword:undefined
 };
 
+export type ButtonParamList = {
+  AppTabs:undefined
+};
 
-export type AuthScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList>;
+export type RootStackParamList = AuthStackParamList & ButtonParamList;
+
+export type AuthScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, keyof AuthStackParamList>;
+export type ButtonScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, keyof ButtonParamList>;
+

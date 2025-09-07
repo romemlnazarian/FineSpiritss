@@ -19,7 +19,12 @@ export let Language = new LocalizedStrings({
     ForgetPass:'Forgot password?',
     Email_title:'Please enter your email',
     Email_description:"We need your email address to send you a code for recovering your account.",
-    Sendcode:"Send Code"
+    Sendcode:"Send Code",
+    modal_title:"To visit our application you must be at least 18 years old to enter",
+    modal_age_confirmation:"Are you already 18+",
+    modal_enter_button:"Yes, Enter",
+    modal_no_button:"No",
+    modal_terms_and_conditions:"By clicking the enter button, you confirm that you are the required age of your country/region to visit our website, you accept Terms and Conditions and you declare that you have read our Privacy & Cookies notice. THE ABUSE OF ALCOHOL IS DANGEROUS FOR YOUR HEALTH. DRINK RESPONSIBLY. We support the responsible consumption of wines and spirits."
   },
 
 })
