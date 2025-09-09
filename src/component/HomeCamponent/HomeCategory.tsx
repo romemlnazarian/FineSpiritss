@@ -1,42 +1,64 @@
 import {View, Text, StyleSheet} from 'react-native';
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
-import Wine from '../../assets/svg/Image.svg';
-export default function HomeCategory() {
-  const data = [
-    {id: 1, image: <Wine />, title: 'Wine'},
-    {id: 2, image: <Wine />, title: 'Wine'},
-    {id: 3, image: <Wine />, title: 'Wine'},
-    {id: 4, image: <Wine />, title: 'Wine'},
-  ];
-
+import Viski from '../../assets/svg/viski.svg';
+// Memoized category item component to prevent unnecessary re-renders
+const CategoryItem = memo(({item}: {item: {id: number; title: string}}) => {
   const {Styles} = StyleComponent();
+
+  return (
+    <View style={styles.categoryItemWrapper}>
+      <View style={styles.categoryImageContainer}>
+        <View style={styles.categoryImagePosition}>
+            <Viski width={60} height={100}/>
+        </View>
+      </View>
+      <Text style={[Styles.title_Regular, styles.categoryItemTitle]}>
+        {item.title}
+      </Text>
+    </View>
+  );
+});
+
+// Memoized header component
+const CategoryHeader = memo(() => {
+  const {Styles} = StyleComponent();
+
+  return (
+    <View style={styles.headerContainer}>
+      <Text style={[Styles.h6_SemiBold, styles.categoryTitle]}>
+        Category
+      </Text>
+      <View style={styles.separatorLine} />
+    </View>
+  );
+});
+
+const HomeCategory = memo(() => {
+  const {Styles} = StyleComponent();
+
+  // Memoize the data array to prevent recreation on every render
+  const categoryData = useMemo(() => [
+    {id: 1, title: 'Wine'},
+    {id: 2, title: 'Wine'},
+    {id: 3, title: 'Wine'},
+    {id: 4, title: 'Wine'},
+  ], []);
+
   return (
     <View style={styles.categoryContainer}>
-      <View style={styles.headerContainer}>
-        <Text style={[Styles.h6_SemiBold, styles.categoryTitle]}>
-          Category
-        </Text>
-        <View
-          style={styles.separatorLine}
-        />
-      </View>
-      <View
-        style={[Styles.justifyBetween, styles.categoryItemsContainer]}>
-        {data.map(e => (
-          <View key={e.id} style={styles.categoryItemWrapper}>
-            <View
-              style={styles.categoryImageContainer}>
-              <View style={styles.categoryImagePosition}>{e.image}</View>
-            </View>
-            <Text style={[Styles.title_Regular,styles.categoryItemTitle]}>{e.title}</Text>
-          </View>
+      <CategoryHeader />
+      <View style={[Styles.justifyBetween, styles.categoryItemsContainer]}>
+        {categoryData.map(item => (
+          <CategoryItem key={item.id} item={item} />
         ))}
       </View>
     </View>
   );
-}
+});
+
+export default HomeCategory;
 
 const styles = StyleSheet.create({
   categoryContainer: {
@@ -58,17 +80,20 @@ const styles = StyleSheet.create({
     marginTop: '2%',
   },
   categoryItemsContainer: {
+    flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'space-between',
     marginTop: '8%',
   },
   categoryItemWrapper: {
-    marginTop: '14%',
+    width: '30%',
+    marginBottom: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
   categoryImageContainer: {
-    width: 121,
-    height: 83,
+    width: 100,
+    height: 80,
     backgroundColor: Color.cardgray,
     borderRadius: 8,
     justifyContent: 'center',
@@ -79,6 +104,6 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   categoryItemTitle: {
-    marginTop:'5%',
-  }
+    marginTop: '5%',
+  },
 });

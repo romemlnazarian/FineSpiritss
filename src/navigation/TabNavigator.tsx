@@ -3,8 +3,8 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Color } from '../utiles/color';
-import { StyleComponent } from '../utiles/styles';
-import HomeScreen from "../screen/HomeScreen";
+import HomeScreen from "../screen/Home/HomeScreen";
+import CatalogScreen from "../screen/Catetory/CatalogScreen";
 import Home from '../assets/svg/Home.svg';
 import Heart from '../assets/svg/Heart.svg';
 import Glass from '../assets/svg/Glass.svg';
@@ -14,7 +14,7 @@ import { BottomTabDescriptorMap, BottomTabNavigationHelpers } from "@react-navig
 import { NavigationState, ParamListBase } from "@react-navigation/native";
 type TabParamList = {
   Home: undefined;
-  Favorites: undefined;
+  Category: undefined;
   Search: undefined;
   Profile: undefined;
 };
@@ -28,7 +28,6 @@ interface CustomTabBarProps {
 }
 
 const CustomTabBar: React.FC<CustomTabBarProps> = ({ state, descriptors, navigation }) => {
-  const { Styles } = StyleComponent();
   return (
     <View style={styles.tabBarContainer}>
       {state.routes.map((route, index) => {
@@ -58,8 +57,8 @@ const CustomTabBar: React.FC<CustomTabBarProps> = ({ state, descriptors, navigat
           switch (route.name) {
             case 'Home':
               return isFocused?<HomePrimary width={25} height={25}/>:<Home width={25} height={25}/> ;
-            case 'Favorites':
-              return <Heart width={25} height={25} fill={isFocused ? Color.primary : Color.gray} />;
+            case 'Catalog':
+              return <Glass width={25} height={25} fill={isFocused ? Color.primary : Color.gray} />;
             case 'Search':
               return <Glass width={25} height={25} fill={isFocused ? Color.primary : Color.gray} />;
             case 'Profile':
@@ -97,7 +96,7 @@ export default function AppTabs({ initialRouteName = "Home" }: {initialRouteName
       tabBar={props => <CustomTabBar {...props} />}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Favorites" component={HomeScreen} />
+      <Tab.Screen name="Catalog" component={CatalogScreen} />
       <Tab.Screen name="Search" component={HomeScreen} />
       <Tab.Screen name="Profile" component={HomeScreen} />
     </Tab.Navigator>

@@ -6,18 +6,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React from 'react';
-import {StyleComponent} from '../utiles/styles';
-import NumberVerificationLogic from '../Logic/NumberVerificationLogic';
-import CustomHeader from '../navigation/CustomHeader';
-import LogoComponent from '../component/LogoComponent';
-import TextView from '../component/TextView';
-import {BottomSheet} from '../component/BottomSheet';
-import Search from '../assets/svg/Search.svg';
-import Check from '../assets/svg/Check.svg';
-import ArrowsDown from '../assets/svg/ArrowsDown.svg';
-import {Language} from '../utiles/Language/i18n';
-import TextInputComponent from '../component/TextInputComponent';
-import {Color} from '../utiles/color';
+import {StyleComponent} from '../../utiles/styles';
+import NumberVerificationLogic from '../../Logic/NumberVerificationLogic';
+import CustomHeader from '../../navigation/CustomHeader';
+import LogoComponent from '../../component/LogoComponent';
+import TextView from '../../component/TextView';
+import {BottomSheet} from '../../component/BottomSheet';
+import Search from '../../assets/svg/Search.svg';
+import Check from '../../assets/svg/Check.svg';
+import ArrowsDown from '../../assets/svg/ArrowsDown.svg';
+import {Language} from '../../utiles/Language/i18n';
+import TextInputComponent from '../../component/TextInputComponent';
+import {Color} from '../../utiles/color';
 export default function NumberVerificationScreen() {
   const {check, onSubmit, visible, onHandler, setVisible} =
     NumberVerificationLogic();

@@ -1,12 +1,12 @@
 import { Text, View, StyleSheet } from 'react-native'
 import React from 'react'
-import { StyleComponent } from '../utiles/styles'
-import CodeInput from '../component/CodeInput'
-import VerificationCodeLogic from '../Logic/VerificationCodeLogic'
-import CustomHeader from '../navigation/CustomHeader'
-import LogoComponent from '../component/LogoComponent'
-import TextView from '../component/TextView'
-import Counter from '../component/Counter'
+import { StyleComponent } from '../../utiles/styles'
+import CodeInput from '../../component/CodeInput'
+import VerificationCodeLogic from '../../Logic/VerificationCodeLogic'
+import CustomHeader from '../../navigation/CustomHeader'
+import LogoComponent from '../../component/LogoComponent'
+import TextView from '../../component/TextView'
+import Counter from '../../component/Counter'
 export default function VerificationCodeScreen() {
     const {onCodeHandle, codeValid,timer, setDisableTimer,setDisable,disable} = VerificationCodeLogic()
 const {Styles} = StyleComponent()

@@ -1,14 +1,14 @@
 import { View, StyleSheet} from 'react-native'
 import React from 'react'
-import {ForgetPasswordLogic} from '../Logic/ForgetPasswordLogic'
-import { StyleComponent } from '../utiles/styles'
-import LogoComponent from '../component/LogoComponent'
-import TextView from '../component/TextView'
-import { Language } from '../utiles/Language/i18n'
+import {ForgetPasswordLogic} from '../../Logic/ForgetPasswordLogic'
+import { StyleComponent } from '../../utiles/styles'
+import LogoComponent from '../../component/LogoComponent'
+import TextView from '../../component/TextView'
+import { Language } from '../../utiles/Language/i18n'
 import { Controller } from 'react-hook-form'
-import TextInputComponent from '../component/TextInputComponent'
-import Email from '../assets/svg/Email.svg';
-import BottomCardComponent from '../component/BottomCard'
+import TextInputComponent from '../../component/TextInputComponent'
+import Email from '../../assets/svg/Email.svg';
+import BottomCardComponent from '../../component/BottomCard'
 
 export default function ForgetPasswordScreen() {
   const {Styles} = StyleComponent()

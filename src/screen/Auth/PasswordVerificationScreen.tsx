@@ -1,19 +1,19 @@
 import {View, StyleSheet, KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
 import React from 'react';
 import {Controller} from 'react-hook-form';
-import {StyleComponent} from '../utiles/styles';
-import TextInputComponent from '../component/TextInputComponent';
-import TextView from '../component/TextView';
-import {PasswordVerificationLogic} from '../Logic/PasswordVerificationLogic';
-import {Color} from '../utiles/color';
-import BottomCardComponent from '../component/BottomCard';
-import {Language} from '../utiles/Language/i18n';
-import LogoComponent from '../component/LogoComponent';
-import Lock from '../assets/svg/Password.svg';
-import Success from '../assets/svg/success.svg';
-import Reject from '../assets/svg/reject.svg';
-import CustomHeader from '../navigation/CustomHeader';
-import { KeboardDismis } from '../KeyboardDismis/KeboardDIsmisFunction';
+import {StyleComponent} from '../../utiles/styles';
+import TextInputComponent from '../../component/TextInputComponent';
+import TextView from '../../component/TextView';
+import {PasswordVerificationLogic} from '../../Logic/PasswordVerificationLogic';
+import {Color} from '../../utiles/color';
+import BottomCardComponent from '../../component/BottomCard';
+import {Language} from '../../utiles/Language/i18n';
+import LogoComponent from '../../component/LogoComponent';
+import Lock from '../../assets/svg/Password.svg';
+import Success from '../../assets/svg/success.svg';
+import Reject from '../../assets/svg/reject.svg';
+import CustomHeader from '../../navigation/CustomHeader';
+import { KeboardDismis } from '../../KeyboardDismis/KeboardDIsmisFunction';
 
 export default function PasswordVerificationScreen() {
   const {Styles} = StyleComponent();

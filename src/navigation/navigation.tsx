@@ -5,12 +5,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import SplashScreen from '../screen/SplashScreen';
 import WellcomeScreen from '../screen/WellcomeScreen';
-import SignupScreen from '../screen/SignupScreen';
-import SigninScreen from '../screen/SigninScreen';
-import VerificationCodeScreen from '../screen/VerificationCodeScreen';
-import PasswordVerificationScreen from '../screen/PasswordVerificationScreen';
-import NumberVerificationScreen from '../screen/NumberVerificationScreen'
-import ForgetPasswordScreen from '../screen/ForgetPasswordScreen'
+import SignupScreen from '../screen/Auth/SignupScreen';
+import SigninScreen from '../screen/Auth/SigninScreen';
+import VerificationCodeScreen from '../screen/Auth/VerificationCodeScreen';
+import PasswordVerificationScreen from '../screen/Auth/PasswordVerificationScreen';
+import NumberVerificationScreen from '../screen/Auth/NumberVerificationScreen';
+import ForgetPasswordScreen from '../screen/Auth/ForgetPasswordScreen';
 
 
 // import LoginScreen from '../screen/LoginScreen';

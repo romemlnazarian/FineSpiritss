@@ -1,20 +1,20 @@
 import {View, StyleSheet, TouchableOpacity,Text} from 'react-native';
 import React from 'react';
 import {Controller} from 'react-hook-form';
-import {StyleComponent} from '../utiles/styles';
-import TextInputComponent from '../component/TextInputComponent';
-import TextView from '../component/TextView';
-import {SigninLogic} from '../Logic/SigninLogic';
-import {Color} from '../utiles/color';
-import BottomCardComponent from '../component/BottomCard';
-import {Language} from '../utiles/Language/i18n';
-import LogoComponent from '../component/LogoComponent';
-import Lock from '../assets/svg/Password.svg';
-import Email from '../assets/svg/Email.svg';
-import Gmail from '../assets/svg/gmail.svg';
-import Apple from '../assets/svg/apple.svg';
-import Facebook from '../assets/svg/facebook.svg';
-import AuthLogo from '../component/AuthLogo';
+import {StyleComponent} from '../../utiles/styles';
+import TextInputComponent from '../../component/TextInputComponent';
+import TextView from '../../component/TextView';
+import {SigninLogic} from '../../Logic/SigninLogic';
+import {Color} from '../../utiles/color';
+import BottomCardComponent from '../../component/BottomCard';
+import {Language} from '../../utiles/Language/i18n';
+import LogoComponent from '../../component/LogoComponent';
+import Lock from '../../assets/svg/Password.svg';
+import Email from '../../assets/svg/Email.svg';
+import Gmail from '../../assets/svg/gmail.svg';
+import Apple from '../../assets/svg/apple.svg';
+import Facebook from '../../assets/svg/facebook.svg';
+import AuthLogo from '../../component/AuthLogo';
 
 export default function SigninScreen() {
   const {Styles} = StyleComponent();
