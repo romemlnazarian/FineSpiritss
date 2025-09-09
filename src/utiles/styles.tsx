@@ -320,7 +320,7 @@ export const StyleComponent = () => {
     },
 
     card:{
-    width:'90%',
+    width:'93%',
     padding:10,
     borderWidth:1,
     borderColor:Color.gray,
