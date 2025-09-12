@@ -4,6 +4,7 @@ import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
 import Category_image from '../../assets/svg/category_image.svg';
+import CatalogLogic from '../../Logic/Catalog/CatalogLogic';
 interface CategoryItem {
   id: string;
   title: string;
@@ -11,29 +12,10 @@ interface CategoryItem {
   productCount: number;
 }
 
-// Memoized category item component
-const CategoryItemComponent = memo(
-  ({
-    item,
-    onPress,
-  }: {
-    item: CategoryItem;
-    onPress: (item: CategoryItem) => void;
-  }) => {
-
-    return (
-      <TouchableOpacity
-        style={styles.categoryItem}
-        onPress={() => onPress(item)}
-        activeOpacity={0.7}>
-          <Category_image />
-      </TouchableOpacity>
-    );
-  },
-);
 
 const CategoryScreen = memo(() => {
   const {Styles} = StyleComponent();
+  const {unSubmit} = CatalogLogic()
 
   // Memoized category data
   const categoryData = useMemo(
@@ -90,17 +72,18 @@ const CategoryScreen = memo(() => {
     [],
   );
 
-  // Memoized callback for category selection
-  const handleCategoryPress = useCallback((item: CategoryItem) => {
-    console.log('Selected category:', item.title);
-  }, []);
 
-  const renderCategoryItem = useCallback(
-    ({item}: {item: CategoryItem}) => (
-      <CategoryItemComponent item={item} onPress={handleCategoryPress} />
-    ),
-    [handleCategoryPress],
-  );
+
+  const renderCategoryItem = () => {
+    return (
+      <TouchableOpacity
+        style={styles.categoryItem}
+        onPress={() => unSubmit()}
+        activeOpacity={0.7}>
+          <Category_image />
+      </TouchableOpacity>
+    )
+  }
 
   // Memoized key extractor
   const keyExtractor = useCallback((item: CategoryItem) => item.id, []);

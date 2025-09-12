@@ -1,22 +1,37 @@
 // src/navigation/AppTabs.js
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { Color } from '../utiles/color';
-import HomeScreen from "../screen/Home/HomeScreen";
-import CatalogScreen from "../screen/Catetory/CatalogScreen";
+import React from 'react';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
+import {Color} from '../utiles/color';
+import HomeScreen from '../screen/Home/HomeScreen';
+import Catalog from '../screen/Catalog/CatalogScreen';
+import ChoosenCatalog from '../screen/Catalog/ChoosenCatalog';
 import Home from '../assets/svg/Home.svg';
 import Heart from '../assets/svg/Heart.svg';
+import Heart_Primary from '../assets/svg/Heart_Primary.svg';
+import Glass_Primary from '../assets/svg/Glass_Primary.svg';
 import Glass from '../assets/svg/Glass.svg';
 import Profile from '../assets/svg/profile.svg';
+import Card_Icon from '../assets/svg/Cart.svg';
+import Card_Primary from '../assets/svg/Card_Primary.svg';
 import HomePrimary from '../assets/svg/HomePrimary.svg';
-import { BottomTabDescriptorMap, BottomTabNavigationHelpers } from "@react-navigation/bottom-tabs/lib/typescript/src/types";
-import { NavigationState, ParamListBase } from "@react-navigation/native";
+import {
+  BottomTabDescriptorMap,
+  BottomTabNavigationHelpers,
+} from '@react-navigation/bottom-tabs/lib/typescript/src/types';
+import {NavigationState, ParamListBase} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import CatalogSearch from '../screen/Catalog/CatalogSearch';
+import Card from '../screen/Card/CardScreen';
+import Favorite from '../screen/Favorite/FavoriteScreen';
 type TabParamList = {
   Home: undefined;
-  Category: undefined;
+  Catalog: undefined;
   Search: undefined;
   Profile: undefined;
+  CatalogScreen: undefined;
+  CardScreen: undefined;
+  FavoriteScreen: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -26,12 +41,58 @@ interface CustomTabBarProps {
   descriptors: BottomTabDescriptorMap;
   navigation: BottomTabNavigationHelpers;
 }
+const Stack = createNativeStackNavigator();
+const TabIcon: React.FC<{routeName: string; isFocused: boolean}> = ({
+  routeName,
+  isFocused,
+}) => {
+  switch (routeName) {
+    case 'Home':
+      return isFocused ? (
+        <HomePrimary width={25} height={25} />
+      ) : (
+        <Home width={25} height={25} />
+      );
+    case 'CatalogScreen':
+      return isFocused ? (
+        <Glass_Primary width={25} height={25} />
+      ) : (
+        <Glass width={25} height={25} />
+      );
+    case 'CardScreen':
+      return isFocused ? (
+        <Card_Primary width={25} height={25} />
+      ) : (
+        <Card_Icon width={25} height={25} />
+      );
+    case 'FavoriteScreen':
+      return isFocused ? (
+        <Heart_Primary width={25} height={25} />
+      ) : (
+        <Heart width={25} height={25} />
+      );
+    case 'Profile':
+      return (
+        <Profile
+          width={25}
+          height={25}
+          fill={isFocused ? Color.primary : Color.gray}
+        />
+      );
+    default:
+      return null;
+  }
+};
 
-const CustomTabBar: React.FC<CustomTabBarProps> = ({ state, descriptors, navigation }) => {
+const CustomTabBar: React.FC<CustomTabBarProps> = ({
+  state,
+  descriptors,
+  navigation,
+}) => {
   return (
     <View style={styles.tabBarContainer}>
       {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
+        const {options} = descriptors[route.key];
         const isFocused = state.index === index;
 
         const onPress = () => {
@@ -53,34 +114,18 @@ const CustomTabBar: React.FC<CustomTabBarProps> = ({ state, descriptors, navigat
           });
         };
 
-        const IconComponent = () => {
-          switch (route.name) {
-            case 'Home':
-              return isFocused?<HomePrimary width={25} height={25}/>:<Home width={25} height={25}/> ;
-            case 'Catalog':
-              return <Glass width={25} height={25} fill={isFocused ? Color.primary : Color.gray} />;
-            case 'Search':
-              return <Glass width={25} height={25} fill={isFocused ? Color.primary : Color.gray} />;
-            case 'Profile':
-              return <Profile width={25} height={25} fill={isFocused ? Color.primary : Color.gray} />;
-            default:
-              return null;
-          }
-        };
-
         return (
           <TouchableOpacity
             key={route.key}
             accessibilityRole="button"
-            accessibilityState={isFocused ? { selected: true } : {}}
+            accessibilityState={isFocused ? {selected: true} : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
             testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            style={styles.tabButton}
-          >
+            style={styles.tabButton}>
             {isFocused && <View style={styles.focusIndicatorLine} />}
-            <IconComponent />
+            <TabIcon routeName={route.name} isFocused={isFocused} />
           </TouchableOpacity>
         );
       })}
@@ -88,16 +133,43 @@ const CustomTabBar: React.FC<CustomTabBarProps> = ({ state, descriptors, navigat
   );
 };
 
-export default function AppTabs({ initialRouteName = "Home" }: {initialRouteName?: keyof TabParamList}) {
+export default function AppTabs({
+  initialRouteName = 'Home',
+}: {
+  initialRouteName?: keyof TabParamList;
+}) {
   return (
     <Tab.Navigator
       initialRouteName={initialRouteName}
-      screenOptions={{ headerShown: false }}
-      tabBar={props => <CustomTabBar {...props} />}
-    >
+      screenOptions={{headerShown: false}}
+      tabBar={props => <CustomTabBar {...props} />}>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Catalog" component={CatalogScreen} />
-      <Tab.Screen name="Search" component={HomeScreen} />
+      <Tab.Screen
+        name="CatalogScreen"
+        component={() => (
+          <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="Catalog" component={Catalog} />
+            <Stack.Screen name="ChoosenCatalog" component={ChoosenCatalog} />
+            <Stack.Screen name="CatalogSearch" component={CatalogSearch} />
+          </Stack.Navigator>
+        )}
+      />
+           <Tab.Screen
+        name="CardScreen"
+        component={() => (
+          <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="Card" component={Card} />
+          </Stack.Navigator>
+        )}
+      />
+      <Tab.Screen
+        name="FavoriteScreen"
+        component={() => (
+          <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="Favorite" component={Favorite} />
+          </Stack.Navigator>
+        )}
+      />
       <Tab.Screen name="Profile" component={HomeScreen} />
     </Tab.Navigator>
   );
@@ -117,7 +189,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
     backgroundColor: 'transparent',
-    height:70
+    height: 70,
   },
   focusIndicatorLine: {
     position: 'absolute',
@@ -126,7 +198,7 @@ const styles = StyleSheet.create({
     width: 44,
     backgroundColor: Color.primary,
     alignSelf: 'center',
-    borderBottomRightRadius:10,
-    borderBottomLeftRadius:10
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
   },
 });
