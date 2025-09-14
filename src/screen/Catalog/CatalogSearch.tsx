@@ -1,10 +1,10 @@
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList,TextInput} from 'react-native';
 import React, {useState, useCallback, useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import Viski from '../../assets/svg/viski.svg';
 import Heart from '../../assets/svg/Heart.svg';
-import TextInputComponent from '../../component/TextInputComponent';
+import Arrow from '../../assets/svg/Arrows.svg';
 interface ProductItem {
   id: string;
   title: string;
@@ -45,7 +45,8 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
 
 export default function CatalogSearch() {
   const {Styles} = StyleComponent();
-
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredSuggestions, setFilteredSuggestions] = useState<ProductItem[]>([]);
   // Sample data - replace with your actual data
   const productData = useMemo(
     () => [
@@ -81,6 +82,20 @@ export default function CatalogSearch() {
     [],
   );
 
+  const handleSearch = useCallback((text: string) => {
+    setSearchTerm(text);
+    if (text.length > 0) {
+      const filtered = productData.filter(item =>
+        item.title.toLowerCase().startsWith(text.toLowerCase())
+      );
+      setFilteredSuggestions(filtered);
+    } else {
+      setFilteredSuggestions([]);
+    }
+  }, [productData]);
+
+
+
   const renderProductItem = useCallback(
     ({item}: {item: ProductItem}) => <ProductCard item={item} />,
     [],
@@ -90,14 +105,31 @@ export default function CatalogSearch() {
 
   return (
     <View style={[Styles.container]}>
-              <TextInputComponent
-              containerStyle={styles.textInputContainer}
-              placeholder={'Search'}
-              handlePasswordIconClick={() => console.log()}
-              onChangeText={()=>console.log()}
-              value={''}
-            />
-      <View style={{width:'100%',height:1,backgroundColor:Color.lightGray}}/>
+      <View style={styles.searchContainer}>
+        <View style={styles.arrowContainer}>
+        <Arrow width={30} height={30}/>
+        </View>
+      <TextInput
+        placeholder={'Search'}
+        placeholderTextColor={Color.gray}
+        style={[styles.textInputContainer, Styles.body_Regular,
+        ]}
+        value={searchTerm}
+        onChangeText={handleSearch}
+      />
+      </View>
+      {filteredSuggestions.length > 0 && (
+        <FlatList
+          data={filteredSuggestions}
+          renderItem={({item}) => (
+            <Text style={[styles.suggestionItem, Styles.body_Regular]}>{item.title}</Text>
+          )}
+          keyExtractor={item => item.id}
+          style={styles.suggestionsList}
+        />
+      )}
+
+
       <FlatList
         data={productData}
         renderItem={renderProductItem}
@@ -122,12 +154,22 @@ export default function CatalogSearch() {
 }
 
 const styles = StyleSheet.create({
-  textInputContainer: {
+  arrowContainer: {
     marginTop: 10,
-    borderRadius:10,
-    backgroundColor:Color.background,
-    height:50,
-    borderColor:'red'
+  },
+  searchContainer: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  textInputContainer: {
+    width:'80%',
+    marginTop: 10,
+    borderRadius: 10,
+    backgroundColor: Color.background,
+    height: 50,
+    color: Color.black,
+    marginLeft:10,
   },
   mainContainer: {
     width: '100%',
@@ -165,4 +207,16 @@ const styles = StyleSheet.create({
   flatListContainer: {
     paddingBottom: 20,
   },
+  suggestionItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  suggestionsList: {
+    backgroundColor: Color.background,
+    marginTop: 5,
+    marginHorizontal: 10,
+    maxHeight: 150,
+    shadowColor: Color.black,
+  },
+
 });
