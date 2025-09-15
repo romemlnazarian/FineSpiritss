@@ -236,9 +236,7 @@ const styles = StyleSheet.create({
     marginTop: '5%',
   },
   productCardContainer: {
-    // Styles moved to ProductCard.tsx
-    // These are kept here for passing as cardStyle prop if needed for external overrides
-    marginRight: 15, // Spacing between cards
-    width: 240, // Example fixed width for product cards
+    marginRight: 15, 
+    width: 240,
   },
 });

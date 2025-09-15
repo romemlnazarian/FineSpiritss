@@ -1,10 +1,11 @@
-import {View, Text, StyleSheet, FlatList,TextInput} from 'react-native';
-import React, {useState, useCallback, useMemo} from 'react';
+import {View, Text, StyleSheet, FlatList,TextInput, TouchableOpacity, ViewStyle} from 'react-native';
+import React, {useState, useCallback, useMemo, useEffect} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import Viski from '../../assets/svg/viski.svg';
 import Heart from '../../assets/svg/Heart.svg';
 import Arrow from '../../assets/svg/Arrows.svg';
+import Cancel from '../../assets/svg/Cancel.svg';
 interface ProductItem {
   id: string;
   title: string;
@@ -16,11 +17,6 @@ interface ProductItem {
 // Memoized Product Card Component
 const ProductCard = React.memo(({item}: {item: ProductItem}) => {
   const {Styles} = StyleComponent();
-  const [isFavorite, setIsFavorite] = useState(false);
-
-  const toggleFavorite = useCallback(() => {
-    setIsFavorite(prev => !prev);
-  }, []);
 
   return (
     <View style={[Styles.justifyBetween, styles.mainContainer]}>
@@ -37,7 +33,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
         </View>
       </View>
       <View style={styles.heartContainer}>
-        <Heart fill={isFavorite ? Color.primary : Color.white} />
+        <Heart fill={Color.white} />
       </View>
     </View>
   );
@@ -47,6 +43,8 @@ export default function CatalogSearch() {
   const {Styles} = StyleComponent();
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredSuggestions, setFilteredSuggestions] = useState<ProductItem[]>([]);
+  const [displayedProductData, setDisplayedProductData] = useState<ProductItem[]>([]);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
   // Sample data - replace with your actual data
   const productData = useMemo(
     () => [
@@ -91,10 +89,15 @@ export default function CatalogSearch() {
       setFilteredSuggestions(filtered);
     } else {
       setFilteredSuggestions([]);
+      setDisplayedProductData(productData);
     }
   }, [productData]);
 
-
+  useEffect(() => {
+    if (searchTerm === '') {
+      setDisplayedProductData(productData);
+    }
+  }, [productData, searchTerm]);
 
   const renderProductItem = useCallback(
     ({item}: {item: ProductItem}) => <ProductCard item={item} />,
@@ -102,6 +105,10 @@ export default function CatalogSearch() {
   );
 
   const keyExtractor = useCallback((item: ProductItem) => item.id, []);
+
+  const getTextInputWidthStyle = useCallback((hasSuggestions: boolean): ViewStyle => {
+    return { width: hasSuggestions ? '75%' : '80%' };
+  }, []);
 
   return (
     <View style={[Styles.container]}>
@@ -112,26 +119,62 @@ export default function CatalogSearch() {
       <TextInput
         placeholder={'Search'}
         placeholderTextColor={Color.gray}
-        style={[styles.textInputContainer, Styles.body_Regular,
+        style={[
+          styles.textInputContainer,
+          Styles.body_Regular,
+          getTextInputWidthStyle(filteredSuggestions.length > 0),
         ]}
         value={searchTerm}
         onChangeText={handleSearch}
+        onFocus={() => {
+          if (searchTerm === '') {
+            setFilteredSuggestions(searchHistory.map(term => ({
+              id: term, // Using term as ID for history items, assuming uniqueness or just for display
+              title: term,
+              country: '', // Placeholder for history items
+              alcoholContent: '',
+              price: '',
+            })));
+          }
+        }}
       />
+      {filteredSuggestions.length > 0 && (
+        <TouchableOpacity
+          onPress={() => handleSearch('')}
+          style={styles.cancelContainer}
+        >
+          <Cancel width={24} height={24}/>
+        </TouchableOpacity>
+      )}
+
       </View>
       {filteredSuggestions.length > 0 && (
         <FlatList
           data={filteredSuggestions}
-          renderItem={({item}) => (
-            <Text style={[styles.suggestionItem, Styles.body_Regular]}>{item.title}</Text>
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => {
+              setSearchTerm(item.title);
+              setFilteredSuggestions([]);
+              setDisplayedProductData([item]);
+              setSearchHistory(prevHistory => {
+                const newHistory = [item.title, ...prevHistory.filter(term => term !== item.title)];
+                return newHistory.slice(0, 5); // Limit history to 5 items
+              });
+            }}>
+              <Text style={[styles.suggestionItem, Styles.body_Regular]}>{item.title}</Text>
+            </TouchableOpacity>
           )}
           keyExtractor={item => item.id}
           style={styles.suggestionsList}
         />
       )}
 
+      <View
+        style={styles.separatorLine}
+      />
 
       <FlatList
-        data={productData}
+        data={displayedProductData}
         renderItem={renderProductItem}
         keyExtractor={keyExtractor}
         showsVerticalScrollIndicator={false}
@@ -154,6 +197,10 @@ export default function CatalogSearch() {
 }
 
 const styles = StyleSheet.create({
+  cancelContainer: {
+    marginTop: 10,
+    marginRight: 10,
+  },
   arrowContainer: {
     marginTop: 10,
   },
@@ -163,13 +210,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textInputContainer: {
-    width:'80%',
     marginTop: 10,
     borderRadius: 10,
     backgroundColor: Color.background,
     height: 50,
     color: Color.black,
-    marginLeft:10,
+    marginLeft: 10,
   },
   mainContainer: {
     width: '100%',
@@ -213,10 +259,19 @@ const styles = StyleSheet.create({
   },
   suggestionsList: {
     backgroundColor: Color.background,
+    borderRadius: 10,
     marginTop: 5,
     marginHorizontal: 10,
     maxHeight: 150,
     shadowColor: Color.black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-
+  separatorLine: {
+    height: 1,
+    backgroundColor: Color.lightGray,
+    marginVertical: 10,
+  },
 });
+ 

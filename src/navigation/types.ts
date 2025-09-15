@@ -21,7 +21,18 @@ export type CatalogParamList = {
   Catalog:undefined,
   ChoosenCatalog:undefined
   CatalogSearch:undefined
-};
+  CatalogDetail: {
+    product: {
+      id: string;
+      title: string;
+      description: string;
+      price: string;
+      originalPrice?: string;
+      discountPrice?: string;
+      image?: string;
+    };
+    quantity: number;
+  };};
 
 
 export type RootStackParamList = AuthStackParamList & ButtonParamList & CatalogParamList;

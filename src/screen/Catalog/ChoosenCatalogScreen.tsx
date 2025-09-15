@@ -7,16 +7,27 @@ import Search from '../../assets/svg/SearchBlack.svg';
 import CatalogList from '../../component/CatalogComponent/CatalogList';
 import ChoosenCatalogLogic from '../../Logic/Catalog/ChoosenCatalogLogic';
 import {BottomSheet} from '../../component/BottomSheet';
-import ButtonSheetFilter from '../../component/CatalogComponent/buttonSheetFilter';
-import CatalogTabsFilter from '../../component/CatalogComponent/CatalogTabsFilter';
 import CatalogKosher from '../../component/CatalogComponent/CatalogKosher';
+import Filter from '../../assets/svg/Filter.svg';
+
+const defaultSortData  = [
+  {id: '1', title: <Filter />},
+  {id: '2', title: 'Country'},
+  {id: '3', title: 'Brand'},
+  {id: '4', title: 'Capacity'},
+  {id: '5', title: 'Kosher'},
+]
+
+
+
 export default function ChoosenCatalog() {
   const {
     onSearchHandler,
     onSubnmitFilter,
     filterVisible,
     setFilterVisible,
-    title,
+    onAddSelected,
+    onHandlerDetail,
   } = ChoosenCatalogLogic();
   const {Styles} = StyleComponent();
   const sortData = useMemo(
@@ -69,8 +80,8 @@ export default function ChoosenCatalog() {
         icon={<Search />}
         onHandler={onSearchHandler}
       />
-      <CatalogFilter onHandler={e => onSubnmitFilter(e)} />
-      <CatalogList item={sortData} />
+      <CatalogFilter onHandler={e => onSubnmitFilter(e)} sortData={sortData}/>
+      <CatalogList item={sortData} onAddSelected={onAddSelected} onHandlerItem={onHandlerDetail} />
       <BottomSheet
         modalVisible={filterVisible}
         height={350}

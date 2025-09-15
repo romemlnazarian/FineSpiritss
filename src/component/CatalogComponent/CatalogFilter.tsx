@@ -1,25 +1,27 @@
-import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
-import React, {useState, useMemo, useCallback, memo} from 'react';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity, StyleProp, ViewStyle, TextStyle} from 'react-native';
+import React, {useState, useCallback, memo, useEffect} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
-import Filter from '../../assets/svg/Filter.svg';
 // Memoized sort item component
-const SortItem = memo(({item, isSelected, onPress}: {
+const SortItem = memo(({item, isSelected, onPress, containerStyle, textStyle}: {
   item: {id: string; title: string | React.ReactElement};
   isSelected: boolean;
   onPress: (id: string) => void;
+  containerStyle?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 }) => {
   const {Styles} = StyleComponent();
 
   return (
     <TouchableOpacity
       activeOpacity={0.5}
-      style={[styles.flatListItem]}
+      style={[styles.flatListItem, containerStyle]}
       onPress={() => onPress(item.id)}>
       <Text
         style={[
           Styles.title_Regular,
           isSelected ? styles.selectedItemText : styles.unselectedItemText,
+          textStyle,
         ]}>
         {item.title}
       </Text>
@@ -27,24 +29,22 @@ const SortItem = memo(({item, isSelected, onPress}: {
   );
 });
 
-
-
 interface CatalogFilterProps {
   onHandler?: (selectedId: string) => void;
+  sortData: {id: string; title: string | React.ReactElement}[];
+  sortItemContainerStyle?: StyleProp<ViewStyle>;
+  sortItemTextStyle?: StyleProp<TextStyle>;
 }
 
-const CatalogFilter = memo(({onHandler}: CatalogFilterProps) => {
-  // Memoize data arrays to prevent recreation on every render
-  const sortData = useMemo(() => [
-    {id: '1', title: <Filter />},
-    {id: '2', title: 'Country'},
-    {id: '3', title: 'Brand'},
-    {id: '4', title: 'Capacity'},
-    {id: '5', title: 'Kosher'},
-  ], []);
+const CatalogFilter = memo(({onHandler, sortData, sortItemContainerStyle, sortItemTextStyle}: CatalogFilterProps) => {
+  const [selectedItemId, setSelectedItemId] = useState(sortData[0]?.id ?? '');
 
-
-  const [selectedItemId, setSelectedItemId] = useState(sortData[0].id);
+  // Keep selection valid when data changes
+  useEffect(() => {
+    if (!sortData.find(i => i.id === selectedItemId)) {
+      setSelectedItemId(sortData[0]?.id ?? '');
+    }
+  }, [sortData, selectedItemId]);
 
   // Memoized callback for sort item selection
   const handleSortSelection = useCallback((id: string) => {
@@ -65,13 +65,13 @@ const CatalogFilter = memo(({onHandler}: CatalogFilterProps) => {
       item={item}
       isSelected={item.id === selectedItemId}
       onPress={handleSortSelection}
+      containerStyle={sortItemContainerStyle}
+      textStyle={sortItemTextStyle}
     />
-  ), [selectedItemId, handleSortSelection]);
-
- 
+  ), [selectedItemId, handleSortSelection, sortItemContainerStyle, sortItemTextStyle]);
 
   // Memoized key extractors
-  const sortKeyExtractor = useCallback((item: {id: string; title: string | React.ReactElement}) => item.id, []);
+  const sortKeyExtractor = (item: {id: string; title: string | React.ReactElement}) => item.id;
 
   return (
     <View style={styles.categoryContainer}>

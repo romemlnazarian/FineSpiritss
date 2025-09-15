@@ -5,7 +5,7 @@ import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import {Color} from '../utiles/color';
 import HomeScreen from '../screen/Home/HomeScreen';
 import Catalog from '../screen/Catalog/CatalogScreen';
-import ChoosenCatalog from '../screen/Catalog/ChoosenCatalog';
+import ChoosenCatalog from '../screen/Catalog/ChoosenCatalogScreen';
 import Home from '../assets/svg/Home.svg';
 import Heart from '../assets/svg/Heart.svg';
 import Heart_Primary from '../assets/svg/Heart_Primary.svg';
@@ -21,9 +21,10 @@ import {
 } from '@react-navigation/bottom-tabs/lib/typescript/src/types';
 import {NavigationState, ParamListBase} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import CatalogSearch from '../screen/Catalog/CatalogSearch';
+import CatalogSearch from '../screen/Catalog/CatalogSearchScreen';
 import Card from '../screen/Card/CardScreen';
 import Favorite from '../screen/Favorite/FavoriteScreen';
+import CatalogDetail from '../screen/Catalog/CatalogDetailScreen';
 type TabParamList = {
   Home: undefined;
   Catalog: undefined;
@@ -32,6 +33,7 @@ type TabParamList = {
   CatalogScreen: undefined;
   CardScreen: undefined;
   FavoriteScreen: undefined;
+  CatalogDetail: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -151,6 +153,7 @@ export default function AppTabs({
             <Stack.Screen name="Catalog" component={Catalog} />
             <Stack.Screen name="ChoosenCatalog" component={ChoosenCatalog} />
             <Stack.Screen name="CatalogSearch" component={CatalogSearch} />
+            <Stack.Screen name="CatalogDetail" component={CatalogDetail} />
           </Stack.Navigator>
         )}
       />
