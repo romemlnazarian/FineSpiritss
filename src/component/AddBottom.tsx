@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 2,
     borderColor: Color.primary,
-    padding: 12,
     backgroundColor: Color.white,
   },
   contentContainer: {

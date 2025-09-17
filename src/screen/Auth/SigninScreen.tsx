@@ -18,7 +18,7 @@ import AuthLogo from '../../component/AuthLogo';
 
 export default function SigninScreen() {
   const {Styles} = StyleComponent();
-  const {control, handleSubmit, errors, onSubmit,onSubmitForgetPass} = SigninLogic();
+  const {control, handleSubmit, errors, onSubmit,onSubmitForgetPass,onSubmitSignUp} = SigninLogic();
   return (
     <View style={Styles.container}>
       <LogoComponent style={styles.logoComponentStyle} />
@@ -96,7 +96,7 @@ export default function SigninScreen() {
           color={Color.black}
           style={[Styles.title_Regular]}
         />
-        <TouchableOpacity activeOpacity={0.5} onPress={() => console.log()}>
+        <TouchableOpacity activeOpacity={0.5} onPress={onSubmitSignUp}>
           <TextView
             title={Language.singUp}
             color={Color.primary}

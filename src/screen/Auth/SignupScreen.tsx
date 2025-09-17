@@ -18,7 +18,7 @@ import AuthLogo from '../../component/AuthLogo';
 
 export default function SignupScreen() {
   const {Styles} = StyleComponent();
-  const {control, handleSubmit, errors, onSubmit} = SignupLogic();
+  const {control, handleSubmit, errors, onSubmit,onSubmitSignIn} = SignupLogic();
   return (
     <View style={Styles.container}>
       <LogoComponent style={styles.logoComponentStyle} />
@@ -92,7 +92,7 @@ export default function SignupScreen() {
           color={Color.black}
           style={[Styles.title_Regular]}
         />
-        <TouchableOpacity activeOpacity={0.5} onPress={() => console.log()}>
+        <TouchableOpacity activeOpacity={0.5} onPress={onSubmitSignIn}>
           <TextView
             title={Language.singIn}
             color={Color.primary}
@@ -105,11 +105,12 @@ export default function SignupScreen() {
           <Gmail />
         </AuthLogo>
         <AuthLogo onHandler={() => console.log()}>
-          <Apple />
-        </AuthLogo>
-        <AuthLogo onHandler={() => console.log()}>
           <Facebook />
         </AuthLogo>
+        <AuthLogo onHandler={() => console.log()}>
+          <Apple />
+        </AuthLogo>
+    
       </View>
     </View>
   );

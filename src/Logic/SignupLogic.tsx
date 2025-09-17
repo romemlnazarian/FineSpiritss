@@ -38,10 +38,15 @@ export const SignupLogic = () => {
 
 
 
+  const onSubmitSignIn = async () => {
+    navigation.navigate('Signin')
+  };
+
   return {
     control,
     handleSubmit,
     errors,
     onSubmit,
+    onSubmitSignIn
   };
 };

@@ -3,7 +3,6 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
   FlatList,
 } from 'react-native';
 import React, { memo, useCallback, useMemo } from 'react';

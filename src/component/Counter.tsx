@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   button: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 12,
   },
   buttonText: {
     color: Color.black,

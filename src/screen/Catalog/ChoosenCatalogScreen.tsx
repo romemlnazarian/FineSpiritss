@@ -1,5 +1,5 @@
 import {View} from 'react-native';
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import CustomHeader from '../../navigation/CustomHeader';
 import CatalogFilter from '../../component/CatalogComponent/CatalogFilter';
@@ -30,6 +30,7 @@ export default function ChoosenCatalog() {
     onHandlerDetail,
   } = ChoosenCatalogLogic();
   const {Styles} = StyleComponent();
+  const [activeTab, setActiveTab] = useState<'filters' | 'kosher'>('filters');
   const sortData = useMemo(
     () => [
       {

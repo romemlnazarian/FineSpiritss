@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
     justifyContent:'space-between',
   },
   backButton: {
-    marginRight: 10,
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'center',

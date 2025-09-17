@@ -41,12 +41,16 @@ export const SigninLogic = () => {
     console.log('==>', values);
     navigation.navigate('ForgetPassword')
   };
+  const onSubmitSignUp = async () => {
+    navigation.navigate('Signup')
+  };
   
   return {
     control,
     handleSubmit,
     errors,
     onSubmit,
-    onSubmitForgetPass
+    onSubmitForgetPass,
+    onSubmitSignUp
   };
 };

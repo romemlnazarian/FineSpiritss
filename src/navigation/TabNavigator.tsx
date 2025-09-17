@@ -12,7 +12,7 @@ import Heart_Primary from '../assets/svg/Heart_Primary.svg';
 import Glass_Primary from '../assets/svg/Glass_Primary.svg';
 import Glass from '../assets/svg/Glass.svg';
 import Profile from '../assets/svg/profile.svg';
-import Card_Icon from '../assets/svg/Cart.svg';
+import Card_Icon from '../assets/svg/Card.svg';
 import Card_Primary from '../assets/svg/Card_Primary.svg';
 import HomePrimary from '../assets/svg/HomePrimary.svg';
 import {
@@ -65,7 +65,7 @@ const TabIcon: React.FC<{routeName: string; isFocused: boolean}> = ({
       return isFocused ? (
         <Card_Primary width={25} height={25} />
       ) : (
-        <Card_Icon width={25} height={25} />
+        <Card_Icon width={25} height={25} fill={Color.black}/>
       );
     case 'FavoriteScreen':
       return isFocused ? (

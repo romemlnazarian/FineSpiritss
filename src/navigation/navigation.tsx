@@ -1,6 +1,7 @@
 // src/navigation/Navigation.js
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { StatusBar } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Platform, StyleSheet} from 'react-native';
 
@@ -23,8 +24,9 @@ const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider >
     <SafeAreaView style={styles.container} edges={Platform.OS === 'android' ?[ 'bottom' , 'top'] : ['top']}>
+      <StatusBar translucent backgroundColor="red" barStyle="dark-content" />
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Splash" component={SplashScreen} />
