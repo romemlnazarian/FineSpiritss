@@ -14,6 +14,7 @@ const HomeCategory = lazy(() => import('../../component/HomeCamponent/HomeCatego
 const HomeSort = lazy(() => import('../../component/HomeCamponent/HomeSort'));
 const ScrollCard = lazy(() => import('../../component/HomeCamponent/ScrollCard'));
 const VerticalScroll = lazy(() => import('../../component/HomeCamponent/VerticalScroll'));
+
 interface ProductItem {
   id: string;
   title: string;

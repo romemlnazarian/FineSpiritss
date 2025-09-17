@@ -12,8 +12,8 @@ import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
 import Location from '../../assets/svg/cart_location.svg';
 import Visa from '../../assets/svg/visa_logo.svg';
-import ArrowDown from '../../assets/svg/ArrowsDown.svg';
-import ArrowUp from '../../assets/svg/Arrows_up.svg';
+// import ArrowDown from '../../assets/svg/ArrowsDown.svg';
+// import ArrowUp from '../../assets/svg/Arrows_up.svg';
 export default function CartOrder() {
   const {Styles} = StyleComponent();
   const [activeTab, setActiveTab] = useState<'summary' | 'delivery'>('summary');
@@ -184,7 +184,7 @@ export default function CartOrder() {
             style={[Styles.title_Regular, Styles.textAlign, {marginTop: '2%'}]}>
             All payment methods
           </Text>
-          {open ? <ArrowUp /> : <ArrowDown />}
+          {/* {open ? <ArrowUp /> : <ArrowDown />} */}
         </TouchableOpacity>
         <View
           style={{
