@@ -22,7 +22,6 @@ export default function CardScreen() {
           <Text style={[Styles.title_Regular, styles.ml5]}>
             Promo code
           </Text>
-
           <View style={styles.promoInput}>
             <Text style={[Styles.title_Regular, styles.textLightGray]}>
               Enter promo code here

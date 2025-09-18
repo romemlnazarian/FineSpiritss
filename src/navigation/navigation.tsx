@@ -14,7 +14,6 @@ import PasswordVerificationScreen from '../screen/Auth/PasswordVerificationScree
 import NumberVerificationScreen from '../screen/Auth/NumberVerificationScreen';
 import ForgetPasswordScreen from '../screen/Auth/ForgetPasswordScreen';
 
-
 // import LoginScreen from '../screen/LoginScreen';
 import AppTabs from "./TabNavigator";
 import { Color } from '../utiles/color';

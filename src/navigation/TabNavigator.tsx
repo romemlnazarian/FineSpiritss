@@ -12,6 +12,7 @@ import Heart_Primary from '../assets/svg/Heart_Primary.svg';
 import Glass_Primary from '../assets/svg/Glass_Primary.svg';
 import Glass from '../assets/svg/Glass.svg';
 import Profile from '../assets/svg/profile.svg';
+import Profile_primary from '../assets/svg/Profile_primary.svg';
 import Card_Icon from '../assets/svg/Card.svg';
 import Card_Primary from '../assets/svg/Card_Primary.svg';
 import HomePrimary from '../assets/svg/HomePrimary.svg';
@@ -25,6 +26,8 @@ import CatalogSearch from '../screen/Catalog/CatalogSearchScreen';
 import Card from '../screen/Card/CardScreen';
 import Favorite from '../screen/Favorite/FavoriteScreen';
 import CatalogDetail from '../screen/Catalog/CatalogDetailScreen';
+import ProfileScreen from '../screen/Profile/ProfileScreen';
+
 type TabParamList = {
   Home: undefined;
   Catalog: undefined;
@@ -34,6 +37,7 @@ type TabParamList = {
   CardScreen: undefined;
   FavoriteScreen: undefined;
   CatalogDetail: undefined;
+  ProfileScreen: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -73,13 +77,11 @@ const TabIcon: React.FC<{routeName: string; isFocused: boolean}> = ({
       ) : (
         <Heart width={25} height={25} />
       );
-    case 'Profile':
-      return (
-        <Profile
-          width={25}
-          height={25}
-          fill={isFocused ? Color.primary : Color.gray}
-        />
+    case 'ProfileScreen':
+      return isFocused ? (
+        <Profile_primary width={25} height={25} />
+      ) : (
+        <Profile width={25} height={25} />
       );
     default:
       return null;
@@ -173,7 +175,14 @@ export default function AppTabs({
           </Stack.Navigator>
         )}
       />
-      <Tab.Screen name="Profile" component={HomeScreen} />
+           <Tab.Screen
+        name="ProfileScreen"
+        component={() => (
+          <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+          </Stack.Navigator>
+        )}
+      />
     </Tab.Navigator>
   );
 }
