@@ -18,20 +18,21 @@ export default function CustomHeader({ title, showBack = false, subTitle, icon, 
   const {Styles} = StyleComponent()
   return (
     <View style={styles.header}>
-      <View style={styles.backButton}>
+      <View style={styles.leftContainer}>
       {showBack && (
         <TouchableOpacity onPress={() => navigation.goBack()} >
           <Arrow width={30} height={30}/>
         </TouchableOpacity>
       )}
-      <View style={styles.titleContainer}>
+      </View>
+      <View style={styles.centerTitleContainer} pointerEvents="none">
         <Text style={[styles.title,Styles.h5_Regular]}>{title || ''}</Text>
       </View>
-      </View>
-       <Text style={[Styles.h5_Regular,Styles.textAlign]}>{subTitle}</Text>
-       <TouchableOpacity onPress={onHandler}>
-       {icon}
-       </TouchableOpacity>
+      <TouchableOpacity onPress={onHandler} style={styles.rightContainer}>
+        <View>
+        {icon}
+        </View>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -44,13 +45,23 @@ const styles = StyleSheet.create({
     height: 60,
     paddingHorizontal: 16,
     justifyContent:'space-between',
+    position:'relative',
   },
-  backButton: {
-    flexDirection:'row',
-    alignItems:'center',
+  leftContainer: {
+    width: 40,
+    alignItems:'flex-start',
     justifyContent:'center',
   },
-  titleContainer: {
+  rightContainer: {
+    width: 40,
+    alignItems:'flex-end',
+    justifyContent:'center',
+  },
+  centerTitleContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
