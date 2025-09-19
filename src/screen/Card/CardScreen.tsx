@@ -1,5 +1,5 @@
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet} from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import ShoppingCard from '../../assets/svg/ShoppingCart.svg';
@@ -8,10 +8,10 @@ import CustomHeader from '../../navigation/CustomHeader';
 import CartItem from '../../component/CartComponent/CartItem';
 import CartLogix from '../../Logic/Cart/CartLogix';
 import {BottomSheet} from '../../component/BottomSheet';
-import CartOrder from '../../Logic/Cart/CartOrder';
+import CartOrder from '../../component/CartComponent/CartOrder';
 export default function CardScreen() {
   const {Styles} = StyleComponent();
-  const {} = CartLogix();
+  CartLogix(); // Call CartLogix for its side effects if any, or remove if not needed
   return (
     <View style={Styles.container}>
       <CustomHeader showBack={true} subTitle="Cart" />

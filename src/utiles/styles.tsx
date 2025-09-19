@@ -189,6 +189,7 @@ export const StyleComponent = () => {
      body_Bold:{
       fontSize: 18,
       fontFamily:'Satoshi-Bold',
+      fontWeight:'bold',
     },
    
     body_SemiBold:{
@@ -214,6 +215,7 @@ export const StyleComponent = () => {
 
      title_Bold:{
       fontSize: 16,
+      fontWeight:'bold',
       fontFamily:'Satoshi-Bold',
     },
    

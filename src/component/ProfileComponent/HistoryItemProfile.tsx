@@ -4,7 +4,8 @@ import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
 import Viski from '../../assets/svg/viski.svg';
 import Trash from '../../assets/svg/Trash.svg';
-import AddBottom from '../AddBottom';
+import Star from 'react-native-vector-icons/AntDesign'
+
 interface ProductItem {
   id: string;
   title: string;
@@ -34,9 +35,23 @@ const displayedProductData: ProductItem[] = [
     alcoholContent: 'ABV 40%',
     price: '$29.99',
   },
+  {
+    id: 'p4',
+    title: 'Vodka Absolut',
+    country: 'Sweden',
+    alcoholContent: 'ABV 40%',
+    price: '$29.99',
+  },
+  {
+    id: 'p5',
+    title: 'Vodka Absolut',
+    country: 'Sweden',
+    alcoholContent: 'ABV 40%',
+    price: '$29.99',
+  },
 ];
 
-export default function CartItem() {
+export default function HistoryItemProfile() {
   const {Styles} = StyleComponent();
   // Memoized Product Card Component
   const ProductCard = React.memo(({item}: {item: ProductItem}) => {
@@ -55,43 +70,19 @@ export default function CartItem() {
                 {item.alcoholContent}
               </Text>
             </View>
-            <View style={styles.priceContainer}>
-              <Text style={[Styles.body_SemiBold]}>{item.price}</Text>
-              <Text style={[Styles.subtitle_Regular, {marginTop: '2%'}]}>
-                {item.price}
-              </Text>
-            </View>
+       
           </View>
         </View>
         <View style={styles.heartContainer}>
-          <Trash />
+        <Star name="star" size={30} color={Color.gold} />
         </View>
-        <AddBottom style={styles.addBottom} onQuantityChange={() => {}} />
+        <Text style={[Styles.title_Regular,{marginTop:'12%'}]}>+21 Points</Text>
       </View>
     );
   });
   return (
     <View style={{width: '100%', backgroundColor: Color.white, padding: 10}}>
-      <View
-        style={{
-          width: '90%',
-          flexDirection: 'row',
-          alignSelf: 'center',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-        <Text style={[Styles.h6_Bold]}>My bag</Text>
-        <Text style={[Styles.title_Regular, Styles.textAlign]}>1 item</Text>
-      </View>
-      <View
-        style={{
-          width: '90%',
-          alignSelf: 'center',
-          backgroundColor: Color.lightGray,
-          height: 1,
-          marginTop: '5%',
-        }}
-      />
+ 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.flatListContainer}>
@@ -130,7 +121,7 @@ const styles = StyleSheet.create({
     height: 100,
   },
   productInfo: {
-    height: 100,
+    height: 80,
     justifyContent: 'space-around',
     marginLeft: '5%',
   },
@@ -146,11 +137,11 @@ const styles = StyleSheet.create({
   },
   heartContainer: {
     position: 'absolute',
-    right: 10,
-    top: 10,
+    right: 20,
+    top: 20,
   },
   flatListContainer: {
-    paddingBottom: 20,
+    paddingBottom: 120,
   },
   suggestionItem: {
     paddingVertical: 10,
