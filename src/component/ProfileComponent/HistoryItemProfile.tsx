@@ -3,7 +3,6 @@ import React from 'react';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
 import Viski from '../../assets/svg/viski.svg';
-import Trash from '../../assets/svg/Trash.svg';
 import Star from 'react-native-vector-icons/AntDesign'
 
 interface ProductItem {

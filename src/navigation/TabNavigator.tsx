@@ -27,7 +27,7 @@ import Card from '../screen/Card/CardScreen';
 import Favorite from '../screen/Favorite/FavoriteScreen';
 import CatalogDetail from '../screen/Catalog/CatalogDetailScreen';
 import ProfileScreen from '../screen/Profile/ProfileScreen';
-
+import MyOrderScreen from '../screen/Profile/MyOrderScreen';
 type TabParamList = {
   Home: undefined;
   Catalog: undefined;
@@ -38,6 +38,7 @@ type TabParamList = {
   FavoriteScreen: undefined;
   CatalogDetail: undefined;
   ProfileScreen: undefined;
+  MyOrder: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -180,6 +181,7 @@ export default function AppTabs({
         component={() => (
           <Stack.Navigator screenOptions={{headerShown: false}}>
             <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="MyOrder" component={MyOrderScreen} />
           </Stack.Navigator>
         )}
       />

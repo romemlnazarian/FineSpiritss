@@ -13,7 +13,7 @@ import { BottomSheet } from '../../component/BottomSheet';
 import HistoryItemProfile from '../../component/ProfileComponent/HistoryItemProfile';
 export default function ProfileScreen() {
   const {Styles} = StyleComponent();
-  const {onHandlerShowHistory} = ProfileLogix();
+  const {onHandlerShowHistory,onSubmitMyOrder} = ProfileLogix();
   return (
     <View style={[Styles.container]}>
       <ScrollView>
@@ -25,10 +25,10 @@ export default function ProfileScreen() {
         }}
       />
       <BarcodeProfile />
-      <MyOrderProfile />
+      <MyOrderProfile onHandler={onSubmitMyOrder} />
       <StatusProfile />
       <AwardsProfile onHandlerShowHistory={onHandlerShowHistory} />
-      <BottomSheet modalVisible={true} height={500} onClose={()=>console.log()}>
+      <BottomSheet modalVisible={false} height={500} onClose={()=>console.log()}>
         <Text style={[Styles.h5_Medium,Styles.textAlign,{marginTop:'2%'}]}>Points History</Text>
         <HistoryItemProfile />
       </BottomSheet>
