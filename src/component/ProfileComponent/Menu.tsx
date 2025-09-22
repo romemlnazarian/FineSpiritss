@@ -1,13 +1,12 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, ViewStyle } from 'react-native'
 import React from 'react'
-import Icon from 'react-native-vector-icons/Feather';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
-export default function Menu({onHandler}:{onHandler:()=>void}) {
+export default function Menu({onHandler,icon,title,style}:{onHandler:()=>void,icon:React.ReactNode,title:string,style?:ViewStyle}) {
   const {Styles} = StyleComponent();
   return (
     <View
-    style={{
+    style={[{
       width: '90%',
       height: 40,
       flexDirection: 'row',
@@ -16,12 +15,12 @@ export default function Menu({onHandler}:{onHandler:()=>void}) {
       borderRadius: 12,
       padding: 10,
       alignItems: 'center',
-    }}>
+    },style]}>
         <TouchableOpacity onPress={onHandler}>
-        <Icon name="menu" size={20} color={Color.black} />
+          {icon}
         </TouchableOpacity>
     <Text style={[Styles.body_Medium, Styles.textAlign, {flex: 1}]}>
-      Stanisław Piotrowski
+      {title}
     </Text>
   </View>
   )

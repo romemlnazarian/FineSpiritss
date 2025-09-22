@@ -11,8 +11,13 @@ export default function ProfileLogix() {
     const onSubmitMyOrder = () =>{
         navigation.navigate('MyOrder')
     }
+
+    const onSubmitSetting = () =>{
+        navigation.navigate('Setting')
+    }
   return{
     onHandlerShowHistory,
     onSubmitMyOrder,
+    onSubmitSetting
   }
 }

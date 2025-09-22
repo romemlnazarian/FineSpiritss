@@ -35,26 +35,31 @@ export const StyleComponent = () => {
     h1_Bold:{
       fontSize: 64,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
     },
    
      h1_SemiBold:{
       fontSize: 64,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
      },
 
      h1_Medium:{
       fontSize: 64,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
     
      h1_Regular:{
       fontSize: 64,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
      
      h1_Light:{
       fontSize: 64,
       fontFamily:'Satoshi-Light',
+      color:Color.black,
      },
      
 
@@ -62,41 +67,51 @@ export const StyleComponent = () => {
      h2_Bold:{
       fontSize: 64,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
     },
    
      h2_SemiBold:{
       fontSize: 40,
-      fontFamily:'Satoshi-Bold',
+      fontFamily:'Satoshi-Bold',  
+      color:Color.black,
      },
 
      h2_Medium:{
       fontSize: 40,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
+
      },
     
      h2_Regular:{
       fontSize: 40,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
+
      },
      
      h2_Light:{
       fontSize: 40,
       fontFamily:'Satoshi-Light',
+      color:Color.black,
      },
 
      h3_Bold:{
       fontSize: 30,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
     },
    
      h3_SemiBold:{
       fontSize: 30,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
      },
 
      h3_Medium:{
       fontSize: 30,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
     
      h3_Regular:{
@@ -108,108 +123,130 @@ export const StyleComponent = () => {
      h3_Light:{
       fontSize: 30,
       fontFamily:'Satoshi-Light',
+      color:Color.black,
      },
 
      h4_Bold:{
       fontSize: 24,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
+
     },
    
      h4_SemiBold:{
       fontSize: 24,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
      },
 
      h4_Medium:{
       fontSize: 24,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
     
      h4_Regular:{
       fontSize: 24,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
      
      h4_Light:{
       fontSize: 24,
       fontFamily:'Satoshi-Light',
+      color:Color.black,
      },
 
      h5_Bold:{
       fontSize: 22,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
     },
    
      h5_SemiBold:{
       fontSize: 22,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
      },
 
      h5_Medium:{
       fontSize: 22,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
     
      h5_Regular:{
       fontSize: 22,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
      
      h5_Light:{
       fontSize: 22,
       fontFamily:'Satoshi-Light',
+      color:Color.black,
      },
 
 
      h6_Bold:{
       fontSize: 20,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
     },
    
      h6_SemiBold:{
       fontSize: 20,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
      },
 
      h6_Medium:{
       fontSize: 20,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
     
      h6_Regular:{
       fontSize: 20,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
      
      h6_Light:{
       fontSize: 20,
       fontFamily:'Satoshi-Light',
+      color:Color.black,
      },
 
      body_Bold:{
       fontSize: 18,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
       fontWeight:'bold',
     },
    
     body_SemiBold:{
       fontSize: 18,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
      },
 
      body_Medium:{
       fontSize: 18,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
     
      body_Regular:{
       fontSize: 18,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
      
      body_Light:{
       fontSize: 18,
-      fontFamily:'Satoshi-Light',
+      fontFamily:'Satoshi-Light', 
+      color:Color.black,
      },
 
 
@@ -217,52 +254,62 @@ export const StyleComponent = () => {
       fontSize: 16,
       fontWeight:'bold',
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
     },
    
     title_SemiBold:{
       fontSize: 16,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
      },
 
      title_Medium:{
       fontSize: 16,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
     
      title_Regular:{
       fontSize: 16,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
      
      title_Light:{
       fontSize: 16,
       fontFamily:'Satoshi-Light',
+      color:Color.black,
      },
 
 
      subtitle_Bold:{
       fontSize: 14,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
     },
    
     subtitle_SemiBold:{
       fontSize: 14,
       fontFamily:'Satoshi-Bold',
+      color:Color.black,
      },
 
      subtitle_Medium:{
       fontSize: 14,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
     
      subtitle_Regular:{
       fontSize: 14,
       fontFamily:'Satoshi-Medium',
+      color:Color.black,
      },
      
      subtitle_Light:{
       fontSize: 14,
       fontFamily:'Satoshi-Light',
+      color:Color.black,
      },
 
 

@@ -5,7 +5,7 @@ export const Color = {
     background: '#F1F3F6',
     gray:'#9A9A9A',
     lightGray:'#C7C7C7',
-    lineGray:'#D0D5DD4D',
+    lineGray:'#D0D5DD',
     red:'#CC0000',
     green:"#0DA000",
     cardgray:'#DEDEDE',
