@@ -6,6 +6,7 @@ import Vector from '../../assets/svg/Vector.svg';
 import { Color } from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
 import MyOrderItem from '../../component/ProfileComponent/MyOrderItem';
+import BarCodeModal from '../../component/ProfileComponent/BarCodeModal';
 export default function MyORderScreen() {
     const {Styles} = StyleComponent();
   return (
@@ -18,11 +19,12 @@ export default function MyORderScreen() {
       <Text style={[Styles.h5_Bold,{marginTop:'5%'}]}>You don’t have any orders yet!</Text>
       <Text style={[Styles.body_Regular,Styles.textAlign,{width:'80%'}]}>Once you place an order
       it will appear here</Text>
-      </View>
-      <View style={[Styles.alignSelf,{width:'93%',marginTop:'8%'}]}>
-      <Text style={[Styles.h3_Bold,{marginLeft:'2%'}]}>You might also like</Text>
-      <HorizontalFlatList />
       </View> */}
+      <View style={[Styles.alignSelf,{width:'93%',marginTop:'8%'}]}>
+      <Text style={[Styles.h3_Bold,{marginLeft:'2%'}]}>Recommendations</Text>
+      <HorizontalFlatList />
+      </View>
+      <BarCodeModal isVisible={false} onClose={()=>{}} />
       </ScrollView>
     </View>
   )
