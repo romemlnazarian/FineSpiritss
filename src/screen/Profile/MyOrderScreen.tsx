@@ -5,13 +5,15 @@ import HorizontalFlatList from '../../component/HorizontalFlatList';
 import Vector from '../../assets/svg/Vector.svg';
 import { Color } from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
+import MyOrderItem from '../../component/ProfileComponent/MyOrderItem';
 export default function MyORderScreen() {
     const {Styles} = StyleComponent();
   return (
     <View style={Styles.container}>
         <ScrollView>
         <CustomHeader showBack={true} title="My Orders" />
-           <View style={[Styles.alignCenter,Styles.alignSelf,{width:'93%',marginTop:'12%'}]}>
+        <MyOrderItem />
+         {/* <View style={[Styles.alignCenter,Styles.alignSelf,{width:'93%',marginTop:'12%'}]}>
       <Vector fill={Color.black}/>
       <Text style={[Styles.h5_Bold,{marginTop:'5%'}]}>You don’t have any orders yet!</Text>
       <Text style={[Styles.body_Regular,Styles.textAlign,{width:'80%'}]}>Once you place an order
@@ -20,7 +22,7 @@ export default function MyORderScreen() {
       <View style={[Styles.alignSelf,{width:'93%',marginTop:'8%'}]}>
       <Text style={[Styles.h3_Bold,{marginLeft:'2%'}]}>You might also like</Text>
       <HorizontalFlatList />
-      </View>
+      </View> */}
       </ScrollView>
     </View>
   )
