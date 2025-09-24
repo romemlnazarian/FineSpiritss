@@ -37,11 +37,13 @@ export default function ModalCard({ isVisible, onClose }: ModalCardProps) {
         title={Language.modal_enter_button}
         onHandler={()=>onClose()}
         style={styles.buttonComponent}
+        textStyle={{color:Color.white}}
       />
            <BottomCardComponent
         title={Language.modal_no_button}
         onHandler={()=>onClose()}
         style={{ ...styles.buttonComponent, ...styles.noButtonMarginTop }}
+        textStyle={{color:Color.white}}
       />
          <Text style={[Styles.subtitle_Regular, styles.modalTermsAndConditionsText]}>
          {Language.modal_terms_and_conditions}

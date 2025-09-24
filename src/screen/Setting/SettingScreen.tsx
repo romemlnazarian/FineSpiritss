@@ -43,7 +43,7 @@ const dataTwo = [
 ];
 export default function SettingScreen() {
   const {Styles} = StyleComponent();
-  const {} = SettingLogic();
+  const {onSubmitPayment,onSubmit} = SettingLogic();
   return (
     <View style={[Styles.container]}>
       <Menu
@@ -52,7 +52,9 @@ export default function SettingScreen() {
         icon={<Arrow name="arrow-back-ios" size={20} color={Color.black} />}
         style={styles.menu}
       />
-      <View style={styles.cardRow}>
+      <TouchableOpacity 
+       onPress={onSubmitPayment}
+      style={styles.cardRow}>
         <View style={styles.rowCenter}>
           <Wallet />
           <View style={styles.walletTextBlock}>
@@ -67,7 +69,7 @@ export default function SettingScreen() {
           <Visa />
           <Arrow name="arrow-forward-ios" size={20} color={Color.black} />
         </View>
-      </View>
+      </TouchableOpacity>
       <View style={styles.section}>
         {data.map(item => (
           <Fragment key={item.id}>
@@ -94,6 +96,7 @@ export default function SettingScreen() {
         {dataTwo.map(item => (
           <Fragment key={item.id}>
             <TouchableOpacity
+            onPress={()=>onSubmit(item.title)}
               activeOpacity={0.5}
               key={item.id}
               style={styles.rowGap10Center}>

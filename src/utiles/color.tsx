@@ -10,5 +10,6 @@ export const Color = {
     green:"#0DA000",
     cardgray:'#DEDEDE',
     lightRed:'#7E2F2F',
-    gold:"#DEA533"
+    gold:"#DEA533",
+    lightBlack:'#434343',
 }

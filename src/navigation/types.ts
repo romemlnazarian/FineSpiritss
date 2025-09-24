@@ -36,6 +36,7 @@ export type CatalogParamList = {
  export type ProfileStackParamList = {
   MyOrder: undefined;
   Setting: undefined;
+  Payment: undefined;
  };
 
 export type RootStackParamList = AuthStackParamList & ButtonParamList & CatalogParamList;

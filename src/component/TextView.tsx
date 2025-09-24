@@ -1,4 +1,4 @@
-import {Text, StyleSheet,View} from 'react-native';
+import {Text, StyleSheet, View} from 'react-native';
 
 interface Props {
   title: string;
@@ -9,12 +9,11 @@ interface Props {
 
 const TextView = (props: Props) => {
   return (
-    <View style={{flexDirection:'row',alignItems:'center'}}>
-              {props.icon}
+    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      {props.icon}
       <Text style={[styles.textStyles, props.style, {color: props.color}]}>
         {props.title}
       </Text>
-
     </View>
   );
 };

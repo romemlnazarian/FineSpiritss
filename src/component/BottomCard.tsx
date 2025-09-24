@@ -27,7 +27,7 @@ const BottomCardComponent = (props: Props) => {
       onPress={() => props.onHandler()}
       style={[styles.container, props.style]}>
       <View style={styles.contentContainer}>
-        <Text style={[styles.text, Styles.title_Regular, props.textStyle]}>
+        <Text style={[styles.text, Styles.title_Regular, props.textStyle,{color:props.textStyle?.color || Color.white}]}>
           {props.title}
         </Text>
         {props.icon && <View style={styles.iconContainer}>{props.icon}</View>}
