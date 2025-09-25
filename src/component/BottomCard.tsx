@@ -17,17 +17,34 @@ type Props = {
   title: string;
   onHandler: () => void;
   icon?: ReactNode; // Added icon prop
+  disabled?: boolean;
 };
 
 const BottomCardComponent = (props: Props) => {
   const {Styles} = StyleComponent();
+  const isDisabled = props.disabled === true;
   return (
     <TouchableOpacity
-      activeOpacity={0.5}
-      onPress={() => props.onHandler()}
-      style={[styles.container, props.style]}>
+      activeOpacity={isDisabled ? 1 : 0.5}
+      disabled={isDisabled}
+      onPress={() => {
+        if (!isDisabled) {
+          props.onHandler();
+        }
+      }}
+      style={[
+        styles.container,
+        isDisabled ? styles.containerDisabled : styles.containerEnabled,
+        props.style,
+      ]}>
       <View style={styles.contentContainer}>
-        <Text style={[styles.text, Styles.title_Regular, props.textStyle,{color:props.textStyle?.color || Color.white}]}>
+        <Text
+          style={[
+            styles.text,
+            Styles.title_Regular,
+            isDisabled ? styles.textDisabled : styles.textEnabled,
+            props.textStyle,
+          ]}>
           {props.title}
         </Text>
         {props.icon && <View style={styles.iconContainer}>{props.icon}</View>}
@@ -45,9 +62,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: Color.primary,
     padding: 12,
+  },
+  containerEnabled: {
     backgroundColor: Color.primary,
+    borderColor: Color.primary,
+  },
+  containerDisabled: {
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    borderColor: 'rgba(0,0,0,0.25)',
   },
   contentContainer: {
     flexDirection: 'row',
@@ -59,8 +82,9 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: 'Satoshi-Regular',
-    color: Color.white,
   },
+  textEnabled: { color: Color.white },
+  textDisabled: { color: Color.white },
 });
 
 export default BottomCardComponent;

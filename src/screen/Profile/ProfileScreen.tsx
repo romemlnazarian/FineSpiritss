@@ -24,7 +24,7 @@ export default function ProfileScreen() {
         {/* <SingInProfile /> */}
         <Menu
           onHandler={onSubmitSetting}
-          icon={<Icon name="menu" size={20} color={Color.black} />}
+          icon={<Icon name="menu" size={25} color={Color.black} />}
           title={'Stanisław Piotrowski'}
         />
         <BarcodeProfile />

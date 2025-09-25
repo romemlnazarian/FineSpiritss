@@ -12,6 +12,8 @@ import List from '../../assets/svg/List.svg';
 import Support from '../../assets/svg/Support.svg';
 import Wrench from 'react-native-vector-icons/SimpleLineIcons';
 import Logout from 'react-native-vector-icons/AntDesign';
+import {BottomSheet} from '../../component/BottomSheet';
+import Plus from 'react-native-vector-icons/Feather';
 const data = [
   {
     id: 1,
@@ -43,7 +45,8 @@ const dataTwo = [
 ];
 export default function SettingScreen() {
   const {Styles} = StyleComponent();
-  const {onSubmitPayment,onSubmit} = SettingLogic();
+  const {onSubmitPayment, onSubmit, modalVisible, setModalVisible,onSubmitAddress} =
+    SettingLogic();
   return (
     <View style={[Styles.container]}>
       <Menu
@@ -52,14 +55,12 @@ export default function SettingScreen() {
         icon={<Arrow name="arrow-back-ios" size={20} color={Color.black} />}
         style={styles.menu}
       />
-      <TouchableOpacity 
-       onPress={onSubmitPayment}
-      style={styles.cardRow}>
+      <TouchableOpacity onPress={onSubmitPayment} style={styles.cardRow}>
         <View style={styles.rowCenter}>
           <Wallet />
           <View style={styles.walletTextBlock}>
             <Text style={Styles.title_Medium}>Payment methods</Text>
-            <Text style={[Styles.subtitle_Regular, {color: Color.lightGray}]}>
+            <Text style={[Styles.subtitle_Regular, styles.lightGrayText]}>
               Visa .... 0312
             </Text>
           </View>
@@ -74,6 +75,7 @@ export default function SettingScreen() {
         {data.map(item => (
           <Fragment key={item.id}>
             <TouchableOpacity
+             onPress={()=>onSubmit(item.title)}
               activeOpacity={0.5}
               key={item.id}
               style={styles.rowGap10Center}>
@@ -86,9 +88,7 @@ export default function SettingScreen() {
                 style={styles.iconRight}
               />
             </TouchableOpacity>
-            {item.id !== 3 && (
-              <View style={styles.separator} />
-            )}
+            {item.id !== 3 && <View style={styles.separator} />}
           </Fragment>
         ))}
       </View>
@@ -96,7 +96,7 @@ export default function SettingScreen() {
         {dataTwo.map(item => (
           <Fragment key={item.id}>
             <TouchableOpacity
-            onPress={()=>onSubmit(item.title)}
+              onPress={() => onSubmit(item.title)}
               activeOpacity={0.5}
               key={item.id}
               style={styles.rowGap10Center}>
@@ -112,9 +112,7 @@ export default function SettingScreen() {
           </Fragment>
         ))}
       </View>
-      <TouchableOpacity
-        activeOpacity={0.5}
-        style={styles.logoutButton}>
+      <TouchableOpacity activeOpacity={0.5} style={styles.logoutButton}>
         <Logout name="logout" size={22} />
         <Text style={Styles.title_Regular}>Logout</Text>
         <Arrow
@@ -124,6 +122,26 @@ export default function SettingScreen() {
           style={styles.iconRight10}
         />
       </TouchableOpacity>
+      <BottomSheet
+        modalVisible={modalVisible}
+        height={200}
+        onClose={() => setModalVisible(false)}>
+        <View style={styles.bottomSheetContainer}>
+          <Text style={Styles.h5_Medium}>My Addresses</Text>
+          <TouchableOpacity
+            onPress={() => onSubmitAddress('BillingAddress')}
+            style={styles.bottomSheetAction}>
+            <Plus name="plus-circle" size={20} color={Color.black} />
+            <Text style={Styles.body_Regular}>Billing address</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => onSubmitAddress('ShippingAddress')}
+            style={styles.bottomSheetAction}>
+            <Plus name="plus-circle" size={20} color={Color.black} />
+            <Text style={Styles.body_Regular}>Add Shipping Address</Text>
+          </TouchableOpacity>
+        </View>
+      </BottomSheet>
     </View>
   );
 }
@@ -180,6 +198,9 @@ const styles = StyleSheet.create({
     backgroundColor: Color.lineGray,
     width: '100%',
   },
+  lightGrayText: {
+    color: Color.lightGray,
+  },
   logoutButton: {
     width: '93%',
     alignSelf: 'center',
@@ -191,5 +212,19 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     paddingVertical: 15,
+  },
+  bottomSheetContainer: {
+    width: '93%',
+    alignSelf: 'center',
+    marginTop: '5%',
+    alignItems: 'center',
+  },
+  bottomSheetAction: {
+    width: '100%',
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 10,
+    marginLeft: '10%',
+    marginTop: '5%',
   },
 });
