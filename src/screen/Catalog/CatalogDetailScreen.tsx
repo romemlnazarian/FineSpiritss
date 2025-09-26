@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
+  ScrollView,
 } from 'react-native';
 import React, { memo, useCallback, useMemo } from 'react';
 import {StyleComponent} from '../../utiles/styles';

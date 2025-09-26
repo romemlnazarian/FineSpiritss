@@ -11,18 +11,26 @@ type CustomHeaderProps = {
   subTitle?: string;
   icon?: React.ReactNode;
   onHandler?: () => void;
+  description?: string;
 };
 
-export default function CustomHeader({ title, showBack = false, subTitle, icon, onHandler }: CustomHeaderProps) {
+export default function CustomHeader({ title, showBack = false, icon, onHandler, subTitle, description }: CustomHeaderProps) {
   const navigation = useNavigation();
   const {Styles} = StyleComponent()
   return (
     <View style={styles.header}>
       <View style={styles.leftContainer}>
       {showBack && (
-        <TouchableOpacity onPress={() => navigation.goBack()} >
+        <View style={{flexDirection:'row', alignItems:'center', gap:10}}>
+          <TouchableOpacity onPress={() => navigation.goBack()} >
           <Arrow width={30} height={30}/>
         </TouchableOpacity>
+        <View>
+        <Text style={[styles.title,Styles.h5_Regular]}>{subTitle || ''}</Text>
+        <Text style={[styles.title,Styles.subtitle_Regular,{color:Color.gray}]}>{description || ''}</Text>
+        </View>
+        </View>
+      
       )}
       </View>
       <View style={styles.centerTitleContainer} pointerEvents="none">
@@ -48,7 +56,7 @@ const styles = StyleSheet.create({
     position:'relative',
   },
   leftContainer: {
-    width: 40,
+    width: '40%',
     alignItems:'flex-start',
     justifyContent:'center',
   },

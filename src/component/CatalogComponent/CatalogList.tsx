@@ -24,13 +24,15 @@ interface VerticalScrollProps {
   item: ProductItem[];
   onAddSelected?: (product: ProductItem, quantity: number) => void;
   onHandlerItem?: (product: ProductItem) => void;
+  orderBottom?: boolean; // show 'View product' CTA instead of Add/Counter
 }
 // Individual Product Card Component
 const ProductCard: React.FC<{
   item: ProductItem;
   onAddSelected?: (product: ProductItem, quantity: number) => void;
   onHandlerItem?: (product: ProductItem) => void;
-}> = ({item, onAddSelected,onHandlerItem}) => {
+  orderBottom?: boolean;
+}> = ({item, onAddSelected,onHandlerItem, orderBottom}) => {
   const {Styles} = StyleComponent();
   const [isFavorite, setIsFavorite] = useState(false);
   const [showCounter, setShowCounter] = useState(false);
@@ -95,7 +97,14 @@ const ProductCard: React.FC<{
           )}
         </View>
       </View>
-      {!showCounter ? (
+      {orderBottom ?
+         <BottomCardComponent
+         title={'View product'}
+         onHandler={handleAddToCartPress}
+         style={styles.bottomCardButton}
+         textStyle={Styles.subtitle_Regular}
+       />:
+      !showCounter ? (
         <BottomCardComponent
           title={'Add to Card'}
           onHandler={handleAddToCartPress}
@@ -117,9 +126,9 @@ const ProductCard: React.FC<{
 };
 
 // Main VerticalScroll Component
-const CatalogList: React.FC<VerticalScrollProps> = ({item, onAddSelected, onHandlerItem}) => {
+const CatalogList: React.FC<VerticalScrollProps> = ({item, onAddSelected, onHandlerItem, orderBottom}) => {
   const renderProductItem = ({item: product}: {item: ProductItem}) => (
-    <ProductCard item={product} onAddSelected={onAddSelected} onHandlerItem={onHandlerItem} />
+    <ProductCard item={product} onAddSelected={onAddSelected} onHandlerItem={onHandlerItem} orderBottom={orderBottom} />
   );
 
   const keyExtractor = (product: ProductItem) => product.id;
@@ -169,6 +178,11 @@ const styles = StyleSheet.create({
   },
   flatListContainer: {
     paddingBottom: 150,
+  },
+  footerContainer: {
+    paddingTop: 16,
+    paddingBottom: 40,
+    alignItems: 'center',
   },
   rowWrapper: {
     justifyContent: 'space-between',
@@ -220,5 +234,6 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     width: '100%',
     height: 50,
+    color: Color.white,
   },
 });

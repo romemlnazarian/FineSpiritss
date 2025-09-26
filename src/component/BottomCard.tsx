@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {Color} from '../utiles/color';
 import {StyleComponent} from '../utiles/styles';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
   dark?: boolean;
@@ -18,6 +19,8 @@ type Props = {
   onHandler: () => void;
   icon?: ReactNode; // Added icon prop
   disabled?: boolean;
+  showArrow?: boolean;
+  arrowColor?: string;
 };
 
 const BottomCardComponent = (props: Props) => {
@@ -47,7 +50,17 @@ const BottomCardComponent = (props: Props) => {
           ]}>
           {props.title}
         </Text>
-        {props.icon && <View style={styles.iconContainer}>{props.icon}</View>}
+        {props.icon ? (
+          <View style={styles.iconContainer}>{props.icon}</View>
+        ) : props.showArrow ? (
+          <View style={styles.iconContainer}>
+            <MaterialIcons
+              name="arrow-forward-ios"
+              size={18}
+              color={props.arrowColor || (isDisabled ? '#FFFFFF' : '#FFFFFF')}
+            />
+          </View>
+        ) : null}
       </View>
     </TouchableOpacity>
   );

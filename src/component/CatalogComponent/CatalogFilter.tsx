@@ -2,13 +2,15 @@ import {View, Text, StyleSheet, FlatList, TouchableOpacity, StyleProp, ViewStyle
 import React, {useState, useCallback, memo, useEffect} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
+import Arrow from 'react-native-vector-icons/MaterialIcons';
 // Memoized sort item component
-const SortItem = memo(({item, isSelected, onPress, containerStyle, textStyle}: {
+const SortItem = memo(({item, isSelected, onPress, containerStyle, textStyle, arrow}: {
   item: {id: string; title: string | React.ReactElement};
   isSelected: boolean;
   onPress: (id: string) => void;
   containerStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  arrow?: boolean;
 }) => {
   const {Styles} = StyleComponent();
 
@@ -25,6 +27,7 @@ const SortItem = memo(({item, isSelected, onPress, containerStyle, textStyle}: {
         ]}>
         {item.title}
       </Text>
+      {arrow && <Arrow name="keyboard-arrow-down" size={20} color={Color.gray} />}
     </TouchableOpacity>
   );
 });
@@ -34,9 +37,10 @@ interface CatalogFilterProps {
   sortData: {id: string; title: string | React.ReactElement}[];
   sortItemContainerStyle?: StyleProp<ViewStyle>;
   sortItemTextStyle?: StyleProp<TextStyle>;
+  arrow?: boolean;
 }
 
-const CatalogFilter = memo(({onHandler, sortData, sortItemContainerStyle, sortItemTextStyle}: CatalogFilterProps) => {
+const CatalogFilter = memo(({onHandler, sortData, sortItemContainerStyle, sortItemTextStyle, arrow}: CatalogFilterProps) => {
   const [selectedItemId, setSelectedItemId] = useState(sortData[0]?.id ?? '');
 
   // Keep selection valid when data changes
@@ -67,8 +71,9 @@ const CatalogFilter = memo(({onHandler, sortData, sortItemContainerStyle, sortIt
       onPress={handleSortSelection}
       containerStyle={sortItemContainerStyle}
       textStyle={sortItemTextStyle}
+      arrow={arrow}
     />
-  ), [selectedItemId, handleSortSelection, sortItemContainerStyle, sortItemTextStyle]);
+  ), [selectedItemId, handleSortSelection, sortItemContainerStyle, sortItemTextStyle, arrow]);
 
   // Memoized key extractors
   const sortKeyExtractor = (item: {id: string; title: string | React.ReactElement}) => item.id;
@@ -122,6 +127,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Color.white,
+    flexDirection: 'row',
   },
 
   selectedItemText: {

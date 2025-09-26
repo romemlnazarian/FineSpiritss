@@ -3,34 +3,29 @@ import React, {useMemo, useState} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import CustomHeader from '../../navigation/CustomHeader';
 import CatalogFilter from '../../component/CatalogComponent/CatalogFilter';
-import Search from '../../assets/svg/SearchBlack.svg';
 import CatalogList from '../../component/CatalogComponent/CatalogList';
-import ChoosenCatalogLogic from '../../Logic/Catalog/ChoosenCatalogLogic';
 import {BottomSheet} from '../../component/BottomSheet';
 import CatalogKosher from '../../component/CatalogComponent/CatalogKosher';
 import Filter from '../../assets/svg/Filter.svg';
+import OrderHistoryLogic from '../../Logic/Setting/OrderHistoryLogic';
 
 const defaultSortData  = [
   {id: '1', title: <Filter />},
-  {id: '2', title: 'Country'},
-  {id: '3', title: 'Brand'},
-  {id: '4', title: 'Capacity'},
-  {id: '5', title: 'Kosher'},
+  {id: '2', title: 'Status'},
+  {id: '3', title: 'Perioud'},
 ]
 
 
 
-export default function ChoosenCatalog() {
+export default function OrderHistoryScreent() {
   const {
-    onSearchHandler,
     onSubnmitFilter,
     filterVisible,
     setFilterVisible,
     onAddSelected,
     onHandlerDetail,
-  } = ChoosenCatalogLogic();
+  } = OrderHistoryLogic();
   const {Styles} = StyleComponent();
-  const [activeTab, setActiveTab] = useState<'filters' | 'kosher'>('filters');
   const sortData = useMemo(
     () => [
       {
@@ -77,17 +72,11 @@ export default function ChoosenCatalog() {
     <View style={[Styles.container]}>
       <CustomHeader
         showBack={true}
-        subTitle="All wines"
-        icon={<Search />}
-        onHandler={onSearchHandler}
+        subTitle="Order History"
+        description="15 Orders"
       />
-      <CatalogFilter onHandler={e => onSubnmitFilter(e)} sortData={sortData}/>
-      <CatalogList
-        item={sortData}
-        onAddSelected={onAddSelected}
-        onHandlerItem={onHandlerDetail}
-        orderBottom={<View style={{width:'93%'}} />}
-      />
+      <CatalogFilter onHandler={e => onSubnmitFilter(e)} sortData={defaultSortData} arrow={true}/>
+      <CatalogList item={sortData} onAddSelected={onAddSelected} onHandlerItem={onHandlerDetail} orderBottom={true} />
       <BottomSheet
         modalVisible={filterVisible}
         height={350}

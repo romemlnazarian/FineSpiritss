@@ -32,6 +32,7 @@ import SettingScreen from '../screen/Setting/SettingScreen';
 import PaymentScreen from '../screen/Setting/PaymentScreen';
 import BillingAddressScreen from '../screen/Setting/BillingAddressScreen';
 import ShippingAddress from '../screen/Setting/ShippingAddress';
+import OrderHistoryScreent from '../screen/Setting/OrderHistoryScreent';
 type TabParamList = {
   Home: undefined;
   Catalog: undefined;
@@ -47,7 +48,7 @@ type TabParamList = {
   PaymentScreen: undefined;
   BillingAddressScreen: undefined;
   ShippingAddress: undefined;
-
+  OrderHistoryScreent: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -195,6 +196,7 @@ export default function AppTabs({
             <Stack.Screen name="Payment" component={PaymentScreen} />
             <Stack.Screen name="BillingAddress" component={BillingAddressScreen} />
             <Stack.Screen name="ShippingAddress" component={ShippingAddress} />
+            <Stack.Screen name="OrderHistory" component={OrderHistoryScreent} />
           </Stack.Navigator>
         )}
       />
