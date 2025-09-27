@@ -1,21 +1,21 @@
 import {View} from 'react-native';
-import React, {useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import CustomHeader from '../../navigation/CustomHeader';
 import CatalogFilter from '../../component/CatalogComponent/CatalogFilter';
 import CatalogList from '../../component/CatalogComponent/CatalogList';
 import {BottomSheet} from '../../component/BottomSheet';
-import CatalogKosher from '../../component/CatalogComponent/CatalogKosher';
 import Filter from '../../assets/svg/Filter.svg';
 import OrderHistoryLogic from '../../Logic/Setting/OrderHistoryLogic';
+import ShowBySetting from '../../component/SettingComponent/ShowBySetting';
+import StatusSetting from '../../component/SettingComponent/StatusSetting';
+import PerioudSetting from '../../component/SettingComponent/PerioudSetting';
 
-const defaultSortData  = [
+const defaultSortData = [
   {id: '1', title: <Filter />},
   {id: '2', title: 'Status'},
   {id: '3', title: 'Perioud'},
-]
-
-
+];
 
 export default function OrderHistoryScreent() {
   const {
@@ -24,6 +24,10 @@ export default function OrderHistoryScreent() {
     setFilterVisible,
     onAddSelected,
     onHandlerDetail,
+    title,
+    showById,
+    statusId,
+    periodId,
   } = OrderHistoryLogic();
   const {Styles} = StyleComponent();
   const sortData = useMemo(
@@ -75,16 +79,27 @@ export default function OrderHistoryScreent() {
         subTitle="Order History"
         description="15 Orders"
       />
-      <CatalogFilter onHandler={e => onSubnmitFilter(e)} sortData={defaultSortData} arrow={true}/>
-      <CatalogList item={sortData} onAddSelected={onAddSelected} onHandlerItem={onHandlerDetail} orderBottom={true} />
+      <CatalogFilter
+        onHandler={e => onSubnmitFilter(e)}
+        sortData={defaultSortData}
+        arrow={true}
+      />
+      <CatalogList
+        item={sortData}
+        onHandlerItem={onHandlerDetail}
+        orderBottom={true}
+      />
       <BottomSheet
         modalVisible={filterVisible}
         height={350}
         onClose={() => setFilterVisible(false)}>
-          <CatalogKosher onHandler={function (): void {
-          throw new Error('Function not implemented.');
-        } }/>
-        {/* {title === 'filter' ? <ButtonSheetFilter /> : <CatalogTabsFilter title={''} name={''} number={0} />} */}
+        {title === 'filter' ? (
+          <ShowBySetting onCallback={onAddSelected} selectedIds={showById} />
+        ) : title.toLocaleLowerCase() === 'status' ? (
+          <StatusSetting onCallback={onAddSelected} selectedIds={statusId} />
+        ) : (
+          <PerioudSetting onCallback={onAddSelected} selectedIds={periodId} />
+        )}
       </BottomSheet>
     </View>
   );

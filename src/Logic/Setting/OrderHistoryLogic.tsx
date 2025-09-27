@@ -15,6 +15,9 @@ export default function OrderHistoryLogic() {
   const navigation = useNavigation<CatalogScreenNavigationProp>();
   const [filterVisible, setFilterVisible] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
+  const [showById, setShowById] = useState<number>(0);
+  const [statusId, setStatusId] = useState<number>(0);
+  const [periodId, setPeriodId] = useState<number>(0);
 
 
   const onSubnmitFilter = (filterTitle: string) => {
@@ -22,8 +25,16 @@ export default function OrderHistoryLogic() {
     setFilterVisible(true);
   };
 
-  const onAddSelected = (product: SelectedProduct, quantity: number) => {
-
+  const onAddSelected = (valueTitle: string, id: number) => {
+    setFilterVisible((prev)=>!prev);
+    console.log( title,id);
+    if (title === 'filter') {
+      setShowById(id);
+    } else if (title.toLocaleLowerCase() === 'status') {
+      setStatusId(id);
+    } else if (title.toLocaleLowerCase() === 'perioud') {
+      setPeriodId(id);
+    }
   };
 
   const onHandlerDetail = (product: any) => {
@@ -37,6 +48,9 @@ export default function OrderHistoryLogic() {
     title,
     setTitle,
     onAddSelected,
+    showById,
+    statusId,
+    periodId,
     onHandlerDetail,
   };
 }

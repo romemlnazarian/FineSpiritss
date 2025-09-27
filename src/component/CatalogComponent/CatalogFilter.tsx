@@ -27,7 +27,7 @@ const SortItem = memo(({item, isSelected, onPress, containerStyle, textStyle, ar
         ]}>
         {item.title}
       </Text>
-      {arrow && <Arrow name="keyboard-arrow-down" size={20} color={Color.gray} />}
+      {item.id !== "1" && arrow &&  <Arrow name="keyboard-arrow-down" size={20} color={Color.gray} />}
     </TouchableOpacity>
   );
 });
