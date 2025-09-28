@@ -20,6 +20,9 @@ export default function SettingLogic() {
             case 'Order History':
               navigation.navigate('OrderHistory');
               break;
+            case 'Support service':
+              navigation.navigate('SupportService');
+              break;
           }
     }
 
