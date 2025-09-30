@@ -10,18 +10,19 @@ export default function SettingLogic() {
     }
 
     const onSubmit = (key:string)=>{
+      console.log(key);
           switch(key){
             case 'My addresses':
              setModalVisible((prev)=>!prev);
-              break;
-            case 'Setting':
-              navigation.navigate('Setting');
               break;
             case 'Order History':
               navigation.navigate('OrderHistory');
               break;
             case 'Support service':
               navigation.navigate('SupportService');
+              break;
+            case 'Setting':
+              navigation.navigate('SettingItem');
               break;
           }
     }

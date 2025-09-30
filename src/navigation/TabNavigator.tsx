@@ -34,6 +34,7 @@ import BillingAddressScreen from '../screen/Setting/BillingAddressScreen';
 import ShippingAddress from '../screen/Setting/ShippingAddress';
 import OrderHistoryScreent from '../screen/Setting/OrderHistoryScreent';
 import SupportServiceScreen from '../screen/Setting/SupportServiceScreen';
+import SettingItemScreen from '../screen/Setting/SettingItemScreen';
 type TabParamList = {
   Home: undefined;
   Catalog: undefined;
@@ -51,6 +52,7 @@ type TabParamList = {
   ShippingAddress: undefined;
   OrderHistoryScreent: undefined;
   SupportServiceScreen: undefined;
+  SettingItemScreen: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -150,6 +152,42 @@ const CustomTabBar: React.FC<CustomTabBarProps> = ({
   );
 };
 
+// Dedicated stack components to avoid inline functions in Tab.Screen component prop
+const CatalogStack = () => (
+  <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Screen name="Catalog" component={Catalog} />
+    <Stack.Screen name="ChoosenCatalog" component={ChoosenCatalog} />
+    <Stack.Screen name="CatalogSearch" component={CatalogSearch} />
+    <Stack.Screen name="CatalogDetail" component={CatalogDetail} />
+  </Stack.Navigator>
+);
+
+const CardStack = () => (
+  <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Screen name="Card" component={Card} />
+  </Stack.Navigator>
+);
+
+const FavoriteStack = () => (
+  <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Screen name="Favorite" component={Favorite} />
+  </Stack.Navigator>
+);
+
+const ProfileStack = () => (
+  <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="MyOrder" component={MyOrderScreen} />
+    <Stack.Screen name="Setting" component={SettingScreen} />
+    <Stack.Screen name="Payment" component={PaymentScreen} />
+    <Stack.Screen name="BillingAddress" component={BillingAddressScreen} />
+    <Stack.Screen name="ShippingAddress" component={ShippingAddress} />
+    <Stack.Screen name="OrderHistory" component={OrderHistoryScreent} />
+    <Stack.Screen name="SupportService" component={SupportServiceScreen} />
+    <Stack.Screen name="SettingItem" component={SettingItemScreen} />
+  </Stack.Navigator>
+);
+
 export default function AppTabs({
   initialRouteName = 'Home',
 }: {
@@ -161,48 +199,10 @@ export default function AppTabs({
       screenOptions={{headerShown: false}}
       tabBar={props => <CustomTabBar {...props} />}>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen
-        name="CatalogScreen"
-        component={() => (
-          <Stack.Navigator screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Catalog" component={Catalog} />
-            <Stack.Screen name="ChoosenCatalog" component={ChoosenCatalog} />
-            <Stack.Screen name="CatalogSearch" component={CatalogSearch} />
-            <Stack.Screen name="CatalogDetail" component={CatalogDetail} />
-          </Stack.Navigator>
-        )}
-      />
-           <Tab.Screen
-        name="CardScreen"
-        component={() => (
-          <Stack.Navigator screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Card" component={Card} />
-          </Stack.Navigator>
-        )}
-      />
-      <Tab.Screen
-        name="FavoriteScreen"
-        component={() => (
-          <Stack.Navigator screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Favorite" component={Favorite} />
-          </Stack.Navigator>
-        )}
-      />
-           <Tab.Screen
-        name="ProfileScreen"
-        component={() => (
-          <Stack.Navigator screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Profile" component={ProfileScreen} />
-            <Stack.Screen name="MyOrder" component={MyOrderScreen} />
-            <Stack.Screen name="Setting" component={SettingScreen} />
-            <Stack.Screen name="Payment" component={PaymentScreen} />
-            <Stack.Screen name="BillingAddress" component={BillingAddressScreen} />
-            <Stack.Screen name="ShippingAddress" component={ShippingAddress} />
-            <Stack.Screen name="OrderHistory" component={OrderHistoryScreent} />
-            <Stack.Screen name="SupportService" component={SupportServiceScreen} />
-          </Stack.Navigator>
-        )}
-      />
+      <Tab.Screen name="CatalogScreen" component={CatalogStack} />
+      <Tab.Screen name="CardScreen" component={CardStack} />
+      <Tab.Screen name="FavoriteScreen" component={FavoriteStack} />
+      <Tab.Screen name="ProfileScreen" component={ProfileStack} />
     </Tab.Navigator>
   );
 }

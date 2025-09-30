@@ -97,9 +97,5 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 10,
       },
-      separator: {
-        height: 1,
-        backgroundColor: Color.lineGray,
-        width: '100%',
-      },
+
 });

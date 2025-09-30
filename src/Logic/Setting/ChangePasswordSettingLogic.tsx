@@ -1,0 +1,70 @@
+import * as Yup from 'yup';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {useForm} from 'react-hook-form';
+import {useState} from 'react';
+
+export const ChangePasswordSettingLogic = () => {
+  const [isLengthValid] = useState(false);
+  const [showOldPass, setShowOldPass] = useState(false);
+  const [showPass, setShowPass] = useState(false);
+  const [showRepeatPass, setShowRepeatPass] = useState(false);
+
+  const validationSchema = Yup.object().shape({
+    oldpassword: Yup.string().required('Password is required'),
+    password: Yup.string()
+      .required('Password is required')
+      .min(8, '')
+      .max(20, '')
+      .matches(/[0-9]/, '')
+      .matches(/[A-Z]/, ''),
+    repeatpassword: Yup.string()
+      .required('Repeat password is required')
+      .oneOf([Yup.ref('password')], 'Passwords must match'),
+  });
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+    getValues,
+    watch,
+  } = useForm({
+    defaultValues: {
+      oldpassword: '',
+      password: '',
+      repeatpassword: '',
+    },
+    mode: 'onChange',
+    resolver: yupResolver(validationSchema),
+  });
+
+  const onSubmit = async () => {
+    const values = getValues();
+    console.log('==>', values);
+  };
+
+  const onHandleShowPass = (key: string) => {
+    key === 'oldPass'
+      ? setShowOldPass(prev => !prev)
+      : key === 'pass'
+      ? setShowPass(prev => !prev)
+      : setShowRepeatPass(prev => !prev);
+  };
+
+  const oldVal = watch('oldpassword');
+  const passVal = watch('password');
+  const repeatVal = watch('repeatpassword');
+  const isAllFilled = Boolean(oldVal && passVal && repeatVal);
+
+  return {
+    control,
+    errors,
+    handleSubmit,
+    onHandleShowPass,
+    showPass,
+    showOldPass,
+    showRepeatPass,
+    onSubmit,
+    isLengthValid,
+    isAllFilled,
+  };
+};

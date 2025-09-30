@@ -41,6 +41,7 @@ export type CatalogParamList = {
   ShippingAddress: undefined;
   OrderHistory: undefined;
   SupportService: undefined;
+  SettingItem: undefined;
  };
 
 export type RootStackParamList = AuthStackParamList & ButtonParamList & CatalogParamList;
