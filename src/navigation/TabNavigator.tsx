@@ -35,6 +35,8 @@ import ShippingAddress from '../screen/Setting/ShippingAddress';
 import OrderHistoryScreent from '../screen/Setting/OrderHistoryScreent';
 import SupportServiceScreen from '../screen/Setting/SupportServiceScreen';
 import SettingItemScreen from '../screen/Setting/SettingItemScreen';
+import DeleteAccountScreen from '../screen/Setting/DeleteAccountScreen';
+import DeleteAccountVerifyScreen from '../screen/Setting/DeleteAccountVerifyScreen';
 type TabParamList = {
   Home: undefined;
   Catalog: undefined;
@@ -53,6 +55,8 @@ type TabParamList = {
   OrderHistoryScreent: undefined;
   SupportServiceScreen: undefined;
   SettingItemScreen: undefined;
+  DeleteAccountScreen: undefined;
+  DeleteAccountVerifyScreen: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -185,6 +189,8 @@ const ProfileStack = () => (
     <Stack.Screen name="OrderHistory" component={OrderHistoryScreent} />
     <Stack.Screen name="SupportService" component={SupportServiceScreen} />
     <Stack.Screen name="SettingItem" component={SettingItemScreen} />
+    <Stack.Screen name="DeleteAccount" component={DeleteAccountScreen} />
+    <Stack.Screen name="DeleteAccountVerify" component={DeleteAccountVerifyScreen} />
   </Stack.Navigator>
 );
 

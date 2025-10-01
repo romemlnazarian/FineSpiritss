@@ -49,7 +49,7 @@ const data = [
 
 export default function SettingItemScreen() {
   const {Styles} = StyleComponent();
-  const {modalVisible, setModalVisible, checkEmail, onSubmit, name} =
+  const {modalVisible, setModalVisible, checkEmail, onSubmit, name,onSubmitDeleteAccount} =
     SettingItemLogic();
   return (
     <View style={[Styles.container, {backgroundColor: Color.white}]}>
@@ -93,7 +93,9 @@ export default function SettingItemScreen() {
           </Fragment>
         ))}
       </View>
-      <TouchableOpacity activeOpacity={0.5}>
+      <TouchableOpacity
+        activeOpacity={0.5}
+        onPress={() => onSubmitDeleteAccount()}>
         <Text
           style={[
             Styles.title_Regular,
@@ -110,20 +112,18 @@ export default function SettingItemScreen() {
         onClose={() => setModalVisible(false)}>
         {name === 'Email Address' ? (
           <CheckEmailSetting />
-        ) 
-        : name === 'Change Password'?(
+        ) : name === 'Change Password' ? (
           <ChangePasswordSetting />
-        )
-        : name === 'Check Email'?(
+        ) : name === 'Check Email' ? (
           <EmailVerifySetting callBack={checkEmail} />
-        ):
-        <SuccessComponent
-          title="Congratulations!"
-          discription="You have succesfully Changed Email Address"
-          buttomVisible={false}
-          onHandler={() => {}}
-        />
-      }
+        ) : (
+          <SuccessComponent
+            title="Congratulations!"
+            discription="You have succesfully Changed Email Address"
+            buttomVisible={false}
+            onHandler={() => {}}
+          />
+        )}
       </BottomSheet>
     </View>
   );

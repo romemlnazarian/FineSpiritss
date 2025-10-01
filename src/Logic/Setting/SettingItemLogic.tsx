@@ -1,10 +1,15 @@
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { ProfileStackParamList } from "../../navigation/types";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 export default function SettingItemLogic() {
+  const navigation = useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState('');
- const checkEmail = (email:string) => {
-  console.log(email);
- }
+  const checkEmail = (email: string) => {
+    console.log(email);
+  }
+ 
 
   const onSubmit = (key:string) => {
     setModalVisible(true);
@@ -20,11 +25,16 @@ export default function SettingItemLogic() {
         break;
     }
   }
+
+  const onSubmitDeleteAccount = () => {
+    navigation.navigate('DeleteAccount');
+  }
   return{
     modalVisible,
     setModalVisible,
     checkEmail,
     onSubmit,
-    name
+    name,
+    onSubmitDeleteAccount
   }
 }

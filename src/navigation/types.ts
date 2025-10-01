@@ -42,6 +42,8 @@ export type CatalogParamList = {
   OrderHistory: undefined;
   SupportService: undefined;
   SettingItem: undefined;
+  DeleteAccount: undefined;
+  DeleteAccountVerify: undefined;
  };
 
 export type RootStackParamList = AuthStackParamList & ButtonParamList & CatalogParamList;
