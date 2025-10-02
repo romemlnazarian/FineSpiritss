@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React, {ReactNode, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
@@ -21,17 +21,60 @@ type Props = {
   disabled?: boolean;
   showArrow?: boolean;
   arrowColor?: string;
+  countdown?: boolean; // enable 3-2-1 countdown on press
+  countdownStart?: number; // defaults to 3
 };
 
 const BottomCardComponent = (props: Props) => {
   const {Styles} = StyleComponent();
-  const isDisabled = props.disabled === true;
+  const [isCounting, setIsCounting] = useState(false);
+  const [count, setCount] = useState<number>(props.countdownStart ?? 3);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const effectiveStart = useMemo(() => (props.countdownStart && props.countdownStart > 0 ? props.countdownStart : 3), [props.countdownStart]);
+
+  const clearTimer = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      clearTimer();
+    };
+  }, [clearTimer]);
+
+  useEffect(() => {
+    if (!isCounting) return;
+    clearTimer();
+    setCount(effectiveStart);
+    intervalRef.current = setInterval(() => {
+      setCount(prev => {
+        if (prev <= 1) {
+          clearTimer();
+          setIsCounting(false);
+          // call handler when countdown completes
+          props.onHandler();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCounting, effectiveStart]);
+
+  const isDisabled = (props.disabled === true) || isCounting;
   return (
     <TouchableOpacity
       activeOpacity={isDisabled ? 1 : 0.5}
       disabled={isDisabled}
       onPress={() => {
-        if (!isDisabled) {
+        if (isDisabled) return;
+        if (props.countdown) {
+          setIsCounting(true);
+        } else {
           props.onHandler();
         }
       }}
@@ -48,11 +91,11 @@ const BottomCardComponent = (props: Props) => {
             isDisabled ? styles.textDisabled : styles.textEnabled,
             props.textStyle,
           ]}>
-          {props.title}
+          {props.countdown && isCounting ? String(count) : props.title}
         </Text>
-        {props.icon ? (
+        {props.icon && !isCounting ? (
           <View style={styles.iconContainer}>{props.icon}</View>
-        ) : props.showArrow ? (
+        ) : props.showArrow && !isCounting ? (
           <View style={styles.iconContainer}>
             <MaterialIcons
               name="arrow-forward-ios"
