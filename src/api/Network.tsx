@@ -1,0 +1,177 @@
+
+export const errorhandler = async(error: any) => {
+  console.log('errr',error);
+};
+export const POST = (
+  root: string,
+  controller: string,
+  callback: (data: any) => void,
+  secretkey: string = "",
+  body: any = ""
+) => {
+  if (secretkey != "") {
+    fetch(root + controller, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer" + " " + secretkey,
+      },
+      body: JSON.stringify(body),
+    })
+      .then(function (data) {
+        data.json().then((dd) => {
+          callback(dd);
+        });
+      })
+      .catch((error) => errorhandler(error));
+  } else {
+    fetch(root + controller, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    })
+      .then(function (data) {
+        data.json().then((dd) => {
+          callback(dd);
+        });
+      })
+      .catch((error) => errorhandler(error));
+  }
+};
+
+export const GET = (
+  root: string,
+  controller: string,
+  callback: (data: any) => void,
+  secretkey: string = "",
+) => {
+  // console.log("secret", root,controller);
+  if (secretkey != "") {
+    fetch(root + controller, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        // "pastoo_user": user_pastoo,
+        Authorization: "Bearer" + " " + secretkey,
+      },
+    })
+      .then(function (data) {
+        data.json().then((dd) => {
+          callback(dd);
+        });
+      })
+      .catch((error) => errorhandler(error));
+  } else {
+    fetch(root + controller, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then(function (data) {
+        data.json().then((dd) => {
+          callback(dd);
+        });
+      })
+      .catch((error) => errorhandler(error));
+  }
+};
+
+export const PUT = (
+  root: string,
+  controller: string,
+  callback: (data: any) => void,
+  secretkey: string = "",
+  lang: string,
+  body: any = ""
+) => {
+  console.warn('=>>>>',body)
+  if (secretkey != "") {
+    fetch(root + controller, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer" + " " + secretkey,
+      },
+      body: JSON.stringify(body),
+    })
+      .then(function (data) {
+        data.json().then((dd) => {
+          callback(dd);
+        });
+      })
+      .catch((error) => errorhandler(error));
+  } else {
+    fetch(root + controller, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer" + " " + secretkey,
+        "Accept-Language": lang,
+      },
+      body: JSON.stringify(body),
+    })
+      .then(function (data) {
+        data.json().then((dd) => {
+          callback(dd);
+        });
+      })
+      .catch((error) => errorhandler(error));
+  }
+};
+
+export const DELETE = (
+  root: string,
+  controller: string,
+  callback: (data: any) => void,
+  secretkey: string = "",
+  lang: string,
+  body: any = ""
+) => {
+  if (secretkey != "") {
+    fetch(root + controller, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer" + " " + secretkey,
+        "Accept-Language": lang,
+      },
+      body: JSON.stringify(body),
+    })
+      .then(function (data) {
+        data.json().then((dd) => {
+          callback(dd);
+        });
+      })
+      .catch((error) =>errorhandler(error)
+              );
+  } else {
+    fetch(root + controller, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer" + " " + secretkey,
+        "Accept-Language": lang,
+      },
+      body: JSON.stringify(body),
+    })
+      .then(function (data) {
+        data.json().then((dd) => {
+          callback(dd);
+        });
+      })
+      .catch((error) =>errorhandler(error)
+      );
+  }
+};
+

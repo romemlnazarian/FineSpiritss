@@ -9,7 +9,7 @@ import Google from '../../assets/svg/google.svg';
 import Money from '../../assets/svg/money.svg';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Apple from '../../assets/svg/appleIcon.svg';
-import AddPaymentLogic from '../../Logic/Setting/AddPaymentLogic';
+import AddPaymentLogic from '../../logic/Setting/AddPaymentLogic';
 import { BottomSheet } from '../../component/BottomSheet';
 import AddCardSetting from '../../component/SettingComponent/AddCardSetting';
 const data = [

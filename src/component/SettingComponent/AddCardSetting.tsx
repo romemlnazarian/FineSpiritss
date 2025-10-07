@@ -5,7 +5,7 @@ import {Color} from '../../utiles/color';
 import TextView from '../TextView';
 import {Controller} from 'react-hook-form';
 import TextInputComponent from '../TextInputComponent';
-import AddCardLogic from '../../Logic/Setting/AddCardLogic';
+import AddCardLogic from '../../logic/Setting/AddCardLogic';
 import Wallet from '../../assets/svg/wallet.svg';
 import BottomCardComponent from '../BottomCard';
 

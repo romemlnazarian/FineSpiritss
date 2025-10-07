@@ -4,7 +4,7 @@ import {Controller} from 'react-hook-form';
 import {StyleComponent} from '../../utiles/styles';
 import TextInputComponent from '../../component/TextInputComponent';
 import TextView from '../../component/TextView';
-import {SigninLogic} from '../../Logic/SigninLogic';
+import {SigninLogic} from '../../logic/SigninLogic';
 import {Color} from '../../utiles/color';
 import BottomCardComponent from '../../component/BottomCard';
 import {Language} from '../../utiles/Language/i18n';

@@ -5,7 +5,7 @@ import {Color} from '../../utiles/color';
 import ShoppingCard from '../../assets/svg/ShoppingCart.svg';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
 import CustomHeader from '../../navigation/CustomHeader';
-import FavoriteLogic from '../../Logic/Favorite/FavoriteLogic';
+import FavoriteLogic from '../../logic/Favorite/FavoriteLogic';
 import CartItem from '../../component/CartComponent/CartItem';
 import FavoriteItem from '../../component/FavoriteComponent/FavoriteItem';
 export default function FavoriteScreen() {

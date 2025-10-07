@@ -9,7 +9,7 @@ import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Controller} from 'react-hook-form';
 import TextInputComponent from '../TextInputComponent';
-import {ChangePasswordSettingLogic} from '../../Logic/Setting/ChangePasswordSettingLogic';
+import {ChangePasswordSettingLogic} from '../../logic/Setting/ChangePasswordSettingLogic';
 import Lock from '../../assets/svg/Password.svg';
 // import {Language} from '../../utiles/Language/i18n';
 import BottomCardComponent from '../BottomCard';

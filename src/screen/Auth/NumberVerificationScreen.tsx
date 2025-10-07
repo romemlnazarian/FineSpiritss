@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
-import NumberVerificationLogic from '../../Logic/NumberVerificationLogic';
+import NumberVerificationLogic from '../../logic/NumberVerificationLogic';
 import CustomHeader from '../../navigation/CustomHeader';
 import LogoComponent from '../../component/LogoComponent';
 import TextView from '../../component/TextView';

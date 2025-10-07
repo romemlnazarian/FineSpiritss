@@ -11,7 +11,7 @@ import CustomHeader from '../../navigation/CustomHeader';
 import {Color} from '../../utiles/color';
 import Check from 'react-native-vector-icons/AntDesign';
 import BottomCardComponent from '../../component/BottomCard';
-import DeleteAccountLogic from '../../Logic/Setting/DeleteAccountLogic';
+import DeleteAccountLogic from '../../logic/Setting/DeleteAccountLogic';
 import React from 'react';
 const data: {id: number; title: string}[] = [
   {id: 1, title: 'Found a better service'},

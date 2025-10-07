@@ -5,7 +5,7 @@ import CustomHeader from '../../navigation/CustomHeader';
 import CatalogFilter from '../../component/CatalogComponent/CatalogFilter';
 import Search from '../../assets/svg/SearchBlack.svg';
 import CatalogList from '../../component/CatalogComponent/CatalogList';
-import ChoosenCatalogLogic from '../../Logic/Catalog/ChoosenCatalogLogic';
+import ChoosenCatalogLogic from '../../logic/Catalog/ChoosenCatalogLogic';
 import {BottomSheet} from '../../component/BottomSheet';
 import CatalogKosher from '../../component/CatalogComponent/CatalogKosher';
 import Filter from '../../assets/svg/Filter.svg';

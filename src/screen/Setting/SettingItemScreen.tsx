@@ -10,7 +10,7 @@ import Birthday from '../../assets/svg/Birthday.svg';
 import Password from '../../assets/svg/Password.svg';
 import Edit from '../../assets/svg/Edit.svg';
 import {BottomSheet} from '../../component/BottomSheet';
-import SettingItemLogic from '../../Logic/Setting/SettingItemLogic';
+import SettingItemLogic from '../../logic/Setting/SettingItemLogic';
 import EmailVerifySetting from '../../component/SettingComponent/EmailVerifySetting';
 import CheckEmailSetting from '../../component/SettingComponent/CheckEmailSetting';
 import SuccessComponent from '../../component/SuccessComponent';

@@ -4,7 +4,7 @@ import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
 import Category_image from '../../assets/svg/category_image.svg';
-import CatalogLogic from '../../Logic/Catalog/CatalogLogic';
+import CatalogLogic from '../../logic/Catalog/CatalogLogic';
 interface CategoryItem {
   id: string;
   title: string;

@@ -8,7 +8,7 @@ import TextView from '../../component/TextView';
 import TextInputComponent from '../../component/TextInputComponent';
 import {Language} from '../../utiles/Language/i18n';
 import BottomCardComponent from '../../component/BottomCard';
-import ShippingAddressLogic from '../../Logic/Setting/ShippingAddressLogic';
+import ShippingAddressLogic from '../../logic/Setting/ShippingAddressLogic';
 
 export default function ShippingAddress() {
   const {Styles} = StyleComponent();

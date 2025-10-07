@@ -1,6 +1,6 @@
 import { View, StyleSheet} from 'react-native'
 import React from 'react'
-import {ForgetPasswordLogic} from '../../Logic/ForgetPasswordLogic'
+import {ForgetPasswordLogic} from '../../logic/ForgetPasswordLogic'
 import { StyleComponent } from '../../utiles/styles'
 import LogoComponent from '../../component/LogoComponent'
 import TextView from '../../component/TextView'

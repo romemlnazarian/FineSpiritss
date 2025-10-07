@@ -21,6 +21,7 @@
     "react-hook-form": "^7.62.0",
     "react-native": "0.79.6",
     "react-native-background-timer": "^2.4.1",
+    "react-native-date-picker": "^5.0.13",
     "react-native-gesture-handler": "^2.24.0",
     "react-native-localization": "^2.3.2",
     "react-native-modal": "^14.0.0-rc.1",
@@ -33,6 +34,7 @@
     "react-native-svg-transformer": "^1.5.1",
     "react-native-swiper": "^1.6.0",
     "react-native-vector-icons": "^10.3.0",
+    "toastify-react-native": "^7.2.3",
     "yup": "^1.7.0",
     "zustand": "^5.0.8"
   },

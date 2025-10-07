@@ -24,7 +24,11 @@ export let Language = new LocalizedStrings({
     modal_age_confirmation:"Are you already 18+",
     modal_enter_button:"Yes, Enter",
     modal_no_button:"No",
-    modal_terms_and_conditions:"By clicking the enter button, you confirm that you are the required age of your country/region to visit our website, you accept Terms and Conditions and you declare that you have read our Privacy & Cookies notice. THE ABUSE OF ALCOHOL IS DANGEROUS FOR YOUR HEALTH. DRINK RESPONSIBLY. We support the responsible consumption of wines and spirits."
+    modal_terms_and_conditions:"By clicking the enter button, you confirm that you are the required age of your country/region to visit our website, you accept Terms and Conditions and you declare that you have read our Privacy & Cookies notice. THE ABUSE OF ALCOHOL IS DANGEROUS FOR YOUR HEALTH. DRINK RESPONSIBLY. We support the responsible consumption of wines and spirits.",
+    Date_of_birth: 'Date of birth',
+    DOB_Placeholder: 'Choose your date of birth',
+    Name_Surname_Placeholder: 'Type your Name and Surname',
+    Business_client: 'For business client'
   },
 
 })

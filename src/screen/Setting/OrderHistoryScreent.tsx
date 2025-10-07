@@ -6,7 +6,7 @@ import CatalogFilter from '../../component/CatalogComponent/CatalogFilter';
 import CatalogList from '../../component/CatalogComponent/CatalogList';
 import {BottomSheet} from '../../component/BottomSheet';
 import Filter from '../../assets/svg/Filter.svg';
-import OrderHistoryLogic from '../../Logic/Setting/OrderHistoryLogic';
+import OrderHistoryLogic from '../../logic/Setting/OrderHistoryLogic';
 import ShowBySetting from '../../component/SettingComponent/ShowBySetting';
 import StatusSetting from '../../component/SettingComponent/StatusSetting';
 import PerioudSetting from '../../component/SettingComponent/PerioudSetting';

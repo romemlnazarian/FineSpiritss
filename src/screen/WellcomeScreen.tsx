@@ -5,7 +5,7 @@ import {StyleComponent} from '../utiles/styles';
 import BottomCardComponent from '../component/BottomCard';
 import {Color} from '../utiles/color';
 import {Language} from '../utiles/Language/i18n';
-import {WellcomeLogic} from '../Logic/WellcomeLogic';
+import {WellcomeLogic} from '../logic/WellcomeLogic';
 import {Image} from 'react-native';
 
 export default function WellcomeScreen() {

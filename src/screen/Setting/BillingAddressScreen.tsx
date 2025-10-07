@@ -3,7 +3,7 @@ import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
-import BilingAddressLogic from '../../Logic/Setting/BilingAddressLogic';
+import BilingAddressLogic from '../../logic/Setting/BilingAddressLogic';
 import {Controller} from 'react-hook-form';
 import TextView from '../../component/TextView';
 import TextInputComponent from '../../component/TextInputComponent';

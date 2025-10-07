@@ -6,7 +6,7 @@ import CodeInput from '../../component/CodeInput';
 import BottomCardComponent from '../../component/BottomCard';
 import Timer from '../../Helper/Timer';
 import {BottomSheet} from '../../component/BottomSheet';
-import DeleteAccountVerfyLogic from '../../Logic/Setting/DeleteAccountVerfyLogic';
+import DeleteAccountVerfyLogic from '../../logic/Setting/DeleteAccountVerfyLogic';
 import Warning from 'react-native-vector-icons/Ionicons';
 import {Color} from '../../utiles/color';
 import Layer from '../../assets/svg/Layer.svg'

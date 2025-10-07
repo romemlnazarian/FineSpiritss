@@ -1,6 +1,6 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React, {Fragment} from 'react';
-import SettingLogic from '../../Logic/Setting/SettingLogic';
+import SettingLogic from '../../logic/Setting/SettingLogic';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import Menu from '../../component/ProfileComponent/Menu';

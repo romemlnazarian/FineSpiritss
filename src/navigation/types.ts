@@ -5,22 +5,26 @@ export type AuthStackParamList = {
   login: undefined;
   Signup:undefined
   Signin:undefined
-  Splash: undefined 
-  VerificationCode:undefined
+  Splash: undefined
+  VerificationCode:{
+    otp_id: number,
+    user_id: number,
+    email: string,
+    otp_type: string
+  }
   PasswordVerification:undefined,
-  NumberVerification:undefined,
-  ForgetPassword:undefined
+  NumberVerification:{
+    number: string
+  },
+  ForgetPassword:undefined,
   Wellcome:undefined
 };
 
 export type ButtonParamList = {
-  AppTabs:undefined
-};
-
-export type CatalogParamList = {
+  AppTabs:undefined,
   Catalog:undefined,
-  ChoosenCatalog:undefined
-  CatalogSearch:undefined
+  ChoosenCatalog:undefined,
+  CatalogSearch:undefined,
   CatalogDetail: {
     product: {
       id: string;
@@ -32,22 +36,21 @@ export type CatalogParamList = {
       image?: string;
     };
     quantity: number;
-  };};
+  }};
  export type ProfileStackParamList = {
-  MyOrder: undefined;
-  Setting: undefined;
-  Payment: undefined;
-  BillingAddress: undefined;
-  ShippingAddress: undefined;
-  OrderHistory: undefined;
-  SupportService: undefined;
-  SettingItem: undefined;
-  DeleteAccount: undefined;
-  DeleteAccountVerify: undefined;
+  MyOrder: undefined,
+  Setting: undefined,
+  Payment: undefined,
+  BillingAddress: undefined,
+  ShippingAddress: undefined,
+  OrderHistory: undefined,
+  SupportService: undefined,
+  SettingItem: undefined,
+  DeleteAccount: undefined,
+  DeleteAccountVerify: undefined,
  };
 
-export type RootStackParamList = AuthStackParamList & ButtonParamList & CatalogParamList;
+export type RootStackParamList = AuthStackParamList & ButtonParamList & ProfileStackParamList;
 export type AuthScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, keyof AuthStackParamList>;
 export type ButtonScreenNavigationProp = NativeStackNavigationProp<ButtonParamList, keyof ButtonParamList>;
-export type CatalogScreenNavigationProp = NativeStackNavigationProp<CatalogParamList, keyof CatalogParamList>;
 export type ProfileScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList, keyof ProfileStackParamList>;

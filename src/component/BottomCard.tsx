@@ -6,6 +6,7 @@ import {
   ViewStyle,
   TextStyle,
   View,
+  ActivityIndicator,
 } from 'react-native';
 import {Color} from '../utiles/color';
 import {StyleComponent} from '../utiles/styles';
@@ -23,6 +24,7 @@ type Props = {
   arrowColor?: string;
   countdown?: boolean; // enable 3-2-1 countdown on press
   countdownStart?: number; // defaults to 3
+  loading?: boolean;
 };
 
 const BottomCardComponent = (props: Props) => {
@@ -47,7 +49,9 @@ const BottomCardComponent = (props: Props) => {
   }, [clearTimer]);
 
   useEffect(() => {
-    if (!isCounting) return;
+    if (!isCounting) {
+      return;
+    }
     clearTimer();
     setCount(effectiveStart);
     intervalRef.current = setInterval(() => {
@@ -71,7 +75,9 @@ const BottomCardComponent = (props: Props) => {
       activeOpacity={isDisabled ? 1 : 0.5}
       disabled={isDisabled}
       onPress={() => {
-        if (isDisabled) return;
+        if (isDisabled) {
+          return;
+        }
         if (props.countdown) {
           setIsCounting(true);
         } else {
@@ -84,15 +90,19 @@ const BottomCardComponent = (props: Props) => {
         props.style,
       ]}>
       <View style={styles.contentContainer}>
-        <Text
-          style={[
-            styles.text,
-            Styles.title_Regular,
-            isDisabled ? styles.textDisabled : styles.textEnabled,
-            props.textStyle,
-          ]}>
-          {props.countdown && isCounting ? String(count) : props.title}
-        </Text>
+        {props.loading ? (
+          <ActivityIndicator color={Color.white} />
+        ) : (
+          <Text
+            style={[
+              styles.text,
+              Styles.title_Regular,
+              isDisabled ? styles.textDisabled : styles.textEnabled,
+              props.textStyle,
+            ]}>
+            {props.countdown && isCounting ? String(count) : props.title}
+          </Text>
+        )}
         {props.icon && !isCounting ? (
           <View style={styles.iconContainer}>{props.icon}</View>
         ) : props.showArrow && !isCounting ? (

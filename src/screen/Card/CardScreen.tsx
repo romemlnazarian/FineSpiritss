@@ -6,7 +6,7 @@ import ShoppingCard from '../../assets/svg/ShoppingCart.svg';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
 import CustomHeader from '../../navigation/CustomHeader';
 import CartItem from '../../component/CartComponent/CartItem';
-import CartLogix from '../../Logic/Cart/CartLogix';
+import CartLogix from '../../logic/Cart/CartLogix';
 import {BottomSheet} from '../../component/BottomSheet';
 import CartOrder from '../../component/CartComponent/CartOrder';
 export default function CardScreen() {

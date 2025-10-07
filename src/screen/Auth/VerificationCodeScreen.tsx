@@ -2,7 +2,7 @@ import {Text, View, StyleSheet} from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import CodeInput from '../../component/CodeInput';
-import VerificationCodeLogic from '../../Logic/VerificationCodeLogic';
+import VerificationCodeLogic from '../../logic/VerificationCodeLogic';
 import CustomHeader from '../../navigation/CustomHeader';
 import LogoComponent from '../../component/LogoComponent';
 import TextView from '../../component/TextView';

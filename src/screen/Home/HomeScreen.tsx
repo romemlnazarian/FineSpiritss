@@ -2,7 +2,7 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useMemo, lazy, Suspense} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import ModalCard from '../../component/ModalCard';
-import HomeLogic from '../../Logic/HomeLogic';
+import HomeLogic from '../../logic/HomeLogic';
 import HomeHeader from '../../component/HomeHeader';
 import Start from '../../assets/svg/Star_Icon.svg';
 import {Color} from '../../utiles/color';

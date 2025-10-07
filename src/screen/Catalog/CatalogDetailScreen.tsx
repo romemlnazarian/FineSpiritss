@@ -10,7 +10,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
-import CatalogDetailLogic from '../../Logic/Catalog/CatalogDetailLogic';
+import CatalogDetailLogic from '../../logic/Catalog/CatalogDetailLogic';
 import Slider from '../../component/HomeCamponent/Slider';
 import Heart from '../../assets/svg/Heart.svg';
 import CatalogFilter from '../../component/CatalogComponent/CatalogFilter';

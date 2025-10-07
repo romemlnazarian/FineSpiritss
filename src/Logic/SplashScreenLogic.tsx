@@ -14,8 +14,8 @@ export default function SplashScreenLogic() {
        // Directly call the localization function
        Language.setLanguage(language);
        const timer = setTimeout(() => {
-        navigation.navigate('AppTabs')
-        // navigation.navigate('Wellcome')
+        // navigation.navigate('AppTabs')
+        navigation.navigate('Wellcome')
         
        }, 2000);
        return () => clearTimeout(timer);

@@ -8,7 +8,7 @@ import BarcodeProfile from '../../component/ProfileComponent/BarcodeProfile';
 import MyOrderProfile from '../../component/ProfileComponent/MyOrderProfile';
 import StatusProfile from '../../component/ProfileComponent/StatusProfile';
 import AwardsProfile from '../../component/ProfileComponent/AwardsProfile';
-import ProfileLogix from '../../Logic/Profile/ProfileLogix';
+import ProfileLogix from '../../logic/Profile/ProfileLogix';
 import {BottomSheet} from '../../component/BottomSheet';
 import HistoryItemProfile from '../../component/ProfileComponent/HistoryItemProfile';
 import Icon from 'react-native-vector-icons/Feather';
