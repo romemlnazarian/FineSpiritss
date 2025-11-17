@@ -86,7 +86,7 @@ const BottomCardComponent = (props: Props) => {
       }}
       style={[
         styles.container,
-        isDisabled ? styles.containerDisabled : styles.containerEnabled,
+        props.loading ? styles.containerEnabled : (isDisabled ? styles.containerDisabled : styles.containerEnabled),
         props.style,
       ]}>
       <View style={styles.contentContainer}>

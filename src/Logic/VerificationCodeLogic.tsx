@@ -1,37 +1,66 @@
-import { useEffect, useState } from 'react'
+import {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import { AuthScreenNavigationProp } from '../navigation/types';
+import {AuthScreenNavigationProp} from '../navigation/types';
+import {VerifyCodeModel} from '../model/Auth/VerifyCodeModel';
+import {ResendOtpModel} from '../model/Auth/ResendOtpModel';
+import {useToast} from '../utiles/Toast/ToastProvider';
 
-export default function VerificationCodeLogic() {
-const navigation = useNavigation<AuthScreenNavigationProp>();
-   
-useEffect(()=>{
-   navigation.navigate('PasswordVerification')
-},[])
-  
+export default function VerificationCodeLogic(route: any) {
+  const navigation = useNavigation<AuthScreenNavigationProp>();
+  const {email} = route?.route?.params;
+  const {show} = useToast();
 
-    const [timer, setTimer] = useState<number>(0)
-    const [DisableTimer, setDisableTimer] = useState<boolean>(false)
-    const [disablebutton, setDisablebutton] = useState<boolean>(true)
-    const [codeValid, setCodeValid] = useState<boolean>(true)
-    const [disable, setDisable] = useState<boolean>(false)
+  const [restartKey, setRestartKey] = useState<boolean>(true);
+  const [DisableTimer, setDisableTimer] = useState<boolean>(true);
+  const [codeValid, setCodeValid] = useState<boolean>(true);
+  const [disable, setDisable] = useState<boolean>(false);
 
-    const onCodeHandle = (value: string) => {
-        if (value.length === 6) {
-          setCodeValid(true)
-          setDisablebutton(false)
-        } else {
-          setDisablebutton(true)
-          setCodeValid(true)
-        }
-      }
-    return{
-        onCodeHandle,
-        codeValid,
-        timer,
-        DisableTimer, setDisableTimer,
-        setDisable,
-        disable
+  const onCodeHandle = (value: string) => {
+    if (!restartKey) {
+      setCodeValid(false);
+      show('Something went wrong');
+      return;
     }
+    if (value.length === 5) {
+      VerifyCodeModel(
+        email,
+        value,
+        () => {
+          navigation.navigate('PasswordVerification', {email: email});
+        },
+        error => {
+          setCodeValid(false);
+          show(String(error || 'Something went wrong'), {type: 'error'});
+        },
+      );
+    }
+  };
 
+  const ResendCode = () => {
+    if (DisableTimer) return;
+    setDisable(true);
+    setDisableTimer(true);
+    setRestartKey(true);
+    ResendOtpModel(
+      email,
+      () => {
+        show('Code sent again', {type: 'success'});
+      },
+      error => {
+        show(String(error || 'Resend failed'), {type: 'error'});
+      },
+    );
+  };
+  return {
+    onCodeHandle,
+    codeValid,
+    restartKey,
+    setRestartKey,
+    DisableTimer,
+    setDisableTimer,
+    setDisable,
+    disable,
+    email,
+    ResendCode,
+  };
 }

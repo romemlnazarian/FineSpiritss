@@ -1,12 +1,18 @@
-import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useCallback, useMemo, useState} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
-import Viski from '../../assets/svg/viski.svg'; // Assuming Viski is the SVG for product image
 import Heart from '../../assets/svg/Heart.svg';
 import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import BottomCardComponent from '../BottomCard';
-// import {Language} from '../../utiles/Language/i18n'; // Removed as no longer used
 import Card from '../../assets/svg/Cart.svg';
 import Swiper from 'react-native-swiper';
 import AddBottom from '../AddBottom';
@@ -25,6 +31,9 @@ interface VerticalScrollProps {
   onAddSelected?: (product: ProductItem, quantity: number) => void;
   onHandlerItem?: (product: ProductItem) => void;
   orderBottom?: boolean; // show 'View product' CTA instead of Add/Counter
+  onLoadMore?: () => void;
+  isLoadingMore?: boolean;
+  isInitialLoading?: boolean;
 }
 // Individual Product Card Component
 const ProductCard: React.FC<{
@@ -32,7 +41,7 @@ const ProductCard: React.FC<{
   onAddSelected?: (product: ProductItem, quantity: number) => void;
   onHandlerItem?: (product: ProductItem) => void;
   orderBottom?: boolean;
-}> = ({item, onAddSelected,onHandlerItem, orderBottom}) => {
+}> = ({item, onAddSelected, onHandlerItem, orderBottom}) => {
   const {Styles} = StyleComponent();
   const [isFavorite, setIsFavorite] = useState(false);
   const [showCounter, setShowCounter] = useState(false);
@@ -47,7 +56,10 @@ const ProductCard: React.FC<{
   }, [item, onAddSelected]);
 
   return (
-    <View style={[styles.productCardContainer, Styles.alignCenter]}>
+    <TouchableOpacity 
+    activeOpacity={0.5}
+      onPress={() => onHandlerItem?.(item)}
+    style={[styles.productCardContainer, Styles.alignCenter]}>
       <TouchableOpacity style={styles.favoriteButton} onPress={toggleFavorite}>
         {isFavorite ? (
           <Heart_primary width={24} height={24} />
@@ -68,43 +80,39 @@ const ProductCard: React.FC<{
           showsHorizontalScrollIndicator={false}
           loadMinimal={true}
           loadMinimalSize={1}>
-          <TouchableOpacity style={styles.slide} activeOpacity={0.7} onPress={() => onHandlerItem?.(item)}>
-            <Viski width={120} height={120} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.slide} activeOpacity={0.7} onPress={() => onHandlerItem?.(item)}>
-            <Viski width={120} height={120} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.slide} activeOpacity={0.7} onPress={() => onHandlerItem?.(item)}>
-            <Viski width={120} height={120} />
-          </TouchableOpacity>
+          <Image
+            source={{uri: item.image_url}}
+            style={styles.slide}
+            resizeMode="contain"
+          />
         </Swiper>
       </View>
       <View style={styles.productTitleContainer}>
-        <Text style={[Styles.body_Medium]}>
+        <Text style={[Styles.body_Medium]} numberOfLines={1}>
           {item.title}
         </Text>
         <Text style={[Styles.title_Regular, styles.productDescription]}>
-          {item.description}
+          {item.country} ABV {item.abv}
         </Text>
         <View style={styles.priceContainer}>
           <Text style={[Styles.title_Bold, styles.productPrice]}>
             {item.price}
           </Text>
-          {item.originalPrice && (
+          {item.sale_price && (
             <Text style={[Styles.body_Regular, styles.originalPriceText]}>
-              {item.originalPrice}
+              {item.sale_price}
             </Text>
           )}
         </View>
       </View>
-      {orderBottom ?
-         <BottomCardComponent
-         title={'View product'}
-         onHandler={handleAddToCartPress}
-         style={styles.bottomCardButton}
-         textStyle={Styles.subtitle_Regular}
-       />:
-      !showCounter ? (
+      {orderBottom ? (
+        <BottomCardComponent
+          title={'View product'}
+          onHandler={handleAddToCartPress}
+          style={styles.bottomCardButton}
+          textStyle={Styles.subtitle_Regular}
+        />
+      ) : !showCounter ? (
         <BottomCardComponent
           title={'Add to Card'}
           onHandler={handleAddToCartPress}
@@ -121,40 +129,85 @@ const ProductCard: React.FC<{
           }}
         />
       )}
-    </View>
+    </TouchableOpacity>
   );
 };
 
 // Main VerticalScroll Component
-const CatalogList: React.FC<VerticalScrollProps> = ({item, onAddSelected, onHandlerItem, orderBottom}) => {
+const CatalogList: React.FC<VerticalScrollProps> = ({
+  item,
+  onAddSelected,
+  onHandlerItem,
+  orderBottom,
+  onLoadMore,
+  isLoadingMore,
+  isInitialLoading,
+}) => {
+  const showInitialLoader = isInitialLoading && (!item || item.length === 0);
+
+  if (showInitialLoader) {
+    return (
+      <View style={[styles.categoryContainer, styles.initialLoader]}>
+        <ActivityIndicator size="large" color={Color.primary} />
+        <Text style={styles.loadingText}>Loading products...</Text>
+      </View>
+    );
+  }
+
   const renderProductItem = ({item: product}: {item: ProductItem}) => (
-    <ProductCard item={product} onAddSelected={onAddSelected} onHandlerItem={onHandlerItem} orderBottom={orderBottom} />
+    <ProductCard
+      item={product}
+      onAddSelected={onAddSelected}
+      onHandlerItem={onHandlerItem}
+      orderBottom={orderBottom}
+    />
   );
 
   const keyExtractor = (product: ProductItem) => product.id;
+
+  const listFooter = useMemo(() => {
+    if (!isLoadingMore) {
+      return null;
+    }
+    return (
+      <View style={styles.footerContainer}>
+        <ActivityIndicator size="small" color={Color.primary} />
+      </View>
+    );
+  }, [isLoadingMore]);
+
+  const emptyComponent = useMemo(() => {
+    if (isInitialLoading) {
+      return null;
+    }
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.loadingText}>No products found.</Text>
+      </View>
+    );
+  }, [isInitialLoading]);
 
   return (
     <View style={styles.categoryContainer}>
       <FlatList
         data={item}
         renderItem={renderProductItem}
-        keyExtractor={keyExtractor}
+          keyExtractor={keyExtractor}
         numColumns={2}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.flatListContainer}
         columnWrapperStyle={styles.rowWrapper}
         removeClippedSubviews={true}
-        maxToRenderPerBatch={2}
-        windowSize={5}
-        initialNumToRender={4}
-        updateCellsBatchingPeriod={100}
-        getItemLayout={(data, index) => ({
-          length: 300, // Updated height for swiper
-          offset: 300 * Math.floor(index / 2),
-          index,
-        })}
-        scrollEventThrottle={16}
-        decelerationRate="fast"
+        windowSize={10}
+        initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        maintainVisibleContentPosition={{
+          minIndexForVisible: 0,
+        }}
+        onEndReached={onLoadMore}
+        onEndReachedThreshold={0.4}
+        ListFooterComponent={listFooter}
+        ListEmptyComponent={emptyComponent}
       />
     </View>
   );
@@ -163,7 +216,7 @@ const CatalogList: React.FC<VerticalScrollProps> = ({item, onAddSelected, onHand
 export default CatalogList;
 const styles = StyleSheet.create({
   productTitleContainer: {
-    width: '80%',
+    width: '85%',
   },
   categoryContainer: {
     alignSelf: 'center',
@@ -183,6 +236,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 40,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   rowWrapper: {
     justifyContent: 'space-between',
@@ -235,5 +289,19 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 50,
     color: Color.white,
+  },
+  emptyContainer: {
+    paddingVertical: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  initialLoader: {
+    paddingVertical: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    color: Color.gray,
   },
 });

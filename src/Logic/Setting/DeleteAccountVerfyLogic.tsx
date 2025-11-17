@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 
 export default function DeleteAccountVerfyLogic() {
-    const [modalVisible, setModalVisible] = useState(true);
+    const [modalVisible, setModalVisible] = useState(false);
     const [restartKey, setRestartKey] = useState<number>(0);
     const [disable, setDisable] = useState(true);
     const [count, setCount] = useState(3);
@@ -14,10 +14,10 @@ export default function DeleteAccountVerfyLogic() {
     setCount(3);
     const interval = setInterval(() => {
       setCount(prev => {
-        if (prev < 1) {
-          clearInterval(interval);
+        if (prev <= 1) {
+      clearInterval(interval);
           setDisable(false);
-          return 0; // stop at 1 (no further changes)
+          return 0;
         }
         return prev - 1;
       });

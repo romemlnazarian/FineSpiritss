@@ -19,13 +19,13 @@ export const SignupLogic = () => {
       .trim()
       .required('Email is required')
       .email('Please enter a valid email address')
-      .matches(/@gmail\.com$/, 'Only gmail.com emails are allowed'),
   });
   const {
     control,
     handleSubmit,
     formState: {errors},
     getValues,
+    reset,
   } = useForm({
     defaultValues: {
       username: '',
@@ -39,23 +39,45 @@ export const SignupLogic = () => {
 
   const onSubmit = async () => {
     const values = getValues();
+    // Require birthdate selection
+    if (!selectedDate) {
+      show('Please select your birthdate', { type: 'error' });
+      return;
+    }
+    // Enforce 18+ age
+    try {
+      const [y, m, d] = selectedDate.split('-').map(Number);
+      const birth = new Date(y, (m || 1) - 1, d || 1);
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const hasNotHadBirthdayThisYear =
+        today.getMonth() < birth.getMonth() ||
+        (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate());
+      if (hasNotHadBirthdayThisYear) age -= 1;
+      if (age < 18) {
+        show('You must be at least 18 years old to register', { type: 'error' });
+        return;
+      }
+    } catch {
+      show('Invalid birthdate', { type: 'error' });
+      return;
+    }
     setLoading(true);
+
     Register(
-      values.username,
-      values.email,
-      date.toString(),
+      values.email.trim(),
+      values.username.trim(),
+      selectedDate,
       data => {
         navigation.navigate('VerificationCode', {
-          otp_id: data.otp_id,
-          user_id: data.user_id,
           email: data.email,
-          otp_type: data.otp_type,
         });
+        reset({ username: '', email: '' });
         setLoading(false);
       },
       error => {
         setLoading(false);
-        show(String(error || 'Something went wrong'), { type: 'error' });
+        show(String(error), { type: 'error' });
       },
     );
   };
@@ -68,9 +90,10 @@ export const SignupLogic = () => {
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
-    const result = `${year}.${month}.${day}`;
+    const result = `${year}-${month}-${day}`;
     setSelectedDate(result);
   };
+
 
   return {
     control,
@@ -85,6 +108,6 @@ export const SignupLogic = () => {
     loading,
     selectedDate,
     setSelectedDate,
-    formatDate,
+    formatDate
   };
 };

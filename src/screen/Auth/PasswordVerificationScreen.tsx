@@ -1,4 +1,4 @@
-import {View, StyleSheet, KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
+import {View, StyleSheet, KeyboardAvoidingView, ScrollView, Platform, Text} from 'react-native';
 import React from 'react';
 import {Controller} from 'react-hook-form';
 import {StyleComponent} from '../../utiles/styles';
@@ -15,7 +15,7 @@ import Reject from '../../assets/svg/reject.svg';
 import CustomHeader from '../../navigation/CustomHeader';
 import { KeboardDismis } from '../../KeyboardDismis/KeboardDIsmisFunction';
 
-export default function PasswordVerificationScreen() {
+export default function PasswordVerificationScreen(route: any) {
   const {Styles} = StyleComponent();
   const {
     control,
@@ -28,8 +28,9 @@ export default function PasswordVerificationScreen() {
     getValues,
     onHandleShowPass,
     showPass,
-    showRepeatPass
-  } = PasswordVerificationLogic();
+    showRepeatPass,
+    loading,
+  } = PasswordVerificationLogic(route);
 
   return (
     <KeyboardAvoidingView
@@ -40,6 +41,11 @@ export default function PasswordVerificationScreen() {
       onStartShouldSetResponder={KeboardDismis}>
         <CustomHeader showBack={true} />
         <LogoComponent style={styles.logoComponentStyle} />
+          {/* <Text style={[Styles.h3_Bold, styles.textStyles,{marginTop:'5%'}]} >
+           Please enter your new
+           password
+          </Text> */}
+
         <View style={styles.inputContainer}>
           <TextView
             title={Language.Password}
@@ -121,6 +127,8 @@ export default function PasswordVerificationScreen() {
           title={Language.Next}
           onHandler={handleSubmit(onSubmit)}
           style={styles.buttonComponent}
+          loading={loading}
+          disabled={loading}
         />
       </ScrollView>
       </KeyboardAvoidingView>

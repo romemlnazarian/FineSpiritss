@@ -16,7 +16,6 @@ import ForgetPasswordScreen from '../screen/Auth/ForgetPasswordScreen';
 
 // import LoginScreen from '../screen/LoginScreen';
 import AppTabs from "./TabNavigator";
-import { Color } from '../utiles/color';
 import { SafeAreaProvider, SafeAreaView  } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
@@ -25,7 +24,7 @@ export default function Navigation() {
   return (
     <SafeAreaProvider >
     <SafeAreaView style={styles.container} edges={Platform.OS === 'android' ?[ 'bottom' , 'top'] : ['top']}>
-      <StatusBar translucent backgroundColor="red" barStyle="dark-content" />
+      <StatusBar  barStyle="light-content" />
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Splash" component={SplashScreen} />
@@ -47,6 +46,5 @@ export default function Navigation() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.background,
   },
 });

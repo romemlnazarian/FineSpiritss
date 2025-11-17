@@ -1,16 +1,13 @@
-import { POST } from "../../api/Network";
-import { Route } from "../../api/Route";
+import { POST } from '../../api/Network';
+import { Route } from '../../api/Route';
 
 type RegisterProps = {
-    otp_id: number,
-    user_id: number,
     email: string,
-    otp_type: string
 }
 
 export const Register = (
-    username: string,
-    email: string,
+   email: string,
+    full_name: string,
     birthdate: string,
     callback: (data: RegisterProps) => void,
     errorcallback: (data:string) => void,
@@ -19,15 +16,22 @@ export const Register = (
         Route.root,
         Route.register,
         (data) => {
-          console.log("gettoken Test >> ", "gettoken",data);
-          if (data.success != true) {
-            errorcallback(data.message);
-            return;
+          const anyData: any = data;
+          if (anyData && typeof anyData === 'object') {
+            if ('detail' in anyData) {
+              if (anyData.detail) {
+                callback(anyData);
+              } else {
+                const msg = anyData?.email?.[0] ?? anyData?.message ?? 'Unexpected response';
+                errorcallback(String(msg));
+              }
+              return;
+            }
           }
-          callback(data.data);
+          errorcallback('Unexpected response');
         },
-      "",
-    {full_name: username, email: email, birthdate: birthdate }
+      '',
+    {email: email,full_name: full_name, birthdate: birthdate }
       );
 }
 

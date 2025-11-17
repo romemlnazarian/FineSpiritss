@@ -1,18 +1,20 @@
 import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import BackgroundTimer from "react-native-background-timer";
 import { StyleComponent } from "../utiles/styles";
+import BackgroundTimer from "react-native-background-timer";
 import { Color } from "../utiles/color";
 
 interface Props {
   onCountdownComplete: () => void;
-  restartKey?: number;
+  // true => start/reset timer, false => stop timer
+  restartKey?: boolean;
+  // optional custom start seconds, defaults to 60
   startSeconds?: number;
 }
 
 const Timer: React.FC<Props> = ({ onCountdownComplete, restartKey, startSeconds }) => {
   const { Styles } = StyleComponent();
-  const [SecondsLeft, setSecondsLeft] = useState<number>(startSeconds ?? 60);
+  const [SecondsLeft, setSecondsLeft] = useState(startSeconds ?? 60);
   const [Event, updateEvent] = useReducer(
     (
       prev: {
@@ -50,15 +52,17 @@ const Timer: React.FC<Props> = ({ onCountdownComplete, restartKey, startSeconds 
     };
   }, [Event.TimerOn]);
 
-  // Restart timer when restartKey changes
+  // Control start/stop by boolean restartKey
   useEffect(() => {
-    if (restartKey !== undefined) {
-      BackgroundTimer.stopBackgroundTimer();
+    if (restartKey === false) return;
+    BackgroundTimer.stopBackgroundTimer();
+    if (restartKey === true) {
       setSecondsLeft(startSeconds ?? 60);
       updateEvent({ TimerOn: true, DisableResend: true, ExpirCode: false });
+    } else {
+      updateEvent({ TimerOn: false });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [restartKey]);
+  }, [restartKey, startSeconds]);
 
 
   useEffect(() => {
@@ -78,23 +82,22 @@ const Timer: React.FC<Props> = ({ onCountdownComplete, restartKey, startSeconds 
         else return 0;
       });
     }, 1000);
-  }, []);
+  }, [SecondsLeft]);
 
   const clockify = () => {
-    const mins = Math.floor((SecondsLeft / 60) % 60);
-    const seconds = Math.floor(SecondsLeft % 60);
-    const displayMins = mins < 10 ? `0${mins}` : String(mins);
-    const displaySecs = seconds < 10 ? `0${seconds}` : String(seconds);
-    return { displayMins, displaySecs };
+    let mins = Math.floor((SecondsLeft / 60) % 60);
+    let seconds = Math.floor(SecondsLeft % 60);
+    let displayMins = mins < 1 ? `0${mins}` : mins;
+    let displaySecs = seconds < 10 ? `0${seconds}` : seconds;
+    return {
+      displayMins,
+      displaySecs,
+    };
   };
-
-  const { displayMins, displaySecs } = clockify();
 
   return (
     <View>
-      <Text style={[Styles.title_Regular, styles.text, Styles.marginVertical]}>
-        {displayMins} : {displaySecs}
-      </Text>
+      <Text style={[Styles.title_Regular, styles.text, Styles.marginVertical]}>{clockify().displayMins} : {clockify().displaySecs}</Text>
     </View>
   );
 };

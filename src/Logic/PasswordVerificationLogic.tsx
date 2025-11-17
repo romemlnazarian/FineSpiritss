@@ -5,13 +5,20 @@ import {useForm} from 'react-hook-form';
 import {AuthScreenNavigationProp} from '../navigation/types';
 import { useState } from 'react';
 import React from 'react';
-export const PasswordVerificationLogic = () => {
+import { PasswordVerifyModel } from '../model/Auth/PasswordVerifyModel';
+import { useToast } from '../utiles/Toast/ToastProvider';
+import useAuthStore from '../zustland/AuthStore';
+export const PasswordVerificationLogic = (route: any) => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
+  const {setRefreshToken} = useAuthStore();
   const [isLengthValid, setIsLengthValid] = useState(false);
   const [hasNumber, setHasNumber] = useState(false);
   const [hasUpperCase, setHasUpperCase] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [showRepeatPass, setShowRepeatPass] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const {email} = route?.route?.params;
+  const {show} = useToast();
 
   
   
@@ -31,7 +38,8 @@ export const PasswordVerificationLogic = () => {
     handleSubmit,
     formState: {errors},
     getValues,
-    watch
+    watch,
+    reset,
   } = useForm({
     defaultValues: {
       password: '',
@@ -55,8 +63,17 @@ export const PasswordVerificationLogic = () => {
 
   const onSubmit = async () => {
     const values = getValues();
-    console.log('==>', values);
-    navigation.navigate('NumberVerification') // Placeholder navigation
+    setLoading(true);
+    PasswordVerifyModel(email, values.password.trim(), values.repeatpassword.trim(), (data) => {
+        setRefreshToken(data.tokens.refresh_token);
+        reset({ password: '', repeatpassword: '' });
+        show('assword set successfully. Your account is now active. You can login.', {type: 'success'});
+      navigation.navigate('Signin');
+      setLoading(false);
+    }, (error: any) => {
+       show(String(error))
+       setLoading(false);
+    })
   };
 
   const onHandleShowPass = (key:string) => {
@@ -80,6 +97,7 @@ export const PasswordVerificationLogic = () => {
     getValues,
     onHandleShowPass,
     showPass,
-    showRepeatPass
+    showRepeatPass,
+    loading,
   };
 };

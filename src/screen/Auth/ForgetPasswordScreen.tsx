@@ -1,21 +1,23 @@
-import { View, StyleSheet} from 'react-native'
-import React from 'react'
-import {ForgetPasswordLogic} from '../../logic/ForgetPasswordLogic'
-import { StyleComponent } from '../../utiles/styles'
-import LogoComponent from '../../component/LogoComponent'
-import TextView from '../../component/TextView'
-import { Language } from '../../utiles/Language/i18n'
-import { Controller } from 'react-hook-form'
-import TextInputComponent from '../../component/TextInputComponent'
+import {View, StyleSheet} from 'react-native';
+import React from 'react';
+import {ForgetPasswordLogic} from '../../logic/ForgetPasswordLogic';
+import {StyleComponent} from '../../utiles/styles';
+import LogoComponent from '../../component/LogoComponent';
+import TextView from '../../component/TextView';
+import {Language} from '../../utiles/Language/i18n';
+import {Controller} from 'react-hook-form';
+import TextInputComponent from '../../component/TextInputComponent';
 import Email from '../../assets/svg/Email.svg';
-import BottomCardComponent from '../../component/BottomCard'
+import BottomCardComponent from '../../component/BottomCard';
+import CustomHeader from '../../navigation/CustomHeader';
 
 export default function ForgetPasswordScreen() {
-  const {Styles} = StyleComponent()
-  const {control, handleSubmit, errors, onSubmit} = ForgetPasswordLogic();
+  const {Styles} = StyleComponent();
+  const {control, handleSubmit, errors, onSubmit, loading} = ForgetPasswordLogic();
   return (
     <View style={Styles.container}>
-      <LogoComponent style={{marginTop:'15%'}}/>
+      <CustomHeader showBack={true} />
+      <LogoComponent style={{marginTop: '15%'}} />
       <TextView
         title={Language.Email_title}
         style={[Styles.h3_Bold, styles.titleStyle]}
@@ -24,8 +26,7 @@ export default function ForgetPasswordScreen() {
         title={Language.Email_description}
         style={[Styles.title_Regular, styles.subtitleStyle]}
       />
-            <View style={styles.inputContainerSmallMargin}>
-
+      <View style={styles.inputContainerSmallMargin}>
         <Controller
           control={control}
           name="email"
@@ -48,12 +49,12 @@ export default function ForgetPasswordScreen() {
         title={Language.Sendcode}
         onHandler={handleSubmit(onSubmit)}
         style={styles.buttonComponent}
+        loading={loading}
+        disabled={loading}
       />
     </View>
-  )
+  );
 }
-
-
 
 const styles = StyleSheet.create({
   titleStyle: {
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
     marginTop: '10%',
   },
   subtitleStyle: {
-    width:'90%',
+    width: '90%',
     textAlign: 'left',
     marginLeft: '5%',
     marginTop: '2%',

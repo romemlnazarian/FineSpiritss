@@ -16,12 +16,12 @@ export default function CheckEmailSetting() {
   const [codeValid, setCodeValid] = useState<boolean>(true);
   const [restartKey, setRestartKey] = useState<number>(0);
 
-  const onCodeHandle = (value: string) => {
-    if (value.length === 6) {
+    const onCodeHandle = (value: string) => {
+        if (value.length === 6) {
       setCodeValid(true);
-    } else {
+        } else {
       setCodeValid(true);
-    }
+        }
   };
 
   const onHandlerTimer = () => {
@@ -39,7 +39,7 @@ export default function CheckEmailSetting() {
       <Text style={[Styles.title_Regular, Styles.textAlign, styles.subtitle]}>
         We’ve sent a code to Newemail@gmail.com
       </Text>
-      <CodeInput isCodeValid={codeValid} onCodePress={e => onCodeHandle(e)} />
+          <CodeInput isCodeValid={codeValid} onCodePress={e => onCodeHandle(e)} />
       <View style={[Styles.justifyCenter, styles.actions]}>
         <TouchableOpacity 
          onPress={onHandlerTimer}
@@ -47,7 +47,7 @@ export default function CheckEmailSetting() {
           <Text style={Styles.title_Medium}>Send Code Again</Text>
         </TouchableOpacity>
         <Timer restartKey={restartKey} startSeconds={60} onCountdownComplete={() => setDisableTimer(false)} />
-      </View>
+    </View>
     </KeyboardAvoidingView>
   );
 }

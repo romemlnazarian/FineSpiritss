@@ -9,10 +9,9 @@ interface LocalizationState {
 
 const useLocalizationStore = create<LocalizationState>()(
   persist(
-    (set, get) => ({
-      language: 'en', // Default language
+    (set) => ({
+      language: 'en',
       setLanguage: (lang: string) => {
-        console.log(`Setting language from ${get().language} to ${lang}`);
         set({ language: lang });
       },
     }),

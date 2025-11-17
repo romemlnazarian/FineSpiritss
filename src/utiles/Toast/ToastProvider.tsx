@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   container: {flex: 1},
   toast: {
     position: 'absolute',
-    top: 0,
+    top: 50,
     left: 0,
     right: 0,
     marginHorizontal: '5%',

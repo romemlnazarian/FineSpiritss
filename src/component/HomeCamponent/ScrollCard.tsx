@@ -1,28 +1,19 @@
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList, Image} from 'react-native';
 import React from 'react';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
-import Brand03 from '../../assets/svg/Brand03.svg';
 
 interface BrandItem {
   id: string;
+  brand_image: string;
 }
 
-const brandData: BrandItem[] = [
-  {id: '1',},
-  {id: '2',},
-  {id: '3',},
-  {id: '4'},
-  {id: '5'},
-  {id: '6'},
-];
 
-export default function ScrollCard() {
+export default function ScrollCard({data}: {data: any[]}) {
   const {Styles} = StyleComponent();
-
-  const renderBrandItem = ({item: _item}: {item: BrandItem}) => (
+  const renderBrandItem = ({item}: {item: BrandItem}) => (
     <View style={styles.brandItemContainer}>
-      <Brand03 />
+      <Image source={{uri: item.brand_image}} style={styles.categoryImage} resizeMode="contain" />
     </View>
   );
 
@@ -36,7 +27,7 @@ export default function ScrollCard() {
       </View>
       <View style={styles.container} >
       <FlatList
-            data={brandData}
+            data={data}
             renderItem={renderBrandItem}
             keyExtractor={item => item.id}
             horizontal
@@ -81,5 +72,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  categoryImage: {
+    width: 100,
+    height: 100,
   },
 });

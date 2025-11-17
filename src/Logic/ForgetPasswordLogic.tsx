@@ -3,12 +3,15 @@ import * as Yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
 import {AuthScreenNavigationProp} from '../navigation/types';
+import { ForgetPasswordModel } from '../model/Auth/ForgetPasswordModel';
+import { useState } from 'react';
+import { useToast } from '../utiles/Toast/ToastProvider';
 
 export const ForgetPasswordLogic = () => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
-
+  const [loading, setLoading] = useState<boolean>(false);
+  const {show} = useToast();
   const validationSchema = Yup.object().shape({
-    password: Yup.string().trim().required('Required'),
     email: Yup.string()
       .trim()
       .required('Email is required')
@@ -22,7 +25,6 @@ export const ForgetPasswordLogic = () => {
     getValues,
   } = useForm({
     defaultValues: {
-      password: '',
       email: '',
 
     },
@@ -30,10 +32,22 @@ export const ForgetPasswordLogic = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const onSubmit = async () => {
+  const onSubmit = () => {
     const values = getValues();
-    console.log('==>', values);
-    navigation.navigate('VerificationCode')
+    console.log('==>', values.email.toLocaleLowerCase().trim());
+    setLoading(true);
+    ForgetPasswordModel(values.email.toLocaleLowerCase().trim(), (data) => {
+      setLoading(false);
+         navigation.navigate('VerificationCode', {
+          otp_id: data.otp_id,
+          user_id: data.user_id,
+          email: data.email,
+          otp_type: data.otp_type
+         })
+    }, (error) => {
+      setLoading(false);
+      show(String(error))
+    })
   };
 
 
@@ -43,5 +57,6 @@ export const ForgetPasswordLogic = () => {
     handleSubmit,
     errors,
     onSubmit,
+    loading,
   };
 };

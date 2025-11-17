@@ -18,7 +18,7 @@ import AuthLogo from '../../component/AuthLogo';
 
 export default function SigninScreen() {
   const {Styles} = StyleComponent();
-  const {control, handleSubmit, errors, onSubmit,onSubmitForgetPass,onSubmitSignUp} = SigninLogic();
+  const {control, handleSubmit, errors, onSubmit,onSubmitForgetPass,onSubmitSignUp,loading} = SigninLogic();
   return (
     <View style={Styles.container}>
       <LogoComponent style={styles.logoComponentStyle} />
@@ -79,6 +79,8 @@ export default function SigninScreen() {
         title={Language.singIn}
         onHandler={handleSubmit(onSubmit)}
         style={styles.buttonComponent}
+        loading={loading}
+        disabled={loading}
       />
       <View style={styles.orSignUpWithContainer}>
         <View style={styles.lineStyle} />

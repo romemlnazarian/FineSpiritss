@@ -3,6 +3,7 @@ import React, {useState, useCallback, memo, useEffect} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
+import FilterIcon from '../../assets/svg/Filter.svg';
 // Memoized sort item component
 const SortItem = memo(({item, isSelected, onPress, containerStyle, textStyle, arrow}: {
   item: {id: string; title: string | React.ReactElement};
@@ -19,15 +20,28 @@ const SortItem = memo(({item, isSelected, onPress, containerStyle, textStyle, ar
       activeOpacity={0.5}
       style={[styles.flatListItem, containerStyle]}
       onPress={() => onPress(item.id)}>
-      <Text
-        style={[
-          Styles.title_Regular,
-          isSelected ? styles.selectedItemText : styles.unselectedItemText,
-          textStyle,
-        ]}>
-        {item.title}
-      </Text>
-      {item.id !== "1" && arrow &&  <Arrow name="keyboard-arrow-down" size={20} color={Color.gray} />}
+      <View style={styles.itemContent}>
+        {item.id === '1' && (
+          <FilterIcon
+            width={16}
+            height={16}
+            style={styles.filterIcon}
+          />
+        )}
+        {typeof item.title === 'string' && (
+          <Text
+            style={[
+              Styles.title_Regular,
+              isSelected ? styles.selectedItemText : styles.unselectedItemText,
+              textStyle,
+            ]}>
+            {item.title}
+          </Text>
+        )}
+      </View>
+      {item.id !== '1' && arrow && (
+        <Arrow name="keyboard-arrow-down" size={20} color={Color.gray} />
+      )}
     </TouchableOpacity>
   );
 });
@@ -128,6 +142,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Color.white,
     flexDirection: 'row',
+  },
+  itemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  filterIcon: {
+    marginRight: 6,
   },
 
   selectedItemText: {

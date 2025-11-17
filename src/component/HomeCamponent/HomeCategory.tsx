@@ -1,23 +1,42 @@
-import {View, Text, StyleSheet} from 'react-native';
-import React, { memo, useMemo } from 'react';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import React, {memo, useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import Viski from '../../assets/svg/viski.svg';
+import {Route} from '../../api/Route';
 // Memoized category item component to prevent unnecessary re-renders
-const CategoryItem = memo(({item}: {item: {id: number; title: string}}) => {
+const CategoryItem = memo(({item, onSubmit}: {item: any, onSubmit: (item: any) => void}) => {
   const {Styles} = StyleComponent();
 
+  // Build absolute image URL
+  const rawImage: string | undefined =
+    item?.cat_image || item?.parent?.cat_image;
+  const base = Route.root.replace(/\/api\/?$/, '/');
+  const imageUri = rawImage
+    ? rawImage.startsWith('http')
+      ? rawImage
+      : `${base}${rawImage.replace(/^\//, '')}`
+    : undefined;
+
   return (
-    <View style={styles.categoryItemWrapper}>
+    <TouchableOpacity onPress={() => onSubmit(item)} style={styles.categoryItemWrapper}>
       <View style={styles.categoryImageContainer}>
         <View style={styles.categoryImagePosition}>
-            <Viski width={60} height={100}/>
+           {imageUri ? (
+             <Image source={{uri: imageUri}} style={styles.categoryImage} />
+           ) : (
+            <Viski width={60} height={100} />
+          )}
         </View>
       </View>
-      <Text style={[Styles.title_Regular, styles.categoryItemTitle]}>
-        {item.title}
+      <Text
+        style={[Styles.title_Regular, styles.categoryItemTitle]}
+        numberOfLines={2}
+        ellipsizeMode="tail"
+      >
+        {item.cat_name}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 });
 
@@ -27,31 +46,25 @@ const CategoryHeader = memo(() => {
 
   return (
     <View style={styles.headerContainer}>
-      <Text style={[Styles.h6_SemiBold, styles.categoryTitle]}>
-        Category
-      </Text>
+      <Text style={[Styles.h6_SemiBold, styles.categoryTitle]}>Category</Text>
       <View style={styles.separatorLine} />
     </View>
   );
 });
 
-const HomeCategory = memo(() => {
+
+const HomeCategory = memo(({data = [], onSubmitCategory}: {data: any[], onSubmitCategory: (item: any) => void}) => {
   const {Styles} = StyleComponent();
 
   // Memoize the data array to prevent recreation on every render
-  const categoryData = useMemo(() => [
-    {id: 1, title: 'Wine'},
-    {id: 2, title: 'Wine'},
-    {id: 3, title: 'Wine'},
-    {id: 4, title: 'Wine'},
-  ], []);
+  const categoryData = useMemo(() => (Array.isArray(data) ? data : []), [data]);
 
   return (
     <View style={styles.categoryContainer}>
       <CategoryHeader />
       <View style={[Styles.justifyBetween, styles.categoryItemsContainer]}>
-        {categoryData.map(item => (
-          <CategoryItem key={item.id} item={item} />
+        {categoryData.map((item, idx) => (
+          <CategoryItem key={item?.id ?? item?.slug ?? idx} item={item} onSubmit={onSubmitCategory} />
         ))}
       </View>
     </View>
@@ -63,7 +76,7 @@ export default HomeCategory;
 const styles = StyleSheet.create({
   categoryContainer: {
     width: '93%',
-    alignSelf:'center',
+    alignSelf: 'center',
   },
   headerContainer: {
     flexDirection: 'row',
@@ -83,11 +96,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    alignItems: 'flex-start',
     marginTop: '8%',
   },
   categoryItemWrapper: {
     width: '30%',
-    marginBottom: 20,
+    marginBottom: 35,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -103,7 +117,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
   },
+  categoryImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+  },
   categoryItemTitle: {
     marginTop: '5%',
+    textAlign: 'center',
+    minHeight: 40,
   },
 });

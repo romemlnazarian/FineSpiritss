@@ -1,21 +1,26 @@
 
-export const errorhandler = async(error: any) => {
-  console.log('errr',error);
+// Remove useToast from here; instead, accept a showToast function as a parameter
+export const errorhandler = (error: any, showToast?: (msg: any) => void) => {
+  console.log('errr', error);
+  if (showToast) {
+    showToast(error);
+  }
 };
+
 export const POST = (
   root: string,
   controller: string,
   callback: (data: any) => void,
-  secretkey: string = "",
-  body: any = ""
+  secretkey: string = '',
+  body: any = ''
 ) => {
-  if (secretkey != "") {
+  if (secretkey !== '') {
     fetch(root + controller, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer" + " " + secretkey,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer' + ' ' + secretkey,
       },
       body: JSON.stringify(body),
     })
@@ -27,10 +32,10 @@ export const POST = (
       .catch((error) => errorhandler(error));
   } else {
     fetch(root + controller, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
     })
@@ -50,14 +55,14 @@ export const GET = (
   secretkey: string = "",
 ) => {
   // console.log("secret", root,controller);
-  if (secretkey != "") {
+  if (secretkey !== '') {
     fetch(root + controller, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
         // "pastoo_user": user_pastoo,
-        Authorization: "Bearer" + " " + secretkey,
+        Authorization: 'Bearer' + ' ' + secretkey,
       },
     })
       .then(function (data) {
@@ -68,10 +73,10 @@ export const GET = (
       .catch((error) => errorhandler(error));
   } else {
     fetch(root + controller, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
     })
       .then(function (data) {
@@ -92,13 +97,13 @@ export const PUT = (
   body: any = ""
 ) => {
   console.warn('=>>>>',body)
-  if (secretkey != "") {
+  if (secretkey !== '') {
     fetch(root + controller, {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer" + " " + secretkey,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer' + ' ' + secretkey,
       },
       body: JSON.stringify(body),
     })
@@ -110,12 +115,12 @@ export const PUT = (
       .catch((error) => errorhandler(error));
   } else {
     fetch(root + controller, {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer" + " " + secretkey,
-        "Accept-Language": lang,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer' + ' ' + secretkey,
+        'Accept-Language': lang,
       },
       body: JSON.stringify(body),
     })
@@ -138,12 +143,12 @@ export const DELETE = (
 ) => {
   if (secretkey != "") {
     fetch(root + controller, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer" + " " + secretkey,
-        "Accept-Language": lang,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer' + ' ' + secretkey,
+        'Accept-Language': lang,
       },
       body: JSON.stringify(body),
     })
@@ -156,12 +161,12 @@ export const DELETE = (
               );
   } else {
     fetch(root + controller, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer" + " " + secretkey,
-        "Accept-Language": lang,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer' + ' ' + secretkey,
+        'Accept-Language': lang,
       },
       body: JSON.stringify(body),
     })

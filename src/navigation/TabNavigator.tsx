@@ -16,16 +16,14 @@ import Profile_primary from '../assets/svg/Profile_primary.svg';
 import Card_Icon from '../assets/svg/Card.svg';
 import Card_Primary from '../assets/svg/Card_Primary.svg';
 import HomePrimary from '../assets/svg/HomePrimary.svg';
-import {
-  BottomTabDescriptorMap,
-  BottomTabNavigationHelpers,
-} from '@react-navigation/bottom-tabs/lib/typescript/src/types';
-import {NavigationState, ParamListBase} from '@react-navigation/native';
+import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
+import type {TabParamList} from './types';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CatalogSearch from '../screen/Catalog/CatalogSearchScreen';
 import Card from '../screen/Card/CardScreen';
 import Favorite from '../screen/Favorite/FavoriteScreen';
 import CatalogDetail from '../screen/Catalog/CatalogDetailScreen';
+import CatalogCategory from '../screen/Catalog/CatalogCategory';
 import ProfileScreen from '../screen/Profile/ProfileScreen';
 import MyOrderScreen from '../screen/Profile/MyOrderScreen';
 import SettingScreen from '../screen/Setting/SettingScreen';
@@ -37,35 +35,7 @@ import SupportServiceScreen from '../screen/Setting/SupportServiceScreen';
 import SettingItemScreen from '../screen/Setting/SettingItemScreen';
 import DeleteAccountScreen from '../screen/Setting/DeleteAccountScreen';
 import DeleteAccountVerifyScreen from '../screen/Setting/DeleteAccountVerifyScreen';
-type TabParamList = {
-  Home: undefined;
-  Catalog: undefined;
-  Search: undefined;
-  Profile: undefined;
-  CatalogScreen: undefined;
-  CardScreen: undefined;
-  FavoriteScreen: undefined;
-  CatalogDetail: undefined;
-  ProfileScreen: undefined;
-  MyOrder: undefined;
-  SettingScreen: undefined;
-  PaymentScreen: undefined;
-  BillingAddressScreen: undefined;
-  ShippingAddress: undefined;
-  OrderHistoryScreent: undefined;
-  SupportServiceScreen: undefined;
-  SettingItemScreen: undefined;
-  DeleteAccountScreen: undefined;
-  DeleteAccountVerifyScreen: undefined;
-};
-
 const Tab = createBottomTabNavigator<TabParamList>();
-
-interface CustomTabBarProps {
-  state: NavigationState<ParamListBase>;
-  descriptors: BottomTabDescriptorMap;
-  navigation: BottomTabNavigationHelpers;
-}
 const Stack = createNativeStackNavigator();
 const TabIcon: React.FC<{routeName: string; isFocused: boolean}> = ({
   routeName,
@@ -107,7 +77,7 @@ const TabIcon: React.FC<{routeName: string; isFocused: boolean}> = ({
   }
 };
 
-const CustomTabBar: React.FC<CustomTabBarProps> = ({
+const CustomTabBar: React.FC<BottomTabBarProps> = ({
   state,
   descriptors,
   navigation,
@@ -143,7 +113,6 @@ const CustomTabBar: React.FC<CustomTabBarProps> = ({
             accessibilityRole="button"
             accessibilityState={isFocused ? {selected: true} : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
-            testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}
             style={styles.tabButton}>
@@ -156,13 +125,18 @@ const CustomTabBar: React.FC<CustomTabBarProps> = ({
   );
 };
 
+const renderCustomTabBar = (props: BottomTabBarProps) => (
+  <CustomTabBar {...props} />
+);
+
 // Dedicated stack components to avoid inline functions in Tab.Screen component prop
 const CatalogStack = () => (
-  <Stack.Navigator screenOptions={{headerShown: false}}>
+  <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName="Catalog">
     <Stack.Screen name="Catalog" component={Catalog} />
     <Stack.Screen name="ChoosenCatalog" component={ChoosenCatalog} />
     <Stack.Screen name="CatalogSearch" component={CatalogSearch} />
     <Stack.Screen name="CatalogDetail" component={CatalogDetail} />
+    <Stack.Screen name="CatalogCategory" component={CatalogCategory} />
   </Stack.Navigator>
 );
 
@@ -194,6 +168,13 @@ const ProfileStack = () => (
   </Stack.Navigator>
 );
 
+
+const HomeStack = () => (
+  <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Screen name="Home" component={HomeScreen} />
+  </Stack.Navigator>
+);
+
 export default function AppTabs({
   initialRouteName = 'Home',
 }: {
@@ -203,8 +184,8 @@ export default function AppTabs({
     <Tab.Navigator
       initialRouteName={initialRouteName}
       screenOptions={{headerShown: false}}
-      tabBar={props => <CustomTabBar {...props} />}>
-      <Tab.Screen name="Home" component={HomeScreen} />
+      tabBar={renderCustomTabBar}>
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="CatalogScreen" component={CatalogStack} />
       <Tab.Screen name="CardScreen" component={CardStack} />
       <Tab.Screen name="FavoriteScreen" component={FavoriteStack} />

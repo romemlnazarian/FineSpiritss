@@ -34,7 +34,7 @@ export default function DeleteAccountVerifyScreen() {
 
       <BottomCardComponent
         title="Confirm"
-        onHandler={()=>console.log('confirm')}
+        onHandler={onSubmitConfirm}
         countdown
         countdownStart={3}
       />

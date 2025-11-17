@@ -4,21 +4,27 @@ import { Language } from '../utiles/Language/i18n';
 import useLocalizationStore from '../zustland/localizationStore';
 import { RootStackParamList } from '../navigation/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import useAuthStore from '../zustland/AuthStore';
+import { useToast } from '../utiles/Toast/ToastProvider';
 
 
 export default function SplashScreenLogic() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const {language} = useLocalizationStore();
+  const { isLoggedIn, token } = useAuthStore();
+  useToast(); // keep hook initialized if needed elsewhere
 
     useEffect(()=>{
-       // Directly call the localization function
        Language.setLanguage(language);
-       const timer = setTimeout(() => {
-        // navigation.navigate('AppTabs')
-        navigation.navigate('Wellcome')
-        
-       }, 2000);
-       return () => clearTimeout(timer);
-    },[language, navigation]);
+       if (isLoggedIn) {
+         navigation.navigate('AppTabs');
+       } else {
+         const timer = setTimeout(() => {
+           navigation.navigate('Wellcome');
+         }, 500);
+         return () => clearTimeout(timer);
+       }
+       return;
+   },[language, navigation, isLoggedIn, token]);
 
 }

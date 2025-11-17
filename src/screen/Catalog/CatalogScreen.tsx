@@ -1,100 +1,77 @@
-import {View, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
-import React, {useMemo, memo, useCallback} from 'react';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
+import React, {memo, useCallback, useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
-import Category_image from '../../assets/svg/category_image.svg';
 import CatalogLogic from '../../logic/Catalog/CatalogLogic';
-interface CategoryItem {
-  id: string;
-  title: string;
-  description: string;
-  productCount: number;
-}
-
 
 const CategoryScreen = memo(() => {
   const {Styles} = StyleComponent();
-  const {unSubmit} = CatalogLogic()
+  const {unSubmit, catalog, loadMore, isLoadingMore, isInitialLoading} =
+    CatalogLogic();
 
-  // Memoized category data
-  const categoryData = useMemo(
-    (): CategoryItem[] => [
-      {
-        id: '1',
-        title: 'Whiskey',
-        description: 'Premium whiskey collection from around the world',
-        productCount: 45,
-      },
-      {
-        id: '2',
-        title: 'Vodka',
-        description: 'Smooth and refined vodka selections',
-        productCount: 32,
-      },
-      {
-        id: '3',
-        title: 'Rum',
-        description: 'Caribbean and premium rum varieties',
-        productCount: 28,
-      },
-      {
-        id: '4',
-        title: 'Gin',
-        description: 'Craft gin with unique botanical blends',
-        productCount: 24,
-      },
-      {
-        id: '5',
-        title: 'Tequila',
-        description: 'Authentic Mexican tequila collection',
-        productCount: 18,
-      },
-      {
-        id: '6',
-        title: 'Cognac',
-        description: 'French cognac and brandy selection',
-        productCount: 22,
-      },
-      {
-        id: '7',
-        title: 'Wine',
-        description: 'Red, white, and sparkling wine collection',
-        productCount: 67,
-      },
-      {
-        id: '8',
-        title: 'Champagne',
-        description: 'Premium champagne and sparkling wines',
-        productCount: 15,
-      },
-    ],
-    [],
+  const renderCategoryItem = useCallback(
+    ({item}: {item: any}) => {
+      return (
+        <TouchableOpacity
+          style={styles.categoryItem}
+          onPress={() => unSubmit(item)}
+          activeOpacity={0.7}>
+          {item.cat_image && (
+            <Image
+              source={{
+                uri: item.cat_image,
+              }}
+              resizeMode="contain"
+              style={styles.categoryImage}
+            />
+          )}
+          <Text style={styles.categoryTitle}>{item.cat_name}</Text>
+        </TouchableOpacity>
+      );
+    },
+    [unSubmit],
   );
 
-
-
-  const renderCategoryItem = () => {
+  const listFooter = useMemo(() => {
+    if (!isLoadingMore) {
+      return null;
+    }
     return (
-      <TouchableOpacity
-        style={styles.categoryItem}
-        onPress={() => unSubmit()}
-        activeOpacity={0.7}>
-          <Category_image />
-      </TouchableOpacity>
-    )
-  }
+      <View style={styles.footerLoading}>
+        <ActivityIndicator size="small" color={Color.primary} />
+      </View>
+    );
+  }, [isLoadingMore]);
 
-  // Memoized key extractor
-  const keyExtractor = useCallback((item: CategoryItem) => item.id, []);
+  const listEmptyComponent = useMemo(() => {
+    if (!isInitialLoading) {
+      return null;
+    }
+    return (
+      <View style={styles.initialLoader}>
+        <Text style={styles.loadingText}>Loading categories...</Text>
+      </View>
+    );
+  }, [isInitialLoading]);
 
   return (
     <View style={[Styles.container]}>
-      <CustomHeader showBack={true} title='Catalog'/>
+      <CustomHeader showBack={true} title="Catalog" />
       <FlatList
-        data={categoryData}
+        data={catalog}
         renderItem={renderCategoryItem}
-        keyExtractor={keyExtractor}
+        keyExtractor={(item, index) =>
+          item?.id ? item.id.toString() : `cat-${index}`
+        }
         numColumns={2}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContainer}
@@ -104,6 +81,10 @@ const CategoryScreen = memo(() => {
         windowSize={10}
         initialNumToRender={6}
         updateCellsBatchingPeriod={50}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={listFooter}
+        ListEmptyComponent={listEmptyComponent}
       />
     </View>
   );
@@ -155,7 +136,8 @@ const styles = StyleSheet.create({
   },
   categoryTitle: {
     color: Color.black,
-    marginBottom: 4,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   categoryDescription: {
     color: Color.gray,
@@ -164,5 +146,23 @@ const styles = StyleSheet.create({
   },
   productCount: {
     color: Color.primary,
+  },
+  categoryImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+  },
+  initialLoader: {
+    width: '100%',
+    paddingVertical: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    marginTop: 8,
+    color: Color.black,
+  },
+  footerLoading: {
+    paddingVertical: 16,
   },
 });

@@ -1,18 +1,16 @@
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import type {NavigatorScreenParams} from '@react-navigation/native';
 
 export type AuthStackParamList = {
-  login: undefined;
   Signup:undefined
   Signin:undefined
   Splash: undefined
   VerificationCode:{
-    otp_id: number,
-    user_id: number,
     email: string,
-    otp_type: string
   }
-  PasswordVerification:undefined,
+  PasswordVerification:{
+    email: string,
+  },
   NumberVerification:{
     number: string
   },
@@ -21,36 +19,63 @@ export type AuthStackParamList = {
 };
 
 export type ButtonParamList = {
-  AppTabs:undefined,
-  Catalog:undefined,
-  ChoosenCatalog:undefined,
-  CatalogSearch:undefined,
+  AppTabs: undefined;
+  Catalog: {
+    item: any;
+  };
+  ChoosenCatalog: undefined;
+  CatalogSearch: undefined;
   CatalogDetail: {
-    product: {
-      id: string;
-      title: string;
-      description: string;
-      price: string;
-      originalPrice?: string;
-      discountPrice?: string;
-      image?: string;
-    };
-    quantity: number;
-  }};
- export type ProfileStackParamList = {
-  MyOrder: undefined,
-  Setting: undefined,
-  Payment: undefined,
-  BillingAddress: undefined,
-  ShippingAddress: undefined,
-  OrderHistory: undefined,
-  SupportService: undefined,
-  SettingItem: undefined,
-  DeleteAccount: undefined,
-  DeleteAccountVerify: undefined,
- };
+    product: any;
+    quantity?: number;
+  } | undefined;
+  CatalogCategory: {
+    item?: any;
+  } | undefined;
+  CatalogScreen:
+    | {
+        screen?: string;
+        params?: Record<string, any>;
+      }
+    | undefined;
+};
+
+export type CatalogStackParamList = {
+  Catalog: undefined;
+  ChoosenCatalog: undefined;
+  CatalogSearch: undefined;
+  CatalogDetail: {
+    product: any;
+    quantity?: number;
+  } | undefined;
+  CatalogCategory: {
+    item?: any;
+  } | undefined;
+};
+
+export type TabParamList = {
+  Home: undefined;
+  CatalogScreen: NavigatorScreenParams<CatalogStackParamList> | undefined;
+  CardScreen: undefined;
+  FavoriteScreen: undefined;
+  ProfileScreen: undefined;
+};
+
+export type ProfileStackParamList = {
+ MyOrder: undefined,
+ Setting: undefined,
+ Payment: undefined,
+ BillingAddress: undefined,
+ ShippingAddress: undefined,
+ OrderHistory: undefined,
+ SupportService: undefined,
+ SettingItem: undefined,
+ DeleteAccount: undefined,
+ DeleteAccountVerify: undefined,
+};
 
 export type RootStackParamList = AuthStackParamList & ButtonParamList & ProfileStackParamList;
 export type AuthScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, keyof AuthStackParamList>;
 export type ButtonScreenNavigationProp = NativeStackNavigationProp<ButtonParamList, keyof ButtonParamList>;
 export type ProfileScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList, keyof ProfileStackParamList>;
+export type CatalogStackNavigationProp = NativeStackNavigationProp<CatalogStackParamList, keyof CatalogStackParamList>;

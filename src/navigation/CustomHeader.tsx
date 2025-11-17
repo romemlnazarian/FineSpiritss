@@ -12,9 +12,10 @@ type CustomHeaderProps = {
   icon?: React.ReactNode;
   onHandler?: () => void;
   description?: string;
+  onSubmitBack?: () => void;
 };
 
-export default function CustomHeader({ title, showBack = false, icon, onHandler, subTitle, description }: CustomHeaderProps) {
+export default function CustomHeader({ title, showBack = false, icon, onHandler, subTitle, description, onSubmitBack }: CustomHeaderProps) {
   const navigation = useNavigation();
   const {Styles} = StyleComponent()
   return (
@@ -22,7 +23,7 @@ export default function CustomHeader({ title, showBack = false, icon, onHandler,
       <View style={styles.leftContainer}>
       {showBack && (
         <View style={{flexDirection:'row', alignItems:'center', gap:10}}>
-          <TouchableOpacity onPress={() => navigation.goBack()} >
+          <TouchableOpacity onPress={ onSubmitBack ? onSubmitBack : () => navigation.goBack()} >
           <Arrow width={30} height={30}/>
         </TouchableOpacity>
         <View>

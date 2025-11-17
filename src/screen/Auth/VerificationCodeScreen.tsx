@@ -1,4 +1,4 @@
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, Platform} from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import CodeInput from '../../component/CodeInput';
@@ -6,38 +6,58 @@ import VerificationCodeLogic from '../../logic/VerificationCodeLogic';
 import CustomHeader from '../../navigation/CustomHeader';
 import LogoComponent from '../../component/LogoComponent';
 import TextView from '../../component/TextView';
-import Counter from '../../component/Counter';
-export default function VerificationCodeScreen() {
-  const {onCodeHandle, codeValid, timer, setDisableTimer, setDisable, disable} =
-    VerificationCodeLogic();
+import {Language} from '../../utiles/Language/i18n';
+import Timer from '../../Helper/Timer';
+import TimerAndroid from '../../Helper/TimerAndroid';
+
+export default function VerificationCodeScreen(route: any) {
+  const {
+    onCodeHandle,
+    codeValid,
+    restartKey,
+    setRestartKey,
+    setDisableTimer,
+    DisableTimer,
+    email,
+    ResendCode,
+  } = VerificationCodeLogic(route);
   const {Styles} = StyleComponent();
   return (
     <View style={Styles.container}>
       <CustomHeader showBack={true} />
       <LogoComponent />
       <TextView
-        title={'Please check your email'}
+        title={Language.Check_your_email_title}
         style={[Styles.h3_Bold, styles.titleStyle]}
       />
       <TextView
-        title={'We’ve sent a code to FineSpirits@gmail.com'}
+        title={`${Language.We_sent_code_to} ${email}`}
         style={[Styles.title_Regular, styles.subtitleStyle]}
       />
       <CodeInput isCodeValid={codeValid} onCodePress={e => onCodeHandle(e)} />
       <View style={styles.counterContainer}>
-        {!disable && (
+        <TouchableOpacity onPress={ResendCode} disabled={DisableTimer}>
           <Text style={[Styles.title_Medium, styles.sendCodeAgainText]}>
-            send code againe
+            {Language.Send_code_again}
           </Text>
+        </TouchableOpacity>
+        {Platform.OS === 'ios' ? (
+          <Timer
+            restartKey={restartKey}
+            onCountdownComplete={() => {
+              setDisableTimer(false);
+              setRestartKey(false);
+            }}
+          />
+        ) : (
+          <TimerAndroid
+            restartKey={restartKey}
+            onCountdownComplete={() => {
+              setDisableTimer(false);
+              setRestartKey(false);
+            }}
+          />
         )}
-
-        <Counter
-          key={timer}
-          onValueChange={() => {
-            setDisable(true);
-            setDisableTimer(true);
-          }}
-        />
       </View>
     </View>
   );

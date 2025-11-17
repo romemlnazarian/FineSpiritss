@@ -36,7 +36,7 @@ export default function SignupScreen() {
     setOpen,
     loading,
     selectedDate,
-    formatDate,
+    formatDate,onSubmitSignIn
   } = SignupLogic();
 
   return (
@@ -154,7 +154,7 @@ export default function SignupScreen() {
           color={Color.black}
           style={[Styles.title_Regular]}
         />
-        <TouchableOpacity activeOpacity={0.5} onPress={() => setOpen(true)}>
+        <TouchableOpacity activeOpacity={0.5} onPress={onSubmitSignIn}>
           <TextView
             title={Language.singIn}
             color={Color.primary}

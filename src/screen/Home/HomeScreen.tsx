@@ -1,12 +1,13 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useMemo, lazy, Suspense} from 'react';
+import React, {lazy, Suspense} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import ModalCard from '../../component/ModalCard';
 import HomeLogic from '../../logic/HomeLogic';
-import HomeHeader from '../../component/HomeHeader';
 import Start from '../../assets/svg/Star_Icon.svg';
 import {Color} from '../../utiles/color';
 import BottomCardComponent from '../../component/BottomCard';
+import useAuthStore from '../../zustland/AuthStore';
+import HomeHeader from '../../component/HomeHeader';
 
 // Lazy load heavy components
 const Slider = lazy(() => import('../../component/HomeCamponent/Slider'));
@@ -15,13 +16,7 @@ const HomeSort = lazy(() => import('../../component/HomeCamponent/HomeSort'));
 const ScrollCard = lazy(() => import('../../component/HomeCamponent/ScrollCard'));
 const VerticalScroll = lazy(() => import('../../component/HomeCamponent/VerticalScroll'));
 
-interface ProductItem {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-  originalPrice?: string;
-}
+
 
 // Loading component for lazy loaded components
 const ComponentLoader = () => (
@@ -30,44 +25,6 @@ const ComponentLoader = () => (
   </View>
 );
 
-// Memoized product data to prevent recreation on every render
-const productData: ProductItem[] = [
-  {
-    id: 'p1',
-    title: 'Cognac Hennessy1',
-    description: 'France ABV 40%',
-    price: '$199.99',
-    originalPrice: '$250.00',
-  },
-  {
-    id: 'p2',
-    title: 'Whiskey Jameson2',
-    description: 'Ireland ABV 40%',
-    price: '$49.99',
-    originalPrice: '$60.00',
-  },
-  {
-    id: 'p3',
-    title: 'Vodka Absolut',
-    description: 'Sweden ABV 40%',
-    price: '$29.99',
-    originalPrice: '$35.00',
-  },
-  {
-    id: 'p4',
-    title: 'Vodka Absolut',
-    description: 'Sweden ABV 40%',
-    price: '$29.99',
-    originalPrice: '$35.00',
-  },
-  {
-    id: 'p5',
-    title: 'Vodka Absolut',
-    description: 'Sweden ABV 40%',
-    price: '$29.99',
-    originalPrice: '$35.00',
-  },
-];
 // Memoized bonus section to prevent unnecessary re-renders
 const BonusSection = React.memo(() => {
   const {Styles} = StyleComponent();
@@ -110,22 +67,19 @@ const SpecialOffersSection = React.memo(() => {
 
 export default function HomeScreen() {
   const {Styles} = StyleComponent();
-  const {onSubmitClose, visible} = HomeLogic();
-
-  // Memoize the product data to prevent recreation
-  const memoizedProductData = useMemo(() => productData, []);
-
+  const {onSubmitClose, visible,categories,topBrands,isCategoriesLoading,onSubmitCategory} = HomeLogic();
+ const {ageConfirmed} = useAuthStore();
   return (
     <View style={[Styles.container, Styles.alignCenter]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <HomeHeader />
-         <ModalCard isVisible={visible} onClose={onSubmitClose} />
+          <ModalCard isVisible={visible && !ageConfirmed} onClose={onSubmitClose} />
 
       <Suspense fallback={<ComponentLoader />}>
           <Slider />
         </Suspense>
-        <Suspense fallback={<ComponentLoader />}>
-        <HomeCategory />
+      <Suspense fallback={<ComponentLoader />}>
+        {isCategoriesLoading ? <ComponentLoader /> : <HomeCategory data={categories} onSubmitCategory={onSubmitCategory}/>}
         </Suspense>
 
          <Suspense fallback={<ComponentLoader />}>
@@ -136,11 +90,11 @@ export default function HomeScreen() {
         <SpecialOffersSection />
 
        <Suspense fallback={<ComponentLoader />}>
-          <ScrollCard />
+          <ScrollCard data={topBrands}/>
         </Suspense>
 
-        <Suspense fallback={<ComponentLoader />}>
-          <VerticalScroll item={memoizedProductData} />
+       <Suspense fallback={<ComponentLoader />}>
+          {isCategoriesLoading ? <ComponentLoader /> : <VerticalScroll item={categories} />}
         </Suspense>
       </ScrollView>
     </View>

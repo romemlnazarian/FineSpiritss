@@ -1,14 +1,10 @@
-import { View, Text } from 'react-native'
 import React from 'react'
-import { StyleComponent } from '../utiles/styles'
-import ArrowDown from '../assets/svg/ArrowsDown.svg'
-import { Color } from '../utiles/color'
+import LogoComponent from './LogoComponent'
+import { View } from 'react-native'
 export default function HomeHeader() {
-    const {Styles} = StyleComponent()
   return (
-    <View style={[Styles.card,Styles.alignCenter,{borderColor:Color.background}]}>
-      <Text style={[Styles.title_Medium,{marginLeft:'2%'}]}>Warsaw</Text>
-       <ArrowDown />
+    <View style={{flexDirection:'row', justifyContent:'flex-end', alignItems:'center'}}>
+      <LogoComponent width={150} height={100} style={{marginRight:'5%'}}/>
     </View>
   )
 }

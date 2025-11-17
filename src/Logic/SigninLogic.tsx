@@ -3,10 +3,17 @@ import * as Yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
 import {AuthScreenNavigationProp} from '../navigation/types';
+import { useState } from 'react';
+import { SingInModel } from '../model/Auth/SingInModel';
+import { useToast } from '../utiles/Toast/ToastProvider';
+import useAuthStore from '../zustland/AuthStore';
 
 export const SigninLogic = () => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
-
+  const [loading, setLoading] = useState(false);
+  const {show} = useToast();
+  const {setToken,setRefreshToken,setIsLoggedIn,setUserData} = useAuthStore();
+  
   const validationSchema = Yup.object().shape({
     password: Yup.string().trim().required('Required'),
     email: Yup.string()
@@ -20,10 +27,11 @@ export const SigninLogic = () => {
     handleSubmit,
     formState: {errors},
     getValues,
+    reset,
   } = useForm({
     defaultValues: {
-      password: '',
       email: '',
+      password: '',
 
     },
     mode: 'onSubmit',
@@ -32,17 +40,26 @@ export const SigninLogic = () => {
 
   const onSubmit = async () => {
     const values = getValues();
-    console.log('==>', values);
-    navigation.navigate('VerificationCode')
+    setLoading(true);
+    SingInModel(values.email.trim(), values.password.trim(), (data) => {  
+      setToken(data.access);
+      setRefreshToken(data.refresh);
+      setUserData({ email: values.email.trim(), password: values.password.trim() });
+      setIsLoggedIn(true);
+      setLoading(false);
+      navigation.navigate('AppTabs');
+      reset({ email: '', password: '' });
+    }, (error) => {
+      show(String(error));
+      setLoading(false);
+    });
   };
 
   const onSubmitForgetPass = async () => {
-    const values = getValues();
-    console.log('==>', values);
-    navigation.navigate('ForgetPassword')
+    navigation.navigate('ForgetPassword');
   };
   const onSubmitSignUp = async () => {
-    navigation.navigate('Signup')
+    navigation.navigate('Signup');
   };
   
   return {
@@ -51,6 +68,7 @@ export const SigninLogic = () => {
     errors,
     onSubmit,
     onSubmitForgetPass,
-    onSubmitSignUp
+    onSubmitSignUp,
+    loading,
   };
 };

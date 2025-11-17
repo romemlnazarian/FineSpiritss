@@ -5,13 +5,15 @@ import LogoComponent from './LogoComponent';
 import { Color } from '../utiles/color';
 import { Language } from '../utiles/Language/i18n';
 import BottomCardComponent from './BottomCard';
+import useAuthStore from '../zustland/AuthStore';
 interface ModalCardProps {
   isVisible: boolean;
   onClose: () => void;
 }
 
 export default function ModalCard({ isVisible, onClose }: ModalCardProps) {
- const {Styles} = StyleComponent()
+ const {Styles} = StyleComponent();
+ const { setAgeConfirmed } = useAuthStore();
   return (
     <Modal
       animationType="fade"
@@ -35,7 +37,10 @@ export default function ModalCard({ isVisible, onClose }: ModalCardProps) {
          </Text>
          <BottomCardComponent
         title={Language.modal_enter_button}
-        onHandler={()=>onClose()}
+        onHandler={()=>{
+          setAgeConfirmed(true);
+          onClose();
+        }}
         style={styles.buttonComponent}
         textStyle={{color:Color.white}}
       />
@@ -83,15 +88,15 @@ const styles = StyleSheet.create({
   },
   buttonComponent: {
     marginTop: '10%',
-    width:'95%'
+    width:'95%',
   },
   modalTitleText: {
     marginTop:'5%',
-    color:Color.black
+    color:Color.black,
   },
   modalAgeConfirmationText: {
     marginTop:'2%',
-    color:Color.primary
+    color:Color.primary,
   },
   noButtonMarginTop: {
     marginTop: 10,
@@ -99,6 +104,6 @@ const styles = StyleSheet.create({
   modalTermsAndConditionsText: {
     textAlign: 'center',
     marginTop: 10,
-    color: Color.gray
-  }
+    color: Color.gray,
+  },
 });
