@@ -1,33 +1,57 @@
-import {View, Text, StyleSheet, FlatList,TextInput, TouchableOpacity, ViewStyle} from 'react-native';
-import React, {useState, useCallback, useMemo, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  ViewStyle,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useState, useCallback, useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import Viski from '../../assets/svg/viski.svg';
 import Heart from '../../assets/svg/Heart.svg';
 import Arrow from '../../assets/svg/Arrows.svg';
-import Cancel from '../../assets/svg/Cancel.svg';
+import useAuthStore from '../../zustland/AuthStore';
+import {
+  DeleteSearchProductsHistoryModel,
+  getSearchProductsHistoryModel,
+  getSearchProductsModel,
+} from '../../model/Catalog/Catalog';
+import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
+import { useNavigation } from '@react-navigation/native';
 interface ProductItem {
   id: string;
   title: string;
   country: string;
   alcoholContent: string;
   price: string;
+  slug?: string;
 }
 
 // Memoized Product Card Component
 const ProductCard = React.memo(({item}: {item: ProductItem}) => {
+  console.log('item =>', item);
   const {Styles} = StyleComponent();
-
+  const navigation: any = useNavigation();
   return (
-    <View style={[Styles.justifyBetween, styles.mainContainer]}>
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate('CatalogDetail', {
+          product: item,
+        });
+      }}
+      style={[Styles.justifyBetween, styles.mainContainer]}>
       <View style={[Styles.justifyCenter, styles.leftSection]}>
         <Viski width={50} height={100} />
         <View style={styles.productInfo}>
-          <Text style={[Styles.h5_SemiBold]}>{item.title}</Text>
+          <Text style={[Styles.h6_SemiBold]} numberOfLines={1} ellipsizeMode="tail">{item.title}</Text>
           <View style={styles.detailsContainer}>
-            <Text style={[Styles.subtitle_Regular]}>{item.country}</Text>
+            <Text style={[Styles.subtitle_Regular,{color:Color.gray}]}>{item.country}</Text>
             <View style={styles.separator} />
-            <Text style={[Styles.subtitle_Regular]}>{item.alcoholContent}</Text>
+            <Text style={[Styles.subtitle_Regular,{color:Color.gray}]}>{item.alcoholContent}</Text>
           </View>
           <Text style={[Styles.body_SemiBold]}>{item.price}</Text>
         </View>
@@ -35,17 +59,18 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
       <View style={styles.heartContainer}>
         <Heart fill={Color.white} />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 });
 
+
+
 export default function CatalogSearch() {
   const {Styles} = StyleComponent();
+  const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredSuggestions, setFilteredSuggestions] = useState<ProductItem[]>([]);
-  const [displayedProductData, setDisplayedProductData] = useState<ProductItem[]>([]);
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  // Sample data - replace with your actual data
+  const [filteredSuggestions, setFilteredSuggestions] =
+    useState<ProductItem[]>([]);
   const productData = useMemo(
     () => [
       {
@@ -54,6 +79,7 @@ export default function CatalogSearch() {
         country: 'Argentina',
         alcoholContent: '18.5% Alc By Vol',
         price: '$37.70',
+        slug: 'domaines-ott-etoile',
       },
       {
         id: '2',
@@ -61,6 +87,7 @@ export default function CatalogSearch() {
         country: 'France',
         alcoholContent: '13.5% Alc By Vol',
         price: '$89.99',
+        slug: 'chateau-margaux',
       },
       {
         id: '3',
@@ -68,6 +95,7 @@ export default function CatalogSearch() {
         country: 'USA',
         alcoholContent: '14.2% Alc By Vol',
         price: '$125.50',
+        slug: 'opus-one',
       },
       {
         id: '4',
@@ -75,29 +103,162 @@ export default function CatalogSearch() {
         country: 'Australia',
         alcoholContent: '14.8% Alc By Vol',
         price: '$199.99',
+        slug: 'penfolds-grange',
       },
     ],
     [],
   );
+  const [displayedProductData, setDisplayedProductData] =
+    useState<ProductItem[]>(productData);
+  const [isSearching, setIsSearching] = useState(false);
 
-  const handleSearch = useCallback((text: string) => {
-    setSearchTerm(text);
-    if (text.length > 0) {
-      const filtered = productData.filter(item =>
-        item.title.toLowerCase().startsWith(text.toLowerCase())
+  const normalizeProducts = useCallback((data: any[]): ProductItem[] => {
+    return (data ?? []).map((item: any, index: number) => ({
+      id: String(item?.id ?? item?.slug ?? item?.sku ?? `${item?.title ?? 'item'}-${index}`),
+      title: item?.title ?? item?.name ?? 'Untitled product',
+      country: item?.country ?? item?.key_details?.country ?? '',
+      alcoholContent: item?.abv ? `${item.abv}% Alc By Vol` : '',
+      price:
+        item?.regular_price ??
+        item?.price ??
+        item?.sale_price ??
+        item?.display_price ??
+        '',
+      slug: item?.slug ?? item?.id ?? '',
+    }));
+  }, []);
+
+  const normalizeHistoryItems = useCallback((data: any[]): ProductItem[] => {
+    return (data ?? []).map((item: any, index: number) => ({
+      id: String(item?.id ?? item?.slug ?? `${item?.title ?? 'history'}-${index}`),
+      title: item?.title ?? item?.query ?? 'Untitled',
+      country: item?.country ?? '',
+      alcoholContent: '',
+      price: '',
+      slug: item?.slug ?? item?.id ?? '',
+    }));
+  }, []);
+
+  const fetchSearchResults = useCallback(
+    (query: string) => {
+      if (!query || query.length < 3) {
+        return;
+      }
+
+      setIsSearching(true);
+
+      const handleSuccess = (payload: any) => {
+        console.log('getSearchProductsModel payload =>', payload);
+        setIsSearching(false);
+        const raw = Array.isArray(payload?.results)
+          ? payload.results
+          : Array.isArray(payload)
+          ? payload
+          : [];
+        const mapped = normalizeProducts(raw);
+        setFilteredSuggestions(mapped);
+        setDisplayedProductData(mapped);
+      };
+
+      const handleError = () => {
+        setIsSearching(false);
+      };
+
+      getSearchProductsModel(
+        token,
+        query,
+        handleSuccess,
+        () =>
+          refreshTokenModel(
+            refreshToken,
+            newTokens => {
+              setToken(newTokens.access);
+              setRefreshToken(newTokens.refresh);
+              getSearchProductsModel(
+                newTokens.access,
+                query,
+                handleSuccess,
+                handleError,
+              );
+            },
+            handleError,
+          ),
       );
-      setFilteredSuggestions(filtered);
-    } else {
-      setFilteredSuggestions([]);
-      setDisplayedProductData(productData);
-    }
-  }, [productData]);
+    },
+    [token, refreshToken, setToken, setRefreshToken, normalizeProducts],
+  );
 
-  useEffect(() => {
-    if (searchTerm === '') {
-      setDisplayedProductData(productData);
-    }
-  }, [productData, searchTerm]);
+  const fetchSearchHistory = useCallback(
+    (query: string) => {
+      getSearchProductsHistoryModel(
+        token,
+        query,
+        (payload: any) => {
+          const raw = Array.isArray(payload?.results)
+            ? payload.results
+            : Array.isArray(payload)
+            ? payload
+            : payload?.data ?? [];
+          const normalized = normalizeHistoryItems(raw);
+          setFilteredSuggestions(normalized);
+          setDisplayedProductData(
+            normalized.length > 0 ? normalized : productData,
+          );
+        },
+        () =>
+          refreshTokenModel(
+            refreshToken,
+            newTokens => {
+              setToken(newTokens.access);
+              setRefreshToken(newTokens.refresh);
+              getSearchProductsHistoryModel(
+                newTokens.access,
+                query,
+                (payload: any) => {
+                  const raw = Array.isArray(payload?.results)
+                    ? payload.results
+                    : Array.isArray(payload)
+                    ? payload
+                    : payload?.data ?? [];
+                  const normalized = normalizeHistoryItems(raw);
+                  setFilteredSuggestions(normalized);
+                  setDisplayedProductData(
+                    normalized.length > 0 ? normalized : productData,
+                  );
+                },
+                err => console.log('history error =>', err),
+              );
+            },
+            err => console.log('history refresh error =>', err),
+          ),
+      );
+    },
+    [
+      token,
+      refreshToken,
+      setToken,
+      setRefreshToken,
+      normalizeHistoryItems,
+      productData,
+    ],
+  );
+
+  const handleSearch = useCallback(
+    (text: string) => {
+      setSearchTerm(text);
+      if (text.length >= 3) {
+        fetchSearchResults(text);
+      } else {
+        if (text.length === 0) {
+          setFilteredSuggestions([]);
+          setDisplayedProductData(productData);
+        } else {
+          fetchSearchHistory(text);
+        }
+      }
+    },
+    [fetchSearchResults, fetchSearchHistory, productData],
+  );
 
   const renderProductItem = useCallback(
     ({item}: {item: ProductItem}) => <ProductCard item={item} />,
@@ -122,32 +283,51 @@ export default function CatalogSearch() {
         style={[
           styles.textInputContainer,
           Styles.body_Regular,
-          getTextInputWidthStyle(filteredSuggestions.length > 0),
+          getTextInputWidthStyle(filteredSuggestions.length > 0 || isSearching),
         ]}
         value={searchTerm}
         onChangeText={handleSearch}
         onFocus={() => {
           if (searchTerm === '') {
-            setFilteredSuggestions(searchHistory.map(term => ({
-              id: term, // Using term as ID for history items, assuming uniqueness or just for display
-              title: term,
-              country: '', // Placeholder for history items
-              alcoholContent: '',
-              price: '',
-            })));
+            fetchSearchHistory('');
           }
         }}
       />
+      {isSearching && (
+        <ActivityIndicator
+          size="small"
+          color={Color.primary}
+          style={styles.searchLoader}
+        />
+      )}
+      </View>
+      <View style={styles.separatorLine} />
       {filteredSuggestions.length > 0 && (
         <TouchableOpacity
-          onPress={() => handleSearch('')}
-          style={styles.cancelContainer}
-        >
-          <Cancel width={24} height={24}/>
+          style={styles.cleanButton}
+          onPress={() => {
+            setSearchTerm('');
+            setFilteredSuggestions([]);
+            setDisplayedProductData(productData);
+            DeleteSearchProductsHistoryModel(token, () => {
+              console.log('DeleteSearchProductsHistoryModel success');
+            }, (error) => {
+              refreshTokenModel(refreshToken, (newTokens) => {
+                setToken(newTokens.access);
+                setRefreshToken(newTokens.refresh);
+                DeleteSearchProductsHistoryModel(newTokens.access, () => {
+                  console.log('DeleteSearchProductsHistoryModel success');
+                }, (error) => {
+                  console.log('DeleteSearchProductsHistoryModel error =>', error);
+                });
+              });
+            });
+          }}>
+          <Text style={[Styles.h6_Regular, styles.cleanButtonText]}>Clean</Text>
         </TouchableOpacity>
       )}
 
-      </View>
+      <View>
       {filteredSuggestions.length > 0 && (
         <FlatList
           data={filteredSuggestions}
@@ -155,11 +335,8 @@ export default function CatalogSearch() {
             <TouchableOpacity onPress={() => {
               setSearchTerm(item.title);
               setFilteredSuggestions([]);
-              setDisplayedProductData([item]);
-              setSearchHistory(prevHistory => {
-                const newHistory = [item.title, ...prevHistory.filter(term => term !== item.title)];
-                return newHistory.slice(0, 5); // Limit history to 5 items
-              });
+              setDisplayedProductData(productData);
+              fetchSearchResults(item.title);
             }}>
               <Text style={[styles.suggestionItem, Styles.body_Regular]}>{item.title}</Text>
             </TouchableOpacity>
@@ -168,11 +345,7 @@ export default function CatalogSearch() {
           style={styles.suggestionsList}
         />
       )}
-
-      <View
-        style={styles.separatorLine}
-      />
-
+ 
       <FlatList
         data={displayedProductData}
         renderItem={renderProductItem}
@@ -192,10 +365,10 @@ export default function CatalogSearch() {
         scrollEventThrottle={16}
         decelerationRate="fast"
       />
+           </View>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   cancelContainer: {
     marginTop: 10,
@@ -208,6 +381,20 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  cleanButton: {
+    position: 'absolute',
+    right: 10,
+    top: 70,
+    zIndex: 100,
+  },
+  cleanButtonText: {
+    color: Color.gray,
+    marginTop: 20,
+  },
+  searchLoader: {
+    marginTop: 10,
+    marginLeft: 8,
   },
   textInputContainer: {
     marginTop: 10,
@@ -234,6 +421,7 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: 'space-around',
     marginLeft: '5%',
+    width: '70%',
   },
   detailsContainer: {
     flexDirection: 'row',
@@ -262,7 +450,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 5,
     marginHorizontal: 10,
-    maxHeight: 150,
+    maxHeight: 320,
     shadowColor: Color.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
@@ -274,4 +462,3 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
 });
- 

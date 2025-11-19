@@ -18,7 +18,7 @@ export const Register = (
         (data) => {
           const anyData: any = data;
           if (anyData && typeof anyData === 'object') {
-            if ('detail' in anyData) {
+            if ('email' in anyData) {
               if (anyData.detail) {
                 callback(anyData);
               } else {

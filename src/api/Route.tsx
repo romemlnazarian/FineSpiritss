@@ -16,6 +16,14 @@
   get_filter_data: string;
   filter_products: string;
   product_detail: string;
+  search_products: string;
+  search_products_history: string;
+  delete_search_products_history: string;
+  home_advertising: string;
+  home_best_sales: string;
+  home_new: string;
+  home_for_gift: string;
+  home_recommended: string;
 }
 
 export const Route: RouteObj = {
@@ -36,4 +44,12 @@ export const Route: RouteObj = {
     get_filter_data: 'product/products/category/',
     filter_products: 'product/products/category/',
     product_detail: 'product/products/',
+    search_products: 'product/products/search/product/',
+    search_products_history: 'product/products/search/suggestions/',
+    delete_search_products_history: 'product/search/history/',
+    home_advertising:'product/home-advertising/',
+    home_best_sales:"product/best-sales/",
+    home_new:"product/new/",
+    home_for_gift:"product/for-gift/",
+    home_recommended:"product/recommended/"
 };

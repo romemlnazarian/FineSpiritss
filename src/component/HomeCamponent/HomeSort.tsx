@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
-import React, {useState, useMemo, useCallback, memo} from 'react';
+import React, {useState, useMemo, useCallback, memo, useEffect} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import ProductCard from './ProductCard';
@@ -37,9 +37,21 @@ const SortItem = memo(({item, isSelected, onPress}: {
 });
 
 // Memoized product item renderer
-const ProductItemRenderer = memo(({item}: {item: ProductItem}) => (
-  <ProductCard item={item} cardStyle={styles.productCardContainer} />
-));
+const ProductItemRenderer = memo(
+  ({
+    item,
+    onSubmitProduct,
+  }: {
+    item: ProductItem;
+    onSubmitProduct?: (item: ProductItem) => void;
+  }) => (
+    <ProductCard
+      item={item}
+      cardStyle={styles.productCardContainer}
+      onPress={() => onSubmitProduct?.(item)}
+    />
+  ),
+);
 
 // Memoized header component
 const SortHeader = memo(() => {
@@ -53,60 +65,58 @@ const SortHeader = memo(() => {
   );
 });
 
-const HomeSort = memo(() => {
-  // Memoize data arrays to prevent recreation on every render
-  const sortData = useMemo(() => [
-    {id: '1', title: 'Popular'},
-    {id: '2', title: 'Newest'},
-    {id: '3', title: 'Price Low to High'},
-    {id: '4', title: 'Price High to Low'},
-    {id: '5', title: 'Top Rated'},
-  ], []);
+const HomeSort = memo(
+  ({
+    onClick,
+    data = [],
+    loading = false,
+    onSubmitProduct,
+  }: {
+    onClick?: (id: string) => void;
+    data?: ProductItem[];
+    loading?: boolean;
+    onSubmitProduct?: (item: ProductItem) => void;
+  }) => {
+    const sortData = useMemo(
+      () => [
+        {id: '1', title: 'Best Sales'},
+        {id: '2', title: 'New'},
+        {id: '3', title: 'For Gift'},
+      ],
+      [],
+    );
 
-  const productData = useMemo((): ProductItem[] => [
-    {
-      id: 'p1',
-      title: 'Cognac Hennessy1',
-      description: 'France ABV 40%',
-      price: '$199.99',
-      originalPrice: '$250.00',
-    },
-    {
-      id: 'p2',
-      title: 'Whiskey Jameson2',
-      description: 'Ireland ABV 40%',
-      price: '$49.99',
-      originalPrice: '$60.00',
-    },
-    {
-      id: 'p3',
-      title: 'Vodka Absolut',
-      description: 'Sweden ABV 40%',
-      price: '$29.99',
-      originalPrice: '$35.00',
-    },
-    {
-      id: 'p4',
-      title: 'Vodka Absolut',
-      description: 'Sweden ABV 40%',
-      price: '$29.99',
-      originalPrice: '$35.00',
-    },
-    {
-      id: 'p5',
-      title: 'Vodka Absolut',
-      description: 'Sweden ABV 40%',
-      price: '$29.99',
-      originalPrice: '$35.00',
-    },
-  ], []);
+    const productData = useMemo(
+      (): ProductItem[] => [
+        {
+          id: 'p1',
+          title: 'Sample product',
+          description: 'Sample description',
+          price: '$0.00',
+        },
+      ],
+      [],
+    );
 
-  const [selectedItemId, setSelectedItemId] = useState(sortData[0].id);
+    const [selectedItemId, setSelectedItemId] = useState(sortData[0].id);
+
+    const displayData = useMemo(() => {
+      const source = data?.length ? data : productData;
+      return Array.isArray(source) ? source.slice(0, 4) : [];
+    }, [data, productData]);
+
+    useEffect(() => {
+      if (!data?.length) {
+        onClick?.(selectedItemId);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
   // Memoized callback for sort item selection
   const handleSortSelection = useCallback((id: string) => {
     setSelectedItemId(id);
-  }, []);
+    onClick?.(id);
+  }, [onClick]);
 
   // Memoized render functions
   const renderSortItem = useCallback(({item}: {item: {id: string; title: string}}) => (
@@ -117,13 +127,11 @@ const HomeSort = memo(() => {
     />
   ), [selectedItemId, handleSortSelection]);
 
-  const renderProductItem = useCallback(({item}: {item: ProductItem}) => (
-    <ProductItemRenderer item={item} />
-  ), []);
-
   // Memoized key extractors
-  const sortKeyExtractor = useCallback((item: {id: string; title: string}) => item.id, []);
-  const productKeyExtractor = useCallback((item: ProductItem) => item.id, []);
+  const sortKeyExtractor = useCallback(
+    (item: {id: string; title: string}) => item.id,
+    [],
+  );
 
   return (
     <View style={styles.categoryContainer}>
@@ -140,13 +148,28 @@ const HomeSort = memo(() => {
         windowSize={5}
         initialNumToRender={3}
         updateCellsBatchingPeriod={50}
-        getItemLayout={(data, index) => ({
+        getItemLayout={(_data, index) => ({
           length: 100,
           offset: 100 * index,
           index,
         })}
       />
-      <FlatList
+      {loading ? (
+        <View style={styles.loaderContainer}>
+          <Text>Loading...</Text>
+        </View>
+      ) : (
+        <View style={styles.productGridContainer}>
+          {(Array.isArray(displayData) ? displayData : []).map(item => (
+            <ProductItemRenderer
+              key={item.id}
+              item={item}
+              onSubmitProduct={onSubmitProduct}
+            />
+          ))}
+        </View>
+      )}
+      {/* <FlatList
         data={productData}
         renderItem={renderProductItem}
         keyExtractor={productKeyExtractor}
@@ -165,30 +188,11 @@ const HomeSort = memo(() => {
           offset: 255 * index,
           index,
         })}
-      />
-      <FlatList
-        data={productData}
-        renderItem={renderProductItem}
-        keyExtractor={productKeyExtractor}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.productFlatListContainer}
-        onStartShouldSetResponderCapture={() => false}
-        onMoveShouldSetResponderCapture={() => true}
-        removeClippedSubviews={true}
-        maxToRenderPerBatch={3}
-        windowSize={5}
-        initialNumToRender={2}
-        updateCellsBatchingPeriod={50}
-        getItemLayout={(data, index) => ({
-          length: 255,
-          offset: 255 * index,
-          index,
-        })}
-      />
+      /> */}
     </View>
   );
-});
+  },
+);
 
 export default HomeSort;
 
@@ -235,8 +239,25 @@ const styles = StyleSheet.create({
   productFlatListContainer: {
     marginTop: '5%',
   },
+  productGridContainer: {
+    width: '100%',
+    marginTop: '5%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
   productCardContainer: {
-    marginRight: 15, 
-    width: 240,
+    marginRight: 0,
+    width: '48%',
+    marginTop: 10,
+  },
+  productColumnWrapper: {
+    justifyContent: 'space-between',
+  },
+  loaderContainer: {
+    marginTop: '5%',
+    paddingVertical: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

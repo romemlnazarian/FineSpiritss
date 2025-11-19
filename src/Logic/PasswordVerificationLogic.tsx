@@ -65,7 +65,8 @@ export const PasswordVerificationLogic = (route: any) => {
     const values = getValues();
     setLoading(true);
     PasswordVerifyModel(email, values.password.trim(), values.repeatpassword.trim(), (data) => {
-        setRefreshToken(data.tokens.refresh_token);
+        //    setToken(data.tokens.access_token);
+        // setRefreshToken(data.tokens.refresh_token);
         reset({ password: '', repeatpassword: '' });
         show('assword set successfully. Your account is now active. You can login.', {type: 'success'});
       navigation.navigate('Signin');

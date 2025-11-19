@@ -18,7 +18,7 @@ import AuthLogo from '../../component/AuthLogo';
 
 export default function SigninScreen() {
   const {Styles} = StyleComponent();
-  const {control, handleSubmit, errors, onSubmit,onSubmitForgetPass,onSubmitSignUp,loading} = SigninLogic();
+  const {control, handleSubmit, errors, onSubmit,onSubmitForgetPass,onSubmitSignUp,loading,showPass,setShowPass} = SigninLogic();
   return (
     <View style={Styles.container}>
       <LogoComponent style={styles.logoComponentStyle} />
@@ -60,12 +60,13 @@ export default function SigninScreen() {
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
               placeholder={Language.Password_Placeholder}
-              handlePasswordIconClick={() => console.log()}
+              handlePasswordIconClick={() => setShowPass(!showPass)}
               onChangeText={onChange}
               value={value}
               errorMessage={errors.password?.message}
               leftIcon={<Lock width={25} height={25} />}
-              showPass={true}
+              showPass={showPass}
+              rightIcon={true}
             />
           )}
         />

@@ -29,6 +29,7 @@ export default function ChoosenCatalog(route: any) {
     countries,
     brands,
     volumes,
+    onSearchHandler
   } = ChoosenCatalogLogic(route);
   const {Styles} = StyleComponent();
   const sortData = useMemo(
@@ -59,7 +60,7 @@ export default function ChoosenCatalog(route: any) {
         showBack={true}
         title="All wines"
         icon={<Search />}
-        onHandler={() => {}}
+        onHandler={() => onSearchHandler()}
       />
       <CatalogFilter onHandler={e => onSubnmitFilter(e)} sortData={sortData}/>
       <CatalogList

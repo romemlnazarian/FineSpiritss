@@ -1,8 +1,7 @@
-import {View, Text, StyleSheet, TouchableOpacity, StyleProp, ViewStyle} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, StyleProp, ViewStyle, Image} from 'react-native';
 import React, {useState} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
-import Viski from '../../assets/svg/viski.svg'; // Assuming Viski is the SVG for product image
 import Heart from '../../assets/svg/Heart.svg';
 import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import BottomCardComponent from '../BottomCard';
@@ -13,26 +12,34 @@ interface ProductItem {
   id: string;
   title: string;
   description: string;
-  price: string;
+  price?: string;
   originalPrice?: string;
+  image_url?: string;
+  country?: string;
+  regular_price?: string;
+  sale_price?: string;
+  abv?: string;
 }
 
 interface ProductCardProps {
   item: ProductItem;
   cardStyle?: StyleProp<ViewStyle>;
+  onPress?: (item: ProductItem) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({item, cardStyle}) => {
+const ProductCard: React.FC<ProductCardProps> = ({item, cardStyle, onPress}) => {
   const {Styles} = StyleComponent();
   const [isFavorite, setIsFavorite] = useState(false);
-
   const toggleFavorite = () => {
     setIsFavorite(prev => !prev);
   };
 
 
   return (
-    <View style={[styles.productCardContainer, cardStyle]}>
+    <TouchableOpacity
+      style={[styles.productCardContainer, cardStyle]}
+      activeOpacity={0.5}
+      onPress={() => onPress?.(item)}>
       <TouchableOpacity
         style={styles.favoriteButton}
         onPress={toggleFavorite}>
@@ -43,19 +50,23 @@ const ProductCard: React.FC<ProductCardProps> = ({item, cardStyle}) => {
         )}
       </TouchableOpacity>
       <View style={Styles.justifyCenter}>
-        <Viski />
+        {item?.image_url ? (
+          <Image source={{uri: item?.image_url}} style={styles.productImage} />
+        ) : (
+          <View style={styles.imagePlaceholder} />
+        )}
       </View>
-      <Text style={Styles.body_Medium}>{item.title}</Text>
-      <Text style={[Styles.title_Regular, styles.productDescription]}>
-        {item.description}
+      <Text style={[Styles.body_Medium,{marginTop:'2%'}]} numberOfLines={1}>{item.title}</Text>
+      <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
+        {item?.country} ABV {item?.abv}
       </Text>
       <View style={styles.priceContainer}>
-        <Text style={[Styles.h6_SemiBold, styles.productPrice]}>
-          {item.price}
+        <Text style={[Styles.body_SemiBold, styles.productPrice]}>
+          {item.price ?? item.regular_price ?? ''}
         </Text>
-        {item.originalPrice && (
+        {item.sale_price && (
           <Text style={[Styles.subtitle_Regular, styles.originalPriceText]}>
-            {item.originalPrice}
+            {item.sale_price}
           </Text>
         )}
       </View>
@@ -63,9 +74,10 @@ const ProductCard: React.FC<ProductCardProps> = ({item, cardStyle}) => {
         title={'Add to Card'}
         onHandler={() => console.log()}
         style={styles.bottomCardButton}
+        textStyle={Styles.subtitle_Regular}
         icon={<Card />}
       />
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -107,5 +119,16 @@ const styles = StyleSheet.create({
   bottomCardButton: {
     marginTop: '10%',
     width: '100%',
+  },
+  productImage: {
+    width: 100,
+    height: 150,
+    borderRadius: 12,
+  },
+  imagePlaceholder: {
+    width: 150,
+    height: 150,
+    borderRadius: 12,
+    backgroundColor: Color.lightGray,
   },
 });

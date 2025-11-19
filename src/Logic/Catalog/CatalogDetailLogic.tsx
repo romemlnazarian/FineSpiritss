@@ -11,7 +11,8 @@ export default function CatalogDetailLogic(route: any) {
 
     useEffect(() => {
         getProductDetail()
-    }, [route?.route?.params?.product, route?.route?.params?.quantity]);
+        console.log('route?.route?.params?.product',route?.route?.params?.product)
+    }, [route?.route?.params?.product]);
 
 
    const getProductDetail = useCallback(async () => {
@@ -24,7 +25,11 @@ export default function CatalogDetailLogic(route: any) {
         refreshTokenModel(refreshToken, (data) => {
             setToken(data.access);
             setRefreshToken(data.refresh);
-            getProductDetail(data);
+            getProductDetailModel(data.access, route?.route?.params?.product?.slug, (data) => {
+                setProduct(data);
+            }, (error) => {
+                console.log('error =>', error);
+            });
         }, (error) => {
             console.log('error =>', error);
         });

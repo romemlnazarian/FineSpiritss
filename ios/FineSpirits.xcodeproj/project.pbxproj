@@ -22,6 +22,8 @@
 		E7F3805CF628E0DB8CD5D965 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		E81AB89556E64592876C4494 /* Satoshi-BlackItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC5FA2D67C184FD78325D158 /* Satoshi-BlackItalic.otf */; };
 		EAABEC502C4447A98A75E205 /* Satoshi-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 185CE25D57454815AAFE0885 /* Satoshi-Black.otf */; };
+		FAF0327134F14831A1A09F5A /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 548E8618C0D34E1A9F9ED276 /* BootSplash.storyboard */; };
+		C64347F1F44C46FCB30E595F /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2DE31F6FE9F943E98E31CCC5 /* Colors.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +47,8 @@
 		E3F6D4F3F6DF4BCC9EE9FA3E /* Satoshi-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Medium.otf"; path = "../assets/fonts/Satoshi-Medium.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F8FC298079356CEB62ED94A4 /* libPods-FineSpirits.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FineSpirits.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		548E8618C0D34E1A9F9ED276 /* BootSplash.storyboard */ = {isa = PBXFileReference; name = "BootSplash.storyboard"; path = "FineSpirits/BootSplash.storyboard"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		2DE31F6FE9F943E98E31CCC5 /* Colors.xcassets */ = {isa = PBXFileReference; name = "Colors.xcassets"; path = "FineSpirits/Colors.xcassets"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = folder.assetcatalog; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +71,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+				548E8618C0D34E1A9F9ED276 /* BootSplash.storyboard */,
+				2DE31F6FE9F943E98E31CCC5 /* Colors.xcassets */,
 			);
 			name = FineSpirits;
 			sourceTree = "<group>";
@@ -210,6 +216,8 @@
 				E4FDE78C36CF428DAA87031A /* Satoshi-Medium.otf in Resources */,
 				61C6A9128A5347F4A6BA3901 /* Satoshi-MediumItalic.otf in Resources */,
 				E371E7A8DF644D039C1CA133 /* Satoshi-Regular.otf in Resources */,
+				FAF0327134F14831A1A09F5A /* BootSplash.storyboard in Resources */,
+				C64347F1F44C46FCB30E595F /* Colors.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

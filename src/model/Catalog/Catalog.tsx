@@ -1,4 +1,4 @@
-import { GET } from '../../api/Network';
+import { DELETE, GET } from '../../api/Network';
 import { Route } from '../../api/Route';
 
 type AllCategoryItem = {
@@ -211,6 +211,147 @@ export const getProductDetailModel = (
   GET(
     Route.root,
     `${Route.product_detail}${slug}`,
+    (data: {
+      detail?: boolean | string;
+      message?: string;
+      data?: AllCategoryItem[] | any;
+      code?: string;
+      messages?: any[];
+    }) => {
+      const anyData: any = data;
+      if (anyData && typeof anyData === 'object') {
+        // Handle auth/error shapes
+        if ('code' in anyData || 'messages' in anyData || typeof anyData.detail === 'string') {
+          const msg =
+            anyData.code ??
+            anyData.detail ??
+            anyData?.messages?.[0]?.message ??
+            anyData.message ??
+            'Unexpected response';
+          errorcallback(String(msg));
+          return;
+        }
+        if ('detail' in anyData) {
+          if (anyData.detail === true) {
+            callback(anyData.data ?? anyData);
+          } else {
+            errorcallback(String(anyData.message ?? 'Unexpected response'));
+          }
+          return;
+        }
+        // Pass-through when API doesn't include 'detail'
+        callback(anyData);
+        return;
+      }
+      errorcallback('Unexpected response');
+    },
+    token,
+  );
+};
+export const getSearchProductsModel = (
+  token: string,
+  search: string,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+) => {
+  GET(
+    Route.root,
+    `${Route.search_products}?q=${search}`,
+    (data: {
+      detail?: boolean | string;
+      message?: string;
+      data?: AllCategoryItem[] | any;
+      code?: string;
+      messages?: any[];
+    }) => {
+      const anyData: any = data;
+      if (anyData && typeof anyData === 'object') {
+        // Handle auth/error shapes
+        if ('code' in anyData || 'messages' in anyData || typeof anyData.detail === 'string') {
+          const msg =
+            anyData.code ??
+            anyData.detail ??
+            anyData?.messages?.[0]?.message ??
+            anyData.message ??
+            'Unexpected response';
+          errorcallback(String(msg));
+          return;
+        }
+        if ('detail' in anyData) {
+          if (anyData.detail === true) {
+            callback(anyData.data ?? anyData);
+          } else {
+            errorcallback(String(anyData.message ?? 'Unexpected response'));
+          }
+          return;
+        }
+        // Pass-through when API doesn't include 'detail'
+        callback(anyData);
+        return;
+      }
+      errorcallback('Unexpected response');
+    },
+    token,
+  );
+};
+
+
+export const getSearchProductsHistoryModel = (
+  token: string,
+  search: string,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+) => {
+  GET(
+    Route.root,
+    `${Route.search_products_history}?q=${search}`,
+    (data: {
+      detail?: boolean | string;
+      message?: string;
+      data?: AllCategoryItem[] | any;
+      code?: string;
+      messages?: any[];
+    }) => {
+      const anyData: any = data;
+      if (anyData && typeof anyData === 'object') {
+        // Handle auth/error shapes
+        if ('code' in anyData || 'messages' in anyData || typeof anyData.detail === 'string') {
+          const msg =
+            anyData.code ??
+            anyData.detail ??
+            anyData?.messages?.[0]?.message ??
+            anyData.message ??
+            'Unexpected response';
+          errorcallback(String(msg));
+          return;
+        }
+        if ('detail' in anyData) {
+          if (anyData.detail === true) {
+            callback(anyData.data ?? anyData);
+          } else {
+            errorcallback(String(anyData.message ?? 'Unexpected response'));
+          }
+          return;
+        }
+        // Pass-through when API doesn't include 'detail'
+        callback(anyData);
+        return;
+      }
+      errorcallback('Unexpected response');
+    },
+    token,
+  );
+};
+
+
+export const DeleteSearchProductsHistoryModel = (
+  token: string,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+) => {
+  DELETE(
+    Route.root,
+    `${Route.delete_search_products_history}`,
     (data: {
       detail?: boolean | string;
       message?: string;

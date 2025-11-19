@@ -13,7 +13,8 @@ export const SigninLogic = () => {
   const [loading, setLoading] = useState(false);
   const {show} = useToast();
   const {setToken,setRefreshToken,setIsLoggedIn,setUserData} = useAuthStore();
-  
+  const [showPass, setShowPass] = useState(false);
+
   const validationSchema = Yup.object().shape({
     password: Yup.string().trim().required('Required'),
     email: Yup.string()
@@ -70,5 +71,7 @@ export const SigninLogic = () => {
     onSubmitForgetPass,
     onSubmitSignUp,
     loading,
+    showPass,
+    setShowPass,
   };
 };

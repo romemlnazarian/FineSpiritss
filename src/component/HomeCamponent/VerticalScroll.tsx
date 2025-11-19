@@ -3,11 +3,11 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import React, {useState} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
-import Viski from '../../assets/svg/viski.svg'; // Assuming Viski is the SVG for product image
 import Heart from '../../assets/svg/Heart.svg';
 import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import BottomCardComponent from '../BottomCard';
@@ -18,16 +18,21 @@ interface ProductItem {
   id: string;
   title: string;
   description: string;
-  price: string;
+  price?: string;
   originalPrice?: string;
+  image_url?: string;
+  country?: string;
+  abv?: string;
+  sale_price?: string;
 }
 
 interface VerticalScrollProps {
   item: ProductItem[];
+  onSubmitProduct?: (item: ProductItem) => void;
 }
 
 // Individual Product Card Component
-const ProductCard: React.FC<{item: ProductItem}> = ({item}) => {
+const ProductCard: React.FC<{item: ProductItem; onSubmitProduct?: (item: ProductItem) => void}> = ({item, onSubmitProduct}) => {
   const {Styles} = StyleComponent();
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -36,28 +41,34 @@ const ProductCard: React.FC<{item: ProductItem}> = ({item}) => {
   };
 
   return (
-    <View style={styles.productCardContainer}>
+    <TouchableOpacity style={styles.productCardContainer} activeOpacity={0.6} onPress={() => onSubmitProduct?.(item)}>
       <TouchableOpacity style={styles.favoriteButton} onPress={toggleFavorite}>
         {isFavorite ? (
           <Heart_primary width={24} height={24} />
         ) : (
-          <Heart width={24} height={24} fill={Color.gray} />
+          <Heart width={24} height={24}  />
         )}
       </TouchableOpacity>
       <View style={Styles.justifyCenter}>
-        <Viski />
+        {item?.image_url ? (
+          <Image source={{uri: item.image_url}} style={styles.productImage} />
+        ) : (
+          <View style={styles.imagePlaceholder} />
+        )}
       </View>
-      <Text style={Styles.subtitle_Regular}>{item.title}</Text>
+      <Text style={[Styles.subtitle_Regular, styles.productTitle]}>
+        {item.title}
+      </Text>
       <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
-        {item.description}
+        {item.country ? `${item.country} ABV ${item.abv ?? '-'}` : ''}
       </Text>
       <View style={styles.priceContainer}>
         <Text style={[Styles.body_SemiBold, styles.productPrice]}>
           {item.price}
         </Text>
-        {item.originalPrice && (
+        {item.sale_price && (
           <Text style={[Styles.subtitle_Regular, styles.originalPriceText]}>
-            {item.originalPrice}
+            {item.sale_price}
           </Text>
         )}
       </View>
@@ -68,12 +79,12 @@ const ProductCard: React.FC<{item: ProductItem}> = ({item}) => {
         icon={<Card />}
         textStyle={Styles.subtitle_Regular}
       />
-    </View>
+    </TouchableOpacity>
   );
 };
 
 // Main VerticalScroll Component
-const VerticalScroll: React.FC<VerticalScrollProps> = ({item}) => {
+const VerticalScroll: React.FC<VerticalScrollProps> = ({item, onSubmitProduct}) => {
   const {Styles} = StyleComponent();
 
   return (
@@ -85,7 +96,7 @@ const VerticalScroll: React.FC<VerticalScrollProps> = ({item}) => {
       </View>
       <View style={styles.gridContainer}>
         {item.map(product => (
-          <ProductCard key={product.id} item={product} />
+          <ProductCard key={product.id} item={product} onSubmitProduct={onSubmitProduct} />
         ))}
       </View>
     </View>
@@ -135,6 +146,10 @@ const styles = StyleSheet.create({
   productDescription: {
     color: Color.gray,
   },
+  productTitle: {
+    color: Color.black,
+    marginTop: 8,
+  },
   priceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -151,6 +166,17 @@ const styles = StyleSheet.create({
   bottomCardButton: {
     marginTop: '10%',
     width: '100%',
-    height:50
+    height: 50,
+  },
+  productImage: {
+    width: 100,
+    height: 150,
+    borderRadius: 12,
+  },
+  imagePlaceholder: {
+    width: 100,
+    height: 150,
+    borderRadius: 12,
+    backgroundColor: Color.lightGray,
   },
 });

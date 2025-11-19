@@ -185,7 +185,6 @@ export default function ChoosenCatalogLogic(route: any) {
     console.log('product =>', product);
     navigation.navigate('CatalogDetail', {
       product,
-      quantity: selectedQuantity,
     });
   };
 
@@ -319,5 +318,6 @@ export default function ChoosenCatalogLogic(route: any) {
     countries,
     brands,
     volumes,
+    
   };
 }

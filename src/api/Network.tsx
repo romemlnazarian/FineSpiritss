@@ -138,45 +138,37 @@ export const DELETE = (
   controller: string,
   callback: (data: any) => void,
   secretkey: string = "",
-  lang: string,
-  body: any = ""
 ) => {
-  if (secretkey != "") {
+  // console.log("secret", root,controller);
+  if (secretkey !== '') {
     fetch(root + controller, {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        // "pastoo_user": user_pastoo,
         Authorization: 'Bearer' + ' ' + secretkey,
-        'Accept-Language': lang,
       },
-      body: JSON.stringify(body),
     })
       .then(function (data) {
         data.json().then((dd) => {
           callback(dd);
         });
       })
-      .catch((error) =>errorhandler(error)
-              );
+      .catch((error) => errorhandler(error));
   } else {
     fetch(root + controller, {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: 'Bearer' + ' ' + secretkey,
-        'Accept-Language': lang,
       },
-      body: JSON.stringify(body),
     })
       .then(function (data) {
         data.json().then((dd) => {
           callback(dd);
         });
       })
-      .catch((error) =>errorhandler(error)
-      );
+      .catch((error) => errorhandler(error));
   }
 };
-

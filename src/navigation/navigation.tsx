@@ -24,7 +24,7 @@ export default function Navigation() {
   return (
     <SafeAreaProvider >
     <SafeAreaView style={styles.container} edges={Platform.OS === 'android' ?[ 'bottom' , 'top'] : ['top']}>
-      <StatusBar  barStyle="light-content" />
+      <StatusBar  barStyle="dark-content" />
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Splash" component={SplashScreen} />

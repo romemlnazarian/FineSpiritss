@@ -21,6 +21,7 @@
     "react-hook-form": "^7.62.0",
     "react-native": "0.79.6",
     "react-native-background-timer": "^2.4.1",
+    "react-native-bootsplash": "^6.3.11",
     "react-native-date-picker": "^5.0.13",
     "react-native-gesture-handler": "^2.24.0",
     "react-native-localization": "^2.3.2",

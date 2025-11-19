@@ -35,7 +35,7 @@ export default function CustomHeader({ title, showBack = false, icon, onHandler,
       )}
       </View>
       <View style={styles.centerTitleContainer} pointerEvents="none">
-        <Text style={[styles.title,Styles.h5_Regular]}>{title || ''}</Text>
+        <Text style={[styles.title,Styles.h5_Regular]} numberOfLines={1} ellipsizeMode="tail">{title || ''}</Text>
       </View>
       <TouchableOpacity onPress={onHandler} style={styles.rightContainer}>
         <View>
@@ -75,5 +75,6 @@ const styles = StyleSheet.create({
   },
   title: {
     color: Color.black,
+    width: '70%',
   },
 });

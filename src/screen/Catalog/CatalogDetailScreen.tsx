@@ -251,10 +251,10 @@ export default function CatalogDetailScreen(route: any) {
           </Text>
           <View style={styles.aromaRow}>
             <Text style={[Styles.title_Regular, styles.aromaLabel]}>
-              {product?.tasting_characteristics?.aromas_and_flavours?.primary[0].name}:
+              {product?.tasting_characteristics?.aromas_and_flavours?.primary[0]?.name}:
             </Text>
             <Text style={[Styles.title_Regular, styles.aromaValue]}>
-              {product?.tasting_characteristics?.aromas_and_flavours?.primary[0].value}
+              {product?.tasting_characteristics?.aromas_and_flavours?.primary[0]?.value}
             </Text>
           </View>
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
@@ -262,10 +262,10 @@ export default function CatalogDetailScreen(route: any) {
           </Text>
           <View style={styles.aromaRow}>
             <Text style={[Styles.title_Regular, styles.aromaLabel]}>
-              {product?.tasting_characteristics?.aromas_and_flavours?.secondary[0].name}
+              {product?.tasting_characteristics?.aromas_and_flavours?.secondary[0]?.name}
             </Text>
             <Text style={[Styles.title_Regular, styles.aromaValue]}>
-              {product?.tasting_characteristics?.aromas_and_flavours?.secondary[0].value}
+              {product?.tasting_characteristics?.aromas_and_flavours?.secondary[0]?.value}
             </Text>
           </View>
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
@@ -273,10 +273,10 @@ export default function CatalogDetailScreen(route: any) {
           </Text>
           <View style={styles.aromaRow}>
             <Text style={[Styles.title_Regular, styles.aromaLabel]}>
-              {product?.tasting_characteristics?.aromas_and_flavours?.tertiary[0].name}
+              {product?.tasting_characteristics?.aromas_and_flavours?.tertiary[0]?.name}
             </Text>
             <Text style={[Styles.title_Regular, styles.aromaValue]}>
-              {product?.tasting_characteristics?.aromas_and_flavours?.tertiary[0].value}
+              {product?.tasting_characteristics?.aromas_and_flavours?.tertiary[0]?.value}
             </Text>
           </View>
 

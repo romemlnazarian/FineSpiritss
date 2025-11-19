@@ -18,7 +18,6 @@ export const SignupLogic = () => {
     email: Yup.string()
       .trim()
       .required('Email is required')
-      .email('Please enter a valid email address')
   });
   const {
     control,
