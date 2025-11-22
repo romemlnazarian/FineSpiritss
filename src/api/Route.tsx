@@ -24,6 +24,10 @@
   home_new: string;
   home_for_gift: string;
   home_recommended: string;
+  get_profile: string;
+  update_full_name: string;
+  update_password: string;
+  update_birthdate: string;
 }
 
 export const Route: RouteObj = {
@@ -45,11 +49,15 @@ export const Route: RouteObj = {
     filter_products: 'product/products/category/',
     product_detail: 'product/products/',
     search_products: 'product/products/search/product/',
-    search_products_history: 'product/products/search/suggestions/',
+    search_products_history: 'product/search/history/',
     delete_search_products_history: 'product/search/history/',
     home_advertising:'product/home-advertising/',
-    home_best_sales:"product/best-sales/",
-    home_new:"product/new/",
-    home_for_gift:"product/for-gift/",
-    home_recommended:"product/recommended/"
+    home_best_sales:'product/best-sales/',
+    home_new:'product/new/',
+    home_for_gift:'product/for-gift/',
+    home_recommended:'product/recommended/',
+    get_profile: 'auth/profile/',
+    update_full_name: 'auth/change-name/',
+    update_password: 'auth/change-password/',
+    update_birthdate: 'auth/change-birthdate/',
 };

@@ -17,14 +17,11 @@ export const VerifyCodeModel = (
     Route.verify_otp,
     data => {
       const anyData: any = data;
-      if (anyData && typeof anyData === 'object' && 'detail' in anyData) {
-        if (anyData.detail) {
+      if (anyData.email) {
           callback(anyData);
-        } else {
-          errorcallback(String(anyData.message ?? anyData.data ?? 'Unexpected response'));
-        }
+          return
       } else {
-        errorcallback('Unexpected response');
+        errorcallback(String(anyData.detail));
       }
     },
     '',

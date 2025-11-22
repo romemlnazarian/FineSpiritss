@@ -10,7 +10,6 @@ export default function CatalogCategory(route: any) {
   const {isLoading, catalogDetail, name, onSubmitBack, onSubmit} = CatalogCategoryLogic(route);
   return (
     <View style={[Styles.container]}>
-      <CustomHeader showBack={true} title={name} onSubmitBack={onSubmitBack}/>
       {isLoading ? (
         <ActivityIndicator
           size="small"
@@ -18,6 +17,8 @@ export default function CatalogCategory(route: any) {
           style={{marginTop: '50%'}}
         />
       ) : (
+        <>
+        <CustomHeader showBack={true} title={name} onSubmitBack={onSubmitBack}/>
         <ScrollView>
           <TouchableOpacity
             onPress={() => onSubmit(catalogDetail?.parent)}
@@ -88,6 +89,7 @@ export default function CatalogCategory(route: any) {
             </TouchableOpacity>
           ))}
         </ScrollView>
+        </>
       )}
     </View>
   );

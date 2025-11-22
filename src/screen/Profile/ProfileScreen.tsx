@@ -1,8 +1,6 @@
 import {ScrollView, Text, View} from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
-import CustomHeader from '../../navigation/CustomHeader';
-import SingInProfile from '../../component/ProfileComponent/SingInProfile';
 import Menu from '../../component/ProfileComponent/Menu';
 import BarcodeProfile from '../../component/ProfileComponent/BarcodeProfile';
 import MyOrderProfile from '../../component/ProfileComponent/MyOrderProfile';

@@ -92,18 +92,11 @@ const ProductCard: React.FC<{
           {item.title}
         </Text>
         <Text style={[Styles.title_Regular, styles.productDescription]}>
-          {item.country} ABV {item.abv}
+          {item.country} {item.price && `ABV ${item.abv}`}
         </Text>
-        <View style={styles.priceContainer}>
-          <Text style={[Styles.title_Bold, styles.productPrice]}>
-            {item.price}
-          </Text>
-          {item.sale_price && (
-            <Text style={[Styles.body_Regular, styles.originalPriceText]}>
-              {item.sale_price}
-            </Text>
-          )}
-        </View>
+        <Text style={[Styles.title_Bold, styles.productPrice]}>
+          {item.price} zł
+        </Text>
       </View>
       {orderBottom ? (
         <BottomCardComponent

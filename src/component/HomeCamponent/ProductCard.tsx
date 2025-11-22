@@ -62,11 +62,11 @@ const ProductCard: React.FC<ProductCardProps> = ({item, cardStyle, onPress}) => 
       </Text>
       <View style={styles.priceContainer}>
         <Text style={[Styles.body_SemiBold, styles.productPrice]}>
-          {item.price ?? item.regular_price ?? ''}
+          {item.price ?? item.regular_price ?? ''} zł
         </Text>
         {item.sale_price && (
           <Text style={[Styles.subtitle_Regular, styles.originalPriceText]}>
-            {item.sale_price}
+            {item.sale_price} zł
           </Text>
         )}
       </View>

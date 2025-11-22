@@ -37,6 +37,7 @@ type PasswordVerifyProps = {
       Route.set_password,
       data => {
         const anyData: any = data;
+        console.log('==>', anyData);
         if (anyData && typeof anyData === 'object' && 'detail' in anyData) {
           if (anyData.detail) {
             callback(anyData);

@@ -42,7 +42,9 @@ export type ButtonParamList = {
 
 export type CatalogStackParamList = {
   Catalog: undefined;
-  ChoosenCatalog: undefined;
+  ChoosenCatalog: {
+    item: any;
+  } | undefined;
   CatalogSearch: undefined;
   CatalogDetail: {
     product: any;
@@ -59,6 +61,7 @@ export type TabParamList = {
   CardScreen: undefined;
   FavoriteScreen: undefined;
   ProfileScreen: undefined;
+  SettingScreen: undefined;
 };
 
 export type ProfileStackParamList = {

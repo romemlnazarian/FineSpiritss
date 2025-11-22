@@ -1,4 +1,4 @@
-import {View, StyleSheet, TouchableOpacity,Text} from 'react-native';
+import {View, StyleSheet, TouchableOpacity,Text, ScrollView} from 'react-native';
 import React from 'react';
 import {Controller} from 'react-hook-form';
 import {StyleComponent} from '../../utiles/styles';
@@ -20,7 +20,11 @@ export default function SigninScreen() {
   const {Styles} = StyleComponent();
   const {control, handleSubmit, errors, onSubmit,onSubmitForgetPass,onSubmitSignUp,loading,showPass,setShowPass} = SigninLogic();
   return (
-    <View style={Styles.container}>
+      <View style={Styles.container}>
+      <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={styles.scroll}
+      contentContainerStyle={styles.scrollContent}>
       <LogoComponent style={styles.logoComponentStyle} />
       <View style={styles.inputContainerSmallMargin}>
         <TextView
@@ -93,6 +97,18 @@ export default function SigninScreen() {
         <View style={styles.lineStyle} />
       </View>
 
+
+      <View style={[styles.socialLoginButtonsContainer, Styles.justifyBetween, Styles.alignSelf]}>
+        <AuthLogo onHandler={() => console.log()}>
+          <Gmail />
+        </AuthLogo>
+        <AuthLogo onHandler={() => console.log()}>
+          <Apple />
+        </AuthLogo>
+        <AuthLogo onHandler={() => console.log()}>
+          <Facebook />
+        </AuthLogo>
+      </View>
       <View style={styles.alreadyHaveAccountContainer}>
         <TextView
           title={Language.Acount_title}
@@ -107,17 +123,7 @@ export default function SigninScreen() {
           />
         </TouchableOpacity>
       </View>
-      <View style={[styles.socialLoginButtonsContainer, Styles.justifyBetween, Styles.alignSelf]}>
-        <AuthLogo onHandler={() => console.log()}>
-          <Gmail />
-        </AuthLogo>
-        <AuthLogo onHandler={() => console.log()}>
-          <Apple />
-        </AuthLogo>
-        <AuthLogo onHandler={() => console.log()}>
-          <Facebook />
-        </AuthLogo>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -171,8 +177,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.lightGray,
   },
   alreadyHaveAccountContainer: {
-    position: 'absolute',
-    bottom: 50,
+    marginTop: '15%',
     flexDirection: 'row',
     alignSelf: 'center',
   },
@@ -187,4 +192,6 @@ const styles = StyleSheet.create({
     marginLeft: '5%',
     marginTop: 10,
   },
+  scroll: { flex: 1 },
+  scrollContent: { paddingBottom: 80 },
 });

@@ -141,6 +141,7 @@ const HomeSort = memo(
         renderItem={renderSortItem}
         keyExtractor={sortKeyExtractor}
         horizontal
+        extraData={selectedItemId}
         showsHorizontalScrollIndicator={false}
         style={styles.flatListContainer}
         removeClippedSubviews={true}

@@ -1,11 +1,12 @@
-import {ActivityIndicator, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {lazy, Suspense} from 'react';
+import {ActivityIndicator, Alert, BackHandler, Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {lazy, Suspense, useCallback} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import ModalCard from '../../component/ModalCard';
 import HomeLogic from '../../logic/HomeLogic';
 import {Color} from '../../utiles/color';
 import useAuthStore from '../../zustland/AuthStore';
 import HomeHeader from '../../component/HomeHeader';
+import {useFocusEffect} from '@react-navigation/native';
 
 // Lazy load heavy components
 const Slider = lazy(() => import('../../component/HomeCamponent/Slider'));
@@ -28,7 +29,7 @@ const ComponentLoader = () => (
 );
 
 export default function HomeScreen() {
-  const {Styles} = StyleComponent();
+  const {Styles,Height} = StyleComponent();
   const {
     onSubmitClose,
     visible,
@@ -48,16 +49,38 @@ export default function HomeScreen() {
   } = HomeLogic();
   const {ageConfirmed} = useAuthStore();
 
+  // Android: confirm before exiting app on hardware back press when on Home
+  useFocusEffect(
+    useCallback(() => {
+      if (Platform.OS !== 'android') {
+        return;
+      }
+      const onBackPress = () => {
+        Alert.alert(
+          'Exit App',
+          'Are you sure you want to exit?',
+          [
+            {text: 'No', style: 'cancel'},
+            {text: 'Yes', onPress: () => BackHandler.exitApp()},
+          ],
+          {cancelable: true},
+        );
+        return true;
+      };
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => subscription.remove();
+    }, []),
+  );
+
   const isPageLoading =
     isCategoriesLoading ||
     isTopBrandsLoading ||
-    isHomeAdvertisingLoading ||
-    dataSortLoading;
+    isHomeAdvertisingLoading;
 
   if (isPageLoading) {
     return (
       <View style={[Styles.container, Styles.alignCenter]}>
-        <ActivityIndicator size="large" color={Color.primary} style={{marginTop: '50%'}}/>
+        <ActivityIndicator size="large" color={Color.primary} style={{marginTop: Height / 2.5}}/>
       </View>
     );
   }

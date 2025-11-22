@@ -14,20 +14,19 @@ import Lock from '../../assets/svg/Password.svg';
 // import {Language} from '../../utiles/Language/i18n';
 import BottomCardComponent from '../BottomCard';
 import { Color } from '../../utiles/color';
-export default function ChangePasswordSetting() {
+export default function ChangePasswordSetting({onCallBack}: {onCallBack: () => void}) {
   const {Styles} = StyleComponent();
   const {
     control,
     errors,
-    handleSubmit,
     onHandleShowPass,
     showPass,
     showOldPass,
     showRepeatPass,
     onSubmit,
-    isLengthValid,
     isAllFilled,
-  } = ChangePasswordSettingLogic();
+    isLoading,
+  } = ChangePasswordSettingLogic( onCallBack );
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -44,7 +43,7 @@ export default function ChangePasswordSetting() {
               handlePasswordIconClick={() => onHandleShowPass('oldPass')}
               onChangeText={onChange}
               value={value}
-              errorMessage={errors.password?.message}
+              errorMessage={errors.oldpassword?.message}
               leftIcon={<Lock width={25} height={25} />}
               showPass={showOldPass}
               isPassword={true}
@@ -93,7 +92,8 @@ export default function ChangePasswordSetting() {
         <BottomCardComponent
           title={'Save'}
           disabled={!isAllFilled}
-          onHandler={handleSubmit(onSubmit)}
+          loading={isLoading}
+          onHandler={()=>onSubmit()}
           style={styles.saveButton}
         />
       </View>

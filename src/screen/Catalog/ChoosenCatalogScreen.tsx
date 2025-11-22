@@ -36,7 +36,7 @@ export default function ChoosenCatalog(route: any) {
     () => [
       {
         id: '1',
-        title: 'filter',
+        title: 'Filter',
       },
       {
         id: '2',

@@ -15,58 +15,60 @@ import EmailVerifySetting from '../../component/SettingComponent/EmailVerifySett
 import CheckEmailSetting from '../../component/SettingComponent/CheckEmailSetting';
 import SuccessComponent from '../../component/SuccessComponent';
 import ChangePasswordSetting from '../../component/SettingComponent/ChangePasswordSetting';
-const data = [
-  {
-    id: 1,
-    title: 'Name Surname',
-    discription: 'Stanisław Piotrowski',
-    icon: <User />,
-  },
-  {
-    id: 2,
-    title: 'Display Name',
-    discription: 'Stanisław',
-    icon: <User />,
-  },
-  {
-    id: 3,
-    title: 'Email Address',
-    discription: 'Stanisław.piotrowski@gmail.com',
-    icon: <Email />,
-  },
-  {
-    id: 4,
-    title: 'Change Password',
-    icon: <Password />,
-  },
-  {
-    id: 5,
-    title: 'Birth date',
-    discription: '02.02.2003',
-    icon: <Birthday />,
-  },
-];
+import UpdateFullName from './UpdateFullName';
+import DatePicker from 'react-native-date-picker';
+
 
 export default function SettingItemScreen() {
   const {Styles} = StyleComponent();
-  const {modalVisible, setModalVisible, checkEmail, onSubmit, name,onSubmitDeleteAccount} =
+  const {modalVisible, setModalVisible, checkEmail, onSubmit,onSubmitDeleteAccount,name,dataProfile,date,setDate,open,setOpen,formatDate} =
     SettingItemLogic();
+    const data = [
+      {
+        id: 1,
+        title: 'Name Surname',
+        discription:dataProfile?.fullName,
+        icon: <User />,
+        key:'fullName'
+      },
+
+      {
+        id: 2,
+        title: 'Email Address',
+        discription: dataProfile?.email,
+        icon: <Email />,
+        key:'emailAddress'
+      },
+      {
+        id: 3,
+        title: 'Change Password',
+        icon: <Password />,
+        key:'changePassword'
+      },
+      {
+        id: 4,
+        title: 'Birth date',
+        discription: dataProfile?.birthdate,
+        icon: <Birthday />,
+        key:'birthDate'
+      },
+    ];
   return (
     <View style={[Styles.container, {backgroundColor: Color.white}]}>
-      <CustomHeader showBack={true} title="Setting" />
+      <CustomHeader showBack={true} title="Setting" style={{backgroundColor: Color.white}}/>
       <View style={styles.section}>
         {data.map(item => (
           <Fragment key={item.id}>
             <TouchableOpacity
-              onPress={() => onSubmit(item.title)}
+              onPress={() => onSubmit(item.key)}
               activeOpacity={0.5}
               disabled={
-                item.id === 3 || item.id === 4 || item.id === 5 ? false : true
+                item.id === 3 || item.id === 4 || item.id === 5 || item.id === 1 ? false : true
               }
               key={item.id}
               style={styles.rowGap10Center}>
               {item.icon}
-              <View style={{gap: 5}}>
+              <View style={{gap: 4}}>
                 <Text
                   style={[
                     Styles.title_Regular,
@@ -87,7 +89,7 @@ export default function SettingItemScreen() {
                 />
               )}
               <View style={{position: 'absolute', right: 10}}>
-                {item.id === 3 && <Edit />}
+                {item.id === 3 || item.id === 1 ? <Edit /> : null}
               </View>
             </TouchableOpacity>
           </Fragment>
@@ -108,13 +110,15 @@ export default function SettingItemScreen() {
 
       <BottomSheet
         modalVisible={modalVisible}
-        height={name === 'Change Password' ? 450 : 350}
+        height={name === 'changePassword' ? 450 : 350}
         onClose={() => setModalVisible(false)}>
-        {name === 'Email Address' ? (
+         {name === 'fullName' ?
+         <UpdateFullName callBack={() => setModalVisible(false)} /> :
+         name === 'emailAddress' ? (
           <CheckEmailSetting />
-        ) : name === 'Change Password' ? (
-          <ChangePasswordSetting />
-        ) : name === 'Check Email' ? (
+        ) : name === 'changePassword' ? (
+          <ChangePasswordSetting onCallBack={()=>setModalVisible(false)} />
+        ) : name === 'emailAddress' ? (
           <EmailVerifySetting callBack={checkEmail} />
         ) : (
           <SuccessComponent
@@ -125,6 +129,20 @@ export default function SettingItemScreen() {
           />
         )}
       </BottomSheet>
+      <DatePicker
+        modal
+        open={open}
+        date={date}
+        mode="date"
+        onConfirm={pickedDate => {
+          setOpen(false);
+          setDate(pickedDate);
+          formatDate(pickedDate);
+        }}
+        onCancel={() => {
+          setOpen(false);
+        }}
+      />
     </View>
   );
 }

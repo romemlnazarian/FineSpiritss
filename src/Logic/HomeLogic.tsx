@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from 'react';
 import useAuthStore from '../zustland/AuthStore';
 import {getCategoriesModel, getTopBrandsModel} from '../model/Home/Category';
 import {refreshTokenModel} from '../model/Auth/RefreshTokenModel';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {ButtonScreenNavigationProp} from '../navigation/types';
 import {
   getHomeAdvertisingModel,
@@ -11,10 +11,14 @@ import {
   getHomeForGiftModel,
   getHomeRecommendedModel,
 } from '../model/Home/HomeAdvertising';
+import { getProfileModel } from '../model/Profile/ProfileModel';
+import useProfileStore from '../zustland/ProfileStore';
 export default function HomeLogic() {
   const navigation = useNavigation<ButtonScreenNavigationProp>();
+  const isFocused = useIsFocused();
   const [visible, setVisible] = useState(true);
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
+  const {setProfile} = useProfileStore();
   const [categories, setCategories] = useState<[]>([]);
   const [topBrands, setTopBrands] = useState<[]>([]);
   const [isTopBrandsLoading, setIsTopBrandsLoading] = useState(false);
@@ -184,16 +188,43 @@ export default function HomeLogic() {
   }, [token, refreshToken, setToken, setRefreshToken]);
 
 
+
+
   useEffect(() => {
+    if (!isFocused) {
+      return;
+    }
     getCategories();
     getTopBrands();
     getHomeAdvertising();
     getHomeRecommended();
-  }, [getCategories, getTopBrands, getHomeAdvertising, getHomeRecommended]);
+    getProfile();
+  }, [isFocused, getCategories, getTopBrands, getHomeAdvertising, getHomeRecommended]);
 
   useEffect(() => {
+    if (!isFocused) {
+      return;
+    }
     onSubmitSort('1');
-  }, [onSubmitSort]);
+  }, [isFocused, onSubmitSort]);
+
+
+
+  const getProfile = () => {
+    getProfileModel(token, (data) => {
+      setProfile({...data});
+    }, () => {
+       refreshTokenModel(refreshToken, (data) => {
+        setToken(data.access);
+        setRefreshToken(data.refresh);
+        getProfileModel(data.access, (data) => {
+          setProfile({...data});
+        }, () => {
+        });
+      }, () => {
+      });
+    });
+   }
 
   const onSubmitCategory = (item: any)=>{
     navigation.navigate("CatalogScreen", {
@@ -206,6 +237,23 @@ export default function HomeLogic() {
   }
 
   const onSubmitAdvertising = (item: any)=>{
+    if(item.redirect_to === "category"){
+      navigation.navigate("CatalogScreen", {
+        screen: "CatalogCategory",
+        params: {
+          item,
+          fromHome: true
+        }
+      });
+
+    }else{
+      navigation.navigate('CatalogScreen', {
+        screen: 'CatalogDetail',
+        params: {
+          product: item,
+        },
+      });
+    }
     // navigation.navigate("AdvertisingDetail", {item: item});
   }
 

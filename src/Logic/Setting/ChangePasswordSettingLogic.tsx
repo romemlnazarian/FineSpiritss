@@ -2,8 +2,13 @@ import * as Yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
 import {useState} from 'react';
+import {UpdatePasswordModel} from '../../model/Setting/SettingModel';
+import useAuthStore from '../../zustland/AuthStore';
+import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
+import {useToast} from '../../utiles/Toast/ToastProvider';
 
-export const ChangePasswordSettingLogic = () => {
+export const ChangePasswordSettingLogic = (onCallBack: () => void) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [isLengthValid] = useState(false);
   const [showOldPass, setShowOldPass] = useState(false);
   const [showPass, setShowPass] = useState(false);
@@ -37,9 +42,35 @@ export const ChangePasswordSettingLogic = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const onSubmit = async () => {
-    const values = getValues();
-    console.log('==>', values);
+  const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
+  const {show} = useToast();
+
+  const onSubmit = () => {
+    const {oldpassword, password, repeatpassword} = getValues();
+    setIsLoading(true);
+    UpdatePasswordModel(token, oldpassword, password, repeatpassword, (data) => {
+      onCallBack();
+      setIsLoading(false);
+      show(data.detail,{type: 'success'});
+    }, (error) => {
+       refreshTokenModel(refreshToken, (data) => {
+        setToken(data.access);
+        setRefreshToken(data.refresh);
+        UpdatePasswordModel(token, oldpassword, password, repeatpassword, (data) => {
+          setIsLoading(false);
+          show(data.detail);
+          onCallBack();
+        }, (error) => {
+          onCallBack();
+          setIsLoading(false);
+          show(error,{type: 'error'});
+        });
+      }, (error) => {
+        onCallBack();
+        setIsLoading(false);
+        show(error,{type: 'error'});
+      });
+    });
   };
 
   const onHandleShowPass = (key: string) => {
@@ -66,5 +97,6 @@ export const ChangePasswordSettingLogic = () => {
     onSubmit,
     isLengthValid,
     isAllFilled,
+    isLoading,
   };
 };

@@ -25,8 +25,9 @@ export default function VerificationCodeLogic(route: any) {
       VerifyCodeModel(
         email,
         value,
-        () => {
+        (data) => {
           navigation.navigate('PasswordVerification', {email: email});
+          show(data.detail, {type: 'success'});
         },
         error => {
           setCodeValid(false);

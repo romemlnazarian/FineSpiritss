@@ -12,11 +12,13 @@ import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
 import CatalogLogic from '../../logic/Catalog/CatalogLogic';
+import {useNavigation} from '@react-navigation/native';
 
 const CategoryScreen = memo(() => {
   const {Styles} = StyleComponent();
   const {unSubmit, catalog, loadMore, isLoadingMore, isInitialLoading} =
     CatalogLogic();
+  const navigation = useNavigation();
 
   const renderCategoryItem = useCallback(
     ({item}: {item: any}) => {
@@ -65,7 +67,11 @@ const CategoryScreen = memo(() => {
 
   return (
     <View style={[Styles.container]}>
-      <CustomHeader showBack={true} title="Catalog" />
+      <CustomHeader
+        showBack={true}
+        title="Catalog"
+        onSubmitBack={() => navigation.getParent()?.navigate('Home' as never)}
+      />
       <FlatList
         data={catalog}
         renderItem={renderCategoryItem}

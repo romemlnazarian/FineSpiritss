@@ -51,6 +51,7 @@ interface ProductItem {
 export default function CatalogDetailScreen(route: any) {
   const {Styles,Height} = StyleComponent();
   const {product, isLoading} = CatalogDetailLogic(route);
+  console.log('product',product)
   const productData = useMemo(
     (): ProductItem[] => [
       {
@@ -175,7 +176,7 @@ export default function CatalogDetailScreen(route: any) {
             sku:{product?.sku}
           </Text>
           <Text style={[Styles.title_Regular, styles.subInfoText]}>
-            stock_status:{product?.stock_status || ''}
+            stock status:{product?.stock_status || ''}
           </Text>
           {/* <CatalogFilter
             onHandler={e => console.log(e)}
@@ -183,10 +184,10 @@ export default function CatalogDetailScreen(route: any) {
             sortItemContainerStyle={styles.sortItemContainer}
           /> */}
           <View style={styles.priceRow}>
-            <Text style={[Styles.h3_Bold]}>{product?.regular_price || ''}</Text>
+            <Text style={[Styles.h3_Bold]}>{product?.regular_price || ''} zł</Text>
             {product?.sale_price && (
               <Text style={[Styles.body_Regular, styles.salePriceText]}>
-                {product?.sale_price || ''}
+                {product?.sale_price || ''} zł
               </Text>
             )}
           </View>
@@ -243,9 +244,14 @@ export default function CatalogDetailScreen(route: any) {
             {product?.tasting_characteristics?.text}
           </Text>
 
+          {product?.tasting_characteristics?.aromas_and_flavours &&
+      
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
             Aromas and flavours:
           </Text>
+         }
+          {product?.tasting_characteristics?.aromas_and_flavours?.primary &&
+          <>
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
             Primary
           </Text>
@@ -257,6 +263,10 @@ export default function CatalogDetailScreen(route: any) {
               {product?.tasting_characteristics?.aromas_and_flavours?.primary[0]?.value}
             </Text>
           </View>
+          </>
+          }
+          {product?.tasting_characteristics?.aromas_and_flavours?.secondary &&
+          <>
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
             Secondary
           </Text>
@@ -268,6 +278,10 @@ export default function CatalogDetailScreen(route: any) {
               {product?.tasting_characteristics?.aromas_and_flavours?.secondary[0]?.value}
             </Text>
           </View>
+          </>
+        }
+          {product?.tasting_characteristics?.aromas_and_flavours?.tertiary &&
+          <>
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
             Tertiary
           </Text>
@@ -279,7 +293,11 @@ export default function CatalogDetailScreen(route: any) {
               {product?.tasting_characteristics?.aromas_and_flavours?.tertiary[0]?.value}
             </Text>
           </View>
+          </>
+          }
 
+          {product?.gastronomy?.text &&
+          <>
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
             Gastronomy
           </Text>
@@ -287,6 +305,11 @@ export default function CatalogDetailScreen(route: any) {
             style={[Styles.title_Regular, styles.paragraphMuted]}>
             {product?.gastronomy?.text}
           </Text>
+          </>
+            }
+
+          {product?.gastronomy?.suggestions &&
+          <>
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
             Suggestions
           </Text>
@@ -299,11 +322,16 @@ export default function CatalogDetailScreen(route: any) {
               </Text>
             ),
           )}
+             </>
+          }
+       
         </View>
 
         <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
           With this also watching
         </Text>
+
+
         <FlatList
           data={productData}
           renderItem={renderProductItem}
@@ -418,6 +446,7 @@ const styles = StyleSheet.create({
   suggestionText: {
     marginLeft: '5%',
     marginTop: 10,
+    marginBottom:10
   },
   productCardContainer: {
     marginRight: 8,

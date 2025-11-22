@@ -10,7 +10,6 @@ export default function SettingLogic() {
     }
 
     const onSubmit = (key:string)=>{
-      console.log(key);
           switch(key){
             case 'My addresses':
              setModalVisible((prev)=>!prev);

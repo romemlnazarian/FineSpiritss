@@ -13,7 +13,7 @@ export default function FavoriteScreen() {
   const {} = FavoriteLogic();
   return (
     <View style={Styles.container}>
-      <CustomHeader showBack={true} subTitle="Cart" />
+      <CustomHeader showBack={true} title="Wishlist" />
       <ScrollView showsVerticalScrollIndicator={false}>
       <FavoriteItem />
 

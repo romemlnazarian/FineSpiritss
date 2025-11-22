@@ -1,6 +1,6 @@
 // src/components/CustomHeader.js
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, ViewStyle } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Color } from '../utiles/color';
 import Arrow from '../assets/svg/Arrows.svg';
@@ -13,13 +13,14 @@ type CustomHeaderProps = {
   onHandler?: () => void;
   description?: string;
   onSubmitBack?: () => void;
+  style?: ViewStyle;
 };
 
-export default function CustomHeader({ title, showBack = false, icon, onHandler, subTitle, description, onSubmitBack }: CustomHeaderProps) {
+export default function CustomHeader({ title, showBack = false, icon, onHandler, subTitle, description, onSubmitBack,style }: CustomHeaderProps) {
   const navigation = useNavigation();
   const {Styles} = StyleComponent()
   return (
-    <View style={styles.header}>
+    <View style={[styles.header,style]}>
       <View style={styles.leftContainer}>
       {showBack && (
         <View style={{flexDirection:'row', alignItems:'center', gap:10}}>

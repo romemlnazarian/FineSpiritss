@@ -3,8 +3,7 @@ import {getCatalogDetailModel} from '../../model/Catalog/Catalog';
 import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
 import useAuthStore from '../../zustland/AuthStore';
 import {useNavigation} from '@react-navigation/native';
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
-import {CatalogStackNavigationProp, TabParamList} from '../../navigation/types';
+import {CatalogStackNavigationProp} from '../../navigation/types';
 export default function CatalogCategoryLogic(route: any) {
   const navigation = useNavigation<CatalogStackNavigationProp>();
   const item = route.route.params.item;
@@ -13,9 +12,7 @@ export default function CatalogCategoryLogic(route: any) {
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState('');
   const getCatalogDetail = useCallback(async () => {
-    if (!item?.cat_slug) {
-      return;
-    }
+
     setIsLoading(true);
 
     const handleSuccess = (data: any) => {
@@ -33,6 +30,7 @@ export default function CatalogCategoryLogic(route: any) {
             refreshedTokens.access,
             item.cat_slug,
             detailData => {
+              console.log('detailData =>', detailData);
               setCatalogDetail(detailData);
               setIsLoading(false);
             },
@@ -47,14 +45,11 @@ export default function CatalogCategoryLogic(route: any) {
       );
     };
 
-    getCatalogDetailModel(token, item.cat_slug, handleSuccess, retryWithRefresh);
+    getCatalogDetailModel(token, item.cat_slug || item.slug, handleSuccess, retryWithRefresh);
   }, [item, token, refreshToken, setToken, setRefreshToken]);
 
   useEffect(() => {
-    if (!item) {
-      return;
-    }
-    setName(item.cat_name);
+    setName(item.cat_name || item.slug);
     getCatalogDetail();
   }, [item, getCatalogDetail]);
   const onSubmitBack = () => {

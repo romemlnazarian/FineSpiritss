@@ -8,7 +8,7 @@ import {
   ViewStyle,
   ActivityIndicator,
 } from 'react-native';
-import React, {useState, useCallback, useMemo} from 'react';
+import React, {useState, useCallback, useMemo, useRef, useEffect} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import Viski from '../../assets/svg/viski.svg';
@@ -22,6 +22,7 @@ import {
 } from '../../model/Catalog/Catalog';
 import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
 import { useNavigation } from '@react-navigation/native';
+
 interface ProductItem {
   id: string;
   title: string;
@@ -66,6 +67,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
 
 
 export default function CatalogSearch() {
+  const navigation: any = useNavigation();
   const {Styles} = StyleComponent();
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
   const [searchTerm, setSearchTerm] = useState('');
@@ -111,6 +113,7 @@ export default function CatalogSearch() {
   const [displayedProductData, setDisplayedProductData] =
     useState<ProductItem[]>(productData);
   const [isSearching, setIsSearching] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const normalizeProducts = useCallback((data: any[]): ProductItem[] => {
     return (data ?? []).map((item: any, index: number) => ({
@@ -201,9 +204,9 @@ export default function CatalogSearch() {
             : payload?.data ?? [];
           const normalized = normalizeHistoryItems(raw);
           setFilteredSuggestions(normalized);
-          setDisplayedProductData(
-            normalized.length > 0 ? normalized : productData,
-          );
+          // setDisplayedProductData(
+          //   normalized.length > 0 ? normalized : productData,
+          // );
         },
         () =>
           refreshTokenModel(
@@ -222,9 +225,9 @@ export default function CatalogSearch() {
                     : payload?.data ?? [];
                   const normalized = normalizeHistoryItems(raw);
                   setFilteredSuggestions(normalized);
-                  setDisplayedProductData(
-                    normalized.length > 0 ? normalized : productData,
-                  );
+                  // setDisplayedProductData(
+                  //   normalized.length > 0 ? normalized : productData,
+                  // );
                 },
                 err => console.log('history error =>', err),
               );
@@ -246,19 +249,32 @@ export default function CatalogSearch() {
   const handleSearch = useCallback(
     (text: string) => {
       setSearchTerm(text);
-      if (text.length >= 3) {
-        fetchSearchResults(text);
-      } else {
-        if (text.length === 0) {
-          setFilteredSuggestions([]);
-          setDisplayedProductData(productData);
-        } else {
-          fetchSearchHistory(text);
-        }
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
       }
+      debounceRef.current = setTimeout(() => {
+        if (text.length >= 3) {
+          fetchSearchResults(text);
+        } else {
+          if (text.length === 0) {
+            setFilteredSuggestions([]);
+            setDisplayedProductData(productData);
+          } else {
+            fetchSearchHistory(text);
+          }
+        }
+      }, 500);
     },
     [fetchSearchResults, fetchSearchHistory, productData],
   );
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
 
   const renderProductItem = useCallback(
     ({item}: {item: ProductItem}) => <ProductCard item={item} />,
@@ -268,15 +284,17 @@ export default function CatalogSearch() {
   const keyExtractor = useCallback((item: ProductItem) => item.id, []);
 
   const getTextInputWidthStyle = useCallback((hasSuggestions: boolean): ViewStyle => {
-    return { width: hasSuggestions ? '75%' : '80%' };
+    return { width : '80%' };
   }, []);
 
   return (
     <View style={[Styles.container]}>
       <View style={styles.searchContainer}>
-        <View style={styles.arrowContainer}>
+        <TouchableOpacity style={styles.arrowContainer} onPress={() => {
+          navigation.goBack();
+        }}>
         <Arrow width={30} height={30}/>
-        </View>
+        </TouchableOpacity>
       <TextInput
         placeholder={'Search'}
         placeholderTextColor={Color.gray}
@@ -311,17 +329,19 @@ export default function CatalogSearch() {
             setDisplayedProductData(productData);
             DeleteSearchProductsHistoryModel(token, () => {
               console.log('DeleteSearchProductsHistoryModel success');
-            }, (error) => {
-              refreshTokenModel(refreshToken, (newTokens) => {
-                setToken(newTokens.access);
-                setRefreshToken(newTokens.refresh);
-                DeleteSearchProductsHistoryModel(newTokens.access, () => {
-                  console.log('DeleteSearchProductsHistoryModel success');
-                }, (error) => {
-                  console.log('DeleteSearchProductsHistoryModel error =>', error);
+            }, (_error) => {
+                refreshTokenModel(refreshToken, (newTokens) => {
+                  setToken(newTokens.access);
+                  setRefreshToken(newTokens.refresh);
+                  DeleteSearchProductsHistoryModel(newTokens.access, () => {
+                    console.log('DeleteSearchProductsHistoryModel success');
+                  }, (_error) => {
+                    console.log('DeleteSearchProductsHistoryModel error =>', _error);
+                  });
+                }, (_error) => {
+                  console.log('DeleteSearchProductsHistoryModel error =>', _error);
                 });
               });
-            });
           }}>
           <Text style={[Styles.h6_Regular, styles.cleanButtonText]}>Clean</Text>
         </TouchableOpacity>
@@ -329,23 +349,26 @@ export default function CatalogSearch() {
 
       <View>
       {filteredSuggestions.length > 0 && (
-        <FlatList
-          data={filteredSuggestions}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => {
-              setSearchTerm(item.title);
-              setFilteredSuggestions([]);
-              setDisplayedProductData(productData);
-              fetchSearchResults(item.title);
-            }}>
-              <Text style={[styles.suggestionItem, Styles.body_Regular]}>{item.title}</Text>
-            </TouchableOpacity>
-          )}
-          keyExtractor={item => item.id}
-          style={styles.suggestionsList}
-        />
+        <View>
+          {/* <Text style={[Styles.h6_Medium,{marginLeft:'5%',marginTop:10}]}>Search History</Text> */}
+          <FlatList
+            data={filteredSuggestions}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => {
+                setSearchTerm(item.title);
+                setFilteredSuggestions([]);
+                setDisplayedProductData(productData);
+                fetchSearchResults(item.title);
+              }}>
+                <Text style={[styles.suggestionItem, Styles.body_Regular]}>{item.title}</Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={item => item.id}
+            style={styles.suggestionsList}
+          />
+        </View>
       )}
- 
+
       <FlatList
         data={displayedProductData}
         renderItem={renderProductItem}

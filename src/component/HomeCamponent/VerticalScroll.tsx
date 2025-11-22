@@ -64,12 +64,12 @@ const ProductCard: React.FC<{item: ProductItem; onSubmitProduct?: (item: Product
       </Text>
       <View style={styles.priceContainer}>
         <Text style={[Styles.body_SemiBold, styles.productPrice]}>
-          {item.price}
+          {item.price} zł
         </Text>
         {item.sale_price && (
           <Text style={[Styles.subtitle_Regular, styles.originalPriceText]}>
-            {item.sale_price}
-          </Text>
+            {item.sale_price} zł
+          </Text> 
         )}
       </View>
       <BottomCardComponent

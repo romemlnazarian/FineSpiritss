@@ -5,8 +5,7 @@ import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import Menu from '../../component/ProfileComponent/Menu';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
-import Wallet from '../../assets/svg/wallet.svg';
-import Visa from '../../assets/svg/visa_logo.svg';
+
 import Iocn from 'react-native-vector-icons/Ionicons';
 import List from '../../assets/svg/List.svg';
 import Support from '../../assets/svg/Support.svg';
@@ -55,7 +54,7 @@ export default function SettingScreen() {
         icon={<Arrow name="arrow-back-ios" size={20} color={Color.black} />}
         style={styles.menu}
       />
-      <TouchableOpacity onPress={onSubmitPayment} style={styles.cardRow}>
+      {/* <TouchableOpacity onPress={onSubmitPayment} style={styles.cardRow}>
         <View style={styles.rowCenter}>
           <Wallet />
           <View style={styles.walletTextBlock}>
@@ -70,7 +69,7 @@ export default function SettingScreen() {
           <Visa />
           <Arrow name="arrow-forward-ios" size={20} color={Color.black} />
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <View style={styles.section}>
         {data.map(item => (
           <Fragment key={item.id}>

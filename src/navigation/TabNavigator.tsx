@@ -66,7 +66,7 @@ const TabIcon: React.FC<{routeName: string; isFocused: boolean}> = ({
       ) : (
         <Heart width={25} height={25} />
       );
-    case 'ProfileScreen':
+    case 'SettingScreen':
       return isFocused ? (
         <Profile_primary width={25} height={25} />
       ) : (
@@ -152,11 +152,11 @@ const FavoriteStack = () => (
   </Stack.Navigator>
 );
 
-const ProfileStack = () => (
-  <Stack.Navigator screenOptions={{headerShown: false}}>
+const SettingStack = () => (
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Screen name="Setting" component={SettingScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="MyOrder" component={MyOrderScreen} />
-    <Stack.Screen name="Setting" component={SettingScreen} />
     <Stack.Screen name="Payment" component={PaymentScreen} />
     <Stack.Screen name="BillingAddress" component={BillingAddressScreen} />
     <Stack.Screen name="ShippingAddress" component={ShippingAddress} />
@@ -189,7 +189,7 @@ export default function AppTabs({
       <Tab.Screen name="CatalogScreen" component={CatalogStack} />
       <Tab.Screen name="CardScreen" component={CardStack} />
       <Tab.Screen name="FavoriteScreen" component={FavoriteStack} />
-      <Tab.Screen name="ProfileScreen" component={ProfileStack} />
+      <Tab.Screen name="SettingScreen" component={SettingStack} />
     </Tab.Navigator>
   );
 }
