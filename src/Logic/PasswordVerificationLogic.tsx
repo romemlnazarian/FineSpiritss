@@ -10,7 +10,7 @@ import { useToast } from '../utiles/Toast/ToastProvider';
 import useAuthStore from '../zustland/AuthStore';
 export const PasswordVerificationLogic = (route: any) => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
-  const {setRefreshToken} = useAuthStore();
+
   const [isLengthValid, setIsLengthValid] = useState(false);
   const [hasNumber, setHasNumber] = useState(false);
   const [hasUpperCase, setHasUpperCase] = useState(false);

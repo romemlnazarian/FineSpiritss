@@ -132,7 +132,6 @@ const HomeSort = memo(
     (item: {id: string; title: string}) => item.id,
     [],
   );
-
   return (
     <View style={styles.categoryContainer}>
       <SortHeader />

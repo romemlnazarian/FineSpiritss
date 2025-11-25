@@ -100,7 +100,6 @@ export default function UpdateFullName({callBack}: {callBack: () => void}) {
       <BottomCardComponent
         title={'Save'}
         onHandler={handleSubmit(onSubmit)}
-        disabled={!isValid}
         style={styles.buttonComponent}
         loading={loading}
       />

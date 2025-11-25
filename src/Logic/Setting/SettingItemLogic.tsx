@@ -4,7 +4,7 @@ import {ProfileStackParamList} from '../../navigation/types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import useProfileStore from '../../zustland/ProfileStore';
 import {useToast} from '../../utiles/Toast/ToastProvider';
-import {UpdateBirthdateModel} from '../../model/Setting/SettingModel';
+import {ChangeEmailModel, UpdateBirthdateModel} from '../../model/Setting/SettingModel';
 import useAuthStore from '../../zustland/AuthStore';
 import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
 export default function SettingItemLogic() {
@@ -17,7 +17,7 @@ export default function SettingItemLogic() {
   const [name, setName] = useState('');
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-
+  const [email, setEmail] = useState('');
   const [dataProfile, setDataProfile] = useState<{
     fullName: string;
     email: string;
@@ -34,8 +34,27 @@ export default function SettingItemLogic() {
       birthdate: profile?.birthdate ?? '',
     });
   }, [profile]);
+
   const checkEmail = (email: string) => {
-    console.log(email);
+    setEmail(email);
+    setModalVisible(false)
+    ChangeEmailModel(token, email.toLocaleLowerCase(), data => {
+      setModalVisible(true);
+      setName('emailVerify');
+    }, () => {
+      refreshTokenModel(refreshToken, data => {
+        setToken(data.access);
+        setRefreshToken(data.refresh);
+        ChangeEmailModel(token, email.toLocaleLowerCase(), (data) => {
+          setModalVisible(true);
+          setName('emailVerify');
+        }, error => {
+          show(error, {type: 'error'});
+        });
+      }, error => {
+        show(error, {type: 'error'});
+      });
+    });
   };
 
   const onSubmit = (key: string) => {
@@ -48,6 +67,10 @@ export default function SettingItemLogic() {
         setModalVisible(true);
         setName('emailAddress');
         break;
+        case 'emailVerify':
+          setModalVisible(true);
+          setName('emailAddress');
+          break;
       case 'changePassword':
         setModalVisible(true);
         setName('changePassword');
@@ -123,5 +146,6 @@ export default function SettingItemLogic() {
     open,
     setOpen,
     formatDate,
+    email,
   };
 }

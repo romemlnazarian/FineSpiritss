@@ -15,8 +15,6 @@ export default function EmailVerifySetting({callBack}:{callBack:(value:string)=>
     email: Yup.string()
       .trim()
       .required('Email is required')
-      .email('Please enter a valid email address')
-      .matches(/@gmail\.com$/, 'Only gmail.com emails are allowed'),
   });
   const {
     control,
@@ -35,12 +33,10 @@ export default function EmailVerifySetting({callBack}:{callBack:(value:string)=>
   const onSubmit = () => {
     callBack(getValues().email);
   }
-  const emailValue = watch('email');
-  const isEmailFilled = !!(emailValue && emailValue.trim().length > 0);
   return (
     <View style={[Styles.alignCenter,{marginTop:'5%'}]}>
       <Text style={Styles.h5_Medium}>Change Email address</Text>
-      <Text style={[Styles.title_Regular,Styles.textAlign,{marginTop:'5%'}]}>
+      <Text style={[Styles.title_Regular,Styles.textAlign,{marginTop:'5%',width:'80%'}]}>
         We’ll send you a code to verify your new email address
       </Text>
       <View style={Styles.alignCenter}>
@@ -65,8 +61,7 @@ export default function EmailVerifySetting({callBack}:{callBack:(value:string)=>
       <BottomCardComponent
         title={'Save'}
         onHandler={handleSubmit(onSubmit)}
-        disabled={!isEmailFilled}
-        style={{marginTop:'5%',backgroundColor:isEmailFilled?Color.primary:Color.lightBlack}}
+        style={{marginTop:'5%'}}
       />
     </View>
   );

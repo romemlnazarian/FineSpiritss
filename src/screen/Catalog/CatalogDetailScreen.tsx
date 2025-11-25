@@ -15,7 +15,7 @@ import CustomHeader from '../../navigation/CustomHeader';
 import CatalogDetailLogic from '../../logic/Catalog/CatalogDetailLogic';
 import Slider from '../../component/HomeCamponent/Slider';
 import Heart from '../../assets/svg/Heart.svg';
-import CatalogFilter from '../../component/CatalogComponent/CatalogFilter';
+import Heart_primary from '../../assets/svg/Heart_Primary.svg';import CatalogFilter from '../../component/CatalogComponent/CatalogFilter';
 import Delivery from '../../assets/svg/Delivery.svg';
 import ArrwoDown from '../../assets/svg/ArrowsDown.svg';
 import ProductCard from '../../component/HomeCamponent/ProductCard';
@@ -50,8 +50,7 @@ interface ProductItem {
 }
 export default function CatalogDetailScreen(route: any) {
   const {Styles,Height} = StyleComponent();
-  const {product, isLoading} = CatalogDetailLogic(route);
-  console.log('product',product)
+  const {product, isLoading,isFavorite,toggleFavorite} = CatalogDetailLogic(route);
   const productData = useMemo(
     (): ProductItem[] => [
       {
@@ -157,9 +156,13 @@ export default function CatalogDetailScreen(route: any) {
         {/* <Slider /> */}
         <View style={styles.detailsContainer}>
           <View style={styles.detailsHeader}>
-            <Text style={[Styles.h4_Bold]}>{product?.title}</Text>
-            <TouchableOpacity>
-              <Heart width={24} height={24} fill={Color.white} />
+            <Text style={[Styles.h6_Bold]}>{product?.title}</Text>
+            <TouchableOpacity onPress={toggleFavorite}>
+              {isFavorite ? (
+                <Heart_primary width={24} height={24} />
+              ) : (
+                <Heart width={24} height={24} fill={Color.white} />
+              )}
             </TouchableOpacity>
           </View>
           {/* <Text
@@ -184,7 +187,7 @@ export default function CatalogDetailScreen(route: any) {
             sortItemContainerStyle={styles.sortItemContainer}
           /> */}
           <View style={styles.priceRow}>
-            <Text style={[Styles.h3_Bold]}>{product?.regular_price || ''} zł</Text>
+            <Text style={[Styles.h4_Bold]}>{product?.regular_price || ''} zł</Text>
             {product?.sale_price && (
               <Text style={[Styles.body_Regular, styles.salePriceText]}>
                 {product?.sale_price || ''} zł

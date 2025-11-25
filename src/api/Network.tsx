@@ -10,7 +10,7 @@ export const errorhandler = (error: any, showToast?: (msg: any) => void) => {
 export const POST = (
   root: string,
   controller: string,
-  callback: (data: any) => void,
+  callback: (data: any, status?: number, ok?: boolean) => void,
   secretkey: string = '',
   body: any = ''
 ) => {
@@ -25,8 +25,10 @@ export const POST = (
       body: JSON.stringify(body),
     })
       .then(function (data) {
+        const status = data.status;
+        const ok = data.ok;
         data.json().then((dd) => {
-          callback(dd);
+          callback(dd, status, ok);
         });
       })
       .catch((error) => errorhandler(error));
@@ -40,8 +42,10 @@ export const POST = (
       body: JSON.stringify(body),
     })
       .then(function (data) {
+        const status = data.status;
+        const ok = data.ok;
         data.json().then((dd) => {
-          callback(dd);
+          callback(dd, status, ok);
         });
       })
       .catch((error) => errorhandler(error));
@@ -51,8 +55,8 @@ export const POST = (
 export const GET = (
   root: string,
   controller: string,
-  callback: (data: any) => void,
-  secretkey: string = "",
+  callback: (data: any, status?: number, ok?: boolean) => void,
+  secretkey: string = '',
 ) => {
   // console.log("secret", root,controller);
   if (secretkey !== '') {
@@ -61,13 +65,14 @@ export const GET = (
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        // "pastoo_user": user_pastoo,
         Authorization: 'Bearer' + ' ' + secretkey,
       },
     })
       .then(function (data) {
+        const status = data.status;
+        const ok = data.ok;
         data.json().then((dd) => {
-          callback(dd);
+          callback(dd, status, ok);
         });
       })
       .catch((error) => errorhandler(error));
@@ -80,8 +85,10 @@ export const GET = (
       },
     })
       .then(function (data) {
+        const status = data.status;
+        const ok = data.ok;
         data.json().then((dd) => {
-          callback(dd);
+          callback(dd, status, ok);
         });
       })
       .catch((error) => errorhandler(error));
@@ -91,12 +98,12 @@ export const GET = (
 export const PUT = (
   root: string,
   controller: string,
-  callback: (data: any) => void,
-  secretkey: string = "",
+  callback: (data: any, status?: number, ok?: boolean) => void,
+  secretkey: string = '',
   lang: string,
-  body: any = ""
+  body: any = ''
 ) => {
-  console.warn('=>>>>',body)
+  console.warn('=>>>>', body);
   if (secretkey !== '') {
     fetch(root + controller, {
       method: 'PUT',
@@ -108,8 +115,10 @@ export const PUT = (
       body: JSON.stringify(body),
     })
       .then(function (data) {
+        const status = data.status;
+        const ok = data.ok;
         data.json().then((dd) => {
-          callback(dd);
+          callback(dd, status, ok);
         });
       })
       .catch((error) => errorhandler(error));
@@ -125,8 +134,10 @@ export const PUT = (
       body: JSON.stringify(body),
     })
       .then(function (data) {
+        const status = data.status;
+        const ok = data.ok;
         data.json().then((dd) => {
-          callback(dd);
+          callback(dd, status, ok);
         });
       })
       .catch((error) => errorhandler(error));
@@ -136,8 +147,8 @@ export const PUT = (
 export const DELETE = (
   root: string,
   controller: string,
-  callback: (data: any) => void,
-  secretkey: string = "",
+  callback: (data: any, status?: number, ok?: boolean) => void,
+  secretkey: string = '',
 ) => {
   // console.log("secret", root,controller);
   if (secretkey !== '') {
@@ -151,8 +162,10 @@ export const DELETE = (
       },
     })
       .then(function (data) {
+        const status = data.status;
+        const ok = data.ok;
         data.json().then((dd) => {
-          callback(dd);
+          callback(dd, status, ok);
         });
       })
       .catch((error) => errorhandler(error));
@@ -165,8 +178,10 @@ export const DELETE = (
       },
     })
       .then(function (data) {
+        const status = data.status;
+        const ok = data.ok;
         data.json().then((dd) => {
-          callback(dd);
+          callback(dd, status, ok);
         });
       })
       .catch((error) => errorhandler(error));

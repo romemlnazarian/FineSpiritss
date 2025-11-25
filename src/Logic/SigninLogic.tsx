@@ -12,7 +12,7 @@ export const SigninLogic = () => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
   const [loading, setLoading] = useState(false);
   const {show} = useToast();
-  const {setToken,setRefreshToken,setIsLoggedIn,setUserData} = useAuthStore();
+  const {setToken,setRefreshToken,setIsLoggedIn,setUserData,ageConfirmed,setAgeConfirmed,isLoggedIn} = useAuthStore();
   const [showPass, setShowPass] = useState(false);
 
   const validationSchema = Yup.object().shape({
@@ -44,7 +44,12 @@ export const SigninLogic = () => {
       setToken(data.access);
       setRefreshToken(data.refresh);
       setUserData({ email: values.email.trim(), password: values.password.trim() });
-      setIsLoggedIn(true);
+      if(ageConfirmed === false){
+        setAgeConfirmed(true);
+      }
+      if(isLoggedIn === false){
+        setIsLoggedIn(true);
+      }
       setLoading(false);
       navigation.navigate('AppTabs');
       reset({ email: '', password: '' });

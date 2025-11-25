@@ -16,6 +16,7 @@
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		9FB080C324E522DD978B2438 /* libPods-FineSpirits.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8FC298079356CEB62ED94A4 /* libPods-FineSpirits.a */; };
+		C64347F1F44C46FCB30E595F /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2DE31F6FE9F943E98E31CCC5 /* Colors.xcassets */; };
 		E27E52FFC3BD4C169DB6B19E /* Satoshi-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 68773509C7C04BFCB7616054 /* Satoshi-BoldItalic.otf */; };
 		E371E7A8DF644D039C1CA133 /* Satoshi-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 21739CDD0B374E4490B28969 /* Satoshi-Regular.otf */; };
 		E4FDE78C36CF428DAA87031A /* Satoshi-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = E3F6D4F3F6DF4BCC9EE9FA3E /* Satoshi-Medium.otf */; };
@@ -23,7 +24,6 @@
 		E81AB89556E64592876C4494 /* Satoshi-BlackItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC5FA2D67C184FD78325D158 /* Satoshi-BlackItalic.otf */; };
 		EAABEC502C4447A98A75E205 /* Satoshi-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 185CE25D57454815AAFE0885 /* Satoshi-Black.otf */; };
 		FAF0327134F14831A1A09F5A /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 548E8618C0D34E1A9F9ED276 /* BootSplash.storyboard */; };
-		C64347F1F44C46FCB30E595F /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2DE31F6FE9F943E98E31CCC5 /* Colors.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,23 +32,23 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = FineSpirits/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = FineSpirits/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = FineSpirits/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		185CE25D57454815AAFE0885 /* Satoshi-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Black.otf"; path = "../assets/fonts/Satoshi-Black.otf"; sourceTree = "<group>"; };
-		21739CDD0B374E4490B28969 /* Satoshi-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Regular.otf"; path = "../assets/fonts/Satoshi-Regular.otf"; sourceTree = "<group>"; };
-		3082C7898D4840108A335DF1 /* Satoshi-MediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-MediumItalic.otf"; path = "../assets/fonts/Satoshi-MediumItalic.otf"; sourceTree = "<group>"; };
-		3CA54CF4DC58424394B08DBF /* Satoshi-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Light.otf"; path = "../assets/fonts/Satoshi-Light.otf"; sourceTree = "<group>"; };
-		61DC0AA622C94A289D1CF224 /* Satoshi-LightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-LightItalic.otf"; path = "../assets/fonts/Satoshi-LightItalic.otf"; sourceTree = "<group>"; };
-		68773509C7C04BFCB7616054 /* Satoshi-BoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-BoldItalic.otf"; path = "../assets/fonts/Satoshi-BoldItalic.otf"; sourceTree = "<group>"; };
+		185CE25D57454815AAFE0885 /* Satoshi-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Black.otf"; path = "../assets/fonts/Satoshi-Black.otf"; sourceTree = "<group>"; };
+		21739CDD0B374E4490B28969 /* Satoshi-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Regular.otf"; path = "../assets/fonts/Satoshi-Regular.otf"; sourceTree = "<group>"; };
+		2DE31F6FE9F943E98E31CCC5 /* Colors.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Colors.xcassets; path = FineSpirits/Colors.xcassets; sourceTree = "<group>"; };
+		3082C7898D4840108A335DF1 /* Satoshi-MediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-MediumItalic.otf"; path = "../assets/fonts/Satoshi-MediumItalic.otf"; sourceTree = "<group>"; };
+		3CA54CF4DC58424394B08DBF /* Satoshi-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Light.otf"; path = "../assets/fonts/Satoshi-Light.otf"; sourceTree = "<group>"; };
+		548E8618C0D34E1A9F9ED276 /* BootSplash.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = BootSplash.storyboard; path = FineSpirits/BootSplash.storyboard; sourceTree = "<group>"; };
+		61DC0AA622C94A289D1CF224 /* Satoshi-LightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-LightItalic.otf"; path = "../assets/fonts/Satoshi-LightItalic.otf"; sourceTree = "<group>"; };
+		68773509C7C04BFCB7616054 /* Satoshi-BoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-BoldItalic.otf"; path = "../assets/fonts/Satoshi-BoldItalic.otf"; sourceTree = "<group>"; };
 		70ADAC66070718D7AF3B3676 /* Pods-FineSpirits.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FineSpirits.release.xcconfig"; path = "Target Support Files/Pods-FineSpirits/Pods-FineSpirits.release.xcconfig"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = FineSpirits/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = FineSpirits/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		AFC662E22B404642A53387C1 /* Satoshi-Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Italic.otf"; path = "../assets/fonts/Satoshi-Italic.otf"; sourceTree = "<group>"; };
-		DADF1BFCF723444381C58CA5 /* Satoshi-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Bold.otf"; path = "../assets/fonts/Satoshi-Bold.otf"; sourceTree = "<group>"; };
-		DC5FA2D67C184FD78325D158 /* Satoshi-BlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-BlackItalic.otf"; path = "../assets/fonts/Satoshi-BlackItalic.otf"; sourceTree = "<group>"; };
-		E3F6D4F3F6DF4BCC9EE9FA3E /* Satoshi-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Medium.otf"; path = "../assets/fonts/Satoshi-Medium.otf"; sourceTree = "<group>"; };
+		AFC662E22B404642A53387C1 /* Satoshi-Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Italic.otf"; path = "../assets/fonts/Satoshi-Italic.otf"; sourceTree = "<group>"; };
+		DADF1BFCF723444381C58CA5 /* Satoshi-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Bold.otf"; path = "../assets/fonts/Satoshi-Bold.otf"; sourceTree = "<group>"; };
+		DC5FA2D67C184FD78325D158 /* Satoshi-BlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-BlackItalic.otf"; path = "../assets/fonts/Satoshi-BlackItalic.otf"; sourceTree = "<group>"; };
+		E3F6D4F3F6DF4BCC9EE9FA3E /* Satoshi-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Medium.otf"; path = "../assets/fonts/Satoshi-Medium.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F8FC298079356CEB62ED94A4 /* libPods-FineSpirits.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FineSpirits.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		548E8618C0D34E1A9F9ED276 /* BootSplash.storyboard */ = {isa = PBXFileReference; name = "BootSplash.storyboard"; path = "FineSpirits/BootSplash.storyboard"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		2DE31F6FE9F943E98E31CCC5 /* Colors.xcassets */ = {isa = PBXFileReference; name = "Colors.xcassets"; path = "FineSpirits/Colors.xcassets"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = folder.assetcatalog; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,7 +101,6 @@
 				21739CDD0B374E4490B28969 /* Satoshi-Regular.otf */,
 			);
 			name = Resources;
-			path = "";
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -270,9 +269,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FineSpirits/Pods-FineSpirits-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FineSpirits/Pods-FineSpirits-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -287,9 +290,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FineSpirits/Pods-FineSpirits-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FineSpirits/Pods-FineSpirits-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -316,7 +323,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = VU9U9F83DZ;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = FineSpirits/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -330,8 +342,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = pl.finespirits;
 				PRODUCT_NAME = FineSpirits;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = pl.finespirits;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -344,7 +358,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = VU9U9F83DZ;
 				INFOPLIST_FILE = FineSpirits/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -357,8 +376,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = pl.finespirits;
 				PRODUCT_NAME = FineSpirits;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = pl.finespirits;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -433,10 +454,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -505,10 +523,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

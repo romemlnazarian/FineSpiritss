@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import {StyleComponent} from '../../utiles/styles';
 import CustomHeader from '../../navigation/CustomHeader';
@@ -27,55 +29,65 @@ const data: {id: number; title: string}[] = [
 
 export default function DeleteAccountScreen() {
   const {Styles} = StyleComponent();
-  const {toggleSelect, onSubmit, selectedIds, otherText, setOtherText} = DeleteAccountLogic();
+  const {toggleSelect, onSubmit, selectedId,otherText, setOtherText,loading} = DeleteAccountLogic();
   return (
     <View style={Styles.container}>
-      <CustomHeader showBack={true} title="Delete Account" />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.contentContainer}>
-          <Text style={Styles.h4_Medium}>Delete Account</Text>
-          <Text style={[Styles.body_Regular, styles.description]}>
-            We're really sorry to see you go. Are you sure you want to delete
-            your account? Once you confirm, your data will gone.
-          </Text>
-          {data.map(item => (
-            <React.Fragment key={item.id}>
-              <TouchableOpacity
-                activeOpacity={0.6}
-                onPress={() => toggleSelect(item.id)}
-                style={[Styles.justifyBetween, styles.row,item.id === 9 && {borderBottomWidth: 0}]}>
-                <Text style={[Styles.body_Regular]}>{item.title}</Text>
-                <View
-                  style={[
-                    Styles.justifyCenter,
-                    selectedIds.includes(item.id)
-                      ? styles.checkboxSelected
-                      : styles.checkbox,
-                  ]}>
-                  {selectedIds.includes(item.id) && (
-                    <Check name="check" size={18} color={Color.white} />
-                  )}
-                </View>
-              </TouchableOpacity>
-              {item.id === 9 && selectedIds.includes(9) && (
-                <TextInput
-                  style={styles.textarea}
-                  placeholder="Please describe..."
-                  placeholderTextColor={Color.gray}
-                  multiline
-                  value={otherText}
-                  onChangeText={setOtherText}
-                />
-              )}
-            </React.Fragment>
-          ))}
-        </View>
-        <BottomCardComponent
-          title="Delete Account"
-          onHandler={onSubmit}
-          style={styles.buttonSpacing}
-        />
-      </ScrollView>
+      <CustomHeader showBack={true} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+        style={{flex: 1}}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          automaticallyAdjustKeyboardInsets={true}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{paddingBottom: 24}}>
+          <View style={styles.contentContainer}>
+            <Text style={Styles.h4_Medium}>Delete Account</Text>
+            <Text style={[Styles.title_Regular, styles.description]}>
+              We're really sorry to see you go. Are you sure you want to delete
+              your account? Once you confirm, your data will gone.
+            </Text>
+            {data.map(item => (
+              <React.Fragment key={item.id}>
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={() => toggleSelect(item)}
+                  style={[Styles.justifyBetween, styles.row, item.id === 9 && {borderBottomWidth: 0}]}>
+                  <Text style={[Styles.body_Regular]}>{item.title}</Text>
+                  <View
+                    style={[
+                      Styles.justifyCenter,
+                      selectedId === item.id
+                        ? styles.checkboxSelected
+                        : styles.checkbox,
+                    ]}>
+                    {selectedId === item.id && (
+                      <Check name="check" size={18} color={Color.white} />
+                    )}
+                  </View>
+                </TouchableOpacity>
+                {item.id === 9 && selectedId === 9 && (
+                  <TextInput
+                    style={styles.textarea}
+                    placeholder="Please describe..."
+                    placeholderTextColor={Color.gray}
+                    multiline
+                    value={otherText}
+                    onChangeText={setOtherText}
+                  />
+                )}
+              </React.Fragment>
+            ))}
+          </View>
+          <BottomCardComponent
+            title="Delete Account"
+            onHandler={onSubmit}
+            style={styles.buttonSpacing}
+            loading={loading}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }
@@ -118,6 +130,7 @@ const styles = StyleSheet.create({
     padding: 10,
     minHeight: 150,
     color: Color.black,
+    textAlignVertical: 'top',
   },
   buttonSpacing: {
     marginTop: '10%',

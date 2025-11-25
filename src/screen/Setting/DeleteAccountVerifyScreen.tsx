@@ -4,16 +4,32 @@ import {StyleComponent} from '../../utiles/styles';
 import CustomHeader from '../../navigation/CustomHeader';
 import CodeInput from '../../component/CodeInput';
 import BottomCardComponent from '../../component/BottomCard';
-import Timer from '../../Helper/Timer';
 import {BottomSheet} from '../../component/BottomSheet';
 import DeleteAccountVerfyLogic from '../../logic/Setting/DeleteAccountVerfyLogic';
+import Layer from '../../assets/svg/Layer.svg';
+import TimerAndroid from '../../Helper/TimerAndroid';
 import Warning from 'react-native-vector-icons/Ionicons';
-import {Color} from '../../utiles/color';
-import Layer from '../../assets/svg/Layer.svg'
-export default function DeleteAccountVerifyScreen() {
+import { Color } from '../../utiles/color';
+export default function DeleteAccountVerifyScreen(route: any) {
   const {Styles} = StyleComponent();
-  const {modalVisible, setModalVisible, restartKey, setRestartKey, onSubmitConfirm, onSubmitCancel, disable,count} =
-    DeleteAccountVerfyLogic();
+  const {
+    modalVisible,
+    setModalVisible,
+    restartKey,
+    setRestartKey,
+    onSubmitConfirm,
+    email,
+    DisableTimer,
+    setDisableTimer,
+    onHandlerTimer,
+    onHandler,
+    codeValid,
+    count,
+    disable,
+    onSubmitCancel,
+    title,
+    loading,
+  } = DeleteAccountVerfyLogic(route);
   return (
     <View style={Styles.container}>
       <CustomHeader showBack={true} />
@@ -21,43 +37,42 @@ export default function DeleteAccountVerifyScreen() {
         Deleting Confirmation
       </Text>
       <Text style={[Styles.body_Regular, {marginTop: '2%', marginLeft: '5%'}]}>
-        Enter the code we’ve sent to your email (newemail@gmail.com) to confirm
-        account deletion.
+        Enter the code we’ve sent to your email ({email}) to confirm account
+        deletion.
       </Text>
-      <CodeInput onCodePress={() => {}} />
+      <CodeInput isCodeValid={codeValid}  onCodePress={(e) => onHandler(e)} />
       <View style={[Styles.justifyCenter, {gap: 10}]}>
-        <TouchableOpacity onPress={() => setRestartKey(restartKey + 1)}>
+        <TouchableOpacity disabled={DisableTimer} onPress={() => onHandlerTimer()}>
           <Text style={Styles.title_Medium}>Send Code Again</Text>
         </TouchableOpacity>
-        <Timer restartKey={restartKey} onCountdownComplete={() => {}} />
+        <TimerAndroid
+          restartKey={restartKey}
+          onCountdownComplete={() => {
+            setDisableTimer(false);
+            setRestartKey(false);
+          }}
+        />
       </View>
 
-      <BottomCardComponent
+      {/* <BottomCardComponent
         title="Confirm"
         onHandler={onSubmitConfirm}
         countdown
         countdownStart={3}
-      />
+      /> */}
       <BottomSheet
         modalVisible={modalVisible}
         height={400}
         onClose={() => setModalVisible(false)}>
-           <> 
-           <View style={styles.bottomSheetContainer}>
-            <Layer/>
-            <Text style={[Styles.h6_Medium,Styles.textAlign, {marginTop: '5%'}]}>Your account has been deleted</Text>
-            <Text style={[Styles.title_Regular,Styles.textAlign,{marginTop: '2%'}]}>We’re truly sad to see you go, but we’ll always be here if you decide to come back.</Text>
-            <BottomCardComponent
-            title="Done"
-            onHandler={()=>console.log('done')}
-            style={{marginTop: '5%'}}
-            />
-           </View>
-           </>
-          {/* <>
+        {/* <>
+         
+        </> */}
+        <>
+        {title === 'deleteAccount' ? (
+        <>
         <View style={styles.bottomSheetContainer}>
-          <Warning name="warning" size={80} color={Color.primary} />
-          <Text style={[Styles.h6_Medium, Styles.textAlign, {marginTop: '2%'}]}>
+        <Warning name="warning" size={80} color={Color.primary} />
+        <Text style={[Styles.h6_Medium, Styles.textAlign, {marginTop: '2%'}]}>
             Are you sure you want to delete your account?
           </Text>
           <Text
@@ -74,9 +89,34 @@ export default function DeleteAccountVerifyScreen() {
           title={`Yes${(count) < 1 ? '' : `(${count})`}`}
           onHandler={onSubmitConfirm}
           disabled={disable}
+          loading={loading}
           style={{marginTop: '2%', backgroundColor:disable ? Color.lightBlack : Color.primary}}
         />
-        </> */}
+        </>
+        ) : (
+          <View style={styles.bottomSheetContainer}>
+            <Layer />
+            <Text
+              style={[Styles.h6_Medium, Styles.textAlign, {marginTop: '5%'}]}>
+              Your account has been deleted
+            </Text>
+            <Text
+              style={[
+                Styles.title_Regular,
+                Styles.textAlign,
+                {marginTop: '2%'},
+              ]}>
+              We’re truly sad to see you go, but we’ll always be here if you
+              decide to come back.
+            </Text>
+            <BottomCardComponent
+              title="Done"
+              onHandler={() => console.log('done')}
+              style={{marginTop: '5%'}}
+            />
+          </View>
+        )}
+        </>
       </BottomSheet>
     </View>
   );

@@ -25,6 +25,7 @@ interface ProductItem {
   originalPrice?: string;
   discountPrice?: string;
   image?: string;
+  is_favorite?: boolean;
 }
 interface VerticalScrollProps {
   item: ProductItem[];
@@ -43,7 +44,7 @@ const ProductCard: React.FC<{
   orderBottom?: boolean;
 }> = ({item, onAddSelected, onHandlerItem, orderBottom}) => {
   const {Styles} = StyleComponent();
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
   const [showCounter, setShowCounter] = useState(false);
 
   const toggleFavorite = useCallback(() => {

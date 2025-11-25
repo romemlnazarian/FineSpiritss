@@ -17,7 +17,8 @@ export default function HomeLogic() {
   const navigation = useNavigation<ButtonScreenNavigationProp>();
   const isFocused = useIsFocused();
   const [visible, setVisible] = useState(true);
-  const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
+  const {token, refreshToken, setToken, setRefreshToken, isLoggedIn} = useAuthStore();
+  const {ageConfirmed,setAgeConfirmed} = useAuthStore();
   const {setProfile} = useProfileStore();
   const [categories, setCategories] = useState<[]>([]);
   const [topBrands, setTopBrands] = useState<[]>([]);
@@ -33,7 +34,7 @@ export default function HomeLogic() {
 
 
   const onSubmitClose = () => {
-    setVisible(prev => !prev);
+    setAgeConfirmed(false);
   };
   const getCategories = useCallback(async () => {
     setIsCategoriesLoading(true);
@@ -194,6 +195,7 @@ export default function HomeLogic() {
     if (!isFocused) {
       return;
     }
+ 
     getCategories();
     getTopBrands();
     getHomeAdvertising();
@@ -209,7 +211,7 @@ export default function HomeLogic() {
   }, [isFocused, onSubmitSort]);
 
 
-
+ 
   const getProfile = () => {
     getProfileModel(token, (data) => {
       setProfile({...data});
@@ -300,5 +302,6 @@ export default function HomeLogic() {
     dataSortLoading,
     homeRecommended,
     isTopBrandsLoading,
+    ageConfirmed
   };
 }

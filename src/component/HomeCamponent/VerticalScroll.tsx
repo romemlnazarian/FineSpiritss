@@ -13,6 +13,9 @@ import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import BottomCardComponent from '../BottomCard';
 // import {Language} from '../../utiles/Language/i18n'; // Removed as no longer used
 import Card from '../../assets/svg/Cart.svg';
+import { AddFavoriteProductModel, DeleteFavoriteProductModel } from '../../model/Favorite/Favorite';
+import useAuthStore from '../../zustland/AuthStore';
+import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
 
 interface ProductItem {
   id: string;
@@ -34,10 +37,66 @@ interface VerticalScrollProps {
 // Individual Product Card Component
 const ProductCard: React.FC<{item: ProductItem; onSubmitProduct?: (item: ProductItem) => void}> = ({item, onSubmitProduct}) => {
   const {Styles} = StyleComponent();
-  const [isFavorite, setIsFavorite] = useState(false);
+  const {token, refreshToken} = useAuthStore();
+  const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
 
-  const toggleFavorite = () => {
-    setIsFavorite(prev => !prev);
+  const toggleFavorite = (item:any) => {
+    if (isFavorite) {
+      setIsFavorite(false);
+      DeleteFavoriteProductModel(
+        token,
+        item.id,
+        () => {},
+        error => {
+          console.log('error', error);
+        },
+        () => {
+          refreshTokenModel(
+            refreshToken,
+            data => {
+              DeleteFavoriteProductModel(
+                data.access,
+                item.id,
+                data => {
+                  console.log('data', data);
+                },
+                error => {
+                  console.log('error', error);
+                },
+              );
+            },
+            () => {},
+          );
+        },
+      );
+    } else {
+      setIsFavorite(true);
+      AddFavoriteProductModel(
+        token,
+        item.id,
+         () => {
+          setIsFavorite(true);
+        },
+        error => {
+          console.log('error', error);
+        },
+        () => {
+          refreshTokenModel(
+            refreshToken,
+            data => {
+              AddFavoriteProductModel(
+                data.access,
+                item.id,
+                () => {},
+                () => {},
+                () => {},
+              );
+            },
+            () => {},
+          );
+        },
+      );
+    }
   };
 
   return (

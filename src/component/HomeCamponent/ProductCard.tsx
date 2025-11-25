@@ -1,4 +1,12 @@
-import {View, Text, StyleSheet, TouchableOpacity, StyleProp, ViewStyle, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  StyleProp,
+  ViewStyle,
+  Image,
+} from 'react-native';
 import React, {useState} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
@@ -7,6 +15,12 @@ import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import BottomCardComponent from '../BottomCard';
 // import {Language} from '../../utiles/Language/i18n'; // Removed as no longer used
 import Card from '../../assets/svg/Cart.svg';
+import {
+  AddFavoriteProductModel,
+  DeleteFavoriteProductModel,
+} from '../../model/Favorite/Favorite';
+import useAuthStore from '../../zustland/AuthStore';
+import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
 
 interface ProductItem {
   id: string;
@@ -19,6 +33,7 @@ interface ProductItem {
   regular_price?: string;
   sale_price?: string;
   abv?: string;
+  is_favorite?: boolean;
 }
 
 interface ProductCardProps {
@@ -27,22 +42,79 @@ interface ProductCardProps {
   onPress?: (item: ProductItem) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({item, cardStyle, onPress}) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  item,
+  cardStyle,
+  onPress,
+}) => {
+  const {token, refreshToken} = useAuthStore();
   const {Styles} = StyleComponent();
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
   const toggleFavorite = () => {
-    setIsFavorite(prev => !prev);
+    if (isFavorite) {
+      setIsFavorite(false);
+      DeleteFavoriteProductModel(
+        token,
+        item.id,
+        () => {},
+        error => {
+          console.log('error', error);
+        },
+        () => {
+          refreshTokenModel(
+            refreshToken,
+            data => {
+              DeleteFavoriteProductModel(
+                data.access,
+                item.id,
+                data => {
+                  console.log('data', data);
+                },
+                error => {
+                  console.log('error', error);
+                },
+              );
+            },
+            () => {},
+          );
+        },
+      );
+    } else {
+      setIsFavorite(true);
+      AddFavoriteProductModel(
+        token,
+        item.id,
+         () => {
+          setIsFavorite(true);
+        },
+        error => {
+          console.log('error', error);
+        },
+        () => {
+          refreshTokenModel(
+            refreshToken,
+            data => {
+              AddFavoriteProductModel(
+                data.access,
+                item.id,
+                () => {},
+                () => {},
+                () => {},
+              );
+            },
+            () => {},
+          );
+        },
+      );
+    }
   };
-
 
   return (
     <TouchableOpacity
       style={[styles.productCardContainer, cardStyle]}
       activeOpacity={0.5}
       onPress={() => onPress?.(item)}>
-      <TouchableOpacity
-        style={styles.favoriteButton}
-        onPress={toggleFavorite}>
+      <TouchableOpacity style={styles.favoriteButton} onPress={toggleFavorite}>
         {isFavorite ? (
           <Heart_primary width={24} height={24} />
         ) : (
@@ -56,7 +128,9 @@ const ProductCard: React.FC<ProductCardProps> = ({item, cardStyle, onPress}) => 
           <View style={styles.imagePlaceholder} />
         )}
       </View>
-      <Text style={[Styles.body_Medium,{marginTop:'2%'}]} numberOfLines={1}>{item.title}</Text>
+      <Text style={[Styles.body_Medium, {marginTop: '2%'}]} numberOfLines={1}>
+        {item.title}
+      </Text>
       <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
         {item?.country} ABV {item?.abv}
       </Text>

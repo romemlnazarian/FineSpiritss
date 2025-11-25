@@ -11,7 +11,7 @@ interface Props {
   startSeconds?: number;
 }
 
-const Timer: React.FC<Props> = ({onCountdownComplete, restartKey, startSeconds}) => {
+const TimerAndroid: React.FC<Props> = ({onCountdownComplete, restartKey, startSeconds}) => {
   const {Styles} = StyleComponent();
   const initialSeconds = startSeconds ?? 60;
   const [secondsLeft, setSecondsLeft] = useState<number>(initialSeconds);
@@ -128,6 +128,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Timer;
+export default TimerAndroid;
 
 

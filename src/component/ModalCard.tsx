@@ -13,7 +13,7 @@ interface ModalCardProps {
 
 export default function ModalCard({ isVisible, onClose }: ModalCardProps) {
  const {Styles} = StyleComponent();
- const { setAgeConfirmed } = useAuthStore();
+ const { setAgeGateAcknowledged } = useAuthStore();
   return (
     <Modal
       animationType="fade"
@@ -38,7 +38,7 @@ export default function ModalCard({ isVisible, onClose }: ModalCardProps) {
          <BottomCardComponent
         title={Language.modal_enter_button}
         onHandler={()=>{
-          setAgeConfirmed(true);
+          setAgeGateAcknowledged(true);
           onClose();
         }}
         style={styles.buttonComponent}

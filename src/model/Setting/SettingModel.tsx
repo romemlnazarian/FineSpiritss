@@ -18,6 +18,10 @@ type UpdateBirthdateProps = {
   birthdate: string;
 };
 
+type ChangeEmailProps = {
+  email: string;
+};
+
 export const UpdateFullNameModel = (
   token: string,
   full_name: string,
@@ -90,5 +94,95 @@ export const UpdateBirthdateModel = (
     },
     token,
     {birthdate:birthdate},
+  );
+};
+
+export const ChangeEmailModel = (
+  token: string,
+  email: string,
+  callback: (data: ChangeEmailProps) => void,
+  errorcallback: (data: string) => void,
+) => {
+  POST(
+    Route.root,
+    Route.change_email,
+    (data, status) => {
+      if (status === 200) {
+        callback(data.detail);
+      } else {
+        errorcallback(data.new_email[0]);
+      }
+    },
+    token,
+    {new_email:email},
+  );
+};
+
+
+export const VerifyEmailModel = (
+  token: string,
+  code: string,
+  callback: (data: ChangeEmailProps) => void,
+  errorcallback: (data: string) => void,
+) => {
+  POST(
+    Route.root,
+    Route.verify_email,
+    (data, status) => {
+      if (status === 200) {
+        callback(data.detail);
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token,
+    {verification_code:code},
+  );
+};
+
+export const DeleteAccountModel = (
+  token: string,
+  reason: string,
+  callback: (data: ChangeEmailProps) => void,
+  errorcallback: (data: string) => void,
+) => {
+  POST(
+    Route.root,
+    Route.delete_account,
+    (data, status) => {
+      if (status === 200) {
+        callback(data.detail);
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token,
+    {reason:reason},
+  );
+};
+
+export const DeleteAccountVerifyModel = (
+  token: string,
+  deletion_code: string,
+  reason: string,
+  callback: (data: ChangeEmailProps) => void,
+  errorcallback: (data: string) => void,
+  callbackUnauthorized: () => void,
+) => {
+  POST(
+    Route.root,
+    Route.delete_account_verify,
+    (data, status) => {
+      console.log('data', data, status);
+      if (status === 200) {
+        callback(data.detail);
+      } else if(status === 401) {
+        callbackUnauthorized();
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token,
+    {deletion_code:deletion_code,reason:reason},
   );
 };

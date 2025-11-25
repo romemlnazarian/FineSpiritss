@@ -7,10 +7,12 @@ import {Color} from '../utiles/color';
 import {Language} from '../utiles/Language/i18n';
 import {WellcomeLogic} from '../logic/WellcomeLogic';
 import {Image} from 'react-native';
+import Layer from '../assets/svg/Layer.svg';
+import { BottomSheet } from '../component/BottomSheet';
 
 export default function WellcomeScreen() {
   const {Styles} = StyleComponent();
-  const {onSubmit} = WellcomeLogic();
+  const {onSubmit, deleteAccountDone, onHandlerClose} = WellcomeLogic();
   return (
     <View style={Styles.container}>
       <View style={[StyleSheet.absoluteFillObject]}>
@@ -54,6 +56,34 @@ export default function WellcomeScreen() {
           textStyle={{color: Color.primary}}
         />
       </View>
+      <BottomSheet
+        modalVisible={deleteAccountDone}
+        height={400}
+        onClose={onHandlerClose}>
+          <View style={styles.bottomSheetContainer}>
+            <Layer />
+            <Text
+              style={[Styles.h6_Medium, Styles.textAlign, {marginTop: '5%'}]}>
+              Your account has been deleted
+            </Text>
+            <Text
+              style={[
+                Styles.title_Regular,
+                Styles.textAlign,
+                {marginTop: '2%'},
+              ]}>
+              We’re truly sad to see you go, but we’ll always be here if you
+              decide to come back.
+            </Text>
+            <BottomCardComponent
+              title="Done"
+              onHandler={onHandlerClose}
+              style={{marginTop: '5%'}}
+            />
+          </View>
+        
+        
+      </BottomSheet>
     </View>
   );
 }
@@ -78,5 +108,11 @@ const styles = StyleSheet.create({
   },
   marginBottom: {
     marginBottom: 10,
+  },
+  bottomSheetContainer: {
+    width: '93%',
+    alignSelf: 'center',
+    marginTop: '2%',
+    alignItems: 'center',
   },
 });

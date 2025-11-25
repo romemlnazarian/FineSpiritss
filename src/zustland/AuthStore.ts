@@ -13,6 +13,8 @@ interface AuthState {
   setIsLoggedIn: (value: boolean) => void;
   ageConfirmed: boolean;
   setAgeConfirmed: (value: boolean) => void;
+  ageGateAcknowledged: boolean;
+  setAgeGateAcknowledged: (value: boolean) => void;
 }
 
 const useAuthStore = create<AuthState>()(
@@ -37,6 +39,10 @@ const useAuthStore = create<AuthState>()(
       ageConfirmed: false,
       setAgeConfirmed: (value: boolean) => {
         set({ ageConfirmed: value });
+      },
+      ageGateAcknowledged: false,
+      setAgeGateAcknowledged: (value: boolean) => {
+        set({ ageGateAcknowledged: value });
       },
     }),
     {

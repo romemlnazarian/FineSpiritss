@@ -28,6 +28,13 @@
   update_full_name: string;
   update_password: string;
   update_birthdate: string;
+  change_email: string;
+  verify_email: string;
+  delete_account: string;
+  delete_account_verify: string;
+  get_favorite_products: string;
+  add_favorite_product: string;
+  delete_favorite_product: string;
 }
 
 export const Route: RouteObj = {
@@ -60,4 +67,11 @@ export const Route: RouteObj = {
     update_full_name: 'auth/change-name/',
     update_password: 'auth/change-password/',
     update_birthdate: 'auth/change-birthdate/',
+    change_email: 'auth/change-email/',
+    verify_email: 'auth/verify-email-change/',
+    delete_account: 'auth/delete-account/',
+    delete_account_verify: 'auth/confirm-deletion/',
+    get_favorite_products: 'product/favorites/',
+    add_favorite_product: 'product/favorites/add/',
+    delete_favorite_product: 'product/favorites/remove/',
 };

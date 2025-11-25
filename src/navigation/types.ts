@@ -74,7 +74,9 @@ export type ProfileStackParamList = {
  SupportService: undefined,
  SettingItem: undefined,
  DeleteAccount: undefined,
- DeleteAccountVerify: undefined,
+ DeleteAccountVerify: {
+  item: string,
+ },
 };
 
 export type RootStackParamList = AuthStackParamList & ButtonParamList & ProfileStackParamList;

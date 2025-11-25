@@ -32,7 +32,6 @@ export default function HomeScreen() {
   const {Styles,Height} = StyleComponent();
   const {
     onSubmitClose,
-    visible,
     categories,
     topBrands,
     isCategoriesLoading,
@@ -46,8 +45,8 @@ export default function HomeScreen() {
     dataSort,
     dataSortLoading,
     homeRecommended,
+    ageConfirmed
   } = HomeLogic();
-  const {ageConfirmed} = useAuthStore();
 
   // Android: confirm before exiting app on hardware back press when on Home
   useFocusEffect(
@@ -89,7 +88,7 @@ export default function HomeScreen() {
       <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
         <HomeHeader />
         <ModalCard
-          isVisible={visible && !ageConfirmed}
+          isVisible={ageConfirmed}
           onClose={onSubmitClose}
         />
 

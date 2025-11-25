@@ -95,6 +95,12 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
             canPreventDefault: true,
           });
 
+          // Always route Catalog tab to its root screen
+          if (route.name === 'CatalogScreen') {
+            navigation.navigate('CatalogScreen', { screen: 'Catalog' } as any);
+            return;
+          }
+
           if (!isFocused && !event.defaultPrevented) {
             navigation.navigate(route.name as keyof TabParamList, route.params);
           }
