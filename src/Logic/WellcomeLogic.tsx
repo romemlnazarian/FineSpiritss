@@ -16,11 +16,10 @@ export  function WellcomeLogic() {
 
     useFocusEffect(
       useCallback(() => {
-        // وقتی صفحه باز شد اگر deleteAccountDone = true بود، باید BottomSheet نمایش داده شود
-        return () => {
-          // وقتی صفحه unfocus شد مقدار پاک می‌شود
-          resetDeleteAccountDone();
-        };
+        // هر بار که صفحه فوکوس شد deleteAccountDone صفر شود
+        resetDeleteAccountDone();
+    
+        return () => {};
       }, [])
     );
   const onHandlerClose = () => {

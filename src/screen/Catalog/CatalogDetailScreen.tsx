@@ -19,28 +19,7 @@ import Heart_primary from '../../assets/svg/Heart_Primary.svg';import CatalogFil
 import Delivery from '../../assets/svg/Delivery.svg';
 import ArrwoDown from '../../assets/svg/ArrowsDown.svg';
 import ProductCard from '../../component/HomeCamponent/ProductCard';
-const data = [
-  {
-    id: '1',
-    title: '25 ml',
-  },
-  {
-    id: '2',
-    title: '50 ml',
-  },
-  {
-    id: '3',
-    title: '100l',
-  },
-  {
-    id: '4',
-    title: '200 ml',
-  },
-  {
-    id: '5',
-    title: '300 ml',
-  },
-];
+
 interface ProductItem {
   id: string;
   title: string;

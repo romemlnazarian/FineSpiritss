@@ -1,90 +1,150 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
 import { Color } from '../../utiles/color'
 import { StyleComponent } from '../../utiles/styles'
 import Viski from '../../assets/svg/viski.svg';
 import AddBottom from '../AddBottom';
-import Heart from 'react-native-vector-icons/Feather';
-
+import BottomCardComponent from '../BottomCard';
+import Heart from '../../assets/svg/Heart.svg';
+import Heart_primary from '../../assets/svg/Heart_Primary.svg';
+import { DeleteFavoriteProductModel, AddFavoriteProductModel } from '../../model/Favorite/Favorite';
+import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
+import useAuthStore from '../../zustland/AuthStore';
 interface ProductItem {
-    id: string;
-    title: string;
-    country: string;
-    alcoholContent: string;
-    price: string;
-  }
-  const displayedProductData: ProductItem[] = [
-    {
-      id: 'p1',
-      title: 'Cognac Hennessy1',
-      country: 'France',
-      alcoholContent: 'ABV 40%',
-      price: '$199.99',
-    },
-    {
-      id: 'p2',
-      title: 'Whiskey Jameson2',
-      country: 'Ireland',
-      alcoholContent: 'ABV 40%',
-      price: '$49.99',
-    },
-    {
-      id: 'p3',
-      title: 'Vodka Absolut',
-      country: 'Sweden',
-      alcoholContent: 'ABV 40%',
-      price: '$29.99',
-    },
-  ];
+  id?: string;
+  title?: string;
+  name?: string;
+  country?: string;
+  abv?: string | number;
+  price?: string;
+  regular_price?: string;
+  sale_price?: string;
+}
 
 
-export default function FavoriteItem() {
-    const {Styles} = StyleComponent();
+export default function FavoriteItem({favoriteProducts, onReload}: {favoriteProducts: ProductItem[]; onReload?: () => void}) {
 // Memoized Product Card Component
 const ProductCard = React.memo(({item}: {item: ProductItem}) => {
-    const {Styles} = StyleComponent();
+  const {token, refreshToken} = useAuthStore();
+
+
   
+    const {Styles} = StyleComponent();
+    const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
+  
+     const onHandlerItem = (item: ProductItem) => {
+      console.log('item =>', item);
+      if (isFavorite) {
+        setIsFavorite(false);
+        DeleteFavoriteProductModel(
+          token,
+          item.id,
+           () => {
+             onReload?.();
+           },
+          error => {
+            console.log('error', error);
+          },
+          () => {
+            refreshTokenModel(
+              refreshToken,
+              data => {
+                DeleteFavoriteProductModel(
+                  data.access,
+                  item.id,
+                   () => onReload?.(),
+                  error => {
+                    console.log('error', error);
+                  },
+                );
+              },
+              () => {},
+            );
+          },
+        );
+      } else {
+        setIsFavorite(true);
+        AddFavoriteProductModel(
+          token,
+          item.id,
+           () => {
+            setIsFavorite(true);
+             onReload?.();
+          },
+          error => {
+            console.log('error', error);
+          },
+          () => {
+            refreshTokenModel(
+              refreshToken,
+              data => {
+                AddFavoriteProductModel(
+                  data.access,
+                  item.id,
+                   () => onReload?.(),
+                   () => {},
+                   () => {},
+                );
+              },
+              () => {},
+            );
+          },
+        );
+      }
+
+
+    }
+
+
     return (
-      <View style={[Styles.justifyBetween, styles.mainContainer]}>
-        <View style={[Styles.justifyCenter, styles.leftSection]}>
-          <Viski width={50} height={100} />
+      <View style={[styles.mainContainer]}>
+        <View style={[ styles.leftSection,{flexDirection:'row',alignItems:'center',gap:10}]}>
+          <Image source={{uri: item.image_url}} style={{width:80,height:100,borderRadius:10}} />
           <View style={styles.productInfo}>
-            <Text style={[Styles.h5_SemiBold]}>{item.title}</Text>
+            <Text style={[Styles.h6_SemiBold,{width:'85%'}]} numberOfLines={1} ellipsizeMode="tail">{item.title ?? item.name ?? ''}</Text>
             <View style={styles.detailsContainer}>
-              <Text style={[Styles.subtitle_Regular]}>{item.country}</Text>
+              <Text style={[Styles.subtitle_Regular,{color:Color.gray}]}>{item.country ?? ''}</Text>
               <View style={styles.separator} />
-              <Text style={[Styles.subtitle_Regular]}>{item.alcoholContent}</Text>
+              <Text style={[Styles.subtitle_Regular,{color:Color.gray}]}>{item.abv ? `ABV ${item.abv}%` : ''}</Text>
             </View>
             <View style={styles.priceContainer}>
-            <Text style={[Styles.body_SemiBold]}>{item.price}</Text>
-            <Text style={[Styles.subtitle_Regular,{marginTop:'2%'}]}>{item.price}</Text>
+            <Text style={[Styles.body_SemiBold]}>{item.price ?? item.regular_price ?? item.sale_price ?? ''}</Text>
+            {item.sale_price ? (
+              <Text style={[Styles.subtitle_Regular,{marginTop:'2%'}]}>{item.sale_price}</Text>
+            ) : null}
             </View>
           </View>
         </View>
-        <View style={styles.heartContainer}>
-          <Heart name="heart" size={25} />
-        </View>
-        <AddBottom
-            style={styles.addBottom}
-            onQuantityChange={() => {}}
-            />
+         <TouchableOpacity 
+         onPress={() => onHandlerItem?.(item)}
+        style={styles.heartContainer}>
+        {isFavorite ? (
+          <Heart_primary width={24} height={24} />
+        ) : (
+          <Heart width={24} height={24} fill={Color.white} />
+        )}
+        </TouchableOpacity>
+         <BottomCardComponent
+          title="Add to Cart"
+          onHandler={() => {}}
+          style={styles.addBottom}
+          textStyle={Styles.subtitle_Regular}
+        />
+        
       </View>
     );
   });
   return (  
   <View style={{width:'100%',backgroundColor:Color.white,padding:10}}>
-    <View style={{width:'90%',flexDirection:'row', alignSelf:'center',justifyContent:'space-between',alignItems:'center'}}>
-  <Text style={[Styles.h6_Bold]}>My bag</Text>
-  <Text style={[Styles.title_Regular ,Styles.textAlign]}>1 item</Text>
-    </View>
-    <View style={{width:'90%',alignSelf:'center',backgroundColor:Color.lightGray,height:1,marginTop:'5%'}}/>
+ 
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.flatListContainer}
     >
-      {displayedProductData.map(item => (
-        <ProductCard key={item.id} item={item} />
-      ))}
+      {(Array.isArray(favoriteProducts) ? favoriteProducts : []).map((raw, idx) => {
+        const key = (raw?.id ?? (raw as any)?.slug ?? idx).toString();
+        return <ProductCard key={key} item={raw} />;
+      })}
     </ScrollView>
   
   </View>
@@ -93,11 +153,10 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
 
 const styles = StyleSheet.create({
     addBottom: {
-    width: 119,
-    height:42,
-    position:'absolute',
-    right:0,
-    bottom:10,
+    width: '90%',
+    height:48,
+    marginTop:'5%',
+    backgroundColor:Color.primary,
     },
     priceContainer: {
         flexDirection: 'row',
@@ -108,11 +167,10 @@ const styles = StyleSheet.create({
       width: '100%',
       alignSelf: 'center',
       marginTop: '5%',
-      borderBottomWidth: 1,
-      borderBottomColor: Color.lightGray,
+      borderWidth: 1,
+      borderColor: Color.lightGray,
       padding: 10,
-      borderBottomLeftRadius: 20,
-      borderBottomRightRadius: 20,
+      borderRadius: 10,
     },
     leftSection: {
       height: 100,

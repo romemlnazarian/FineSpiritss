@@ -15,12 +15,10 @@ export const BottomSheet: FC<{
 
   useEffect(() => {
     if (modalVisible) {
-      shouldTriggerClose.current = true; // اجازه بده فقط یکبار onClose اجرا بشه
       refRBSheet.current?.open();
     } else {
-      // ❗ اینجا فقط sheet رو ببند
-      // ❗ onClose را اینجا صدا نزن
-      refRBSheet.current?.close();
+      refRBSheet.current?.close(); // فقط sheet را ببند
+      // onClose را اینجا صدا نزن
     }
   }, [modalVisible]);
 
@@ -32,11 +30,7 @@ export const BottomSheet: FC<{
       draggable={true}
       dragOnContent={false}
       onClose={() => {
-        // ❗ onClose فقط وقتی اجرا بشه که modalVisible = false بوده
-        if (shouldTriggerClose.current && !modalVisible) {
-          onClose?.();
-        }
-        shouldTriggerClose.current = false;
+        onClose?.(); // فقط اینجا صدا زده می‌شود
       }}
       customStyles={{
         wrapper: { backgroundColor: "#C2C2BCE5" },

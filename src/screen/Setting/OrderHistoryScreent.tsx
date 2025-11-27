@@ -76,8 +76,7 @@ export default function OrderHistoryScreent() {
     <View style={[Styles.container]}>
       <CustomHeader
         showBack={true}
-        subTitle="Order History"
-        description="15 Orders"
+        title="Order History"
       />
       <CatalogFilter
         onHandler={e => onSubnmitFilter(e)}

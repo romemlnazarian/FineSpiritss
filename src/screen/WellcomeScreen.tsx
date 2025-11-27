@@ -58,8 +58,8 @@ export default function WellcomeScreen() {
       </View>
       <BottomSheet
         modalVisible={deleteAccountDone}
-        height={400}
-        onClose={onHandlerClose}>
+        height={350}
+        onClose={()=>onHandlerClose()}>
           <View style={styles.bottomSheetContainer}>
             <Layer />
             <Text
@@ -75,11 +75,11 @@ export default function WellcomeScreen() {
               We’re truly sad to see you go, but we’ll always be here if you
               decide to come back.
             </Text>
-            <BottomCardComponent
+            {/* <BottomCardComponent
               title="Done"
-              onHandler={onHandlerClose}
+              onHandler={()=>onHandlerClose()}
               style={{marginTop: '5%'}}
-            />
+            /> */}
           </View>
         
         

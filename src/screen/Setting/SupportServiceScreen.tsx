@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React, { Fragment } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native'
+import React, { Fragment, useEffect, useState } from 'react'
 import { StyleComponent } from '../../utiles/styles'
 import CustomHeader from '../../navigation/CustomHeader'
 import { Color } from '../../utiles/color'
@@ -8,65 +8,141 @@ import Telegram from '../../assets/svg/Telegram.svg';
 import Whatsapp from '../../assets/svg/Whatsapp.svg';
 import Facebook from '../../assets/svg/FacebookIcon.svg';
 import Instagram from 'react-native-vector-icons/FontAwesome';
-const data = [
-    {
-      id: 1,
-      title: 'Email address',
-      discription:"support@example.com",
-      icon: <Email/>,
+import { getSupportModel } from '../../model/Setting/SettingModel'
+import useAuthStore from '../../zustland/AuthStore'
+import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel'
+import AddressIcon from 'react-native-vector-icons/FontAwesome';
+import ThreadsIcon from '../../assets/svg/Threads.svg';
+export default function SupportServiceScreen() {
+  const {Styles} = StyleComponent();
+const {token,refreshToken, setToken, setRefreshToken} = useAuthStore();
 
-    },
+const [support, setSupport] = useState<any>(null);
+useEffect(() => {
+  getSupportModel(token, (data) => {
+    setSupport(data);
+    console.log('dataaaaa =>', data);
+  }, (error) => {
+    console.log('error =>', error);
+  }, () => {
+    refreshTokenModel(refreshToken, (data) => {
+      setToken(data.access);
+      setRefreshToken(data.refresh);
+      getSupportModel(token, (data) => {
+        setSupport(data);
+        console.log('dataaaaaa =>', data);
+      }, (error) => {
+        console.log('error =>', error);
+      });
+    });
+
+  });
+}, []);
+const data = [
+  {
+    id: 1,
+    title: 'Email address',
+    discription:support?.support_email,
+    icon: <Email/>,
+    key:'email',
+  },
+  {
+    id: 2,
+    title: 'Address',
+    discription:support?.address,
+    icon: <AddressIcon name="address-book-o" size={25} />,
+    key:'address',
+  },
+  {
+    id: 3,
+    title: 'Telegram',
+    discription:support?.telegram_username,
+    icon: <Telegram/>,
+    key:'telegram',
+  },
+  {
+    id: 4,
+    title: 'Whatsapp',
+    discription:support?.whatsapp_phone,
+    icon: <Whatsapp/>,
+    key:'whatsapp',
+  },
+];
+const dataTwo = [
+  {
+    id: 1,
+    title: 'Facebook',
+    discription:"Finespirits",
+    icon: <Facebook/>,
+    key:'facebook',
+  },
     {
       id: 2,
-      title: 'Telegram',
-      discription:"+48 00 000 00 00",
-      icon: <Telegram/>,
+      title: 'Instagram',
+      discription:"Finespirits",
+      icon: <Instagram name="instagram" size={25} />,
+      key:'instagram',
     },
     {
       id: 3,
-      title: 'Whatsapp',
-      discription:"+48 00 000 00 00",
-      icon: <Whatsapp/>,
+      title: 'Threads',
+      discription:"Finespirits",
+      icon: <ThreadsIcon/>,
+      key:'threads',
+     
     },
-  ];
-  const dataTwo = [
-    {
-      id: 1,
-      title: 'Facebook',
-      discription:"@Finespirits",
-      icon: <Facebook/>,
-    },
-    {
-      id: 2,
-      title: 'Email address',
-      discription:"@Finespirits",
-      icon: <Instagram name="instagram" size={25} />,
-    },
-  ];
-export default function SupportServiceScreen() {
-  const {Styles} = StyleComponent();
+];
+
+const onSubmit = (key:string)=>{
+  switch(key){  
+    case 'address':
+      Linking.openURL(`${support?.address_map_url}`);
+      break;
+    case 'telegram':
+      Linking.openURL(`${support?.telegram_url}`);
+      break;
+    case 'whatsapp':
+      Linking.openURL(`${support?.whatsapp_url}`);
+      break;
+    case 'facebook':
+      Linking.openURL(`${support?.facebook_url}`);
+      break;
+    case 'instagram':
+      Linking.openURL(`${support?.instagram_url}`);
+      break;
+    case 'threads':
+      Linking.openURL(`${support?.threads_url}`);
+      break;
+    default:
+      break;
+ }
+}
   return (
     <View style={Styles.container}>
       <CustomHeader showBack={true} title="Support Service" />
       <View style={styles.section}>
         {data.map(item => (
           <Fragment key={item.id}>
-            <View
+            <TouchableOpacity
+            activeOpacity={0.5}
+              onPress={()=>onSubmit(item.key)}
               key={item.id}
               style={styles.rowGap10Center}>
                 {item.icon}
                 <View style={{gap:5}}>
                 <Text style={Styles.title_Regular}>{item.title}</Text>
-                <Text style={[Styles.title_Regular,{color:Color.gray}]}>{item.discription}</Text>
+                <Text style={[Styles.title_Regular,{color:Color.gray,width:item.id === 2 ? '98%' : '100%'}]}>{item.discription}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
           </Fragment>
         ))}
       </View>
       <View style={styles.section}>
         {dataTwo.map(item => (
           <Fragment key={item.id}>
-               <View
+               <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={()=>onSubmit(item.key)}
               key={item.id}
               style={styles.rowGap10Center}>
                 {item.icon}
@@ -74,7 +150,7 @@ export default function SupportServiceScreen() {
                 <Text style={Styles.title_Regular}>{item.title}</Text>
                 <Text style={[Styles.title_Regular,{color:Color.gray}]}>{item.discription}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
           </Fragment>
         ))}
       </View>

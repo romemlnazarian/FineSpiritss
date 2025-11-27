@@ -6,14 +6,12 @@ import { AddFavoriteProductModel, DeleteFavoriteProductModel } from '../../model
 
 export default function CatalogDetailLogic(route: any) {
     const [product, setProduct] = useState(null);
-    const [quantity, setQuantity] = useState(0);
     const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
     const [isLoading, setIsLoading] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
 
     useEffect(() => {
         getProductDetail()
-        setIsFavorite(route?.route?.params?.product?.is_favorite);
         
     }, [route?.route?.params?.product]);
 
@@ -23,6 +21,7 @@ export default function CatalogDetailLogic(route: any) {
       getProductDetailModel(token, route?.route?.params?.product?.slug, (data) => {
         setIsLoading(false);
         setProduct(data);
+        console.log('data =======>=>', data);
         setIsFavorite(data?.is_favorite);
     }, (error) => {
         setIsLoading(false);
@@ -31,6 +30,7 @@ export default function CatalogDetailLogic(route: any) {
             setRefreshToken(data.refresh);
             getProductDetailModel(data.access, route?.route?.params?.product?.slug, (data) => {
                 setProduct(data);
+                console.log('data =======>=>', data);
                 setIsFavorite(data?.is_favorite);
             }, (error) => {
                 console.log('error =>', error);

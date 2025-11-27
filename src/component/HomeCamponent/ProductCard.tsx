@@ -56,7 +56,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
       DeleteFavoriteProductModel(
         token,
         item.id,
-        () => {},
+        () => {
+          
+        },
         error => {
           console.log('error', error);
         },

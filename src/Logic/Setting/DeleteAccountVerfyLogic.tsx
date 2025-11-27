@@ -72,7 +72,21 @@ export default function DeleteAccountVerfyLogic(route: any) {
             value,
             item,
             (data) => {
-              // show(data, {type: 'success'});
+              try {
+                setToken('');
+                setRefreshToken('');
+                setIsLoggedIn(false);
+                setUserData(null);
+                resetProfile();
+              } catch (e) {
+                // no-op
+              }
+              setLoading(false);
+              setModalVisible(false);
+     
+              setDeleteAccountDone(true);
+             //  show(data, {type: 'success'});
+              navigation.navigate('Wellcome');
             },
             error => {
               setDisable(true);

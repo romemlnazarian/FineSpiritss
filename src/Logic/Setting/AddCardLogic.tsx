@@ -11,7 +11,6 @@ export default function AddCardLogic() {
       .trim()
       .required('Email is required')
       .email('Please enter a valid email address')
-      .matches(/@gmail\.com$/, 'Only gmail.com emails are allowed'),
   });
   const {
     control,

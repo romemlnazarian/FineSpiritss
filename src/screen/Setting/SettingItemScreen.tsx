@@ -39,7 +39,7 @@ export default function SettingItemScreen() {
     {
       id: 1,
       title: 'Name Surname',
-      discription: dataProfile?.fullName,
+      discription: dataProfile?.full_name,
       icon: <User />,
       key: 'fullName',
     },
@@ -65,6 +65,7 @@ export default function SettingItemScreen() {
       key: 'birthDate',
     },
   ];
+
   return (
     <View style={[Styles.container, {backgroundColor: Color.white}]}>
       <CustomHeader
@@ -72,6 +73,8 @@ export default function SettingItemScreen() {
         title="Setting"
         style={{backgroundColor: Color.white}}
       />
+
+
       <View style={styles.section}>
         {data.map(item => (
           <Fragment key={item.id}>

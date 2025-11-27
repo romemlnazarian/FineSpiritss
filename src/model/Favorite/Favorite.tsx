@@ -4,7 +4,7 @@ import { Route } from "../../api/Route";
 
 
 
-export const getSearchProductsHistoryModel = (
+export const getFavoriteProductsModel = (
     token: string,
     callback: (data: any) => void,
     errorcallback: (data: string) => void,
@@ -14,8 +14,9 @@ export const getSearchProductsHistoryModel = (
       Route.root,
       `${Route.get_favorite_products}`,
       (data, status) => {
+        console.log('data=======>>', data, status);
            if (status === 200) {
-            callback(data.data);
+            callback(data);
           } else if (status === 401) {
             callbackUnauthorized?.();
           } else {
@@ -65,9 +66,9 @@ export const DeleteFavoriteProductModel = (
   ) => {
     DELETE(
       Route.root,
-      `${Route.delete_favorite_product}${id}`,
+      `${Route.delete_favorite_product}${id}/`,
       (data, status) => {
-        console.log('data', data, status);
+        console.log('data===>', data, status);
         if (status === 200) {
           callback(data.detail);
         } else if(status === 401) {

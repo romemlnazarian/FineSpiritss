@@ -4,7 +4,7 @@ import { Route } from "../../api/Route";
 export const refreshTokenModel = (
     refresh: string,
     callback: (data: any) => void,
-    errorcallback: (data: string) => void,
+    errorcallback?: (data: string) => void,
 ) => {
     POST(
         Route.root,
@@ -21,10 +21,10 @@ export const refreshTokenModel = (
                 if (anyData.detail) {
                     callback(anyData);
                 } else {
-                    errorcallback(String(anyData.message ?? 'Unexpected response'));
+                    errorcallback?.(String(anyData.message ?? 'Unexpected response'));
                 }
             } else {
-                errorcallback('Unexpected response');
+                errorcallback?.('Unexpected response');
             }
         },
         '',

@@ -1,4 +1,4 @@
-import {POST} from '../../api/Network';
+import {GET, POST} from '../../api/Network';
 import {Route} from '../../api/Route';
 
 type RegisterProps = {
@@ -57,7 +57,7 @@ export const UpdatePasswordModel = (
 ) => {
   POST(
     Route.root,
-    Route.update_birthdate,
+    Route.update_password,
     data => {
       const anyData: any = data;
       if (anyData.detail) {
@@ -173,7 +173,6 @@ export const DeleteAccountVerifyModel = (
     Route.root,
     Route.delete_account_verify,
     (data, status) => {
-      console.log('data', data, status);
       if (status === 200) {
         callback(data.detail);
       } else if(status === 401) {
@@ -184,5 +183,28 @@ export const DeleteAccountVerifyModel = (
     },
     token,
     {deletion_code:deletion_code,reason:reason},
+  );
+};
+
+
+export const getSupportModel =  (
+  token: string,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+  callbackUnauthorized?: () => void,
+) => {
+  GET(
+    Route.root,
+    Route.get_support,
+    (data, status) => {
+      if (status === 200) {
+        callback(data);
+      } else if(status === 401) {
+        callbackUnauthorized?.();
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token
   );
 };

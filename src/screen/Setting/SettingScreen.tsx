@@ -13,6 +13,7 @@ import Wrench from 'react-native-vector-icons/SimpleLineIcons';
 import Logout from 'react-native-vector-icons/AntDesign';
 import {BottomSheet} from '../../component/BottomSheet';
 import Plus from 'react-native-vector-icons/Feather';
+import LogOutComponent from '../../component/LogOutComponent';
 const data = [
   {
     id: 1,
@@ -44,14 +45,21 @@ const dataTwo = [
 ];
 export default function SettingScreen() {
   const {Styles} = StyleComponent();
-  const {onSubmitPayment, onSubmit, modalVisible, setModalVisible,onSubmitAddress} =
-    SettingLogic();
+  const {
+    onSubmit,
+    modalVisible,
+    setModalVisible,
+    onSubmitAddress,
+    profile,
+    logOutModalVisible,
+    setLogOutModalVisible,
+    onSubmitLogout
+  } = SettingLogic();
   return (
     <View style={[Styles.container]}>
       <Menu
         onHandler={() => {}}
-        title="Stanisław Piotrowski"
-        icon={<Arrow name="arrow-back-ios" size={20} color={Color.black} />}
+        title={`${profile?.first_name ?? ''} ${profile?.last_name ?? ''}`}
         style={styles.menu}
       />
       {/* <TouchableOpacity onPress={onSubmitPayment} style={styles.cardRow}>
@@ -74,7 +82,7 @@ export default function SettingScreen() {
         {data.map(item => (
           <Fragment key={item.id}>
             <TouchableOpacity
-             onPress={()=>onSubmit(item.title)}
+              onPress={() => onSubmit(item.title)}
               activeOpacity={0.5}
               key={item.id}
               style={styles.rowGap10Center}>
@@ -111,7 +119,10 @@ export default function SettingScreen() {
           </Fragment>
         ))}
       </View>
-      <TouchableOpacity activeOpacity={0.5} style={styles.logoutButton}>
+      <TouchableOpacity
+        activeOpacity={0.5}
+        style={styles.logoutButton}
+        onPress={() => setLogOutModalVisible(true)}>
         <Logout name="logout" size={22} />
         <Text style={Styles.title_Regular}>Logout</Text>
         <Arrow
@@ -141,6 +152,11 @@ export default function SettingScreen() {
           </TouchableOpacity>
         </View>
       </BottomSheet>
+      <LogOutComponent
+        onClose={() => onSubmitLogout()}
+        setLogOutModalVisible={() => setLogOutModalVisible(false)}
+        logOutModalVisible={logOutModalVisible}
+      />
     </View>
   );
 }

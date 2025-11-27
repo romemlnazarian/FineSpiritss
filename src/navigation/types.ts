@@ -65,6 +65,7 @@ export type TabParamList = {
 };
 
 export type ProfileStackParamList = {
+ Wellcome: undefined,
  MyOrder: undefined,
  Setting: undefined,
  Payment: undefined,
@@ -77,6 +78,7 @@ export type ProfileStackParamList = {
  DeleteAccountVerify: {
   item: string,
  },
+ Logout: undefined,
 };
 
 export type RootStackParamList = AuthStackParamList & ButtonParamList & ProfileStackParamList;

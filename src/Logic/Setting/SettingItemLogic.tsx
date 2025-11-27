@@ -19,19 +19,24 @@ export default function SettingItemLogic() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [dataProfile, setDataProfile] = useState<{
-    fullName: string;
+    first_name: string;
     email: string;
     birthdate: string;
+    full_name: string;
   }>({
-    fullName: '',
+    first_name: '',
     email: '',
     birthdate: '',
+    full_name: '',
   });
   useEffect(() => {
+    console.log('profile =>', profile);
+
     setDataProfile({
-      fullName: profile?.first_name ?? '',
+      first_name: profile?.first_name ?? '',
       email: profile?.email ?? '',
       birthdate: profile?.birthdate ?? '',
+      full_name: profile?.full_name ?? '',
     });
   }, [profile]);
 

@@ -34,7 +34,7 @@ const SlideItem = memo(
         <Text
           style={[
             Styles.title_Regular,
-            {color: Color.white, position: 'absolute', top: 35, left: 10,zIndex: 100},
+            {color: Color.white, position: 'absolute', top: 35, left: 10,zIndex: 100,width: '80%'},
           ]}>
           {item.text}
         </Text>

@@ -31,7 +31,7 @@ const CategoryItem = memo(({item, onSubmit}: {item: any, onSubmit: (item: any) =
       </View>
       <Text
         style={[Styles.title_Regular, styles.categoryItemTitle]}
-        numberOfLines={2}
+        numberOfLines={1}
         ellipsizeMode="tail"
       >
         {item.cat_name}

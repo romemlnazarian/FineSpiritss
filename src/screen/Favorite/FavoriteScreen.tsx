@@ -1,32 +1,41 @@
-import {View, Text, ScrollView, StyleSheet} from 'react-native';
+import {View, Text, ScrollView, StyleSheet,ActivityIndicator} from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
-import ShoppingCard from '../../assets/svg/ShoppingCart.svg';
+import Gllass from '../../assets/svg/gllass.svg';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
 import CustomHeader from '../../navigation/CustomHeader';
 import FavoriteLogic from '../../logic/Favorite/FavoriteLogic';
 import CartItem from '../../component/CartComponent/CartItem';
 import FavoriteItem from '../../component/FavoriteComponent/FavoriteItem';
+
 export default function FavoriteScreen() {
   const {Styles} = StyleComponent();
-  const {} = FavoriteLogic();
+  const {favoriteProducts, loading, getFavoriteProducts} = FavoriteLogic();
+  console.log('favoriteProducts =>', favoriteProducts?.length);
   return (
     <View style={Styles.container}>
       <CustomHeader showBack={true} title="Wishlist" />
       <ScrollView showsVerticalScrollIndicator={false}>
-      <FavoriteItem />
-
-        {/* <View style={[Styles.alignCenter,Styles.alignSelf,{width:'93%',marginTop:'8%'}]}>
-      <ShoppingCard fill={Color.black}/>
+      { loading ? <ActivityIndicator size="large" color={Color.primary} style={{marginTop:'50%'}}/> : favoriteProducts.length === 0 ? 
+      
+      <View style={[Styles.alignCenter,Styles.alignSelf,{width:'93%',marginTop:'8%'}]}>
+      <Gllass width={100} height={100} />
       <Text style={[Styles.h3_Bold,{textAlign:'center'}]}>There is no drinks in wishlist</Text>
-      <Text style={[Styles.h6_Regular,Styles.textAlign,{width:'80%'}]}>Once you add items from a store,
-      your cart will appear here</Text>
+      <Text style={[Styles.h6_Regular,Styles.textAlign,{width:'80%'}]}>
+      Once you add items from a store,
+      your wishlist will appear here
+      </Text>
       </View>
-      <View style={[Styles.alignSelf,{width:'93%',marginTop:'8%'}]}>
+      :(
+        <>
+          <FavoriteItem favoriteProducts={favoriteProducts} onReload={getFavoriteProducts} />
+        </>
+        )}
+     <View style={[Styles.alignSelf,{width:'93%',marginTop:'8%'}]}>
       <Text style={[Styles.h3_Bold,{marginLeft:'2%'}]}>Recommendations</Text>
       <HorizontalFlatList />
-      </View> */}
+      </View>
        </ScrollView>
     </View>
   );

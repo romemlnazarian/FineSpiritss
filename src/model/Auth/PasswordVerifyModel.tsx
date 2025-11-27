@@ -35,18 +35,14 @@ type PasswordVerifyProps = {
     POST(
       Route.root,
       Route.set_password,
-      data => {
+      (data, status) => {
         const anyData: any = data;
-        console.log('==>', anyData);
-        if (anyData && typeof anyData === 'object' && 'detail' in anyData) {
-          if (anyData.detail) {
-            callback(anyData);
-          } else {
-            errorcallback(String(anyData.message ?? 'Unexpected response'));
-          }
-        } else {
-          errorcallback('Unexpected response');
-        }
+         if(status === 200){
+          callback(anyData);
+          return
+         }else{
+          errorcallback(String(anyData.password[0]));
+         }
       },
       '',
       {email, password, password2},

@@ -35,6 +35,7 @@
   get_favorite_products: string;
   add_favorite_product: string;
   delete_favorite_product: string;
+  get_support: string;
 }
 
 export const Route: RouteObj = {
@@ -74,4 +75,5 @@ export const Route: RouteObj = {
     get_favorite_products: 'product/favorites/',
     add_favorite_product: 'product/favorites/add/',
     delete_favorite_product: 'product/favorites/remove/',
+    get_support: 'support/about-company/',
 };

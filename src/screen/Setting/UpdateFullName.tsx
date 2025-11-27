@@ -30,7 +30,13 @@ export default function UpdateFullName({callBack}: {callBack: () => void}) {
       getValues().fullName,
       data => {
         setLoading(false);
-        setProfile({...profile, first_name: data.first_name});
+        console.log('data ========>=>', data);
+        setProfile({
+          ...profile,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          full_name: `${data.first_name} ${data.last_name}`,
+        });
         show(data.detail);
         callBack();
       }, () => {
@@ -41,11 +47,16 @@ export default function UpdateFullName({callBack}: {callBack: () => void}) {
             setToken(data.access);
             setRefreshToken(data.refresh);
             UpdateFullNameModel(
-              token,
+              data.access,
               getValues().fullName,
               data => {
                 setLoading(false);
-                setProfile({...profile, first_name: data.first_name});
+                setProfile({
+                  ...profile,
+                  first_name: data.first_name,
+                  last_name: data.last_name,
+                  full_name: `${data.first_name} ${data.last_name}`,
+                });
                 show(data.detail);
                 callBack();
               },

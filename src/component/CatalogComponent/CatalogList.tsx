@@ -16,6 +16,9 @@ import BottomCardComponent from '../BottomCard';
 import Card from '../../assets/svg/Cart.svg';
 import Swiper from 'react-native-swiper';
 import AddBottom from '../AddBottom';
+import { AddFavoriteProductModel, DeleteFavoriteProductModel } from '../../model/Favorite/Favorite';
+import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
+import useAuthStore from '../../zustland/AuthStore';
 
 interface ProductItem {
   id: string;
@@ -46,9 +49,30 @@ const ProductCard: React.FC<{
   const {Styles} = StyleComponent();
   const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
   const [showCounter, setShowCounter] = useState(false);
-
+  const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
   const toggleFavorite = useCallback(() => {
-    setIsFavorite(prev => !prev);
+ if(isFavorite){
+  setIsFavorite(false);
+  DeleteFavoriteProductModel(token, item.id, () => {
+  }, () => {
+  }, () => {
+    refreshTokenModel(refreshToken, (data) => {
+      setToken(data.access);
+      setRefreshToken(data.refresh);
+      DeleteFavoriteProductModel(token, item.id, () => {
+      }, () => {
+      });
+    });
+  });
+ }else{
+  setIsFavorite(true);
+     AddFavoriteProductModel(token, item.id, () => {
+     }, () => {
+     }, () => {
+      refreshTokenModel(refreshToken, () => {
+      });
+     });  
+    }  
   }, []);
 
   const handleAddToCartPress = useCallback(() => {

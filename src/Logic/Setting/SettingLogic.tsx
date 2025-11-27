@@ -2,9 +2,14 @@ import { useNavigation } from '@react-navigation/native';
 import { ProfileStackParamList } from '../../navigation/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
+import useProfileStore from '../../zustland/ProfileStore';
+import useAuthStore from '../../zustland/AuthStore';
 export default function SettingLogic() {
     const navigation = useNavigation<NativeStackNavigationProp<ProfileStackParamList>>(); 
     const [modalVisible, setModalVisible] = useState(false);
+    const [logOutModalVisible, setLogOutModalVisible] = useState(false);
+    const {setToken,setRefreshToken,setIsLoggedIn} = useAuthStore();
+    const{profile} = useProfileStore();
     const onSubmitPayment = () => {
         navigation.navigate('Payment');
     }
@@ -34,11 +39,21 @@ export default function SettingLogic() {
         navigation.navigate('ShippingAddress')
     }
 
-
+    const onSubmitLogout = () => {
+        setLogOutModalVisible(false);
+        setToken('');
+        setRefreshToken('');
+        setIsLoggedIn(false);
+        navigation.navigate('Wellcome');
+    }
  return{
     onSubmitPayment,
     onSubmit,
     modalVisible, setModalVisible,
-    onSubmitAddress
+    onSubmitAddress,
+    profile,
+    logOutModalVisible,
+    setLogOutModalVisible,
+    onSubmitLogout
  }
 }
