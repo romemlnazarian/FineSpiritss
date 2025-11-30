@@ -39,7 +39,7 @@
 }
 
 export const Route: RouteObj = {
-  root:'https://finespirit-565506410896.europe-west3.run.app/api/',
+  root:'https://api.finespirits.pl/api/',
     // root: "https://insureautosafe.com/wp-json/mobile/v1/",
     register: 'auth/registration/',
     verify_otp: 'auth/registration/verify-email/',

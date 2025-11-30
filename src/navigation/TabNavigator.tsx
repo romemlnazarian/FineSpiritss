@@ -100,6 +100,11 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
             navigation.navigate('CatalogScreen', { screen: 'Catalog' } as any);
             return;
           }
+          // Always route Setting tab to its root screen
+          if (route.name === 'SettingScreen') {
+            navigation.navigate('SettingScreen', { screen: 'Setting' } as any);
+            return;
+          }
 
           if (!isFocused && !event.defaultPrevented) {
             navigation.navigate(route.name as keyof TabParamList, route.params);

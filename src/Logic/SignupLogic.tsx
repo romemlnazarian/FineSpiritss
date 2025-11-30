@@ -64,7 +64,7 @@ export const SignupLogic = () => {
     setLoading(true);
 
     Register(
-      values.email.trim(),
+      values.email.trim().toLowerCase(),
       values.username.trim(),
       selectedDate,
       data => {

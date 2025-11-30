@@ -86,24 +86,14 @@ const HomeSort = memo(
       [],
     );
 
-    const productData = useMemo(
-      (): ProductItem[] => [
-        {
-          id: 'p1',
-          title: 'Sample product',
-          description: 'Sample description',
-          price: '$0.00',
-        },
-      ],
-      [],
-    );
+
 
     const [selectedItemId, setSelectedItemId] = useState(sortData[0].id);
 
     const displayData = useMemo(() => {
-      const source = data?.length ? data : productData;
-      return Array.isArray(source) ? source.slice(0, 4) : [];
-    }, [data, productData]);
+      const source = data ;
+      return source
+    }, [data]);
 
     useEffect(() => {
       if (!data?.length) {

@@ -57,8 +57,6 @@ export const getAllCategoriesModel = (
   );
 };
 
-
-
 export const getCatalogDetailModel = (
   token: string,
   slug: number,
@@ -248,6 +246,7 @@ export const getProductDetailModel = (
     token,
   );
 };
+
 export const getSearchProductsModel = (
   token: string,
   search: string,
@@ -385,6 +384,29 @@ export const DeleteSearchProductsHistoryModel = (
         return;
       }
       errorcallback('Unexpected response');
+    },
+    token,
+  );
+};
+
+
+export const getRecommendedProductsModel = (
+  token: string,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+  callbackUnauthorized?: () => void,
+) => {
+  GET(
+    Route.root,
+    Route.home_recommended,
+    (data, status) => {
+      if (status === 200) {
+        callback(data);
+      } else if (status === 401) {
+        callbackUnauthorized?.();
+      } else {
+        errorcallback(data.detail);
+      }
     },
     token,
   );

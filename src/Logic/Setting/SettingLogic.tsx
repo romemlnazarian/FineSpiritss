@@ -4,6 +4,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import useProfileStore from '../../zustland/ProfileStore';
 import useAuthStore from '../../zustland/AuthStore';
+import { Linking } from 'react-native';
 export default function SettingLogic() {
     const navigation = useNavigation<NativeStackNavigationProp<ProfileStackParamList>>(); 
     const [modalVisible, setModalVisible] = useState(false);
@@ -16,6 +17,9 @@ export default function SettingLogic() {
 
     const onSubmit = (key:string)=>{
           switch(key){
+            case 'Privacy Policy':
+              Linking.openURL('https://finespirits.pl/privacy-policy/');
+              break;
             case 'My addresses':
              setModalVisible((prev)=>!prev);
               break;

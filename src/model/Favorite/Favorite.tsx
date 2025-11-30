@@ -14,7 +14,6 @@ export const getFavoriteProductsModel = (
       Route.root,
       `${Route.get_favorite_products}`,
       (data, status) => {
-        console.log('data=======>>', data, status);
            if (status === 200) {
             callback(data);
           } else if (status === 401) {
@@ -39,10 +38,12 @@ export const getFavoriteProductsModel = (
           `${Route.add_favorite_product}`,
           (data, status) => {
             console.log('data', data, status);
-            if (status === 200) {
+            if (status === 201) {
               callback(data.detail);
+              return 
             } else if(status === 401) {
               callbackUnauthorized?.();
+              return
             } else {
               errorcallback(data.detail);
             }
@@ -68,7 +69,6 @@ export const DeleteFavoriteProductModel = (
       Route.root,
       `${Route.delete_favorite_product}${id}/`,
       (data, status) => {
-        console.log('data===>', data, status);
         if (status === 200) {
           callback(data.detail);
         } else if(status === 401) {

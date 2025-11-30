@@ -40,8 +40,10 @@ type PasswordVerifyProps = {
          if(status === 200){
           callback(anyData);
           return
-         }else{
-          errorcallback(String(anyData.password[0]));
+         }else if(status === 400){
+          errorcallback(data.detail);
+         }else if(status === 500){
+          errorcallback(data.detail);
          }
       },
       '',

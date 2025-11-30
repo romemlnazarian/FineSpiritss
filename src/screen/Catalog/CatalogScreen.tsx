@@ -36,7 +36,7 @@ const CategoryScreen = memo(() => {
               style={styles.categoryImage}
             />
           )}
-          <Text style={styles.categoryTitle}>{item.cat_name}</Text>
+          <Text style={styles.categoryTitle} numberOfLines={1} ellipsizeMode="tail">{item.cat_name}</Text>
         </TouchableOpacity>
       );
     },

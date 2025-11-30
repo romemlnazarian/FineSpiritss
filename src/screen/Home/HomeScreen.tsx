@@ -32,7 +32,6 @@ export default function HomeScreen() {
     ageConfirmed,
   } = HomeLogic();
 
-  // Android: confirm before exiting app on hardware back press when on Home
   useFocusEffect(
     useCallback(() => {
       if (Platform.OS !== 'android') {
@@ -67,6 +66,7 @@ export default function HomeScreen() {
       </View>
     );
   }
+
   return (
     <View style={[Styles.container, Styles.alignCenter]}>
       <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>

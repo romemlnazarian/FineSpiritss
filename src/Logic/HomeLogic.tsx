@@ -11,37 +11,36 @@ import {
   getHomeForGiftModel,
   getHomeRecommendedModel,
 } from '../model/Home/HomeAdvertising';
-import { getProfileModel } from '../model/Profile/ProfileModel';
+import {getProfileModel} from '../model/Profile/ProfileModel';
 import useProfileStore from '../zustland/ProfileStore';
+import useRecommendedStore from '../zustland/recommendedStore';
+
 export default function HomeLogic() {
   const navigation = useNavigation<ButtonScreenNavigationProp>();
   const isFocused = useIsFocused();
-  const [visible, setVisible] = useState(true);
-  const {token, refreshToken, setToken, setRefreshToken, isLoggedIn} = useAuthStore();
-  const {ageConfirmed,setAgeConfirmed} = useAuthStore();
+  const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
+  const {ageConfirmed, setAgeConfirmed} = useAuthStore();
   const {setProfile} = useProfileStore();
+  const {setRecommended} = useRecommendedStore();
   const [categories, setCategories] = useState<[]>([]);
   const [topBrands, setTopBrands] = useState<[]>([]);
   const [isTopBrandsLoading, setIsTopBrandsLoading] = useState(false);
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
   const [homeAdvertising, setHomeAdvertising] = useState<[]>([]);
-  const [isHomeAdvertisingLoading, setIsHomeAdvertisingLoading] =
-    useState(false);
+  const [isHomeAdvertisingLoading, setIsHomeAdvertisingLoading] = useState(false);
   const [dataSort, setDataSort] = useState<any[]>([]);
   const [dataSortLoading, setDataSortLoading] = useState(false);
   const [homeRecommended, setHomeRecommended] = useState<[]>([]);
 
-
-
   const onSubmitClose = () => {
     setAgeConfirmed(false);
   };
+
   const getCategories = useCallback(async () => {
     setIsCategoriesLoading(true);
     getCategoriesModel(
       token,
       fetchedData => {
-        console.log('data =>', fetchedData);
         setCategories(fetchedData);
         setIsCategoriesLoading(false);
       },
@@ -49,13 +48,11 @@ export default function HomeLogic() {
         refreshTokenModel(
           refreshToken,
           refreshedTokens => {
-            console.log('data =>', refreshedTokens);
             setToken(refreshedTokens.access);
             setRefreshToken(refreshedTokens.refresh);
             getCategoriesModel(
               refreshedTokens.access,
               categoriesData => {
-                console.log('categories =>', categoriesData);
                 setCategories(categoriesData);
                 setIsCategoriesLoading(false);
               },
@@ -136,7 +133,7 @@ export default function HomeLogic() {
       fetcher(
         token,
         data => {
-          setDataSort(Array.isArray(data) ? data : data?.results ?? []);
+          setDataSort(data?.results);
           setDataSortLoading(false);
         },
         () => {
@@ -148,7 +145,7 @@ export default function HomeLogic() {
               fetcher(
                 refreshedTokens.access,
                 data => {
-                  setDataSort(Array.isArray(data) ? data : data?.results ?? []);
+                  setDataSort( data?.results);
                   setDataSortLoading(false);
                 },
                 () => setDataSortLoading(false),
@@ -162,11 +159,55 @@ export default function HomeLogic() {
     [token, refreshToken, setToken, setRefreshToken],
   );
 
-  const getHomeRecommended = useCallback(async () => {
+
+
+  const getProfile = useCallback(() => {
+    getProfileModel(
+      token,
+      data => {
+        setProfile({...data});
+      },
+      () => {
+        refreshTokenModel(
+          refreshToken,
+          data => {
+            setToken(data.access);
+            setRefreshToken(data.refresh);
+            getProfileModel(
+              data.access,
+              data => {
+                setProfile({...data});
+              },
+              () => {},
+            );
+          },
+          () => {},
+        );
+      },
+    );
+  }, [token, refreshToken, setToken, setRefreshToken, setProfile]);
+
+  useEffect(() => {
+    if (!isFocused) {
+      return;
+    }
+    getCategories();
+    getTopBrands();
+    getHomeAdvertising();
+    getHomeRecommended();
+    getProfile();
+    loadSortSection(getHomeBestSalesModel);
+  }, [isFocused, getCategories, getTopBrands, getHomeAdvertising, getHomeRecommended, getProfile, loadSortSection]);
+
+
+  const getHomeRecommended = () => {
     getHomeRecommendedModel(
       token,
       data => {
-        setHomeRecommended(data.results);
+
+        const items = Array.isArray(data?.results) ? data.results : Array.isArray(data) ? data : [];
+        setHomeRecommended(items);
+        setRecommended(items);
       },
       () => {
         refreshTokenModel(
@@ -177,7 +218,9 @@ export default function HomeLogic() {
             getHomeRecommendedModel(
               refreshedTokens.access,
               data => {
-                setHomeRecommended(data.results);
+                const items = Array.isArray(data?.results) ? data.results : Array.isArray(data) ? data : [];
+                setHomeRecommended(items);
+                setRecommended(items);
               },
               () => {},
             );
@@ -186,69 +229,29 @@ export default function HomeLogic() {
         );
       },
     );
-  }, [token, refreshToken, setToken, setRefreshToken]);
+  };
 
 
-
-
-  useEffect(() => {
-    if (!isFocused) {
-      return;
-    }
- 
-    getCategories();
-    getTopBrands();
-    getHomeAdvertising();
-    getHomeRecommended();
-    getProfile();
-  }, [isFocused, getCategories, getTopBrands, getHomeAdvertising, getHomeRecommended]);
-
-  useEffect(() => {
-    if (!isFocused) {
-      return;
-    }
-    onSubmitSort('1');
-  }, [isFocused, onSubmitSort]);
-
-
- 
-  const getProfile = () => {
-    getProfileModel(token, (data) => {
-      setProfile({...data});
-    }, () => {
-       refreshTokenModel(refreshToken, (data) => {
-        setToken(data.access);
-        setRefreshToken(data.refresh);
-        getProfileModel(data.access, (data) => {
-          setProfile({...data});
-        }, () => {
-        });
-      }, () => {
-      });
-    });
-   }
-
-  const onSubmitCategory = (item: any)=>{
-    navigation.navigate("CatalogScreen", {
-      screen: "CatalogCategory",
+  const onSubmitCategory = (item: any) => {
+    navigation.navigate('CatalogScreen', {
+      screen: 'CatalogCategory',
       params: {
         item,
-        fromHome: true
-      }
+        fromHome: true,
+      },
     });
-  }
+  };
 
-  const onSubmitAdvertising = (item: any)=>{
-    if(item.redirect_to === "category"){
-      navigation.navigate("CatalogScreen", {
-        screen: "CatalogCategory",
+  const onSubmitAdvertising = (item: any) => {
+    if (item.redirect_to === 'category') {
+      navigation.navigate('CatalogScreen', {
+        screen: 'CatalogCategory',
         params: {
           item,
-          fromHome: true
-        }
+          fromHome: true,
+        },
       });
-
-    }else{
+    } else {
       navigation.navigate('CatalogScreen', {
         screen: 'CatalogDetail',
         params: {
@@ -256,11 +259,9 @@ export default function HomeLogic() {
         },
       });
     }
-    // navigation.navigate("AdvertisingDetail", {item: item});
-  }
+  };
 
   const onSubmitProduct = (product: any) => {
-    console.log('product =>', product);
     navigation.navigate('CatalogScreen', {
       screen: 'CatalogDetail',
       params: {
@@ -282,12 +283,7 @@ export default function HomeLogic() {
     [loadSortSection],
   );
 
-
-
-
-  
   return {
-    visible,
     onSubmitClose,
     categories,
     topBrands,
@@ -302,6 +298,6 @@ export default function HomeLogic() {
     dataSortLoading,
     homeRecommended,
     isTopBrandsLoading,
-    ageConfirmed
+    ageConfirmed,
   };
 }

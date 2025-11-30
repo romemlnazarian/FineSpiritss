@@ -8,19 +8,19 @@ import {
   Image,
 } from 'react-native';
 import React, {useState} from 'react';
-import {StyleComponent} from '../../utiles/styles';
-import {Color} from '../../utiles/color';
-import Heart from '../../assets/svg/Heart.svg';
-import Heart_primary from '../../assets/svg/Heart_Primary.svg';
-import BottomCardComponent from '../BottomCard';
+import {StyleComponent} from '../utiles/styles';
+import {Color} from '../utiles/color';
+import Heart from '../assets/svg/Heart.svg';
+import Heart_primary from '../assets/svg/Heart_Primary.svg';
+import BottomCardComponent from './BottomCard';
 // import {Language} from '../../utiles/Language/i18n'; // Removed as no longer used
-import Card from '../../assets/svg/Cart.svg';
+import Card from '../assets/svg/Cart.svg';
 import {
   AddFavoriteProductModel,
   DeleteFavoriteProductModel,
-} from '../../model/Favorite/Favorite';
-import useAuthStore from '../../zustland/AuthStore';
-import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
+} from '../model/Favorite/Favorite';
+import useAuthStore from '../zustland/AuthStore';
+import {refreshTokenModel} from '../model/Auth/RefreshTokenModel';
 
 interface ProductItem {
   id: string;
@@ -40,27 +40,29 @@ interface ProductCardProps {
   item: ProductItem;
   cardStyle?: StyleProp<ViewStyle>;
   onPress?: (item: ProductItem) => void;
+  onFavoriteToggled?: (id:string, isFavorite:boolean) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({
+const RecomendedComponent: React.FC<ProductCardProps> = ({
   item,
   cardStyle,
   onPress,
+  onFavoriteToggled,
 }) => {
   const {token, refreshToken} = useAuthStore();
   const {Styles} = StyleComponent();
   const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
-  const toggleFavorite = () => {
+  const toggleFavorite = (id:string) => {
     if (isFavorite) {
       setIsFavorite(false);
       DeleteFavoriteProductModel(
         token,
-        item.id,
+        id,
         () => {
-          
+          onFavoriteToggled?.(id,false);
         },
         error => {
-          console.log('error', error);
+          console.log('errorrrrrrrdelete', error);
         },
         () => {
           refreshTokenModel(
@@ -68,8 +70,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
             data => {
               DeleteFavoriteProductModel(
                 data.access,
-                item.id,
-                data => {
+                id,
+                data => {     
+                   onFavoriteToggled?.(id,false);
+
                   console.log('data', data);
                 },
                 error => {
@@ -85,12 +89,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
       setIsFavorite(true);
       AddFavoriteProductModel(
         token,
-        item.id,
+        id,
          () => {
-          setIsFavorite(true);
+          onFavoriteToggled?.(id,true);
         },
         error => {
-          console.log('error', error);
+          console.log('errorrrrrrradd', error);
         },
         () => {
           refreshTokenModel(
@@ -98,8 +102,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
             data => {
               AddFavoriteProductModel(
                 data.access,
-                item.id,
-                () => {},
+                id,
+                () => {
+                  onFavoriteToggled?.(id,true);
+                },
                 () => {},
                 () => {},
               );
@@ -115,8 +121,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
     <TouchableOpacity
       style={[styles.productCardContainer, cardStyle]}
       activeOpacity={0.5}
+      disabled={true}
       onPress={() => onPress?.(item)}>
-      <TouchableOpacity style={styles.favoriteButton} onPress={toggleFavorite}>
+      <TouchableOpacity 
+      style={styles.favoriteButton} onPress={() => toggleFavorite(item.id)}>
         {isFavorite ? (
           <Heart_primary width={24} height={24} />
         ) : (
@@ -133,16 +141,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <Text style={[Styles.body_Medium, {marginTop: '2%'}]} numberOfLines={1}>
         {item.title}
       </Text>
-      <View style={{flexDirection:'row',alignItems:'center'}}>
-      <Text style={[Styles.subtitle_Regular, styles.productDescription,{width:'35%'}]} numberOfLines={1} ellipsizeMode="tail">
-        {item?.country}
-      </Text>
       <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
-        ABV {item?.abv}
+        {item?.country} ABV {item?.abv}
       </Text>
-      </View>
       <View style={styles.priceContainer}>
-        <Text style={[Styles.title_Bold, styles.productPrice]}>
+        <Text style={[Styles.body_SemiBold, styles.productPrice]}>
           {item.sale_price ?? item.price} zł
         </Text>
         {item.regular_price && (
@@ -162,7 +165,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   );
 };
 
-export default ProductCard;
+export default RecomendedComponent;
 
 const styles = StyleSheet.create({
   productCardContainer: {

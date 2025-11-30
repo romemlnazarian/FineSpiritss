@@ -7,7 +7,6 @@ import { useState } from 'react';
 import React from 'react';
 import { PasswordVerifyModel } from '../model/Auth/PasswordVerifyModel';
 import { useToast } from '../utiles/Toast/ToastProvider';
-import useAuthStore from '../zustland/AuthStore';
 export const PasswordVerificationLogic = (route: any) => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
 
@@ -68,7 +67,7 @@ export const PasswordVerificationLogic = (route: any) => {
     setLoading(true);
     PasswordVerifyModel(email, values.password.trim(), values.repeatpassword.trim(), (data) => {
         reset({ password: '', repeatpassword: '' });
-        show('password set successfully. Your account is now active. You can login.', {type: 'success'});
+        show('Password set successfully. Your account is now active. You can login.', {type: 'success'});
       navigation.navigate('Signin');
       setLoading(false);
     }, (error: any) => {

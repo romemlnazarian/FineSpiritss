@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import Heart from '../../assets/svg/Heart.svg';
@@ -16,6 +16,7 @@ import Card from '../../assets/svg/Cart.svg';
 import { AddFavoriteProductModel, DeleteFavoriteProductModel } from '../../model/Favorite/Favorite';
 import useAuthStore from '../../zustland/AuthStore';
 import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
+import useRecommendedStore from '../../zustland/recommendedStore';
 
 interface ProductItem {
   id: string;
@@ -27,6 +28,8 @@ interface ProductItem {
   country?: string;
   abv?: string;
   sale_price?: string;
+  regular_price?: string;
+  is_favorite?: boolean;
 }
 
 interface VerticalScrollProps {
@@ -38,15 +41,28 @@ interface VerticalScrollProps {
 const ProductCard: React.FC<{item: ProductItem; onSubmitProduct?: (item: ProductItem) => void}> = ({item, onSubmitProduct}) => {
   const {Styles} = StyleComponent();
   const {token, refreshToken} = useAuthStore();
-  const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const {recommended, setRecommended} = useRecommendedStore();
 
-  const toggleFavorite = (item:any) => {
+useEffect(() => {
+  setIsFavorite(item?.is_favorite);
+}, [item?.is_favorite]);
+
+  const toggleFavorite = (id:any) => {
+;
     if (isFavorite) {
       setIsFavorite(false);
+      const fineProduct = recommended.map((item:any) =>
+        item.id === id
+          ? { ...item, is_favorite: false }
+          : item
+      );
+      setRecommended(fineProduct)
       DeleteFavoriteProductModel(
         token,
-        item.id,
-        () => {},
+        id,
+        () => {
+        },
         error => {
           console.log('error', error);
         },
@@ -71,9 +87,15 @@ const ProductCard: React.FC<{item: ProductItem; onSubmitProduct?: (item: Product
       );
     } else {
       setIsFavorite(true);
+      const fineProduct = recommended.map((item:any) =>
+        item.id === id
+          ? { ...item, is_favorite: true }
+          : item
+      );
+      setRecommended(fineProduct)
       AddFavoriteProductModel(
         token,
-        item.id,
+        id,
          () => {
           setIsFavorite(true);
         },
@@ -101,7 +123,7 @@ const ProductCard: React.FC<{item: ProductItem; onSubmitProduct?: (item: Product
 
   return (
     <TouchableOpacity style={styles.productCardContainer} activeOpacity={0.6} onPress={() => onSubmitProduct?.(item)}>
-      <TouchableOpacity style={styles.favoriteButton} onPress={toggleFavorite}>
+      <TouchableOpacity style={styles.favoriteButton} onPress={() => toggleFavorite(item.id)}>
         {isFavorite ? (
           <Heart_primary width={24} height={24} />
         ) : (
@@ -115,7 +137,7 @@ const ProductCard: React.FC<{item: ProductItem; onSubmitProduct?: (item: Product
           <View style={styles.imagePlaceholder} />
         )}
       </View>
-      <Text style={[Styles.subtitle_Regular, styles.productTitle]}>
+      <Text style={[Styles.subtitle_Regular, styles.productTitle]} numberOfLines={1} ellipsizeMode="tail">
         {item.title}
       </Text>
       <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
@@ -123,11 +145,11 @@ const ProductCard: React.FC<{item: ProductItem; onSubmitProduct?: (item: Product
       </Text>
       <View style={styles.priceContainer}>
         <Text style={[Styles.body_SemiBold, styles.productPrice]}>
-          {item.price} zł
+          {item.sale_price ?? item.price} zł
         </Text>
-        {item.sale_price && (
+        {item.regular_price && (
           <Text style={[Styles.subtitle_Regular, styles.originalPriceText]}>
-            {item.sale_price} zł
+            {item.regular_price} zł
           </Text> 
         )}
       </View>

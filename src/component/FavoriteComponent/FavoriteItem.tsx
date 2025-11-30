@@ -33,7 +33,6 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
     const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
   
      const onHandlerItem = (item: ProductItem) => {
-      console.log('item =>', item);
       if (isFavorite) {
         setIsFavorite(false);
         DeleteFavoriteProductModel(
@@ -101,17 +100,21 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
         <View style={[ styles.leftSection,{flexDirection:'row',alignItems:'center',gap:10}]}>
           <Image source={{uri: item.image_url}} style={{width:80,height:100,borderRadius:10}} />
           <View style={styles.productInfo}>
-            <Text style={[Styles.h6_SemiBold,{width:'85%'}]} numberOfLines={1} ellipsizeMode="tail">{item.title ?? item.name ?? ''}</Text>
+            <Text style={[Styles.body_Bold,{width:item.title?.length > 25 ? '50%' : '100%'}]} numberOfLines={1} ellipsizeMode="tail">{item.title}</Text>
             <View style={styles.detailsContainer}>
               <Text style={[Styles.subtitle_Regular,{color:Color.gray}]}>{item.country ?? ''}</Text>
               <View style={styles.separator} />
-              <Text style={[Styles.subtitle_Regular,{color:Color.gray}]}>{item.abv ? `ABV ${item.abv}%` : ''}</Text>
+              <Text style={[Styles.subtitle_Regular,{color:Color.gray}]}>{item.abv ? `ABV ${item.abv}` : ''}</Text>
             </View>
             <View style={styles.priceContainer}>
-            <Text style={[Styles.body_SemiBold]}>{item.price ?? item.regular_price ?? item.sale_price ?? ''}</Text>
-            {item.sale_price ? (
-              <Text style={[Styles.subtitle_Regular,{marginTop:'2%'}]}>{item.sale_price}</Text>
+            <Text style={[Styles.body_SemiBold]}>{(item.sale_price ?? item.price ?? item.regular_price) } zł</Text>
+            {item.sale_price && (item.regular_price || item.price) ? (
+              <Text style={[Styles.subtitle_Regular,{marginTop:'2%', textDecorationLine: 'line-through', color: Color.gray}]}>
+                {(item.regular_price ?? item.price)} zł
+              </Text>
             ) : null}
+
+            
             </View>
           </View>
         </View>

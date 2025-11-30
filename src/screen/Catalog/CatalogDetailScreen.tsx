@@ -13,72 +13,16 @@ import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
 import CatalogDetailLogic from '../../logic/Catalog/CatalogDetailLogic';
-import Slider from '../../component/HomeCamponent/Slider';
 import Heart from '../../assets/svg/Heart.svg';
-import Heart_primary from '../../assets/svg/Heart_Primary.svg';import CatalogFilter from '../../component/CatalogComponent/CatalogFilter';
-import Delivery from '../../assets/svg/Delivery.svg';
-import ArrwoDown from '../../assets/svg/ArrowsDown.svg';
-import ProductCard from '../../component/HomeCamponent/ProductCard';
+import Heart_primary from '../../assets/svg/Heart_Primary.svg';
+import HorizontalFlatList from '../../component/HorizontalFlatList';
 
-interface ProductItem {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-  originalPrice?: string;
-}
+
 export default function CatalogDetailScreen(route: any) {
   const {Styles,Height} = StyleComponent();
-  const {product, isLoading,isFavorite,toggleFavorite} = CatalogDetailLogic(route);
-  const productData = useMemo(
-    (): ProductItem[] => [
-      {
-        id: 'p1',
-        title: 'Cognac Hennessy1',
-        description: 'France ABV 40%',
-        price: '$199.99',
-        originalPrice: '$250.00',
-      },
-      {
-        id: 'p2',
-        title: 'Whiskey Jameson2',
-        description: 'Ireland ABV 40%',
-        price: '$49.99',
-        originalPrice: '$60.00',
-      },
-      {
-        id: 'p3',
-        title: 'Vodka Absolut',
-        description: 'Sweden ABV 40%',
-        price: '$29.99',
-        originalPrice: '$35.00',
-      },
-      {
-        id: 'p4',
-        title: 'Vodka Absolut',
-        description: 'Sweden ABV 40%',
-        price: '$29.99',
-        originalPrice: '$35.00',
-      },
-      {
-        id: 'p5',
-        title: 'Vodka Absolut',
-        description: 'Sweden ABV 40%',
-        price: '$29.99',
-        originalPrice: '$35.00',
-      },
-    ],
-    [],
-  );
+  const {product, isLoading,isFavorite,toggleFavorite,recommended,refreshAll} = CatalogDetailLogic(route);
 
-  const renderProductItem = useCallback(
-    ({item}: {item: ProductItem}) => <ProductItemRenderer item={item} />,
-    [],
-  );
-  // Memoized product item renderer
-  const ProductItemRenderer = memo(({item}: {item: ProductItem}) => (
-    <ProductCard item={item} cardStyle={styles.productCardContainer} />
-  ));
+
 
   const specificationRows = useMemo(
     () => [
@@ -119,7 +63,6 @@ export default function CatalogDetailScreen(route: any) {
   );
 
   // Memoized key extractors
-  const productKeyExtractor = useCallback((item: ProductItem) => item.id, []);
   return isLoading ? (
     <ActivityIndicator size="large" color={Color.primary} style={{marginTop:Height/2.5}}/>
   ) : (
@@ -136,7 +79,7 @@ export default function CatalogDetailScreen(route: any) {
         <View style={styles.detailsContainer}>
           <View style={styles.detailsHeader}>
             <Text style={[Styles.h6_Bold]}>{product?.title}</Text>
-            <TouchableOpacity onPress={toggleFavorite}>
+            <TouchableOpacity onPress={() => toggleFavorite(product?.id)}>
               {isFavorite ? (
                 <Heart_primary width={24} height={24} />
               ) : (
@@ -166,10 +109,10 @@ export default function CatalogDetailScreen(route: any) {
             sortItemContainerStyle={styles.sortItemContainer}
           /> */}
           <View style={styles.priceRow}>
-            <Text style={[Styles.h4_Bold]}>{product?.regular_price || ''} zł</Text>
-            {product?.sale_price && (
+            <Text style={[Styles.h4_Bold]}>{product?.sale_price ?? product?.price} zł</Text>
+            {product?.regular_price && (
               <Text style={[Styles.body_Regular, styles.salePriceText]}>
-                {product?.sale_price || ''} zł
+                {product?.regular_price || ''} zł
               </Text>
             )}
           </View>
@@ -314,26 +257,8 @@ export default function CatalogDetailScreen(route: any) {
         </Text>
 
 
-        <FlatList
-          data={productData}
-          renderItem={renderProductItem}
-          keyExtractor={productKeyExtractor}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.productFlatListContainer}
-          onStartShouldSetResponderCapture={() => false}
-          onMoveShouldSetResponderCapture={() => true}
-          removeClippedSubviews={true}
-          maxToRenderPerBatch={3}
-          windowSize={5}
-          initialNumToRender={2}
-          updateCellsBatchingPeriod={50}
-          getItemLayout={(data, index) => ({
-            length: 255,
-            offset: 255 * index,
-            index,
-          })}
-        />
+        <HorizontalFlatList products={recommended} onFavoriteToggled={(id:string, isFavorite:boolean)=>refreshAll(id)} />
+
       </ScrollView>
     </View>
   );
@@ -396,6 +321,7 @@ const styles = StyleSheet.create({
   salePriceText: {
     marginLeft: '5%',
     color: Color.gray,
+    textDecorationLine: 'line-through',
   },
   sectionDivider: {
     width: '93%',
