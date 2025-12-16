@@ -93,7 +93,12 @@ export const SignupLogic = () => {
     setSelectedDate(result);
   };
 
-
+  const onSubmitGoogle =  () => {
+    navigation.navigate('GoogleAuth' as never);
+  };
+  const onSubmitApple =  () => {
+    navigation.navigate('AppleAuth' as never);
+  };
   return {
     control,
     handleSubmit,
@@ -107,6 +112,8 @@ export const SignupLogic = () => {
     loading,
     selectedDate,
     setSelectedDate,
-    formatDate
+    formatDate,
+    onSubmitGoogle,
+    onSubmitApple,
   };
 };

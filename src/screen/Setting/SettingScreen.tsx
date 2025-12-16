@@ -9,11 +9,11 @@ import Arrow from 'react-native-vector-icons/MaterialIcons';
 import Iocn from 'react-native-vector-icons/Ionicons';
 import List from '../../assets/svg/List.svg';
 import Support from '../../assets/svg/Support.svg';
-import Wrench from 'react-native-vector-icons/SimpleLineIcons';
 import Logout from 'react-native-vector-icons/AntDesign';
 import {BottomSheet} from '../../component/BottomSheet';
 import Plus from 'react-native-vector-icons/Feather';
 import LogOutComponent from '../../component/LogOutComponent';
+import Wrench from '../../assets/svg/Wrench.svg';
 const data = [
   {
     id: 1,
@@ -58,10 +58,9 @@ export default function SettingScreen() {
   return (
     <View style={[Styles.container]}>
       <Menu
-        onHandler={() => {}}
+        onHandler={() => { } }
         title={`${profile?.first_name ?? ''} ${profile?.last_name ?? ''}`}
-        style={styles.menu}
-      />
+        style={styles.menu} icon={undefined}/>
       {/* <TouchableOpacity onPress={onSubmitPayment} style={styles.cardRow}>
         <View style={styles.rowCenter}>
           <Wallet />

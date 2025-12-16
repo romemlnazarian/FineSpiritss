@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, BackHandler} from 'react-native';
 import React from 'react';
 import LogoComponent from '../component/LogoComponent';
 import {StyleComponent} from '../utiles/styles';
@@ -9,10 +9,25 @@ import {WellcomeLogic} from '../logic/WellcomeLogic';
 import {Image} from 'react-native';
 import Layer from '../assets/svg/Layer.svg';
 import { BottomSheet } from '../component/BottomSheet';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function WellcomeScreen() {
   const {Styles} = StyleComponent();
   const {onSubmit, deleteAccountDone, onHandlerClose} = WellcomeLogic();
+
+  // Exit app on Android hardware back from Wellcome screen
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        BackHandler.exitApp();
+        return true;
+      };
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => {
+        subscription.remove();
+      };
+    }, []),
+  );
   return (
     <View style={Styles.container}>
       <View style={[StyleSheet.absoluteFillObject]}>

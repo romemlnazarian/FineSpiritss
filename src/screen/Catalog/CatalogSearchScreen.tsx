@@ -48,7 +48,6 @@ interface ProductItem {
 
 // Memoized Product Card Component
 const ProductCard = React.memo(({item}: {item: ProductItem}) => {
-  console.log('item =>', item);
   const {Styles} = StyleComponent();
   const navigation: any = useNavigation();
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
@@ -130,7 +129,39 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
               {item.alcoholContent}
             </Text>
           </View>
-          <Text style={[Styles.body_SemiBold]}>{item.price}</Text>
+        {item?.sale_price === null ? (
+        <Text
+          style={[
+            Styles.title_Bold,
+            styles.productPrice,
+            styles.priceContainer,
+          ]}>
+          {item.price} zł
+        </Text>
+      ) : (
+        <>
+          {item.regular_price && (
+            <Text
+              style={[
+                Styles.subtitle_Regular,
+                styles.originalPriceText,
+                styles.priceContainer,
+              ]}>
+              {item.regular_price} zł
+            </Text>
+          )}
+
+          <Text
+            style={[
+              Styles.title_Bold,
+              styles.productPrice,
+              styles.priceContainer,
+            ]}>
+            {item.price} zł
+          </Text>
+        </>
+      )}
+
         </View>
       </View>
       <TouchableOpacity
@@ -175,17 +206,12 @@ export default function CatalogSearch() {
       title: item?.title ?? item?.name ?? 'Untitled product',
       country: item?.country ?? item?.key_details?.country ?? '',
       alcoholContent: item?.abv ? `${item.abv}% Alc By Vol` : '',
-      price:
-        item?.regular_price ??
-        item?.price ??
-        item?.sale_price ??
-        item?.display_price ??
-        '',
+      price: item?.price ?? '',
       slug: item?.slug ?? item?.id ?? '',
       image_url:
-        item?.image_url ?? item?.image?.url ?? item?.images?.[0]?.src ?? '',
+      item?.image_url ?? item?.image?.url ?? item?.images?.[0]?.src ?? '',
       regular_price: item?.regular_price ?? '',
-      sale_price: item?.sale_price ?? '',
+      sale_price: item?.sale_price ?? null,
       abv: typeof item?.abv === 'number' ? `${item.abv}%` : item?.abv ?? '',
       volume: item?.volume ?? item?.key_details?.volume ?? '',
       is_favorite: !!item?.is_favorite,
@@ -569,5 +595,16 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: Color.lightGray,
     marginVertical: 10,
+  },
+  productPrice: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  priceContainer: {
+    marginTop: 5,
+  },
+  originalPriceText: {
+    textDecorationLine: 'line-through',
+    color: Color.gray,
   },
 });

@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Text,
+  Platform,
 } from 'react-native';
 import React from 'react';
 import {Controller} from 'react-hook-form';
@@ -19,7 +20,6 @@ import User from '../../assets/svg/User.svg';
 import Email from '../../assets/svg/Email.svg';
 import Gmail from '../../assets/svg/gmail.svg';
 import Apple from '../../assets/svg/apple.svg';
-import Facebook from '../../assets/svg/facebook.svg';
 import AuthLogo from '../../component/AuthLogo';
 import Calender from '../../assets/svg/Calendar.svg';
 import DatePicker from 'react-native-date-picker';
@@ -36,7 +36,9 @@ export default function SignupScreen() {
     setOpen,
     loading,
     selectedDate,
-    formatDate,onSubmitSignIn
+    formatDate,onSubmitSignIn,
+    onSubmitGoogle,
+    onSubmitApple,
   } = SignupLogic();
 
   return (
@@ -132,18 +134,16 @@ export default function SignupScreen() {
       <View
         style={[
           styles.socialLoginButtonsContainer,
-          Styles.justifyBetween,
           Styles.alignSelf,
         ]}>
-        <AuthLogo onHandler={() => console.log()}>
-          <Gmail />
-        </AuthLogo>
-        <AuthLogo onHandler={() => console.log()}>
-          <Facebook />
-        </AuthLogo>
-        <AuthLogo onHandler={() => console.log()}>
-          <Apple />
-        </AuthLogo>
+           <AuthLogo onHandler={() => onSubmitGoogle()}>
+            <Gmail />
+          </AuthLogo>
+          {Platform.OS === 'ios' && (
+            <AuthLogo onHandler={() => onSubmitApple()}>
+              <Apple />
+            </AuthLogo>
+          )}
       </View>
       <TouchableOpacity onPress={() =>console.log()} style={styles.businessClientContainer}>
         <Text style={Styles.title_Regular}>{Language.Business_client}</Text>
@@ -244,6 +244,9 @@ const styles = StyleSheet.create({
   socialLoginButtonsContainer: {
     width: '60%',
     marginTop: '5%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
   validationFeedbackContainer: {
     marginLeft: '5%',

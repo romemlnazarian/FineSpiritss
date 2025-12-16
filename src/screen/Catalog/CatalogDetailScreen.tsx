@@ -3,12 +3,12 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  FlatList,
   ScrollView,
   ActivityIndicator,
   Image,
+  BackHandler,
 } from 'react-native';
-import React, {memo, useCallback, useMemo} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
@@ -16,11 +16,39 @@ import CatalogDetailLogic from '../../logic/Catalog/CatalogDetailLogic';
 import Heart from '../../assets/svg/Heart.svg';
 import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
 
 export default function CatalogDetailScreen(route: any) {
   const {Styles,Height} = StyleComponent();
   const {product, isLoading,isFavorite,toggleFavorite,recommended,refreshAll} = CatalogDetailLogic(route);
+  const navigation: any = useNavigation();
+  const fromFavorite = Boolean(route?.route?.params?.fromFavorite);
+
+  const handleBack = useCallback(() => {
+    if (fromFavorite) {
+      navigation.navigate('FavoriteScreen', {screen: 'Favorite'});
+    } else {
+      navigation.goBack();
+    }
+  }, [fromFavorite, navigation]);
+
+  // Android hardware back: if opened from Favorite, go back to Favorite tab
+  useFocusEffect(
+    useCallback(() => {
+      if (!fromFavorite) {
+        return () => {};
+      }
+      const onBackPress = () => {
+        navigation.navigate('FavoriteScreen', {screen: 'Favorite'});
+        return true;
+      };
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => {
+        subscription.remove();
+      };
+    }, [fromFavorite, navigation]),
+  );
 
 
 
@@ -64,11 +92,11 @@ export default function CatalogDetailScreen(route: any) {
 
   // Memoized key extractors
   return isLoading ? (
-    <ActivityIndicator size="large" color={Color.primary} style={{marginTop:Height/2.5}}/>
+    <ActivityIndicator size="large" color={Color.primary} style={{marginTop: Height / 2.5}}/>
   ) : (
     <View style={[Styles.container]}>
       <ScrollView>
-        <CustomHeader showBack={true} title={product?.title || ''} />
+        <CustomHeader showBack={true} title={product?.title || ''} onSubmitBack={handleBack} />
         <View style={styles.imageWrapper}>
           <Image
             source={{uri: product?.image_url}}
@@ -257,7 +285,7 @@ export default function CatalogDetailScreen(route: any) {
         </Text>
 
 
-        <HorizontalFlatList products={recommended} onFavoriteToggled={(id:string, isFavorite:boolean)=>refreshAll(id)} />
+        <HorizontalFlatList products={recommended} onFavoriteToggled={(_id: string, _isFavorite: boolean) => refreshAll()} />
 
       </ScrollView>
     </View>

@@ -5,14 +5,13 @@ import useLocalizationStore from '../zustland/localizationStore';
 import { RootStackParamList } from '../navigation/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import useAuthStore from '../zustland/AuthStore';
-import { useToast } from '../utiles/Toast/ToastProvider';
+import {Linking} from 'react-native';
 
 
 export default function SplashScreenLogic() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const {language} = useLocalizationStore();
   const { isLoggedIn, token } = useAuthStore();
-  useToast(); // keep hook initialized if needed elsewhere
 
     useEffect(()=>{
        Language.setLanguage(language);
@@ -26,5 +25,26 @@ export default function SplashScreenLogic() {
        }
        return;
    },[language, navigation, isLoggedIn, token]);
+
+
+
+   useEffect(() => {
+     Linking.addEventListener('url', ({url}) => {
+       handleGoogleRedirect(url);
+     });
+   
+     Linking.getInitialURL().then(url => {
+       if (url) handleGoogleRedirect(url);
+     });
+   }, []);
+   
+   function handleGoogleRedirect(url: string) {
+     const [, queryString] = url.split('?');
+     const params = Object.fromEntries(new URLSearchParams(queryString));
+      console.log('==>', url);
+     if (params.code) {
+     }
+   }
+   
 
 }

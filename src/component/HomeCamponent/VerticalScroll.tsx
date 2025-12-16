@@ -49,7 +49,7 @@ useEffect(() => {
 }, [item?.is_favorite]);
 
   const toggleFavorite = (id:any) => {
-;
+
     if (isFavorite) {
       setIsFavorite(false);
       const fineProduct = recommended.map((item:any) =>
@@ -132,7 +132,7 @@ useEffect(() => {
       </TouchableOpacity>
       <View style={Styles.justifyCenter}>
         {item?.image_url ? (
-          <Image source={{uri: item.image_url}} style={styles.productImage} />
+          <Image source={{uri: item?.image_url}} style={styles.productImage} />
         ) : (
           <View style={styles.imagePlaceholder} />
         )}
@@ -140,19 +140,33 @@ useEffect(() => {
       <Text style={[Styles.subtitle_Regular, styles.productTitle]} numberOfLines={1} ellipsizeMode="tail">
         {item.title}
       </Text>
-      <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
-        {item.country ? `${item.country} ABV ${item.abv ?? '-'}` : ''}
+      <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:'2%'}}>
+      <Text style={[Styles.subtitle_Regular, styles.productDescription,{width:'50%'}]} numberOfLines={1} ellipsizeMode="tail">
+        {item?.country}
       </Text>
-      <View style={styles.priceContainer}>
-        <Text style={[Styles.body_SemiBold, styles.productPrice]}>
-          {item.sale_price ?? item.price} zł
+      <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
+        ABV {item?.abv}
+      </Text>
+      </View>
+      {item.sale_price === null ? (
+        <Text style={[Styles.body_SemiBold, styles.productPrice,styles.priceContainer,{marginTop: '17%'}]}>
+          {item.price} zł
         </Text>
+      ) : (
+        <>
         {item.regular_price && (
-          <Text style={[Styles.subtitle_Regular, styles.originalPriceText]}>
+          <Text style={[Styles.subtitle_Regular, styles.originalPriceText,styles.priceContainer]}>
             {item.regular_price} zł
           </Text> 
         )}
-      </View>
+                      <Text style={[Styles.body_SemiBold, styles.productPrice,styles.priceContainer]}>
+          {item.sale_price ?? item.price} zł
+        </Text>
+        </>
+      )}
+
+
+  
       <BottomCardComponent
         title={'Add to Card'}
         onHandler={() => console.log()}
@@ -232,8 +246,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   priceContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginTop: '2%',
   },
   productPrice: {
@@ -242,7 +254,6 @@ const styles = StyleSheet.create({
   originalPriceText: {
     color: Color.gray,
     textDecorationLine: 'line-through',
-    marginLeft: 10,
   },
   bottomCardButton: {
     marginTop: '10%',

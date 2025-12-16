@@ -87,7 +87,6 @@ const HomeSort = memo(
     );
 
 
-
     const [selectedItemId, setSelectedItemId] = useState(sortData[0].id);
 
     const displayData = useMemo(() => {
@@ -239,7 +238,7 @@ const styles = StyleSheet.create({
   productCardContainer: {
     marginRight: 0,
     width: '48%',
-    marginTop: 10,
+    marginTop: 15,
   },
   productColumnWrapper: {
     justifyContent: 'space-between',

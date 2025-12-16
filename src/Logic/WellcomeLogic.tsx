@@ -6,7 +6,7 @@ import { useCallback } from 'react';
 
 export  function WellcomeLogic() {
     const navigation = useNavigation<AuthScreenNavigationProp>();
-    const {deleteAccountDone, resetDeleteAccountDone, setDeleteAccountDone} = useDeleteAccountDoneStore();
+    const {deleteAccountDone, resetDeleteAccountDone} = useDeleteAccountDoneStore();
     const onSubmit = (key:string) =>{
          key === 'signup'?
         navigation.navigate('Signup')

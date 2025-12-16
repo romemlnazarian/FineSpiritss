@@ -23,7 +23,7 @@ const SlideItem = memo(
     const {Styles} = StyleComponent();
     const source = item?.image_mobile_url;
     return (
-      <TouchableOpacity activeOpacity={0.5} style={styles.slide1} onPress={() => onSubmit?.(item)}>
+      <TouchableOpacity activeOpacity={0.8} style={styles.slide1} onPress={() => onSubmit?.(item)}>
         <Text
           style={[
             Styles.title_Bold,

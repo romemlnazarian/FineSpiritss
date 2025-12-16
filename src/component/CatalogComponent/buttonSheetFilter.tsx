@@ -1,7 +1,7 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import {StyleComponent} from '../../utiles/styles';
-import Slider from '@react-native-community/slider';
+// import Slider from '@react-native-community/slider';
 import {Color} from '../../utiles/color';
 
 interface ButtonSheetFilterProps {
@@ -28,7 +28,7 @@ export default function ButtonSheetFilter({
         <Text style={styles.priceText}>${Math.round(sliderValue)}</Text>
       </View>
       
-      <Slider
+      {/* <Slider
         style={styles.slider}
         minimumValue={1}
         maximumValue={1000}
@@ -40,7 +40,7 @@ export default function ButtonSheetFilter({
         minimumTrackTintColor={Color.primary}
         maximumTrackTintColor={Color.gray}
         thumbTintColor={Color.primary}
-      />
+      /> */}
       
       <View style={styles.optionContainer}>
         <Text style={[Styles.body_Regular]}>Lower Price</Text>

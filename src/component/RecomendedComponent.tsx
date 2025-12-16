@@ -121,7 +121,6 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
     <TouchableOpacity
       style={[styles.productCardContainer, cardStyle]}
       activeOpacity={0.5}
-      disabled={true}
       onPress={() => onPress?.(item)}>
       <TouchableOpacity 
       style={styles.favoriteButton} onPress={() => toggleFavorite(item.id)}>

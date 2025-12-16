@@ -56,9 +56,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       DeleteFavoriteProductModel(
         token,
         item.id,
-        () => {
-          
-        },
+        () => {},
         error => {
           console.log('error', error);
         },
@@ -86,7 +84,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       AddFavoriteProductModel(
         token,
         item.id,
-         () => {
+        () => {
           setIsFavorite(true);
         },
         error => {
@@ -133,24 +131,61 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <Text style={[Styles.body_Medium, {marginTop: '2%'}]} numberOfLines={1}>
         {item.title}
       </Text>
-      <View style={{flexDirection:'row',alignItems:'center'}}>
-      <Text style={[Styles.subtitle_Regular, styles.productDescription,{width:'35%'}]} numberOfLines={1} ellipsizeMode="tail">
-        {item?.country}
-      </Text>
-      <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
-        ABV {item?.abv}
-      </Text>
-      </View>
-      <View style={styles.priceContainer}>
-        <Text style={[Styles.title_Bold, styles.productPrice]}>
-          {item.sale_price ?? item.price} zł
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginTop:'2%'
+        }}>
+        <Text
+          style={[
+            Styles.subtitle_Regular,
+            styles.productDescription,
+            {width: '50%'},
+          ]}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {item?.country}
         </Text>
-        {item.regular_price && (
-          <Text style={[Styles.subtitle_Regular, styles.originalPriceText]}>
-            {item.regular_price} zł
-          </Text>
-        )}
+        <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
+          ABV {item?.abv}
+        </Text>
       </View>
+      {item.sale_price === null ? (
+        <Text
+          style={[
+            Styles.title_Bold,
+            styles.productPrice,
+            styles.priceContainer,
+            {marginTop: '17%'},
+          ]}>
+          {item.price} zł
+        </Text>
+      ) : (
+        <>
+          {item.regular_price && (
+            <Text
+              style={[
+                Styles.subtitle_Regular,
+                styles.originalPriceText,
+                styles.priceContainer,
+              ]}>
+              {item.regular_price} zł
+            </Text>
+          )}
+
+          <Text
+            style={[
+              Styles.title_Bold,
+              styles.productPrice,
+              styles.priceContainer,
+            ]}>
+            {item.price} zł
+          </Text>
+        </>
+      )}
+
       <BottomCardComponent
         title={'Add to Card'}
         onHandler={() => console.log()}
@@ -185,8 +220,6 @@ const styles = StyleSheet.create({
     color: Color.gray,
   },
   priceContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginTop: '2%',
   },
   productPrice: {
@@ -195,7 +228,6 @@ const styles = StyleSheet.create({
   originalPriceText: {
     color: Color.gray,
     textDecorationLine: 'line-through',
-    marginLeft: 10,
   },
   bottomCardButton: {
     marginTop: '10%',

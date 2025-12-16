@@ -164,6 +164,7 @@ export default function CatalogDetailLogic(route: any) {
 
   // Get product detail
   const getProductDetail = useCallback(() => {
+    console.log('route?.route?.params?.product?.slug =>', route?.route?.params?.product);
     setIsLoading(true);
     getProductDetailModel(token, route?.route?.params?.product?.slug, data => {
       setProduct(data);

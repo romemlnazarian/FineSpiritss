@@ -92,8 +92,15 @@ const ProductCard: React.FC<{
           <Heart width={24} height={24} fill={Color.white} />
         )}
       </TouchableOpacity>
+      <View style={Styles.justifyCenter}>
+        {item?.image_url ? (
+          <Image source={{uri: item?.image_url}} style={styles.productImage} />
+        ) : (
+          <View style={styles.imagePlaceholder} />
+        )}
+      </View>
+      {/* <View style={styles.swiperContainer}>
 
-      <View style={styles.swiperContainer}>
         <Swiper
           style={styles.swiper}
           showsPagination={false}
@@ -111,17 +118,66 @@ const ProductCard: React.FC<{
             resizeMode="contain"
           />
         </Swiper>
-      </View>
+      </View> */}
       <View style={styles.productTitleContainer}>
         <Text style={[Styles.body_Medium]} numberOfLines={1}>
           {item.title}
         </Text>
-        <Text style={[Styles.title_Regular, styles.productDescription]}>
-          {item.country} {item.price && `ABV ${item.abv}`}
+        <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        <Text
+          style={[
+            Styles.subtitle_Regular,
+            styles.productDescription,
+            {width: '50%'},
+          ]}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {item?.country}
         </Text>
-        <Text style={[Styles.title_Bold, styles.productPrice]}>
+        <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
+          ABV {item?.abv}
+        </Text>
+      </View>
+      {item?.sale_price === null ? (
+        <Text
+          style={[
+            Styles.title_Bold,
+            styles.productPrice,
+            styles.priceContainer,
+            {marginTop: '17%'},
+          ]}>
           {item.price} zł
         </Text>
+      ) : (
+        <></>
+        // <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between'}}>
+        //          <Text
+        //     style={[
+        //       Styles.title_Bold,
+        //       styles.productPrice,
+        //       styles.priceContainer,
+        //     ]}>
+        //     {item.price} zł
+        //   </Text>
+        //   {item.regular_price && (
+        //     <Text
+        //       style={[
+        //         Styles.subtitle_Regular,
+        //         styles.originalPriceText,
+        //         styles.priceContainer,
+        //       ]}>
+        //       {item.regular_price} zł
+        //     </Text>
+        //   )}
+
+ 
+        // </View>
+      )}
       </View>
       {orderBottom ? (
         <BottomCardComponent
@@ -234,9 +290,11 @@ const CatalogList: React.FC<VerticalScrollProps> = ({
 export default CatalogList;
 const styles = StyleSheet.create({
   productTitleContainer: {
-    width: '85%',
+    width: '100%',
+    marginTop: '5%',
   },
   categoryContainer: {
+    width: '93%',
     alignSelf: 'center',
     marginTop: '5%',
   },
@@ -264,8 +322,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Color.cardgray,
     backgroundColor: Color.white,
-    width: '50%',
+    width: '48%',
     marginBottom: 0,
+    borderRadius: 10,
+    marginTop: 15,
   },
   favoriteButton: {
     alignSelf: 'flex-end',
@@ -321,5 +381,16 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 10,
     color: Color.gray,
+  },
+  productImage: {
+    width: 100,
+    height: 150,
+    borderRadius: 12,
+  },
+  imagePlaceholder: {
+    width: 100,
+    height: 150,
+    borderRadius: 12,
+    backgroundColor: Color.lightGray,
   },
 });

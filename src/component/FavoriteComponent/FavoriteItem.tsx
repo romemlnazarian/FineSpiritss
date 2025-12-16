@@ -10,6 +10,7 @@ import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import { DeleteFavoriteProductModel, AddFavoriteProductModel } from '../../model/Favorite/Favorite';
 import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
 import useAuthStore from '../../zustland/AuthStore';
+import { useNavigation } from '@react-navigation/native';
 interface ProductItem {
   id?: string;
   title?: string;
@@ -26,9 +27,9 @@ export default function FavoriteItem({favoriteProducts, onReload}: {favoriteProd
 // Memoized Product Card Component
 const ProductCard = React.memo(({item}: {item: ProductItem}) => {
   const {token, refreshToken} = useAuthStore();
+  const navigation: any = useNavigation();
 
 
-  
     const {Styles} = StyleComponent();
     const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
   
@@ -96,7 +97,9 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
 
 
     return (
-      <View style={[styles.mainContainer]}>
+      <TouchableOpacity 
+      onPress={() => navigation.navigate('CatalogScreen',{screen: 'CatalogDetail' ,params: {product: item, fromFavorite: true}})}
+      style={[styles.mainContainer]}>
         <View style={[ styles.leftSection,{flexDirection:'row',alignItems:'center',gap:10}]}>
           <Image source={{uri: item.image_url}} style={{width:80,height:100,borderRadius:10}} />
           <View style={styles.productInfo}>
@@ -107,12 +110,40 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
               <Text style={[Styles.subtitle_Regular,{color:Color.gray}]}>{item.abv ? `ABV ${item.abv}` : ''}</Text>
             </View>
             <View style={styles.priceContainer}>
-            <Text style={[Styles.body_SemiBold]}>{(item.sale_price ?? item.price ?? item.regular_price) } zł</Text>
-            {item.sale_price && (item.regular_price || item.price) ? (
-              <Text style={[Styles.subtitle_Regular,{marginTop:'2%', textDecorationLine: 'line-through', color: Color.gray}]}>
-                {(item.regular_price ?? item.price)} zł
-              </Text>
-            ) : null}
+         
+           {item?.sale_price === null ? (
+        <Text
+          style={[
+            Styles.title_Bold,
+            styles.productPrice,
+            styles.priceContainer,
+          ]}>
+          {item.price} zł
+        </Text>
+      ) : (
+        <>
+            <Text
+            style={[
+              Styles.title_Bold,
+              styles.productPrice,
+              styles.priceContainer,
+            ]}>
+            {item.price} zł
+          </Text>
+          {item.regular_price && ( 
+            <Text
+              style={[
+                Styles.subtitle_Regular,
+                styles.originalPriceText,
+                styles.priceContainer,
+              ]}>
+              {item.regular_price} zł
+            </Text>
+          )}
+
+      
+        </>
+      )}
 
             
             </View>
@@ -134,7 +165,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
           textStyle={Styles.subtitle_Regular}
         />
         
-      </View>
+      </TouchableOpacity>
     );
   });
   return (  
@@ -220,6 +251,14 @@ const styles = StyleSheet.create({
       height: 1,
       backgroundColor: Color.lightGray,
       marginVertical: 10,
+    },
+    productPrice: {
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    originalPriceText: {
+      textDecorationLine: 'line-through',
+      color: Color.gray,
     },
   });
    

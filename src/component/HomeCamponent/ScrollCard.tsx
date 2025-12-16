@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   categoryTitle: {
+    marginTop: '5%',
     color: Color.primary,
   },
   separatorLine: {

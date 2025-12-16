@@ -5,12 +5,15 @@ import { useState } from 'react';
 import useProfileStore from '../../zustland/ProfileStore';
 import useAuthStore from '../../zustland/AuthStore';
 import { Linking } from 'react-native';
+import useDeleteAccountDoneStore from '../../zustland/deleteAccountDoneStore';
 export default function SettingLogic() {
     const navigation = useNavigation<NativeStackNavigationProp<ProfileStackParamList>>(); 
     const [modalVisible, setModalVisible] = useState(false);
     const [logOutModalVisible, setLogOutModalVisible] = useState(false);
     const {setToken,setRefreshToken,setIsLoggedIn} = useAuthStore();
     const{profile} = useProfileStore();
+    const {setDeleteAccountDone} = useDeleteAccountDoneStore();
+
     const onSubmitPayment = () => {
         navigation.navigate('Payment');
     }
@@ -44,11 +47,15 @@ export default function SettingLogic() {
     }
 
     const onSubmitLogout = () => {
-        setLogOutModalVisible(false);
+        setDeleteAccountDone(false);
         setToken('');
         setRefreshToken('');
         setIsLoggedIn(false);
-        navigation.navigate('Wellcome');
+        setLogOutModalVisible(false);
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Wellcome' }],
+        });
     }
  return{
     onSubmitPayment,

@@ -7,10 +7,11 @@ import HorizontalFlatList from '../../component/HorizontalFlatList';
 import CustomHeader from '../../navigation/CustomHeader';
 import FavoriteLogic from '../../logic/Favorite/FavoriteLogic';
 import FavoriteItem from '../../component/FavoriteComponent/FavoriteItem';
-
+import { useNavigation } from '@react-navigation/native';
 export default function FavoriteScreen() {
   const {Styles} = StyleComponent();
   const {favoriteProducts, loading,recommended, onSubmit} = FavoriteLogic();
+  const navigation: any = useNavigation();
   if (loading) {
     return (
       <View style={[Styles.container, Styles.alignCenter, Styles.justifyCenter]}>
@@ -40,7 +41,9 @@ export default function FavoriteScreen() {
         }
      <View style={[Styles.alignSelf,{width:'93%',marginTop:'8%'}]}>
       <Text style={[Styles.h4_Bold,{marginLeft:'2%'}]}>Recommendations</Text>
-      <HorizontalFlatList products={recommended} onFavoriteToggled={(id:string, isFavorite:boolean)=>onSubmit(id, isFavorite)} />
+      <HorizontalFlatList
+        callback={(item: any) => navigation.navigate('CatalogScreen',{screen: 'CatalogDetail' ,params: {product: item}})}
+      products={recommended} onFavoriteToggled={(id:string, isFavorite:boolean)=>onSubmit(id, isFavorite)} />
       </View>
        </ScrollView>
     </View>

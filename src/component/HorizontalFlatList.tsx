@@ -2,7 +2,7 @@ import {FlatList, StyleSheet} from 'react-native';
 import React, {memo, useCallback} from 'react';
 import RecomendedComponent from './RecomendedComponent';
 
-export default function HorizontalFlatList({products, onFavoriteToggled}: {products: any; onFavoriteToggled?: (id:string, isFavorite:boolean) => void}) {
+export default function HorizontalFlatList({products, onFavoriteToggled,callback}: {callback: (item: any) => void, products: any; onFavoriteToggled?: (id:string, isFavorite:boolean) => void,callback?: (item: any) => void}) {
   const keyExtractor = useCallback((item: any) => item.id, []);
 
   return (
@@ -12,7 +12,7 @@ export default function HorizontalFlatList({products, onFavoriteToggled}: {produ
         <RecomendedComponent
           item={item}
           cardStyle={styles.productCardContainer}
-          onPress={() => console.log('item =>', item)}
+          onPress={(item: any) => callback?.(item)}
           onFavoriteToggled={onFavoriteToggled}
         />
       )}

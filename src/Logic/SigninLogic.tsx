@@ -66,6 +66,14 @@ export const SigninLogic = () => {
     navigation.navigate('Signup');
   };
   
+
+
+  const onSubmitGoogle =  () => {
+    navigation.navigate('GoogleAuth' as never);
+  };
+  const onSubmitApple =  () => {
+    navigation.navigate('AppleAuth' as never);
+  };
   return {
     control,
     handleSubmit,
@@ -76,5 +84,7 @@ export const SigninLogic = () => {
     loading,
     showPass,
     setShowPass,
+    onSubmitGoogle,
+    onSubmitApple,
   };
 };
