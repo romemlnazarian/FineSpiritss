@@ -1,4 +1,4 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {KeyboardAvoidingView, ScrollView, StyleSheet, View} from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
@@ -6,15 +6,18 @@ import CustomHeader from '../../navigation/CustomHeader';
 import {Controller} from 'react-hook-form';
 import TextView from '../../component/TextView';
 import TextInputComponent from '../../component/TextInputComponent';
-import {Language} from '../../utiles/Language/i18n';
 import BottomCardComponent from '../../component/BottomCard';
 import ShippingAddressLogic from '../../logic/Setting/ShippingAddressLogic';
 
 export default function ShippingAddress() {
   const {Styles} = StyleComponent();
-  const {control, handleSubmit, errors, onSubmit, isValid} = ShippingAddressLogic();
+  const {control, handleSubmit, errors, onSubmit, profile,loading} = ShippingAddressLogic();
+  
+  const keyboardVerticalOffset = 40
   return (
-    <View style={Styles.container}>
+    <KeyboardAvoidingView style={Styles.container}
+    behavior={'padding'} keyboardVerticalOffset={keyboardVerticalOffset}
+    >
       <CustomHeader showBack={true} title="Shipping Address" />
       <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.inputContainerSmallMargin}>
@@ -23,22 +26,14 @@ export default function ShippingAddress() {
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />
-        <Controller
-          control={control}
-          name="name"
-          render={({field: {onChange, onBlur, value}}) => (
             <TextInputComponent
               containerStyle={styles.textInputContainer}
-              onBlur={onBlur}
               placeholder={'Type your Name Surname'}
               handlePasswordIconClick={() => console.log()}
-              onChangeText={onChange}
-              value={value}
-              errorMessage={errors.name?.message}
-                showPass={true}
+              value={`${profile?.first_name} ${profile?.last_name}`}
+               showPass={true}
+                edit={false}
             />
-          )}
-        />
       </View>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
@@ -77,12 +72,11 @@ export default function ShippingAddress() {
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
               placeholder={'XXXXX'}
-              handlePasswordIconClick={() => console.log()}
               onChangeText={onChange}
               value={value}
               errorMessage={errors.postalCode?.message}
               showPass={true}
-
+              keyboard="numeric"
             />
           )}
         />
@@ -101,7 +95,6 @@ export default function ShippingAddress() {
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
               placeholder={'Type Your City'}
-              handlePasswordIconClick={() => console.log()}
               onChangeText={onChange}
               value={value}
               errorMessage={errors.city?.message}
@@ -110,16 +103,39 @@ export default function ShippingAddress() {
           )}
         />
       </View>
-     
-    
+      <View style={styles.inputContainerSmallMargin}>
+        <TextView
+          title={'Phone'}
+          color={Color.black}
+          style={[Styles.title_Regular, styles.textStyles]}
+        />
+        <Controller
+          control={control}
+          name="phone"
+          render={({field: {onChange, onBlur, value}}) => (
+            <TextInputComponent
+              containerStyle={styles.textInputContainer}
+              onBlur={onBlur}
+              placeholder={'Enter you phone'}
+              onChangeText={onChange}
+              value={value}
+              errorMessage={errors.phone?.message}
+              showPass={true}
+              keyboard="numeric"
+            />
+          )}
+        />
+      </View>
       <BottomCardComponent
         title={'Save'}
         onHandler={handleSubmit(onSubmit)}
-        disabled={!isValid}
+        // disabled={!isValid}
         style={styles.buttonComponent}
+        disabled={loading}
+        loading={loading}
       />
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 const styles = StyleSheet.create({

@@ -6,6 +6,7 @@ import useProfileStore from '../../zustland/ProfileStore';
 import useAuthStore from '../../zustland/AuthStore';
 import { Linking } from 'react-native';
 import useDeleteAccountDoneStore from '../../zustland/deleteAccountDoneStore';
+import GetAddressStore from '../../zustland/GetAddressStore';
 export default function SettingLogic() {
     const navigation = useNavigation<NativeStackNavigationProp<ProfileStackParamList>>(); 
     const [modalVisible, setModalVisible] = useState(false);
@@ -13,6 +14,7 @@ export default function SettingLogic() {
     const {setToken,setRefreshToken,setIsLoggedIn} = useAuthStore();
     const{profile} = useProfileStore();
     const {setDeleteAccountDone} = useDeleteAccountDoneStore();
+    const {address} = GetAddressStore()
 
     const onSubmitPayment = () => {
         navigation.navigate('Payment');
@@ -24,7 +26,7 @@ export default function SettingLogic() {
               Linking.openURL('https://finespirits.pl/privacy-policy/');
               break;
             case 'My addresses':
-             setModalVisible((prev)=>!prev);
+              navigation.navigate('ShippingAddress')
               break;
             case 'Order History':
               navigation.navigate('OrderHistory');
@@ -65,6 +67,7 @@ export default function SettingLogic() {
     profile,
     logOutModalVisible,
     setLogOutModalVisible,
-    onSubmitLogout
+    onSubmitLogout,
+    address
  }
 }

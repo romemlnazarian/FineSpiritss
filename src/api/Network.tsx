@@ -100,7 +100,6 @@ export const PUT = (
   controller: string,
   callback: (data: any, status?: number, ok?: boolean) => void,
   secretkey: string = '',
-  lang: string,
   body: any = ''
 ) => {
   console.warn('=>>>>', body);
@@ -129,7 +128,6 @@ export const PUT = (
         Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization: 'Bearer' + ' ' + secretkey,
-        'Accept-Language': lang,
       },
       body: JSON.stringify(body),
     })

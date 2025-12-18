@@ -14,6 +14,8 @@ import {BottomSheet} from '../../component/BottomSheet';
 import Plus from 'react-native-vector-icons/Feather';
 import LogOutComponent from '../../component/LogOutComponent';
 import Wrench from '../../assets/svg/Wrench.svg';
+import Edit from '../../assets/svg/Edit.svg';
+
 const data = [
   {
     id: 1,
@@ -35,7 +37,7 @@ const dataTwo = [
   {
     id: 1,
     title: 'Setting',
-    icon: <Wrench name="wrench" size={22} />,
+    icon: <Wrench />,
   },
   {
     id: 2,
@@ -53,14 +55,17 @@ export default function SettingScreen() {
     profile,
     logOutModalVisible,
     setLogOutModalVisible,
-    onSubmitLogout
+    onSubmitLogout,
+    address,
   } = SettingLogic();
   return (
     <View style={[Styles.container]}>
       <Menu
-        onHandler={() => { } }
+        onHandler={() => {}}
         title={`${profile?.first_name ?? ''} ${profile?.last_name ?? ''}`}
-        style={styles.menu} icon={undefined}/>
+        style={styles.menu}
+        icon={undefined}
+      />
       {/* <TouchableOpacity onPress={onSubmitPayment} style={styles.cardRow}>
         <View style={styles.rowCenter}>
           <Wallet />
@@ -87,12 +92,27 @@ export default function SettingScreen() {
               style={styles.rowGap10Center}>
               {item.icon}
               <Text style={Styles.title_Regular}>{item.title}</Text>
-              <Arrow
-                name="arrow-forward-ios"
-                size={20}
-                color={Color.black}
-                style={styles.iconRight}
-              />
+              {item.id === 1 ? (
+                address !== null ? (
+                  <View style={styles.iconRight}>
+                    <Edit />
+                  </View>
+                ) : (
+                  <Arrow
+                    name="arrow-forward-ios"
+                    size={20}
+                    color={Color.black}
+                    style={styles.iconRight}
+                  />
+                )
+              ) : (
+                <Arrow
+                  name="arrow-forward-ios"
+                  size={20}
+                  color={Color.black}
+                  style={styles.iconRight}
+                />
+              )}
             </TouchableOpacity>
             {item.id !== 3 && <View style={styles.separator} />}
           </Fragment>
@@ -109,11 +129,11 @@ export default function SettingScreen() {
               {item.icon}
               <Text style={Styles.title_Regular}>{item.title}</Text>
               <Arrow
-                name="arrow-forward-ios"
-                size={20}
-                color={Color.black}
-                style={styles.iconRight}
-              />
+                  name="arrow-forward-ios"
+                  size={20}
+                  color={Color.black}
+                  style={styles.iconRight}
+                />
             </TouchableOpacity>
           </Fragment>
         ))}

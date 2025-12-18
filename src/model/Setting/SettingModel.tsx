@@ -1,4 +1,4 @@
-import {GET, POST} from '../../api/Network';
+import {GET, POST, PUT} from '../../api/Network';
 import {Route} from '../../api/Route';
 
 type RegisterProps = {
@@ -20,6 +20,14 @@ type UpdateBirthdateProps = {
 
 type ChangeEmailProps = {
   email: string;
+};
+
+
+type AddressProps = {
+  street: string,
+  postal_code:string,
+  city: string,
+  phone: string
 };
 
 export const UpdateFullNameModel = (
@@ -206,5 +214,66 @@ export const getSupportModel =  (
       }
     },
     token
+  );
+};
+
+export const addAddressModel =  (
+  token: string,
+  data:AddressProps,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+  callbackUnauthorized?: () => void,
+) => {
+  console.log('===>',data,token)
+  POST(
+    Route.root,
+    Route.create_address,
+    (data, status) => {
+      if (status === 201) {
+        callback(data);
+      } else if(status === 401) {
+        callbackUnauthorized?.();
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token,
+   {
+    street: data.street,
+    postal_code: data.postal_code,
+    city: data.city,
+    phone: data.phone
+   }
+  );
+};
+
+
+
+export const updateAddressModel =  (
+  token: string,
+  data:AddressProps,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+  callbackUnauthorized?: () => void,
+) => {
+  PUT(
+    Route.root,
+    Route.create_address,
+    (data, status) => {
+      if (status === 200) {
+        callback(data);
+      } else if(status === 401) {
+        callbackUnauthorized?.();
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token,
+   {
+    street: data.street,
+    postal_code: data.postal_code,
+    city: data.city,
+    phone: data.phone
+   }
   );
 };
