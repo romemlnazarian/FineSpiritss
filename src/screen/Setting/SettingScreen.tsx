@@ -19,7 +19,7 @@ import Edit from '../../assets/svg/Edit.svg';
 const data = [
   {
     id: 1,
-    title: 'My addresses',
+    title: 'Shipping address',
     icon: <Iocn name="location-outline" size={25} color={Color.black} />,
   },
   {
@@ -91,7 +91,7 @@ export default function SettingScreen() {
               key={item.id}
               style={styles.rowGap10Center}>
               {item.icon}
-              <Text style={Styles.title_Regular}>{item.title}</Text>
+              <Text style={Styles.title_Regular}>{item.id === 1 && address != null?address?.street:item.title}</Text>
               {item.id === 1 ? (
                 address !== null ? (
                   <View style={styles.iconRight}>

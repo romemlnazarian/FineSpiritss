@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import * as Yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
@@ -7,6 +7,7 @@ import { useState } from 'react';
 import React from 'react';
 import { PasswordVerifyModel } from '../model/Auth/PasswordVerifyModel';
 import { useToast } from '../utiles/Toast/ToastProvider';
+import { BackHandler } from 'react-native';
 export const PasswordVerificationLogic = (route: any) => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
 
@@ -18,7 +19,21 @@ export const PasswordVerificationLogic = (route: any) => {
   const [loading, setLoading] = useState(false);
   const {email} = route?.route?.params;
   const {show} = useToast();
+  const [showVideo,setShowVideo] = useState(false)
+  const [ShowSuccess,setShowSuccess] = useState(false)
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        BackHandler.exitApp();
+        return true;
+      };
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => {
+        subscription.remove();
+      };
+    }, []),
+  );
   
   
   const validationSchema = Yup.object().shape({
@@ -65,10 +80,14 @@ export const PasswordVerificationLogic = (route: any) => {
   const onSubmit = async () => {
     const values = getValues();
     setLoading(true);
-    PasswordVerifyModel(email, values.password.trim(), values.repeatpassword.trim(), (data) => {
+    PasswordVerifyModel(email, values.password.trim(), values.repeatpassword.trim(), () => {
         reset({ password: '', repeatpassword: '' });
-        show('Password set successfully. Your account is now active. You can login.', {type: 'success'});
-      navigation.navigate('Signin');
+        // show('Password set successfully. Your account is now active. You can login.', {type: 'success'});
+        setShowVideo(true)
+        setTimeout(() => {
+          setShowVideo(false)
+          setShowSuccess(true) 
+        }, 10000);
       setLoading(false);
     }, (error: any) => {
        show(String(error))
@@ -82,7 +101,9 @@ export const PasswordVerificationLogic = (route: any) => {
     setShowRepeatPass((prev)=>!prev)
   };
 
-
+const onHandler = () =>{
+navigation.navigate('Signin');
+}
 
 
   return {
@@ -99,5 +120,8 @@ export const PasswordVerificationLogic = (route: any) => {
     showPass,
     showRepeatPass,
     loading,
+    showVideo,
+    ShowSuccess,
+    onHandler
   };
 };

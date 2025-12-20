@@ -5,10 +5,10 @@ import useProfileStore from '../../zustland/ProfileStore';
 import useAuthStore from '../../zustland/AuthStore';
 import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
 import { addAddressModel, updateAddressModel} from '../../model/Setting/SettingModel';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import GetAddressStore from '../../zustland/GetAddressStore';
-import { useState, useEffect } from 'react';
-
+import { useState, useEffect, useCallback } from 'react';
+import { BackHandler } from 'react-native';
 interface AddressData {
   street: string;
   postal_code: string;
@@ -16,12 +16,12 @@ interface AddressData {
   phone: string;
 }
 
-export default function ShippingAddressLogic() {
+export default function ShippingAddressLogic(route:any) {
    const {profile}  = useProfileStore()
    const {token,setToken,refreshToken,setRefreshToken} = useAuthStore();
    const {setAddress, address} = GetAddressStore()
    const [loading,setLoading] = useState(false)
-   const navigation = useNavigation()
+   const navigation = useNavigation<any>()
     const validationSchema = Yup.object().shape({
       street: Yup.string().trim().required('Required'),
       postalCode: Yup.string().trim().required('Required'),
@@ -45,6 +45,8 @@ export default function ShippingAddressLogic() {
         mode: 'onChange',
         resolver: yupResolver(validationSchema),
       })
+
+
 
       // Populate form fields when address data is available
       useEffect(() => {

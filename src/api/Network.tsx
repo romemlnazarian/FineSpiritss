@@ -147,6 +147,7 @@ export const DELETE = (
   controller: string,
   callback: (data: any, status?: number, ok?: boolean) => void,
   secretkey: string = '',
+  body: any = ''
 ) => {
   // console.log("secret", root,controller);
   if (secretkey !== '') {
@@ -158,6 +159,7 @@ export const DELETE = (
         // "pastoo_user": user_pastoo,
         Authorization: 'Bearer' + ' ' + secretkey,
       },
+      body: JSON.stringify(body),
     })
       .then(function (data) {
         const status = data.status;
@@ -174,6 +176,7 @@ export const DELETE = (
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify(body),
     })
       .then(function (data) {
         const status = data.status;

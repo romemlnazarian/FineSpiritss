@@ -11,6 +11,11 @@ import { DeleteFavoriteProductModel, AddFavoriteProductModel } from '../../model
 import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
 import useAuthStore from '../../zustland/AuthStore';
 import { useNavigation } from '@react-navigation/native';
+import { useToast } from '../../utiles/Toast/ToastProvider';
+import { addCardModel, deleteCardModel, updateCardModel } from '../../model/Card/CardModel';
+import Card from '../../assets/svg/Cart.svg';
+import LoadingModal from '../LoadingModal';
+
 interface ProductItem {
   id?: string;
   title?: string;
@@ -20,16 +25,20 @@ interface ProductItem {
   price?: string;
   regular_price?: string;
   sale_price?: string;
+  cart_quantity: number;
 }
 
 
 export default function FavoriteItem({favoriteProducts, onReload}: {favoriteProducts: ProductItem[]; onReload?: () => void}) {
 // Memoized Product Card Component
 const ProductCard = React.memo(({item}: {item: ProductItem}) => {
-  const {token, refreshToken} = useAuthStore();
+  const {token, refreshToken,setToken,setRefreshToken} = useAuthStore();
   const navigation: any = useNavigation();
+  const [count, setCount] = useState<number>(item?.cart_quantity);
+  const [visible, setVisible] = useState<boolean>(false);
+  const {show} = useToast();
 
-
+  
     const {Styles} = StyleComponent();
     const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
   
@@ -95,6 +104,186 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
 
     }
 
+    const onClick = (value: number, type: string) => {
+
+      if (type === 'inc') {
+        setVisible(true);
+        updateCardModel(
+          token,
+          item.id,
+          value,
+          () => {
+            setCount(value);
+            setVisible(false);
+          },
+          (error: string) => {
+            setVisible(false);
+            show(error, {type: 'error'});
+          },
+          () => {
+            refreshTokenModel(
+              refreshToken,
+              refreshedTokens => {
+                setToken(refreshedTokens.access);
+                setRefreshToken(refreshedTokens.refresh);
+                updateCardModel(
+                  refreshedTokens.access,
+                  item.id,
+                  value,
+                  () => {
+                    setCount(value);
+                    setVisible(false);
+                  },
+                  (error: string) => {
+                    setVisible(false);
+                    show(error, {type: 'error'});
+                  },
+                  () => {
+                    setVisible(false);
+                  },
+                );
+              },
+              () => {
+                setVisible(false);
+              },
+            );
+          },
+        );
+      } else {
+        setVisible(true);
+        if(value < 1) {
+          deleteCardModel(
+            token,
+            item.id,
+            () => {
+              setCount(value);
+              setVisible(false);
+            },
+            (error: string) => {
+              setVisible(false);
+              show(error, {type: 'error'});
+            },
+            () => {
+              refreshTokenModel(
+                refreshToken,
+                refreshedTokens => {
+                  setToken(refreshedTokens.access);
+                  setRefreshToken(refreshedTokens.refresh);
+                  deleteCardModel(
+                    refreshedTokens.access,
+                    item.id,
+                    () => {
+                      setCount(value);
+                      setVisible(false);
+                    },
+                    (error: string) => {
+                      setVisible(false);
+                      show(error, {type: 'error'});
+                    },
+                    () => {
+                      setVisible(false);
+                    },
+                  );
+                },
+                () => {
+                  setVisible(false);
+                },
+              );
+            },
+          );
+        }else{
+        updateCardModel(
+          token,
+          item.id,
+          value,
+          () => {
+            setCount(value);
+            setVisible(false);
+          },
+          (error: string) => {
+            setVisible(false);
+            show(error, {type: 'error'});
+          },
+          () => {
+            refreshTokenModel(
+              refreshToken,
+              refreshedTokens => {
+                setToken(refreshedTokens.access);
+                setRefreshToken(refreshedTokens.refresh);
+                updateCardModel(
+                  refreshedTokens.access,
+                  item.id,
+                  value,
+                  () => {
+                    setCount(value);
+                    setVisible(false);
+                  },
+                  (error: string) => {
+                    setVisible(false);
+                    show(error, {type: 'error'});
+                  },
+                  () => {
+                    setVisible(false);
+                  },
+                );
+              },
+              () => {
+                setVisible(false);
+              },
+            );
+          },
+        );
+      }
+      }
+    };
+  
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const onSubmit = () => {
+      setVisible(true);
+      addCardModel(
+        token,
+        item.id,
+        () => {
+          setCount(1);
+          setVisible(false);
+        },
+        (error: string) => {
+          setVisible(false);
+          show(error, {type: 'error'});
+        },
+        () => {
+          refreshTokenModel(
+            refreshToken,
+            refreshedTokens => {
+              setToken(refreshedTokens.access);
+              setRefreshToken(refreshedTokens.refresh);
+              addCardModel(
+                refreshedTokens.access,
+                item.id,
+                () => {
+                  setCount(1);
+                  setVisible(false);
+                },
+                (error: string) => {
+                  setVisible(false);
+                  show(error, {type: 'error'});
+                },
+                () => {
+                  setVisible(false);
+                },
+              );
+            },
+            () => {
+              setVisible(false);
+            },
+          );
+        },
+      );
+    };
+  
+
+
+
 
     return (
       <TouchableOpacity 
@@ -158,13 +347,23 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
           <Heart width={24} height={24} fill={Color.white} />
         )}
         </TouchableOpacity>
-         <BottomCardComponent
-          title="Add to Cart"
-          onHandler={() => {}}
+
+              {count === 0 ? (
+        <BottomCardComponent
+          title={'Add to Card'}
+          onHandler={onSubmit}
           style={styles.addBottom}
           textStyle={Styles.subtitle_Regular}
+          icon={<Card />}
         />
-        
+      ) : (
+        <AddBottom
+          style={[styles.addBottom,{backgroundColor:Color.white}]}
+          onQuantityChange={onClick}
+          count={count}
+        />
+      )}
+      <LoadingModal isVisible={visible} />
       </TouchableOpacity>
     );
   });

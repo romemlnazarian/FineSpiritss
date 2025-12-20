@@ -14,7 +14,7 @@ export default function SettingLogic() {
     const {setToken,setRefreshToken,setIsLoggedIn} = useAuthStore();
     const{profile} = useProfileStore();
     const {setDeleteAccountDone} = useDeleteAccountDoneStore();
-    const {address} = GetAddressStore()
+    const {address,resetAddress} = GetAddressStore()
 
     const onSubmitPayment = () => {
         navigation.navigate('Payment');
@@ -25,7 +25,7 @@ export default function SettingLogic() {
             case 'Privacy Policy':
               Linking.openURL('https://finespirits.pl/privacy-policy/');
               break;
-            case 'My addresses':
+            case 'Shipping address':
               navigation.navigate('ShippingAddress')
               break;
             case 'Order History':
@@ -54,6 +54,7 @@ export default function SettingLogic() {
         setRefreshToken('');
         setIsLoggedIn(false);
         setLogOutModalVisible(false);
+        resetAddress()
         navigation.reset({
           index: 0,
           routes: [{ name: 'Wellcome' }],

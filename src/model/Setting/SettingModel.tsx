@@ -217,6 +217,29 @@ export const getSupportModel =  (
   );
 };
 
+export const getAddressModel =  (
+  token: string,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+  callbackUnauthorized?: () => void,
+) => {
+  GET(
+    Route.root,
+    Route.create_address,
+    (data, status) => {
+      if (status === 200) {
+        callback(data);
+      } else if(status === 401) {
+        callbackUnauthorized?.();
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token,
+  );
+};
+
+
 export const addAddressModel =  (
   token: string,
   data:AddressProps,

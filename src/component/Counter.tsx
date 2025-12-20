@@ -1,40 +1,38 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
 import { Color } from '../utiles/color';
 import { StyleComponent } from '../utiles/styles';
 import Mines from '../assets/svg/mines.svg';
 import Plus from '../assets/svg/plus.svg';
 interface CounterProps {
   initialValue?: number;
-  onValueChange?: (value: number) => void;
+  stylesContainer?:ViewStyle
+  textStyle?:ViewStyle
+  onValueChange?: (value: number,type:string) => void;
 }
 
-const Counter = ({ initialValue = 1, onValueChange }: CounterProps) => {
+const Counter = ({ initialValue = 0, onValueChange,stylesContainer,textStyle }: CounterProps) => {
   const { Styles } = StyleComponent();
-  const [count, setCount] = useState(initialValue);
+  const [count,setCount] = useState(initialValue);
+
+   useEffect(()=>{
+    setCount(initialValue);
+   },[initialValue]);
 
   const increment = () => {
-    setCount(prevCount => {
-      const newCount = prevCount + 1;
-      onValueChange?.(newCount);
-      return newCount;
-    });
+    onValueChange?.(count + 1,'inc');
   };
 
   const decrement = () => {
-    setCount(prevCount => {
-      const newCount = prevCount > 1 ? prevCount - 1 : 1;
-      onValueChange?.(newCount);
-      return newCount;
-    });
+    onValueChange?.(count - 1,'dec');
   };
 
   return (
-    <View style={styles.counterContainer}>
+    <View style={[styles.counterContainer, stylesContainer]}>
       <TouchableOpacity onPress={decrement} style={styles.button}>
        <Mines/>
       </TouchableOpacity>
-      <Text style={[Styles.title_Bold, styles.countText]}>{count}</Text>
+      <Text style={[Styles.title_Bold, styles.countText,textStyle]}>{count}</Text>
       <TouchableOpacity onPress={increment} style={styles.button}>
       <Plus/>
       </TouchableOpacity>

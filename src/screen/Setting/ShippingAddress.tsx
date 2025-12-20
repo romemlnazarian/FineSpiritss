@@ -9,9 +9,9 @@ import TextInputComponent from '../../component/TextInputComponent';
 import BottomCardComponent from '../../component/BottomCard';
 import ShippingAddressLogic from '../../logic/Setting/ShippingAddressLogic';
 
-export default function ShippingAddress() {
+export default function ShippingAddress(route:any) {
   const {Styles} = StyleComponent();
-  const {control, handleSubmit, errors, onSubmit, profile,loading} = ShippingAddressLogic();
+  const {control, handleSubmit, errors, onSubmit, profile,loading} = ShippingAddressLogic(route);
   
   const keyboardVerticalOffset = 40
   return (
@@ -37,7 +37,21 @@ export default function ShippingAddress() {
       </View>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'Street'}
+          title={'Email'}
+          color={Color.black}
+          style={[Styles.title_Regular, styles.textStyles]}
+        />
+            <TextInputComponent
+              containerStyle={styles.textInputContainer}
+              handlePasswordIconClick={() => console.log()}
+              value={`${profile?.email}`}
+               showPass={true}
+                edit={false}
+            />
+      </View>
+      <View style={styles.inputContainerSmallMargin}>
+        <TextView
+          title={'Address'}
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />

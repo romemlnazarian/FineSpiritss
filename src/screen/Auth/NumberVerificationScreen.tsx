@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginLeft: '5%',
     marginTop: '2%',
+    color:Color.black
   },
   textInputContainer: {
     marginTop: 15,
@@ -126,6 +127,7 @@ const styles = StyleSheet.create({
   },
   countryNameText: {
     marginLeft: 10,
+    color:Color.black
   },
   checkmarkCircleStyle: {
     width: 24,
