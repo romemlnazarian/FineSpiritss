@@ -53,14 +53,14 @@ const data = [
     id: 2,
     title: 'Phone number',
     discription:support?.phone,
-    icon: <PhoneIcon name="phone" size={20} />,
+    icon: <PhoneIcon name="phone" size={20} color={Color.black}/>,
     key:'phone',
   },
   {
     id: 3,
     title: 'Address',
     discription:support?.address,
-    icon: <AddressIcon name="address-book-o" size={22} />,
+    icon: <AddressIcon name="address-book-o" size={22} color={Color.black}/>,
     key:'address',
   },
   {
@@ -83,7 +83,7 @@ const dataTwo = [
     id: 1,
     title: 'Web Site',
     discription:"Finespirits",
-    icon: <WebsiteIcon name="earth" size={25} />,
+    icon: <WebsiteIcon name="earth" size={25} color={Color.black}/>,
     key:'WebsiteIcon',
   },
   {
@@ -97,7 +97,7 @@ const dataTwo = [
       id: 3,
       title: 'Instagram',
       discription:"Finespirits",
-      icon: <Instagram name="instagram" size={25} />,
+      icon: <Instagram name="instagram" size={25} color={Color.black}/>,
       key:'instagram',
     },
     {

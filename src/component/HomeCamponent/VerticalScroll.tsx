@@ -354,7 +354,7 @@ useEffect(() => {
 
             {count === 0 ? (
             <BottomCardComponent
-            title={'Add to Card'}
+            title={'Add to Cart'}
             onHandler={onSubmit}
             style={styles.bottomCardButton}
             icon={<Card />}

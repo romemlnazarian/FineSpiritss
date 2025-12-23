@@ -156,7 +156,7 @@ export default function CatalogDetailScreen(route: any) {
             sku:{product?.sku}
           </Text>
           <Text style={[Styles.title_Regular, styles.subInfoText]}>
-            stock status:{product?.stock_status || ''}
+            stock status: {product?.stock_status || ''}
           </Text>
           {/* <CatalogFilter
             onHandler={e => console.log(e)}
@@ -336,7 +336,7 @@ export default function CatalogDetailScreen(route: any) {
 
         {count === 0 ? (
           <BottomCardComponent
-            title={'Add to Card'}
+            title={'Add to Cart'}
             onHandler={onSubmit}
             style={styles.bottomCardButton}
             textStyle={Styles.subtitle_Regular}

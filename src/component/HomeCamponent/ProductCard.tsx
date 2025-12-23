@@ -362,7 +362,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       )}
       {count === 0 ? (
         <BottomCardComponent
-          title={'Add to Card'}
+          title={'Add to Cart'}
           onHandler={onSubmit}
           style={styles.bottomCardButton}
           textStyle={Styles.subtitle_Regular}
@@ -393,7 +393,8 @@ const styles = StyleSheet.create({
   productCountryWidth: {width: '50%'},
   singlePriceTopMargin: {marginTop: '17%'},
   productCardContainer: {
-    padding: 15,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: Color.cardgray,
     backgroundColor: Color.white,

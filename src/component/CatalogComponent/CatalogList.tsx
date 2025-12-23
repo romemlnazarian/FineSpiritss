@@ -369,7 +369,7 @@ const ProductCard: React.FC<{
       </View>
       {count === 0 ? (
         <BottomCardComponent
-          title={'Add to Card'}
+          title={'Add to Cart'}
           onHandler={onSubmit}
           style={styles.bottomCardButton}
           textStyle={Styles.subtitle_Regular}

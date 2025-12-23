@@ -350,7 +350,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
 
               {count === 0 ? (
         <BottomCardComponent
-          title={'Add to Card'}
+          title={'Add to Cart'}
           onHandler={onSubmit}
           style={styles.addBottom}
           textStyle={Styles.subtitle_Regular}

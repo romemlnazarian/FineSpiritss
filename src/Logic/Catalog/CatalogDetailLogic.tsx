@@ -155,7 +155,7 @@ import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
 import { AddFavoriteProductModel, DeleteFavoriteProductModel } from '../../model/Favorite/Favorite';
 import { getHomeRecommendedModel } from '../../model/Home/HomeAdvertising';
 import { useToast } from '../../utiles/Toast/ToastProvider';
-import { addCardModel, updateCardModel } from '../../model/Card/CardModel';
+import { addCardModel, deleteCardModel, updateCardModel } from '../../model/Card/CardModel';
 
 export default function CatalogDetailLogic(route: any) {
   const [product, setProduct] = useState<any>(null);
