@@ -14,7 +14,6 @@ import { useToast } from '../../utiles/Toast/ToastProvider';
 import { addCardModel, deleteCardModel, updateCardModel } from '../../model/Card/CardModel';
 import Card from '../../assets/svg/Cart.svg';
 import LoadingModal from '../LoadingModal';
-import FastImage from 'react-native-fast-image';
 interface ProductItem {
   id?: string;
   title?: string;
@@ -289,7 +288,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
       onPress={() => navigation.navigate('CatalogScreen',{screen: 'CatalogDetail' ,params: {product: item, fromFavorite: true}})}
       style={[styles.mainContainer]}>
         <View style={[ styles.leftSection,{flexDirection:'row',alignItems:'center',gap:10}]}>
-          <FastImage source={{uri: item.image_url}} style={{width:80,height:100,borderRadius:10}} />
+          <Image source={{uri: item.image_url}} style={{width:80,height:100,borderRadius:10}} />
           <View style={styles.productInfo}>
             <Text style={[Styles.body_Bold,{width:item.title?.length > 25 ? '50%' : '100%'}]} numberOfLines={1} ellipsizeMode="tail">{item.title}</Text>
             <View style={styles.detailsContainer}>

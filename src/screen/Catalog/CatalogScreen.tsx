@@ -13,7 +13,6 @@ import {Color} from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
 import CatalogLogic from '../../logic/Catalog/CatalogLogic';
 import {useNavigation} from '@react-navigation/native';
-import FastImage from 'react-native-fast-image';
 
 const CategoryScreen = memo(() => {
   const {Styles} = StyleComponent();
@@ -29,7 +28,7 @@ const CategoryScreen = memo(() => {
           onPress={() => unSubmit(item)}
           activeOpacity={0.7}>
           {item.cat_image && (
-            <FastImage
+            <Image
               source={{
                 uri: item.cat_image,
               }}

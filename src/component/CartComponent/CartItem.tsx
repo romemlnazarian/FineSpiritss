@@ -18,7 +18,7 @@ export default function CartItem(props: { data: { products: any[]; summary: { it
     data: {products, summary} = {products: [], summary: {items_count: 0}},
     refreshCart,
   } = props;
-  const {Styles} = StyleComponent();
+    const {Styles} = StyleComponent(); 
 
   const handleQuantityChange = (id: number, type: string, newQuantity: number) => {
     if (type === 'inc') {
@@ -190,7 +190,7 @@ export default function CartItem(props: { data: { products: any[]; summary: { it
           () => {
             setVisible(false);
           },
-        );
+    );
       },
     );
   };

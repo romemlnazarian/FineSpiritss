@@ -25,7 +25,6 @@ import AddBottom from './AddBottom';
 import LoadingModal from './LoadingModal';
 import { useToast } from '../utiles/Toast/ToastProvider';
 import { addCardModel, deleteCardModel, updateCardModel } from '../model/Card/CardModel';
-import FastImage from 'react-native-fast-image';
 interface ProductItem {
   id: string;
   title: string;
@@ -319,7 +318,7 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
       </TouchableOpacity>
       <View style={Styles.justifyCenter}>
         {item?.image_url ? (
-          <FastImage source={{uri: item?.image_url}} style={styles.productImage} />
+          <Image source={{uri: item?.image_url}} style={styles.productImage} />
         ) : (
           <View style={styles.imagePlaceholder} />
         )}

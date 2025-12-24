@@ -10,7 +10,6 @@ import {Image} from 'react-native';
 import Layer from '../assets/svg/Layer.svg';
 import { BottomSheet } from '../component/BottomSheet';
 import {useFocusEffect} from '@react-navigation/native';
-import FastImage from 'react-native-fast-image';
  
 export default function WellcomeScreen() {
   const {Styles} = StyleComponent();
@@ -32,7 +31,7 @@ export default function WellcomeScreen() {
   return (
     <View style={Styles.container}>
       <View style={[StyleSheet.absoluteFillObject]}>
-        <FastImage
+        <Image
           source={require('../assets/images/background.png')}
           style={{width:'100%',height:'100%',opacity:0.5}}
         />

@@ -3,7 +3,6 @@ import React, {memo, useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import {Route} from '../../api/Route';
-import FastImage from 'react-native-fast-image';
 // Memoized category item component to prevent unnecessary re-renders
 const CategoryItem = memo(({item, onSubmit}: {item: any, onSubmit: (item: any) => void}) => {
   const {Styles} = StyleComponent();
@@ -23,7 +22,7 @@ const CategoryItem = memo(({item, onSubmit}: {item: any, onSubmit: (item: any) =
       <View style={styles.categoryImageContainer}>
         <View style={styles.categoryImagePosition}>
            {imageUri ? (
-             <FastImage source={{uri: imageUri}} style={styles.categoryImage} />
+             <Image source={{uri: imageUri}} style={styles.categoryImage} resizeMethod='resize' />
            ) : (
             <View style={styles.categoryImagePlaceholder} />
             // <Viski width={60} height={100} />

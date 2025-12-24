@@ -4,7 +4,6 @@ import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
-import FastImage from 'react-native-fast-image';
 
 
 type LocalTabButtonProps = {
@@ -32,7 +31,7 @@ const TabButton = ({
       ]}>
       <View style={[Styles.justifyCenter]}>
         {image ? (
-          <FastImage
+          <Image
             source={{uri: image}}
             style={styles.productImage}
             resizeMode="cover"

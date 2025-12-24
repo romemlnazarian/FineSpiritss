@@ -6,6 +6,7 @@ import {
   ScrollView,
   ActivityIndicator,
   BackHandler,
+  Image,
 } from 'react-native';
 import React, {useCallback, useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
@@ -20,7 +21,6 @@ import BottomCardComponent from '../../component/BottomCard';
 import AddBottom from '../../component/AddBottom';
 import LoadingModal from '../../component/LoadingModal';
 import Card from '../../assets/svg/Cart.svg';
-import FastImage from 'react-native-fast-image';
 export default function CatalogDetailScreen(route: any) {
   const {Styles, Height} = StyleComponent();
   const {
@@ -139,9 +139,10 @@ export default function CatalogDetailScreen(route: any) {
           onSubmitBack={handleBack}
         />
         <View style={styles.imageWrapper}>
-          <FastImage
+          <Image
             source={{uri: product?.image_url}}
             style={styles.productImage}
+            resizeMethod='resize'
           />
         </View>
         {/* <Slider /> */}

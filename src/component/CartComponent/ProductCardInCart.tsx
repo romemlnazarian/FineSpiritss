@@ -1,10 +1,9 @@
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
 import Trash from '../../assets/svg/Trash.svg';
 import AddBottom from '../AddBottom';
-import FastImage from 'react-native-fast-image';
 interface ProductItem {
   id: number;
   title: string;
@@ -41,7 +40,7 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
   return (
     <View style={[Styles.justifyBetween, styles.mainContainer]}>
       <View style={[Styles.justifyCenter, styles.leftSection]}>
-        <FastImage source={{uri: item?.image_url}} style={styles.productImage} />
+        <Image source={{uri: item?.image_url}} style={styles.productImage} />
         <View style={styles.productInfo}>
           <Text
             style={[Styles.h6_SemiBold, styles.productTitle]}

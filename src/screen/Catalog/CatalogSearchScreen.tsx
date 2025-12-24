@@ -13,7 +13,6 @@ import React, {useState, useCallback, useMemo, useRef, useEffect} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import Viski from '../../assets/svg/viski.svg';
 import Heart from '../../assets/svg/Heart.svg';
 import Arrow from '../../assets/svg/Arrows.svg';
 import useAuthStore from '../../zustland/AuthStore';
@@ -30,7 +29,6 @@ import {
   DeleteFavoriteProductModel,
 } from '../../model/Favorite/Favorite';
 import useRecommendedStore from '../../zustland/recommendedStore';
-import FastImage from 'react-native-fast-image';
 interface ProductItem {
   id: string;
   title: string;
@@ -108,7 +106,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
       }}
       style={[Styles.justifyBetween, styles.mainContainer]}>
       <View style={[Styles.justifyCenter, styles.leftSection]}>
-        <FastImage
+        <Image
           source={{uri: item?.image_url}}
           style={{width: 100, height: 100}}
           resizeMode="contain"
