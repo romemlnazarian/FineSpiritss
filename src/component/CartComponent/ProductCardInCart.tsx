@@ -1,10 +1,10 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
 import Trash from '../../assets/svg/Trash.svg';
 import AddBottom from '../AddBottom';
-
+import FastImage from 'react-native-fast-image';
 interface ProductItem {
   id: number;
   title: string;
@@ -41,13 +41,10 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
   return (
     <View style={[Styles.justifyBetween, styles.mainContainer]}>
       <View style={[Styles.justifyCenter, styles.leftSection]}>
-        <Image source={{uri: item?.image_url}} style={styles.productImage} />
+        <FastImage source={{uri: item?.image_url}} style={styles.productImage} />
         <View style={styles.productInfo}>
           <Text
-            style={[
-              Styles.h6_SemiBold,
-              item.title.length > 17 ? styles.productTitleLong : styles.productTitleShort,
-            ]}
+            style={[Styles.h6_SemiBold, styles.productTitle]}
             numberOfLines={1}
             ellipsizeMode="tail">
             {item.title}
@@ -85,7 +82,7 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
       </TouchableOpacity>
       <AddBottom
         style={styles.addBottom}
-        onQuantityChange={(value,type)=>handleQuantityChange(value,type)}
+        onQuantityChange={(value, type) => handleQuantityChange(value, type)}
         count={item.quantity}
       />
     </View>
@@ -112,11 +109,17 @@ const styles = StyleSheet.create({
   },
   leftSection: {
     height: 100,
+    flex: 1,
+    minWidth: 0,
   },
   productInfo: {
     height: 100,
     justifyContent: 'space-around',
     marginLeft: '5%',
+    flex: 1,
+    minWidth: 0,
+    // reserve space for absolute controls on the right (trash + counter)
+    paddingRight: 140,
   },
   detailsContainer: {
     flexDirection: 'row',
@@ -137,6 +140,8 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Color.lightGray,
   },
 
   blackText: {
@@ -150,8 +155,11 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     color: Color.gray,
   },
-  productTitleLong: { width: '70%' },
-  productTitleShort: { width: '90%' },
+  productTitle: {
+    flexShrink: 1,
+  },
+  productTitleLong: {width: '70%'},
+  productTitleShort: {width: '100%'},
 });
 
 export default ProductCardInCart;

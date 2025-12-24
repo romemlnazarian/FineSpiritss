@@ -173,11 +173,17 @@ export default function CatalogDetailLogic(route: any) {
     console.log('route?.route?.params?.product?.slug =>', route?.route?.params?.product);
     setIsLoading(true);
     getProductDetailModel(token, route?.route?.params?.product?.slug, data => {
+      console.log('dataaaaaaaaaa =>', data);
       setProduct(data);
       setCount(data?.cart_quantity)
       setIsFavorite(data?.is_favorite);
       setIsLoading(false);
-    }, () => {
+    },
+    (error)=>{
+      console.log('error =>', error);
+      setIsLoading(false);
+    }, 
+    () => {
       refreshTokenModel(refreshToken, tokens => {
         setToken(tokens.access);
         setRefreshToken(tokens.refresh);

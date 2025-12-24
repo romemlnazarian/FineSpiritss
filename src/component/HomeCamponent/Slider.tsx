@@ -11,7 +11,7 @@ import React, {useState, useMemo, useCallback, memo, useEffect} from 'react';
 import Swiper from 'react-native-swiper';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
-
+import FastImage from 'react-native-fast-image';
 interface SliderProps {
   style?: StyleProp<ViewStyle>;
   data?: any[];
@@ -38,7 +38,7 @@ const SlideItem = memo(
           ]}>
           {item.text}
         </Text>
-        <Image source={{uri: source}} style={styles.slideImage} />
+        <FastImage source={{uri: source}} style={styles.slideImage} />
       </TouchableOpacity>
     );
   },

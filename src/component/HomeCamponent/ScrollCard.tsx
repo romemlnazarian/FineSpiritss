@@ -2,7 +2,7 @@ import {View, Text, StyleSheet, FlatList, Image} from 'react-native';
 import React from 'react';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
-
+import FastImage from 'react-native-fast-image';
 interface BrandItem {
   id: string;
   brand_image: string;
@@ -13,7 +13,7 @@ export default function ScrollCard({data}: {data: any[]}) {
   const {Styles} = StyleComponent();
   const renderBrandItem = ({item}: {item: BrandItem}) => (
     <View style={styles.brandItemContainer}>
-      <Image source={{uri: item.brand_image}} style={styles.categoryImage} resizeMode="contain" />
+      <FastImage source={{uri: item.brand_image}} style={styles.categoryImage} resizeMode="contain" />
     </View>
   );
 

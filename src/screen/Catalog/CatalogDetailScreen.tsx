@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
-  Image,
   BackHandler,
 } from 'react-native';
 import React, {useCallback, useMemo} from 'react';
@@ -21,7 +20,7 @@ import BottomCardComponent from '../../component/BottomCard';
 import AddBottom from '../../component/AddBottom';
 import LoadingModal from '../../component/LoadingModal';
 import Card from '../../assets/svg/Cart.svg';
-
+import FastImage from 'react-native-fast-image';
 export default function CatalogDetailScreen(route: any) {
   const {Styles, Height} = StyleComponent();
   const {
@@ -39,24 +38,39 @@ export default function CatalogDetailScreen(route: any) {
   } = CatalogDetailLogic(route);
   const navigation: any = useNavigation();
   const fromFavorite = Boolean(route?.route?.params?.fromFavorite);
+  const fromSetting = Boolean(route?.route?.params?.fromSetting);
 
 
   const handleBack = useCallback(() => {
     if (fromFavorite) {
       navigation.navigate('FavoriteScreen', {screen: 'Favorite'});
-    } else {
-      navigation.goBack();
+      return;
     }
-  }, [fromFavorite, navigation]);
+    if (fromSetting) {
+      // We jumped here across tabs (Setting -> Catalog). Go back to Setting tab.
+      navigation.navigate('SettingScreen');
+      return;
+    } else {
+      if (typeof navigation?.canGoBack === 'function' && navigation.canGoBack()) {
+        navigation.goBack();
+      } else {
+        navigation.navigate('CatalogScreen', {screen: 'Catalog'});
+      }
+    }
+  }, [fromFavorite, fromSetting, navigation]);
 
   // Android hardware back: if opened from Favorite, go back to Favorite tab
   useFocusEffect(
     useCallback(() => {
-      if (!fromFavorite) {
+      if (!fromFavorite && !fromSetting) {
         return () => {};
       }
       const onBackPress = () => {
-        navigation.navigate('FavoriteScreen', {screen: 'Favorite'});
+        if (fromFavorite) {
+          navigation.navigate('FavoriteScreen', {screen: 'Favorite'});
+        } else {
+          navigation.navigate('SettingScreen');
+        }
         return true;
       };
       const subscription = BackHandler.addEventListener(
@@ -66,7 +80,7 @@ export default function CatalogDetailScreen(route: any) {
       return () => {
         subscription.remove();
       };
-    }, [fromFavorite, navigation]),
+    }, [fromFavorite, fromSetting, navigation]),
   );
 
   const specificationRows = useMemo(
@@ -125,7 +139,7 @@ export default function CatalogDetailScreen(route: any) {
           onSubmitBack={handleBack}
         />
         <View style={styles.imageWrapper}>
-          <Image
+          <FastImage
             source={{uri: product?.image_url}}
             style={styles.productImage}
           />

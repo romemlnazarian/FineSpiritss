@@ -157,7 +157,7 @@ const HomeSort = memo(
         </View>
       ) : (
         <View style={styles.productGridContainer}>
-          {(Array.isArray(displayData) ? displayData : []).map(item => (
+          {displayData?.map(item => (
             <ProductItemRenderer
               key={item.id}
               item={item}

@@ -5,6 +5,7 @@ import CustomHeader from '../../navigation/CustomHeader';
 import CatalogCategoryLogic from '../../logic/Catalog/CatalogCategoryLogic';
 import {Color} from '../../utiles/color';
 import ArrowRight from 'react-native-vector-icons/MaterialIcons';
+import FastImage from 'react-native-fast-image';
 export default function CatalogCategory(route: any) {
   const {Styles} = StyleComponent();
   const {isLoading, catalogDetail, name, onSubmitBack, onSubmit} = CatalogCategoryLogic(route);
@@ -38,7 +39,7 @@ export default function CatalogCategory(route: any) {
                   borderRadius: 10,
                 }}>
                 {catalogDetail?.parent?.cat_image && (
-                  <Image
+                  <FastImage
                     source={{uri: catalogDetail.parent.cat_image}}
                     style={{width: 80, height: 80}}
                   />
@@ -71,7 +72,7 @@ export default function CatalogCategory(route: any) {
                     borderRadius: 10,
                   }}>
                   {item?.cat_image && (
-                    <Image
+                    <FastImage
                       source={{uri: catalogDetail.parent.cat_image}}
                       style={{width: 100, height: 100}}
                     />

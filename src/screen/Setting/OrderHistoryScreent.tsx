@@ -1,84 +1,102 @@
-import {View} from 'react-native';
-import React, {useMemo} from 'react';
+import {
+  ScrollView,
+  Text,
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import CustomHeader from '../../navigation/CustomHeader';
-import CatalogFilter from '../../component/CatalogComponent/CatalogFilter';
-import CatalogList from '../../component/CatalogComponent/CatalogList';
-import {BottomSheet} from '../../component/BottomSheet';
-import Filter from '../../assets/svg/Filter.svg';
 import OrderHistoryLogic from '../../logic/Setting/OrderHistoryLogic';
-import ShowBySetting from '../../component/SettingComponent/ShowBySetting';
-import StatusSetting from '../../component/SettingComponent/StatusSetting';
-import PerioudSetting from '../../component/SettingComponent/PerioudSetting';
+import {Color} from '../../utiles/color';
+import Arrow from 'react-native-vector-icons/MaterialIcons';
 
-const defaultSortData = [
-  {id: '1', title: <Filter />},
-  {id: '2', title: 'Status'},
-  {id: '3', title: 'Perioud'},
-];
+const toDateOnly = (value: unknown): string => {
+  if (value == null) {
+    return '';
+  }
+  const s = String(value).trim();
+  if (!s) {
+    return '';
+  }
+  // Handles: "2025-12-23T10:20:30Z" or "2025-12-23 10:20:30"
+  return s.split('T')[0].split(' ')[0];
+};
 
 export default function OrderHistoryScreent() {
   const {
-    onSubnmitFilter,
-    filterVisible,
-    setFilterVisible,
-    onAddSelected,
     onHandlerDetail,
-    title,
-    showById,
-    statusId,
-    periodId,
+    orderHistory,
+    loading,
   } = OrderHistoryLogic();
-  const {Styles} = StyleComponent();
-  const sortData = useMemo(
-    () => [
-      {
-        id: '1',
-        title: 'Popular',
-        description: 'Popular',
-        price: '100',
-        originalPrice: '100',
-        image: 'https://via.placeholder.com/150',
-      },
-      {
-        id: '2',
-        title: 'Newest',
-        description: 'Newest',
-        price: '100',
-        image: 'https://via.placeholder.com/150',
-      },
-      {
-        id: '3',
-        title: 'Price Low to High',
-        description: 'Price Low to High',
-        price: '100',
-        originalPrice: '100',
-      },
-      {
-        id: '4',
-        title: 'Price High to Low',
-        description: 'Price High to Low',
-        price: '100',
-        originalPrice: '100',
-      },
-      {
-        id: '5',
-        title: 'Top Rated',
-        description: 'Top Rated',
-        price: '100',
-        originalPrice: '100',
-      },
-    ],
-    [],
-  );
+  const {Styles, Height} = StyleComponent();
 
   return (
     <View style={[Styles.container]}>
-      <CustomHeader
-        showBack={true}
-        title="Order History"
-      />
-      <CatalogFilter
+      <CustomHeader showBack={true} title="Order History" />
+      <ScrollView>
+        {loading ? (
+          <ActivityIndicator
+            size="large"
+            color={Color.primary}
+            style={{marginTop: Height / 2.5}}
+          />
+        ) : orderHistory.length === 0 ? (
+          <View
+            style={[
+              Styles.container,
+              Styles.alignCenter,
+              Styles.justifyCenter,
+            ]}>
+            <Text style={[Styles.h4_Bold, {color: Color.black}]}>
+              No order history found
+            </Text>
+          </View>
+        ) : (
+          orderHistory.map((item: any) => (
+            <TouchableOpacity
+              activeOpacity={0.5}
+              key={item.order_number}
+              style={[Styles.card, Styles.justifyBetween, styles.cardItem]}
+              onPress={() => onHandlerDetail(item.order_number)}>
+              <View style={styles.columnGap}>
+                <View style={styles.rowGap}>
+                  <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
+                    Date:
+                  </Text>
+                  <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
+                    {toDateOnly(item.date)}
+                  </Text>
+                </View>
+                <View style={styles.rowGap}>
+                  <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
+                    Status:
+                  </Text>
+                  <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
+                    {item.status}
+                  </Text>
+                </View>
+                <View style={styles.rowGap}>
+                  <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
+                    Total price:
+                  </Text>
+                  <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
+                    {item.total} zł
+                  </Text>
+                </View>
+              </View>
+              <Arrow
+                name="keyboard-arrow-right"
+                size={30}
+                color={Color.black}
+              />
+            </TouchableOpacity>
+          ))
+        )}
+      </ScrollView>
+      {/* <CatalogFilter
         onHandler={e => onSubnmitFilter(e)}
         sortData={defaultSortData}
         arrow={true}
@@ -87,8 +105,8 @@ export default function OrderHistoryScreent() {
         item={sortData}
         onHandlerItem={onHandlerDetail}
         orderBottom={true}
-      />
-      <BottomSheet
+      /> */}
+      {/* <BottomSheet
         modalVisible={filterVisible}
         height={350}
         onClose={() => setFilterVisible(false)}>
@@ -99,7 +117,13 @@ export default function OrderHistoryScreent() {
         ) : (
           <PerioudSetting onCallback={onAddSelected} selectedIds={periodId} />
         )}
-      </BottomSheet>
+      </BottomSheet> */}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  cardItem: {marginBottom: 10},
+  columnGap: {flexDirection: 'column' as const, gap: 10},
+  rowGap: {flexDirection: 'row' as const, gap: 10},
+});

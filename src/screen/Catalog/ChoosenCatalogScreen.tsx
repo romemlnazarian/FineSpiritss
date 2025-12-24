@@ -11,7 +11,6 @@ import ButtonSheetFilter from '../../component/CatalogComponent/buttonSheetFilte
 import CatalogTabsFilter from '../../component/CatalogComponent/CatalogTabsFilter';
 
 
-
 export default function ChoosenCatalog(route: any) {
   const {
     onSubnmitFilter,

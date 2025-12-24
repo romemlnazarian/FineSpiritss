@@ -2,8 +2,8 @@ import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import React, {memo, useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
-import Viski from '../../assets/svg/viski.svg';
 import {Route} from '../../api/Route';
+import FastImage from 'react-native-fast-image';
 // Memoized category item component to prevent unnecessary re-renders
 const CategoryItem = memo(({item, onSubmit}: {item: any, onSubmit: (item: any) => void}) => {
   const {Styles} = StyleComponent();
@@ -23,9 +23,10 @@ const CategoryItem = memo(({item, onSubmit}: {item: any, onSubmit: (item: any) =
       <View style={styles.categoryImageContainer}>
         <View style={styles.categoryImagePosition}>
            {imageUri ? (
-             <Image source={{uri: imageUri}} style={styles.categoryImage} />
+             <FastImage source={{uri: imageUri}} style={styles.categoryImage} />
            ) : (
-            <Viski width={60} height={100} />
+            <View style={styles.categoryImagePlaceholder} />
+            // <Viski width={60} height={100} />
           )}
         </View>
       </View>
@@ -126,5 +127,11 @@ const styles = StyleSheet.create({
     marginTop: '5%',
     textAlign: 'center',
     minHeight: 40,
+  },
+  categoryImagePlaceholder: {
+    width: 150,
+    height: 150,
+    borderRadius: 12,
+    backgroundColor: Color.lightGray,
   },
 });

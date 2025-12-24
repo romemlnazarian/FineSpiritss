@@ -69,7 +69,7 @@ export default function HomeScreen() {
 
   return (
     <View style={[Styles.container, Styles.alignCenter]}>
-      <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <HomeHeader />
         <ModalCard
           isVisible={ageConfirmed}

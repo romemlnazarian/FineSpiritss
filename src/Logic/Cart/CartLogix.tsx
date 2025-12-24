@@ -6,6 +6,7 @@ import useAddressStore from '../../zustland/GetAddressStore';
 import {useNavigation} from '@react-navigation/native';
 
 import type {Address} from '../../zustland/GetAddressStore';
+import { Linking } from 'react-native';
 
 type CartLogixReturn = {
   loading: boolean;
@@ -13,7 +14,7 @@ type CartLogixReturn = {
   address: Address | null;
   refreshCart: () => void;
   onSubmitAddress: () => void;
-  onSubmit: () => void;
+  onSubmit: (id:number) => void;
   error: boolean;
 };
 export default function CartLogix(): CartLogixReturn {
@@ -81,12 +82,13 @@ export default function CartLogix(): CartLogixReturn {
     });
   };
 
-  const onSubmit = () => {
+  const onSubmit = (id:number) => {
 
     if (address === null || address?.street === '') {
       setError(true);
     } else {
       setError(false);
+      Linking.openURL(`https://finespirits.pl/checkout/?user_id=${id}`);
     }
   };
 

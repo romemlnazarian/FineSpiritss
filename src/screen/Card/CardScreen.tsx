@@ -124,7 +124,7 @@ export default function CardScreen() {
                 Order amount
               </Text>
               <Text style={[Styles.title_Bold, styles.blackText]}>
-                {data?.summary?.subtotal}
+                {data?.summary?.subtotal} zł
               </Text>
             </View>
             {/* <View style={styles.rowBetween}>
@@ -152,7 +152,7 @@ export default function CardScreen() {
             <View style={styles.divider} />
             <TouchableOpacity
               activeOpacity={0.5}
-              onPress={onSubmit}
+              onPress={()=>onSubmit(data?.summary?.checkout_id)}
               style={styles.orderButton}>
               <Text style={[Styles.title_Regular, styles.whiteText]}>
                 Order

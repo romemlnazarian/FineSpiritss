@@ -38,6 +38,7 @@
   get_support: string;
   create_address:string
   card:string
+  order_history:string
 }
 
 export const Route: RouteObj = {
@@ -79,5 +80,6 @@ export const Route: RouteObj = {
     delete_favorite_product: 'product/favorites/remove/',
     get_support: 'support/about-company/',
     create_address:'order/shipping-address/',
-     card:'order/cart/'
+     card:'order/cart/',
+     order_history:'order/history/'
 };

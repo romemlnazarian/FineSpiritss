@@ -300,3 +300,48 @@ export const updateAddressModel =  (
    }
   );
 };
+
+
+export const getOrderHistoryModel =  (
+  token: string,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+  callbackUnauthorized?: () => void,
+) => {
+  GET(
+    Route.root,
+    `${Route.order_history}`,
+    (data, status) => {
+      if (status === 200) {
+        callback(data);
+      } else if(status === 401) {
+        callbackUnauthorized?.();
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token,
+  );
+};
+export const getOrderHistoryDetailModel =  (
+  token: string,
+  id:number,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+  callbackUnauthorized?: () => void,
+) => {
+  GET(
+    Route.root,
+    `${Route.order_history}${id}/`,
+    (data, status) => {
+      if (status === 200) {
+        callback(data);
+      } else if(status === 401) {
+        callbackUnauthorized?.();
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token,
+  );
+};

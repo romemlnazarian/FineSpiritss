@@ -21,7 +21,7 @@ import useAuthStore from '../../zustland/AuthStore';
 import { useToast } from '../../utiles/Toast/ToastProvider';
 import LoadingModal from '../LoadingModal';
 import { addCardModel, deleteCardModel, updateCardModel } from '../../model/Card/CardModel';
-
+import FastImage from 'react-native-fast-image';
 interface ProductItem {
   id: string;
   title: string;
@@ -282,7 +282,7 @@ const ProductCard: React.FC<{
       </TouchableOpacity>
       <View style={Styles.justifyCenter}>
         {item?.image_url ? (
-          <Image source={{uri: item?.image_url}} style={styles.productImage} />
+          <FastImage source={{uri: item?.image_url}} style={styles.productImage} />
         ) : (
           <View style={styles.imagePlaceholder} />
         )}
