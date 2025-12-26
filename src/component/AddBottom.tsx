@@ -10,7 +10,9 @@ import Counter from './Counter'; // Import the new Counter component
 type Props = {
   dark?: boolean;
   style?: ViewStyle;
-  onQuantityChange?: (value: number) => void;
+  count?:number
+  stylesContainer?:ViewStyle
+  onQuantityChange?: (value: number,type:string) => void;
 };
 
 const AddBottom = (props: Props) => {
@@ -18,7 +20,7 @@ const AddBottom = (props: Props) => {
     <View
       style={[styles.container, props.style]}>
       <View style={styles.contentContainer}>
-        <Counter initialValue={1} onValueChange={props.onQuantityChange} />
+        <Counter initialValue={props.count} onValueChange={props.onQuantityChange} stylesContainer={props.stylesContainer} />
       </View>
     </View>
   );

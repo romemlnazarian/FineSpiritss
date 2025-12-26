@@ -69,12 +69,12 @@ export default function HomeScreen() {
 
   return (
     <View style={[Styles.container, Styles.alignCenter]}>
-      <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <HomeHeader />
-        <ModalCard
+        {/* <ModalCard
           isVisible={ageConfirmed}
           onClose={onSubmitClose}
-        />
+        /> */}
 
         <Slider data={homeAdvertising} onSubmit={onSubmitAdvertising} />
         <HomeCategory data={categories} onSubmitCategory={onSubmitCategory} />

@@ -42,7 +42,9 @@ export const getHomeAdvertisingModel =  (
     GET(
       Route.root,
       Route.home_best_sales,
+      
       (data: { detail?: boolean | string; message?: string; data?: any; code?: string; messages?: any[] }) => {
+          console.log('=====>data card',data)
         const anyData: any = data;
         if (anyData && typeof anyData === 'object') {
           if ('code' in anyData || 'messages' in anyData || typeof anyData.detail === 'string') {
@@ -143,6 +145,7 @@ export const getHomeAdvertisingModel =  (
       Route.home_recommended,
       (data: { detail?: boolean | string; message?: string; data?: any; code?: string; messages?: any[] }) => {
         const anyData: any = data;
+        console.log('recommended', data)
         if (anyData && typeof anyData === 'object') {
           if ('code' in anyData || 'messages' in anyData || typeof anyData.detail === 'string') {
             const msg = anyData.code ?? anyData.detail ?? anyData?.messages?.[0]?.message ?? anyData.message ?? 'Unexpected response';

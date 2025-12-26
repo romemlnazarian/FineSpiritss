@@ -303,7 +303,7 @@ export const StyleComponent = () => {
      subtitle_Regular:{
       fontSize: 14,
       fontFamily:'Satoshi-Medium',
-      color:Color.white,
+      color:Color.black,
      },
      
      subtitle_Light:{

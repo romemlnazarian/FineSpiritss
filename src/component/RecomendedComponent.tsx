@@ -21,7 +21,10 @@ import {
 } from '../model/Favorite/Favorite';
 import useAuthStore from '../zustland/AuthStore';
 import {refreshTokenModel} from '../model/Auth/RefreshTokenModel';
-
+import AddBottom from './AddBottom';
+import LoadingModal from './LoadingModal';
+import { useToast } from '../utiles/Toast/ToastProvider';
+import { addCardModel, deleteCardModel, updateCardModel } from '../model/Card/CardModel';
 interface ProductItem {
   id: string;
   title: string;
@@ -34,6 +37,7 @@ interface ProductItem {
   sale_price?: string;
   abv?: string;
   is_favorite?: boolean;
+  cart_quantity: number;
 }
 
 interface ProductCardProps {
@@ -41,6 +45,7 @@ interface ProductCardProps {
   cardStyle?: StyleProp<ViewStyle>;
   onPress?: (item: ProductItem) => void;
   onFavoriteToggled?: (id:string, isFavorite:boolean) => void;
+  onToggleClick?: (id:number) => void;
 }
 
 const RecomendedComponent: React.FC<ProductCardProps> = ({
@@ -48,10 +53,14 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
   cardStyle,
   onPress,
   onFavoriteToggled,
+  onToggleClick,
 }) => {
-  const {token, refreshToken} = useAuthStore();
+  const {token, refreshToken,setToken,setRefreshToken} = useAuthStore();
   const {Styles} = StyleComponent();
   const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
+  const [count, setCount] = useState<number>(item?.cart_quantity);
+  const [visible, setVisible] = useState<boolean>(false);
+  const {show} = useToast();
   const toggleFavorite = (id:string) => {
     if (isFavorite) {
       setIsFavorite(false);
@@ -117,6 +126,189 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
     }
   };
 
+
+  const onClick = (value: number, type: string) => {
+
+    if (type === 'inc') {
+      setVisible(true);
+      updateCardModel(
+        token,
+        item.id,
+        value,
+        () => {
+          setCount(value);
+          setVisible(false);
+          onToggleClick?.(item.id);
+        },
+        (error: string) => {
+          setVisible(false);
+          show(error, {type: 'error'});
+        },
+        () => {
+          refreshTokenModel(
+            refreshToken,
+            refreshedTokens => {
+              setToken(refreshedTokens.access);
+              setRefreshToken(refreshedTokens.refresh);
+              updateCardModel(
+                refreshedTokens.access,
+                item.id,
+                value,
+                () => {
+                  setCount(value);
+                  setVisible(false);
+                  onToggleClick?.(item.id);
+                },
+                (error: string) => {
+                  setVisible(false);
+                  show(error, {type: 'error'});
+                },
+                () => {
+                  setVisible(false);
+                },
+              );
+            },
+            () => {
+              setVisible(false);
+            },
+          );
+        },
+      );
+    } else {
+      setVisible(true);
+      if(value < 1) {
+        deleteCardModel(
+          token,
+          item.id,
+          () => {
+            setCount(value);
+            setVisible(false);
+          },
+          (error: string) => {
+            setVisible(false);
+            show(error, {type: 'error'});
+          },
+          () => {
+            refreshTokenModel(
+              refreshToken,
+              refreshedTokens => {
+                setToken(refreshedTokens.access);
+                setRefreshToken(refreshedTokens.refresh);
+                deleteCardModel(
+                  refreshedTokens.access,
+                  item.id,
+                  () => {
+                    setCount(value);
+                    setVisible(false);
+                  },
+                  (error: string) => {
+                    setVisible(false);
+                    show(error, {type: 'error'});
+                  },
+                  () => {
+                    setVisible(false);
+                  },
+                );
+              },
+              () => {
+                setVisible(false);
+              },
+            );
+          },
+        );
+      }else{
+      updateCardModel(
+        token,
+        item.id,
+        value,
+        () => {
+          setCount(value);
+          setVisible(false);
+        },
+        (error: string) => {
+          setVisible(false);
+          show(error, {type: 'error'});
+        },
+        () => {
+          refreshTokenModel(
+            refreshToken,
+            refreshedTokens => {
+              setToken(refreshedTokens.access);
+              setRefreshToken(refreshedTokens.refresh);
+              updateCardModel(
+                refreshedTokens.access,
+                item.id,
+                value,
+                () => {
+                  setCount(value);
+                  setVisible(false);
+                },
+                (error: string) => {
+                  setVisible(false);
+                  show(error, {type: 'error'});
+                },
+                () => {
+                  setVisible(false);
+                },
+              );
+            },
+            () => {
+              setVisible(false);
+            },
+          );
+        },
+      );
+    }
+    }
+  };
+
+  const onSubmit = () => {
+    setVisible(true);
+    addCardModel(
+      token,
+      item.id,
+      () => {
+        setCount(1);
+        setVisible(false);
+        onToggleClick?.(item.id);
+      },
+      (error: string) => {
+        setVisible(false);
+        show(error, {type: 'error'});
+      },
+      () => {
+        refreshTokenModel(
+          refreshToken,
+          refreshedTokens => {
+            setToken(refreshedTokens.access);
+            setRefreshToken(refreshedTokens.refresh);
+            addCardModel(
+              refreshedTokens.access,
+              item.id,
+              () => {
+                setCount(1);
+                setVisible(false);
+                onToggleClick?.(item.id);
+              },
+              (error: string) => {
+                setVisible(false);
+                show(error, {type: 'error'});
+              },
+              () => {
+                setVisible(false);
+              },
+            );
+          },
+          () => {
+            setVisible(false);
+          },
+        );
+      },
+    );
+  };
+
+
+  
   return (
     <TouchableOpacity
       style={[styles.productCardContainer, cardStyle]}
@@ -153,13 +345,22 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
           </Text>
         )}
       </View>
-      <BottomCardComponent
-        title={'Add to Card'}
-        onHandler={() => console.log()}
-        style={styles.bottomCardButton}
-        textStyle={Styles.subtitle_Regular}
-        icon={<Card />}
-      />
+      {count === 0 ? (
+        <BottomCardComponent
+          title={'Add to Cart'}
+          onHandler={onSubmit}
+          style={styles.bottomCardButton}
+          textStyle={Styles.subtitle_Regular}
+          icon={<Card />}
+        />
+      ) : (
+        <AddBottom
+          style={styles.bottomCardButton}
+          onQuantityChange={onClick}
+          count={count}
+        />
+      )}
+      <LoadingModal isVisible={visible} />
     </TouchableOpacity>
   );
 };

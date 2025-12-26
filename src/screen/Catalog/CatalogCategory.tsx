@@ -41,6 +41,7 @@ export default function CatalogCategory(route: any) {
                   <Image
                     source={{uri: catalogDetail.parent.cat_image}}
                     style={{width: 80, height: 80}}
+                    resizeMethod='resize'
                   />
                 )}
               </View>

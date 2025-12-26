@@ -5,11 +5,19 @@ import {Color} from '../../utiles/color';
 import ProductCard from './ProductCard';
 
 interface ProductItem {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  price: string;
+  price?: string;
   originalPrice?: string;
+  image_url?: string;
+  country?: string;
+  regular_price?: string;
+  sale_price?: string;
+  abv?: string;
+  is_favorite?: boolean;
+  cart_quantity: number;
+
 }
 
 // Memoized sort item component
@@ -145,11 +153,11 @@ const HomeSort = memo(
       />
       {loading ? (
         <View style={styles.loaderContainer}>
-          <Text>Loading...</Text>
+          <Text style={{color:Color.black}}>Loading...</Text>
         </View>
       ) : (
         <View style={styles.productGridContainer}>
-          {(Array.isArray(displayData) ? displayData : []).map(item => (
+          {displayData?.map(item => (
             <ProductItemRenderer
               key={item.id}
               item={item}

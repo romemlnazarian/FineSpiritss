@@ -10,7 +10,7 @@ import {Image} from 'react-native';
 import Layer from '../assets/svg/Layer.svg';
 import { BottomSheet } from '../component/BottomSheet';
 import {useFocusEffect} from '@react-navigation/native';
-
+ 
 export default function WellcomeScreen() {
   const {Styles} = StyleComponent();
   const {onSubmit, deleteAccountDone, onHandlerClose} = WellcomeLogic();

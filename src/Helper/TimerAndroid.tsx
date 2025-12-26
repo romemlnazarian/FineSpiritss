@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useReducer, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {StyleComponent} from '../utiles/styles';
 import {Color} from '../utiles/color';
@@ -15,94 +15,61 @@ const TimerAndroid: React.FC<Props> = ({onCountdownComplete, restartKey, startSe
   const {Styles} = StyleComponent();
   const initialSeconds = startSeconds ?? 60;
   const [secondsLeft, setSecondsLeft] = useState<number>(initialSeconds);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const endTimeRef = useRef<number | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const onCompleteRef = useRef(onCountdownComplete);
+  const completedRef = useRef<boolean>(false);
 
-  const [event, updateEvent] = useReducer(
-    (
-      prev: {
-        timerOn: boolean;
-        disableResend: boolean;
-        expiredCode: boolean;
-      },
-      next: Partial<{
-        timerOn: boolean;
-        disableResend: boolean;
-        expiredCode: boolean;
-      }>,
-    ) => ({...prev, ...next}),
-    {timerOn: true, disableResend: false, expiredCode: false},
-  );
-
-  const computeSecondsLeft = useCallback(() => {
-    if (!endTimeRef.current) return 0;
-    const diffMs = endTimeRef.current - Date.now();
-    const remaining = Math.ceil(diffMs / 1000);
-    return remaining > 0 ? remaining : 0;
-  }, []);
-
-  const startTimer = useCallback(
-    (secondsToStart: number) => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      endTimeRef.current = Date.now() + secondsToStart * 1000;
-      setSecondsLeft(secondsToStart);
-      intervalRef.current = setInterval(() => {
-        setSecondsLeft(() => computeSecondsLeft());
-      }, 1000);
-    },
-    [computeSecondsLeft],
-  );
-
-  // React to timerOn changes
   useEffect(() => {
-    if (event.timerOn) {
-      startTimer(secondsLeft || initialSeconds);
-      updateEvent({disableResend: true});
-    } else {
-      updateEvent({disableResend: false, expiredCode: true});
+    onCompleteRef.current = onCountdownComplete;
+  }, [onCountdownComplete]);
+
+  useEffect(() => {
+    // restartKey === false => stop timer
+    if (restartKey === false) {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
+      return;
     }
+
+    // (undefined or true) => start/reset timer
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    completedRef.current = false;
+    setSecondsLeft(initialSeconds);
+    intervalRef.current = setInterval(() => {
+      setSecondsLeft(prev => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [event.timerOn]);
+  }, [restartKey, initialSeconds]);
 
-  // Control start/stop by boolean restartKey
+  // Fire completion callback AFTER render (avoids "setState while rendering another component")
   useEffect(() => {
-    if (restartKey === false) return;
+    if (secondsLeft !== 0) {
+      return;
+    }
+    if (completedRef.current) {
+      return;
+    }
+    completedRef.current = true;
+
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-    if (restartKey === true) {
-      updateEvent({timerOn: true, disableResend: true, expiredCode: false});
-      startTimer(initialSeconds);
-    } else {
-      updateEvent({timerOn: false});
-    }
-  }, [restartKey, initialSeconds, startTimer]);
 
-  // When reaches zero
-  useEffect(() => {
-    if (secondsLeft === 0) {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      onCountdownComplete();
-      updateEvent({timerOn: false});
-    }
-  }, [secondsLeft, onCountdownComplete]);
+    onCompleteRef.current?.();
+  }, [secondsLeft]);
 
   const clockify = () => {
     const mins = Math.floor((secondsLeft / 60) % 60);

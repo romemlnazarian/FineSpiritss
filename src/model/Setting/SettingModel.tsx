@@ -1,4 +1,4 @@
-import {GET, POST} from '../../api/Network';
+import {GET, POST, PUT} from '../../api/Network';
 import {Route} from '../../api/Route';
 
 type RegisterProps = {
@@ -20,6 +20,14 @@ type UpdateBirthdateProps = {
 
 type ChangeEmailProps = {
   email: string;
+};
+
+
+type AddressProps = {
+  street: string,
+  postal_code:string,
+  city: string,
+  phone: string
 };
 
 export const UpdateFullNameModel = (
@@ -100,7 +108,7 @@ export const UpdateBirthdateModel = (
 export const ChangeEmailModel = (
   token: string,
   email: string,
-  callback: (data: ChangeEmailProps) => void,
+  callback: (data: string) => void,
   errorcallback: (data: string) => void,
 ) => {
   POST(
@@ -122,7 +130,7 @@ export const ChangeEmailModel = (
 export const VerifyEmailModel = (
   token: string,
   code: string,
-  callback: (data: ChangeEmailProps) => void,
+  callback: (data: string) => void,
   errorcallback: (data: string) => void,
 ) => {
   POST(
@@ -143,7 +151,7 @@ export const VerifyEmailModel = (
 export const DeleteAccountModel = (
   token: string,
   reason: string,
-  callback: (data: ChangeEmailProps) => void,
+  callback: (data: string) => void,
   errorcallback: (data: string) => void,
 ) => {
   POST(
@@ -165,7 +173,7 @@ export const DeleteAccountVerifyModel = (
   token: string,
   deletion_code: string,
   reason: string,
-  callback: (data: ChangeEmailProps) => void,
+  callback: (data: string) => void,
   errorcallback: (data: string) => void,
   callbackUnauthorized: () => void,
 ) => {
@@ -206,5 +214,134 @@ export const getSupportModel =  (
       }
     },
     token
+  );
+};
+
+export const getAddressModel =  (
+  token: string,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+  callbackUnauthorized?: () => void,
+) => {
+  GET(
+    Route.root,
+    Route.create_address,
+    (data, status) => {
+      if (status === 200) {
+        callback(data);
+      } else if(status === 401) {
+        callbackUnauthorized?.();
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token,
+  );
+};
+
+
+export const addAddressModel =  (
+  token: string,
+  data:AddressProps,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+  callbackUnauthorized?: () => void,
+) => {
+  console.log('===>',data,token)
+  POST(
+    Route.root,
+    Route.create_address,
+    (data, status) => {
+      if (status === 201) {
+        callback(data);
+      } else if(status === 401) {
+        callbackUnauthorized?.();
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token,
+   {
+    street: data.street,
+    postal_code: data.postal_code,
+    city: data.city,
+    phone: data.phone
+   }
+  );
+};
+
+
+
+export const updateAddressModel =  (
+  token: string,
+  data:AddressProps,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+  callbackUnauthorized?: () => void,
+) => {
+  PUT(
+    Route.root,
+    Route.create_address,
+    (data, status) => {
+      if (status === 200) {
+        callback(data);
+      } else if(status === 401) {
+        callbackUnauthorized?.();
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token,
+   {
+    street: data.street,
+    postal_code: data.postal_code,
+    city: data.city,
+    phone: data.phone
+   }
+  );
+};
+
+
+export const getOrderHistoryModel =  (
+  token: string,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+  callbackUnauthorized?: () => void,
+) => {
+  GET(
+    Route.root,
+    `${Route.order_history}`,
+    (data, status) => {
+      if (status === 200) {
+        callback(data);
+      } else if(status === 401) {
+        callbackUnauthorized?.();
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token,
+  );
+};
+export const getOrderHistoryDetailModel =  (
+  token: string,
+  id:number,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+  callbackUnauthorized?: () => void,
+) => {
+  GET(
+    Route.root,
+    `${Route.order_history}${id}/`,
+    (data, status) => {
+      if (status === 200) {
+        callback(data);
+      } else if(status === 401) {
+        callbackUnauthorized?.();
+      } else {
+        errorcallback(data.detail);
+      }
+    },
+    token,
   );
 };

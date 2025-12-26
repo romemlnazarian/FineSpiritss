@@ -100,7 +100,6 @@ export const PUT = (
   controller: string,
   callback: (data: any, status?: number, ok?: boolean) => void,
   secretkey: string = '',
-  lang: string,
   body: any = ''
 ) => {
   console.warn('=>>>>', body);
@@ -129,7 +128,6 @@ export const PUT = (
         Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization: 'Bearer' + ' ' + secretkey,
-        'Accept-Language': lang,
       },
       body: JSON.stringify(body),
     })
@@ -149,6 +147,7 @@ export const DELETE = (
   controller: string,
   callback: (data: any, status?: number, ok?: boolean) => void,
   secretkey: string = '',
+  body: any = ''
 ) => {
   // console.log("secret", root,controller);
   if (secretkey !== '') {
@@ -160,6 +159,7 @@ export const DELETE = (
         // "pastoo_user": user_pastoo,
         Authorization: 'Bearer' + ' ' + secretkey,
       },
+      body: JSON.stringify(body),
     })
       .then(function (data) {
         const status = data.status;
@@ -176,6 +176,7 @@ export const DELETE = (
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify(body),
     })
       .then(function (data) {
         const status = data.status;

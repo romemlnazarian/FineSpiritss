@@ -13,7 +13,6 @@ import React, {useState, useCallback, useMemo, useRef, useEffect} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import Viski from '../../assets/svg/viski.svg';
 import Heart from '../../assets/svg/Heart.svg';
 import Arrow from '../../assets/svg/Arrows.svg';
 import useAuthStore from '../../zustland/AuthStore';
@@ -30,7 +29,6 @@ import {
   DeleteFavoriteProductModel,
 } from '../../model/Favorite/Favorite';
 import useRecommendedStore from '../../zustland/recommendedStore';
-
 interface ProductItem {
   id: string;
   title: string;

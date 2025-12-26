@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ResendOtpModel } from "../../model/Auth/ResendOtpModel";
 import { useToast } from "../../utiles/Toast/ToastProvider";
 import { refreshTokenModel } from "../../model/Auth/RefreshTokenModel";
 import useAuthStore from "../../zustland/AuthStore";
-import { DeleteAccountVerifyModel } from "../../model/Setting/SettingModel";
+import { DeleteAccountModel, DeleteAccountVerifyModel } from "../../model/Setting/SettingModel";
  import { Keyboard } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AuthStackParamList } from "../../navigation/types";
@@ -28,6 +28,22 @@ export default function DeleteAccountVerfyLogic(route: any) {
     const [title, setTitle] = useState<string>('');
     const [value, setValue] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    const isOtpExpiredRef = useRef<boolean>(false);
+
+    const markOtpExpired = () => {
+      isOtpExpiredRef.current = true;
+      setCodeValid(false);
+    };
+
+    const resetOtpExpired = () => {
+      isOtpExpiredRef.current = false;
+    };
+
+    const onCountdownComplete = () => {
+      setDisableTimer(false);
+      setRestartKey(false);
+      markOtpExpired();
+    };
 
    const onSubmitConfirm = () => {
 
@@ -37,7 +53,7 @@ export default function DeleteAccountVerfyLogic(route: any) {
       token,
       value,
       item,
-      (data) => {
+      () => {
          // Clear persisted app state in zustand after navigation
          try {
            setToken('');
@@ -64,14 +80,14 @@ export default function DeleteAccountVerfyLogic(route: any) {
              show(error, {type: 'error'});
       },
       () => {
-        refreshTokenModel(refreshToken, data => {
-          setToken(data.access);
-          setRefreshToken(data.refresh);
+        refreshTokenModel(refreshToken, refreshedTokens => {
+          setToken(refreshedTokens.access);
+          setRefreshToken(refreshedTokens.refresh);
           DeleteAccountVerifyModel(
-            token,
+            refreshedTokens.access,
             value,
             item,
-            (data) => {
+            () => {
               try {
                 setToken('');
                 setRefreshToken('');
@@ -97,11 +113,11 @@ export default function DeleteAccountVerfyLogic(route: any) {
             () => {
             },
           );
-        }, error => {
+        }, err => {
           setDisable(true);
           setModalVisible(false);
           setLoading(false);
-          show(error, {type: 'error'});
+          show(err, {type: 'error'});
         });
       },
     );
@@ -130,36 +146,42 @@ export default function DeleteAccountVerfyLogic(route: any) {
     setModalVisible(false);
   }
   const onHandlerTimer = () => {
-    if (DisableTimer) return;
+    if (DisableTimer) {
+      return;
+    }
     setDisableTimer(true);
     setRestartKey(true);
+    resetOtpExpired();
+    setCodeValid(true);
     console.log('email', email);
-    ResendOtpModel(
-      email,
-      () => {
+    DeleteAccountModel(token, item, () => {
+      setLoading(false);
+      show('Code sent again', {type: 'success'});
+    }, () => {
+     refreshTokenModel(refreshToken, (data) => {
+      setToken(data.access);
+      setRefreshToken(data.refresh);
+      DeleteAccountModel(token, item, () => {
+        setLoading(false);
         show('Code sent again', {type: 'success'});
-      },
-      error => {
-        refreshTokenModel(refreshToken, (data) => {
-          setToken(data.access);
-          setRefreshToken(data.refresh);
-          ResendOtpModel(
-            email,
-            () => {
-              show('Code sent again', {type: 'success'});
-            },
-            error => {
-              show(String(error || 'Resend failed'), {type: 'error'});
-            },
-          );
-        }, error => {
-          show(String(error || 'Resend failed'), {type: 'error'});
-        });
-      },
+      }, (error) => { 
+        setLoading(false);
+        show(error, {type: 'error'});
+      });
+     }, (error) => {
+      setLoading(false);
+      show(error, {type: 'error'});
+    });
+    }
     );
   }
 
 const onHandler = (value: string) => {
+  if (isOtpExpiredRef.current) {
+    setCodeValid(false);
+    show('Code expired', {type: 'error'});
+    return;
+  }
   if (value.length === 5) {
     setValue(value);
      Keyboard.dismiss();
@@ -196,6 +218,7 @@ const onSubmit = () => {
     disable,
     onSubmit,
     title,
-    loading
+    loading,
+    onCountdownComplete,
  }
 }

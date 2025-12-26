@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import * as Yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
@@ -7,27 +7,44 @@ import { useState } from 'react';
 import React from 'react';
 import { PasswordVerifyModel } from '../model/Auth/PasswordVerifyModel';
 import { useToast } from '../utiles/Toast/ToastProvider';
+import { BackHandler } from 'react-native';
 export const PasswordVerificationLogic = (route: any) => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
 
   const [isLengthValid, setIsLengthValid] = useState(false);
   const [hasNumber, setHasNumber] = useState(false);
   const [hasUpperCase, setHasUpperCase] = useState(false);
+  const [hasSpecialChar, setHasSpecialChar] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [showRepeatPass, setShowRepeatPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const {email} = route?.route?.params;
   const {show} = useToast();
+  const [showVideo,setShowVideo] = useState(false)
+  const [ShowSuccess,setShowSuccess] = useState(false)
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        BackHandler.exitApp();
+        return true;
+      };
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => {
+        subscription.remove();
+      };
+    }, []),
+  );
   
   
   const validationSchema = Yup.object().shape({
     password: Yup.string()
       .required('Password is required')
-      .min(8,'')
-      .max(20,'')
-      .matches(/[0-9]/,'')
-      .matches(/[A-Z]/,'')
+      .min(8, 'Password must be at least 8 characters')
+      .max(20, 'Password must be at most 20 characters')
+      .matches(/[0-9]/, 'Password must include at least 1 number')
+      .matches(/[A-Z]/, 'Password must include at least 1 upper case letter')
+      .matches(/[^A-Za-z0-9]/, 'Password must include at least 1 special character')
       .trim(),
     repeatpassword: Yup.string()
     .trim()
@@ -60,18 +77,24 @@ export const PasswordVerificationLogic = (route: any) => {
     setIsLengthValid(password.length >= 8 && password.length <= 20);
     setHasNumber(/[0-9]/.test(password));
     setHasUpperCase(/[A-Z]/.test(password));
+    setHasSpecialChar(/[^A-Za-z0-9]/.test(password));
   };
 
   const onSubmit = async () => {
     const values = getValues();
     setLoading(true);
-    PasswordVerifyModel(email, values.password.trim(), values.repeatpassword.trim(), (data) => {
+    PasswordVerifyModel(email, values.password.trim(), values.repeatpassword.trim(), () => {
         reset({ password: '', repeatpassword: '' });
-        show('Password set successfully. Your account is now active. You can login.', {type: 'success'});
-      navigation.navigate('Signin');
+        // show('Password set successfully. Your account is now active. You can login.', {type: 'success'});
+        setShowVideo(true)
+        setTimeout(() => {
+          setShowVideo(false)
+          setShowSuccess(true) 
+        }, 10000);
       setLoading(false);
     }, (error: any) => {
-       show(String(error))
+       const msg = String(error || 'Password does not meet requirements');
+       show(msg, {type: 'error'})
        setLoading(false);
     })
   };
@@ -82,7 +105,9 @@ export const PasswordVerificationLogic = (route: any) => {
     setShowRepeatPass((prev)=>!prev)
   };
 
-
+const onHandler = () =>{
+navigation.navigate('Signin');
+}
 
 
   return {
@@ -93,11 +118,15 @@ export const PasswordVerificationLogic = (route: any) => {
     isLengthValid,
     hasNumber,
     hasUpperCase,
+    hasSpecialChar,
     validatePassword,
     getValues,
     onHandleShowPass,
     showPass,
     showRepeatPass,
     loading,
+    showVideo,
+    ShowSuccess,
+    onHandler
   };
 };

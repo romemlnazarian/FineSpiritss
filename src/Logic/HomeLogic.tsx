@@ -14,6 +14,8 @@ import {
 import {getProfileModel} from '../model/Profile/ProfileModel';
 import useProfileStore from '../zustland/ProfileStore';
 import useRecommendedStore from '../zustland/recommendedStore';
+import { getAddressModel } from '../model/Setting/SettingModel';
+import useAddressStore from '../zustland/GetAddressStore';
 
 export default function HomeLogic() {
   const navigation = useNavigation<ButtonScreenNavigationProp>();
@@ -22,6 +24,7 @@ export default function HomeLogic() {
   const {ageConfirmed, setAgeConfirmed} = useAuthStore();
   const {setProfile} = useProfileStore();
   const {setRecommended} = useRecommendedStore();
+  const {address,setAddress} = useAddressStore();
   const [categories, setCategories] = useState<[]>([]);
   const [topBrands, setTopBrands] = useState<[]>([]);
   const [isTopBrandsLoading, setIsTopBrandsLoading] = useState(false);
@@ -191,6 +194,7 @@ export default function HomeLogic() {
     if (!isFocused) {
       return;
     }
+    getAddress()
     getCategories();
     getTopBrands();
     getHomeAdvertising();
@@ -204,7 +208,6 @@ export default function HomeLogic() {
     getHomeRecommendedModel(
       token,
       data => {
-
         const items = Array.isArray(data?.results) ? data.results : Array.isArray(data) ? data : [];
         setHomeRecommended(items);
         setRecommended(items);
@@ -283,6 +286,40 @@ export default function HomeLogic() {
     [loadSortSection],
   );
 
+
+  const getAddress = () =>{
+    address === null &&
+    getAddressModel(
+      token,
+      (data) => {
+        setAddress(data)
+      },
+      (err: string) => {
+      },
+      () => {
+        refreshTokenModel(
+          refreshToken,
+          refreshedTokens => {
+            setToken(refreshedTokens.access);
+            setRefreshToken(refreshedTokens.refresh);
+            getAddressModel(
+              refreshedTokens.access,
+              (data) => {
+                setAddress(data)
+              },
+              (err: string) => {
+              },
+              () => {
+              },
+            );
+          },
+          () => {
+          },
+        );
+      }
+    );
+  }
+
   return {
     onSubmitClose,
     categories,
@@ -301,3 +338,4 @@ export default function HomeLogic() {
     ageConfirmed,
   };
 }
+

@@ -5,8 +5,8 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
-  Image,
   BackHandler,
+  Image,
 } from 'react-native';
 import React, {useCallback, useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
@@ -17,40 +17,71 @@ import Heart from '../../assets/svg/Heart.svg';
 import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-
-
+import BottomCardComponent from '../../component/BottomCard';
+import AddBottom from '../../component/AddBottom';
+import LoadingModal from '../../component/LoadingModal';
+import Card from '../../assets/svg/Cart.svg';
 export default function CatalogDetailScreen(route: any) {
-  const {Styles,Height} = StyleComponent();
-  const {product, isLoading,isFavorite,toggleFavorite,recommended,refreshAll} = CatalogDetailLogic(route);
+  const {Styles, Height} = StyleComponent();
+  const {
+    product,
+    isLoading,
+    isFavorite,
+    toggleFavorite,
+    recommended,
+    refreshAll,
+    onClick,
+    onSubmit,
+    count,
+    visible,
+    onSubmitDetail
+  } = CatalogDetailLogic(route);
   const navigation: any = useNavigation();
   const fromFavorite = Boolean(route?.route?.params?.fromFavorite);
+  const fromSetting = Boolean(route?.route?.params?.fromSetting);
+
 
   const handleBack = useCallback(() => {
     if (fromFavorite) {
       navigation.navigate('FavoriteScreen', {screen: 'Favorite'});
-    } else {
-      navigation.goBack();
+      return;
     }
-  }, [fromFavorite, navigation]);
+    if (fromSetting) {
+      // We jumped here across tabs (Setting -> Catalog). Go back to Setting tab.
+      navigation.navigate('SettingScreen');
+      return;
+    } else {
+      if (typeof navigation?.canGoBack === 'function' && navigation.canGoBack()) {
+        navigation.goBack();
+      } else {
+        navigation.navigate('CatalogScreen', {screen: 'Catalog'});
+      }
+    }
+  }, [fromFavorite, fromSetting, navigation]);
 
   // Android hardware back: if opened from Favorite, go back to Favorite tab
   useFocusEffect(
     useCallback(() => {
-      if (!fromFavorite) {
+      if (!fromFavorite && !fromSetting) {
         return () => {};
       }
       const onBackPress = () => {
-        navigation.navigate('FavoriteScreen', {screen: 'Favorite'});
+        if (fromFavorite) {
+          navigation.navigate('FavoriteScreen', {screen: 'Favorite'});
+        } else {
+          navigation.navigate('SettingScreen');
+        }
         return true;
       };
-      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress,
+      );
       return () => {
         subscription.remove();
       };
-    }, [fromFavorite, navigation]),
+    }, [fromFavorite, fromSetting, navigation]),
   );
-
-
 
   const specificationRows = useMemo(
     () => [
@@ -81,6 +112,8 @@ export default function CatalogDetailScreen(route: any) {
     [product],
   );
 
+
+
   const renderDetailRow = (label: string, value?: string | number | null) => (
     <View key={label} style={styles.detailRow}>
       <Text style={[Styles.title_Regular, styles.detailLabel]}>{label}:</Text>
@@ -92,15 +125,24 @@ export default function CatalogDetailScreen(route: any) {
 
   // Memoized key extractors
   return isLoading ? (
-    <ActivityIndicator size="large" color={Color.primary} style={{marginTop: Height / 2.5}}/>
+    <ActivityIndicator
+      size="large"
+      color={Color.primary}
+      style={{marginTop: Height / 2.5}}
+    />
   ) : (
     <View style={[Styles.container]}>
       <ScrollView>
-        <CustomHeader showBack={true} title={product?.title || ''} onSubmitBack={handleBack} />
+        <CustomHeader
+          showBack={true}
+          title={product?.title || ''}
+          onSubmitBack={handleBack}
+        />
         <View style={styles.imageWrapper}>
           <Image
             source={{uri: product?.image_url}}
             style={styles.productImage}
+            resizeMethod='resize'
           />
         </View>
         {/* <Slider /> */}
@@ -122,14 +164,17 @@ export default function CatalogDetailScreen(route: any) {
           {/* eslint-disable-next-line react/jsx-no-undef */}
           <View style={styles.volumeBadge}>
             <Text style={[Styles.title_Regular, styles.volumeText]}>
-              {product?.volume} ml
+              {product?.volume}
+            </Text>
+            <Text style={[Styles.title_Regular, styles.volumeText]}>
+              ml
             </Text>
           </View>
           <Text style={[Styles.title_Regular, styles.subInfoText]}>
             sku:{product?.sku}
           </Text>
           <Text style={[Styles.title_Regular, styles.subInfoText]}>
-            stock status:{product?.stock_status || ''}
+            stock status: {product?.stock_status || ''}
           </Text>
           {/* <CatalogFilter
             onHandler={e => console.log(e)}
@@ -137,7 +182,9 @@ export default function CatalogDetailScreen(route: any) {
             sortItemContainerStyle={styles.sortItemContainer}
           /> */}
           <View style={styles.priceRow}>
-            <Text style={[Styles.h4_Bold]}>{product?.sale_price ?? product?.price} zł</Text>
+            <Text style={[Styles.h4_Bold]}>
+              {product?.sale_price ?? product?.price} zł
+            </Text>
             {product?.regular_price && (
               <Text style={[Styles.body_Regular, styles.salePriceText]}>
                 {product?.regular_price || ''} zł
@@ -179,9 +226,7 @@ export default function CatalogDetailScreen(route: any) {
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
             Specifications
           </Text>
-          {specificationRows.map(row =>
-            renderDetailRow(row.label, row.value),
-          )}
+          {specificationRows.map(row => renderDetailRow(row.label, row.value))}
           <View style={styles.sectionDivider} />
 
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
@@ -192,101 +237,138 @@ export default function CatalogDetailScreen(route: any) {
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
             Tasting Characteristics
           </Text>
-          <Text
-            style={[Styles.title_Regular, styles.paragraphMuted]}>
+          <Text style={[Styles.title_Regular, styles.paragraphMuted]}>
             {product?.tasting_characteristics?.text}
           </Text>
 
-          {product?.tasting_characteristics?.aromas_and_flavours &&
-      
-          <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-            Aromas and flavours:
-          </Text>
-         }
-          {product?.tasting_characteristics?.aromas_and_flavours?.primary &&
-          <>
-          <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-            Primary
-          </Text>
-          <View style={styles.aromaRow}>
-            <Text style={[Styles.title_Regular, styles.aromaLabel]}>
-              {product?.tasting_characteristics?.aromas_and_flavours?.primary[0]?.name}:
+          {product?.tasting_characteristics?.aromas_and_flavours && (
+            <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
+              Aromas and flavours:
             </Text>
-            <Text style={[Styles.title_Regular, styles.aromaValue]}>
-              {product?.tasting_characteristics?.aromas_and_flavours?.primary[0]?.value}
-            </Text>
-          </View>
-          </>
-          }
-          {product?.tasting_characteristics?.aromas_and_flavours?.secondary &&
-          <>
-          <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-            Secondary
-          </Text>
-          <View style={styles.aromaRow}>
-            <Text style={[Styles.title_Regular, styles.aromaLabel]}>
-              {product?.tasting_characteristics?.aromas_and_flavours?.secondary[0]?.name}
-            </Text>
-            <Text style={[Styles.title_Regular, styles.aromaValue]}>
-              {product?.tasting_characteristics?.aromas_and_flavours?.secondary[0]?.value}
-            </Text>
-          </View>
-          </>
-        }
-          {product?.tasting_characteristics?.aromas_and_flavours?.tertiary &&
-          <>
-          <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-            Tertiary
-          </Text>
-          <View style={styles.aromaRow}>
-            <Text style={[Styles.title_Regular, styles.aromaLabel]}>
-              {product?.tasting_characteristics?.aromas_and_flavours?.tertiary[0]?.name}
-            </Text>
-            <Text style={[Styles.title_Regular, styles.aromaValue]}>
-              {product?.tasting_characteristics?.aromas_and_flavours?.tertiary[0]?.value}
-            </Text>
-          </View>
-          </>
-          }
-
-          {product?.gastronomy?.text &&
-          <>
-          <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-            Gastronomy
-          </Text>
-          <Text
-            style={[Styles.title_Regular, styles.paragraphMuted]}>
-            {product?.gastronomy?.text}
-          </Text>
-          </>
-            }
-
-          {product?.gastronomy?.suggestions &&
-          <>
-          <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-            Suggestions
-          </Text>
-          {product?.gastronomy?.suggestions.map(
-            (suggestion: any, index: number) => (
-              <Text
-                key={index}
-                style={[Styles.title_Regular, styles.suggestionText]}>
-                {suggestion}
-              </Text>
-            ),
           )}
-             </>
-          }
-       
+          {product?.tasting_characteristics?.aromas_and_flavours?.primary && (
+            <>
+              <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
+                Primary
+              </Text>
+              <View style={styles.aromaRow}>
+                <Text style={[Styles.title_Regular, styles.aromaLabel]}>
+                  {
+                    product?.tasting_characteristics?.aromas_and_flavours
+                      ?.primary[0]?.name
+                  }
+                  :
+                </Text>
+                <Text style={[Styles.title_Regular, styles.aromaValue]}>
+                  {
+                    product?.tasting_characteristics?.aromas_and_flavours
+                      ?.primary[0]?.value
+                  }
+                </Text>
+              </View>
+            </>
+          )}
+          {product?.tasting_characteristics?.aromas_and_flavours?.secondary && (
+            <>
+              <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
+                Secondary
+              </Text>
+              <View style={styles.aromaRow}>
+                <Text style={[Styles.title_Regular, styles.aromaLabel]}>
+                  {
+                    product?.tasting_characteristics?.aromas_and_flavours
+                      ?.secondary[0]?.name
+                  }
+                </Text>
+                <Text style={[Styles.title_Regular, styles.aromaValue]}>
+                  {
+                    product?.tasting_characteristics?.aromas_and_flavours
+                      ?.secondary[0]?.value
+                  }
+                </Text>
+              </View>
+            </>
+          )}
+          {product?.tasting_characteristics?.aromas_and_flavours?.tertiary && (
+            <>
+              <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
+                Tertiary
+              </Text>
+              <View style={styles.aromaRow}>
+                <Text style={[Styles.title_Regular, styles.aromaLabel]}>
+                  {
+                    product?.tasting_characteristics?.aromas_and_flavours
+                      ?.tertiary[0]?.name
+                  }
+                </Text>
+                <Text style={[Styles.title_Regular, styles.aromaValue]}>
+                  {
+                    product?.tasting_characteristics?.aromas_and_flavours
+                      ?.tertiary[0]?.value
+                  }
+                </Text>
+              </View>
+            </>
+          )}
+
+          {product?.gastronomy?.text && (
+            <>
+              <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
+                Gastronomy
+              </Text>
+              <Text style={[Styles.title_Regular, styles.paragraphMuted]}>
+                {product?.gastronomy?.text}
+              </Text>
+            </>
+          )}
+
+          {product?.gastronomy?.suggestions && (
+            <>
+              <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
+                Suggestions
+              </Text>
+              {product?.gastronomy?.suggestions.map(
+                (suggestion: any, index: number) => (
+                  <Text
+                    key={index}
+                    style={[Styles.title_Regular, styles.suggestionText]}>
+                    {suggestion}
+                  </Text>
+                ),
+              )}
+            </>
+          )}
         </View>
 
         <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
           With this also watching
         </Text>
 
+        <HorizontalFlatList
+        callback={(e)=>onSubmitDetail(e)}
+          products={recommended}
+          onFavoriteToggled={(_id: string, _isFavorite: boolean) =>
+            refreshAll()
+          }
+        />
 
-        <HorizontalFlatList products={recommended} onFavoriteToggled={(_id: string, _isFavorite: boolean) => refreshAll()} />
-
+        {count === 0 ? (
+          <BottomCardComponent
+            title={'Add to Cart'}
+            onHandler={onSubmit}
+            style={styles.bottomCardButton}
+            textStyle={Styles.subtitle_Regular}
+            icon={<Card />}
+          />
+        ) : (
+          <AddBottom
+            style={styles.bottomCardButton}
+            onQuantityChange={onClick}
+            count={count}
+            stylesContainer={{width:'60%',justifyContent:'space-between'}}
+          />
+        )}
+        <LoadingModal isVisible={visible} />
       </ScrollView>
     </View>
   );
@@ -335,6 +417,7 @@ const styles = StyleSheet.create({
   },
   volumeText: {
     marginLeft: '5%',
+    color: Color.black,
   },
   subInfoText: {
     marginLeft: '6%',
@@ -382,7 +465,7 @@ const styles = StyleSheet.create({
   suggestionText: {
     marginLeft: '5%',
     marginTop: 10,
-    marginBottom:10
+    marginBottom: 10,
   },
   productCardContainer: {
     marginRight: 8,
@@ -405,5 +488,10 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     flexShrink: 1,
     textAlign: 'right',
+  },
+  bottomCardButton: {
+    marginTop: '10%',
+    width: '95%',
+    marginBottom:10,
   },
 });

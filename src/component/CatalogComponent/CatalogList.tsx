@@ -14,12 +14,13 @@ import Heart from '../../assets/svg/Heart.svg';
 import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import BottomCardComponent from '../BottomCard';
 import Card from '../../assets/svg/Cart.svg';
-import Swiper from 'react-native-swiper';
 import AddBottom from '../AddBottom';
 import { AddFavoriteProductModel, DeleteFavoriteProductModel } from '../../model/Favorite/Favorite';
 import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
 import useAuthStore from '../../zustland/AuthStore';
-
+import { useToast } from '../../utiles/Toast/ToastProvider';
+import LoadingModal from '../LoadingModal';
+import { addCardModel, deleteCardModel, updateCardModel } from '../../model/Card/CardModel';
 interface ProductItem {
   id: string;
   title: string;
@@ -29,6 +30,7 @@ interface ProductItem {
   discountPrice?: string;
   image?: string;
   is_favorite?: boolean;
+  cart_quantity?:number
 }
 interface VerticalScrollProps {
   item: ProductItem[];
@@ -50,6 +52,12 @@ const ProductCard: React.FC<{
   const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
   const [showCounter, setShowCounter] = useState(false);
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
+  const [count, setCount] = useState<number>(item?.cart_quantity);
+  const [visible, setVisible] = useState<boolean>(false);
+  const {show} = useToast();
+
+
+
   const toggleFavorite = useCallback(() => {
  if(isFavorite){
   setIsFavorite(false);
@@ -74,6 +82,185 @@ const ProductCard: React.FC<{
      });  
     }  
   }, []);
+
+
+  const onClick = (value: number, type: string) => {
+
+    if (type === 'inc') {
+      setVisible(true);
+      updateCardModel(
+        token,
+        item.id,
+        value,
+        () => {
+          setCount(value);
+          setVisible(false);
+        },
+        (error: string) => {
+          setVisible(false);
+          show(error, {type: 'error'});
+        },
+        () => {
+          refreshTokenModel(
+            refreshToken,
+            refreshedTokens => {
+              setToken(refreshedTokens.access);
+              setRefreshToken(refreshedTokens.refresh);
+              updateCardModel(
+                refreshedTokens.access,
+                item.id,
+                value,
+                () => {
+                  setCount(value);
+                  setVisible(false);
+                },
+                (error: string) => {
+                  setVisible(false);
+                  show(error, {type: 'error'});
+                },
+                () => {
+                  setVisible(false);
+                },
+              );
+            },
+            () => {
+              setVisible(false);
+            },
+          );
+        },
+      );
+    } else {
+      setVisible(true);
+      if(value < 1) {
+        deleteCardModel(
+          token,
+          item.id,
+          () => {
+            setCount(value);
+            setVisible(false);
+          },
+          (error: string) => {
+            setVisible(false);
+            show(error, {type: 'error'});
+          },
+          () => {
+            refreshTokenModel(
+              refreshToken,
+              refreshedTokens => {
+                setToken(refreshedTokens.access);
+                setRefreshToken(refreshedTokens.refresh);
+                deleteCardModel(
+                  refreshedTokens.access,
+                  item.id,
+                  () => {
+                    setCount(value);
+                    setVisible(false);
+                  },
+                  (error: string) => {
+                    setVisible(false);
+                    show(error, {type: 'error'});
+                  },
+                  () => {
+                    setVisible(false);
+                  },
+                );
+              },
+              () => {
+                setVisible(false);
+              },
+            );
+          },
+        );
+      }else{
+      updateCardModel(
+        token,
+        item.id,
+        value,
+        () => {
+          setCount(value);
+          setVisible(false);
+        },
+        (error: string) => {
+          setVisible(false);
+          show(error, {type: 'error'});
+        },
+        () => {
+          refreshTokenModel(
+            refreshToken,
+            refreshedTokens => {
+              setToken(refreshedTokens.access);
+              setRefreshToken(refreshedTokens.refresh);
+              updateCardModel(
+                refreshedTokens.access,
+                item.id,
+                value,
+                () => {
+                  setCount(value);
+                  setVisible(false);
+                },
+                (error: string) => {
+                  setVisible(false);
+                  show(error, {type: 'error'});
+                },
+                () => {
+                  setVisible(false);
+                },
+              );
+            },
+            () => {
+              setVisible(false);
+            },
+          );
+        },
+      );
+    }
+    }
+  };
+
+  const onSubmit = () => {
+    setVisible(true);
+    addCardModel(
+      token,
+      item.id,
+      () => {
+        setCount(1);
+        setVisible(false);
+      },
+      (error: string) => {
+        setVisible(false);
+        show(error, {type: 'error'});
+      },
+      () => {
+        refreshTokenModel(
+          refreshToken,
+          refreshedTokens => {
+            setToken(refreshedTokens.access);
+            setRefreshToken(refreshedTokens.refresh);
+            addCardModel(
+              refreshedTokens.access,
+              item.id,
+              () => {
+                setCount(1);
+                setVisible(false);
+              },
+              (error: string) => {
+                setVisible(false);
+                show(error, {type: 'error'});
+              },
+              () => {
+                setVisible(false);
+              },
+            );
+          },
+          () => {
+            setVisible(false);
+          },
+        );
+      },
+    );
+  };
+
+
 
   const handleAddToCartPress = useCallback(() => {
     setShowCounter(true);
@@ -128,6 +315,7 @@ const ProductCard: React.FC<{
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
+          marginTop: '2%',
         }}>
         <Text
           style={[
@@ -149,60 +337,52 @@ const ProductCard: React.FC<{
             Styles.title_Bold,
             styles.productPrice,
             styles.priceContainer,
-            {marginTop: '17%'},
+            // {marginTop: '17%'},
           ]}>
           {item.price} zł
         </Text>
       ) : (
-        <></>
-        // <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between'}}>
-        //          <Text
-        //     style={[
-        //       Styles.title_Bold,
-        //       styles.productPrice,
-        //       styles.priceContainer,
-        //     ]}>
-        //     {item.price} zł
-        //   </Text>
-        //   {item.regular_price && (
-        //     <Text
-        //       style={[
-        //         Styles.subtitle_Regular,
-        //         styles.originalPriceText,
-        //         styles.priceContainer,
-        //       ]}>
-        //       {item.regular_price} zł
-        //     </Text>
-        //   )}
+       
+        <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop: '2%'}}>
+                 <Text
+            style={[
+              Styles.title_Bold,
+              styles.productPrice,
+              styles.priceContainer,
+            ]}>
+            {item.price} zł
+          </Text>
+          {item.regular_price && (
+            <Text
+              style={[
+                Styles.subtitle_Regular,
+                styles.originalPriceText,
+                styles.priceContainer,
+              ]}>
+              {item.regular_price} zł
+            </Text>
+          )}
 
  
-        // </View>
+        </View>
       )}
       </View>
-      {orderBottom ? (
+      {count === 0 ? (
         <BottomCardComponent
-          title={'View product'}
-          onHandler={handleAddToCartPress}
+          title={'Add to Cart'}
+          onHandler={onSubmit}
           style={styles.bottomCardButton}
           textStyle={Styles.subtitle_Regular}
-        />
-      ) : !showCounter ? (
-        <BottomCardComponent
-          title={'Add to Card'}
-          onHandler={handleAddToCartPress}
-          style={styles.bottomCardButton}
           icon={<Card />}
-          textStyle={Styles.subtitle_Regular}
         />
       ) : (
         <AddBottom
           style={styles.bottomCardButton}
-          onQuantityChange={val => {
-            console.log('Quantity changed for item', item.id, '=>', val);
-            onAddSelected?.(item, val);
-          }}
+          onQuantityChange={onClick}
+          count={count}
         />
       )}
+      <LoadingModal isVisible={visible} />
     </TouchableOpacity>
   );
 };

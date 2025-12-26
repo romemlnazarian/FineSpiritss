@@ -126,7 +126,7 @@ export default function SettingItemScreen() {
 
       <BottomSheet
         modalVisible={modalVisible}
-        height={name === 'changePassword' ? 450 : 400}
+        height={name === 'changePassword' ? 450 : 410}
         onClose={() => setModalVisible(false)}>
         {name === 'fullName' ? (
           <UpdateFullName callBack={() => setModalVisible(false)} />

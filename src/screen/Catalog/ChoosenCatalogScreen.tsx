@@ -11,7 +11,6 @@ import ButtonSheetFilter from '../../component/CatalogComponent/buttonSheetFilte
 import CatalogTabsFilter from '../../component/CatalogComponent/CatalogTabsFilter';
 
 
-
 export default function ChoosenCatalog(route: any) {
   const {
     onSubnmitFilter,
@@ -29,7 +28,8 @@ export default function ChoosenCatalog(route: any) {
     countries,
     brands,
     volumes,
-    onSearchHandler
+    onSearchHandler,
+    titleHeader
   } = ChoosenCatalogLogic(route);
   const {Styles} = StyleComponent();
   const sortData = useMemo(
@@ -58,7 +58,7 @@ export default function ChoosenCatalog(route: any) {
     <View style={[Styles.container]}>
       <CustomHeader
         showBack={true}
-        title="All wines"
+        title={titleHeader}
         icon={<Search />}
         onHandler={() => onSearchHandler()}
       />

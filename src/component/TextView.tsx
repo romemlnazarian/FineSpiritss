@@ -1,4 +1,5 @@
 import {Text, StyleSheet, View} from 'react-native';
+import { Color } from '../utiles/color';
 
 interface Props {
   title: string;
@@ -21,6 +22,7 @@ const TextView = (props: Props) => {
 const styles = StyleSheet.create({
   textStyles: {
     textAlign: 'center',
+    color: Color.black,
   },
 });
 export default TextView;

@@ -14,7 +14,7 @@ const useRecommendedStore = create<RecommendedState>()(
       recommended: [],
       setRecommended: (items: any[]) =>
         set({recommended: Array.isArray(items) ? items : []}),
-      resetRecommended: () => set({recommended: []}),
+        resetRecommended: () => set({recommended: []}),
     }),
     {
       name: 'recommended-store',

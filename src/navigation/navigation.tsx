@@ -19,6 +19,7 @@ import ForgetPasswordScreen from '../screen/Auth/ForgetPasswordScreen';
 import AppTabs from './TabNavigator';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import GoogleAuthScreen from '../screen/Auth/GoogleAuthScreen';
+import AppleAuthScreen from '../screen/Auth/AppleAthScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -61,7 +62,7 @@ export default function Navigation() {
             />
                <Stack.Screen
               name="AppleAuth"
-              component={GoogleAuthScreen}
+              component={AppleAuthScreen}
               options={{headerShown: false,gestureEnabled: false}}
             />
             <Stack.Screen

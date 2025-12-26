@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, KeyboardAvoidingView, Platform} from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Controller} from 'react-hook-form';
@@ -34,6 +34,8 @@ export default function EmailVerifySetting({callBack}:{callBack:(value:string)=>
     callBack(getValues().email);
   }
   return (
+    <KeyboardAvoidingView
+    >
     <View style={[Styles.alignCenter,{marginTop:'5%'}]}>
       <Text style={Styles.h5_Medium}>Change Email address</Text>
       <Text style={[Styles.title_Regular,Styles.textAlign,{marginTop:'5%',width:'80%'}]}>
@@ -64,5 +66,6 @@ export default function EmailVerifySetting({callBack}:{callBack:(value:string)=>
         style={{marginTop:'5%'}}
       />
     </View>
+    </KeyboardAvoidingView>
   );
 }

@@ -1,4 +1,10 @@
-import {View, StyleSheet, KeyboardAvoidingView, ScrollView, Platform, Text} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+} from 'react-native';
 import React from 'react';
 import {Controller} from 'react-hook-form';
 import {StyleComponent} from '../../utiles/styles';
@@ -13,7 +19,8 @@ import Lock from '../../assets/svg/Password.svg';
 import Success from '../../assets/svg/success.svg';
 import Reject from '../../assets/svg/reject.svg';
 import CustomHeader from '../../navigation/CustomHeader';
-import { KeboardDismis } from '../../KeyboardDismis/KeboardDIsmisFunction';
+import RegisterSuccess from '../../component/RegisterSuccess';
+import Video from 'react-native-video';
 
 export default function PasswordVerificationScreen(route: any) {
   const {Styles} = StyleComponent();
@@ -25,117 +32,154 @@ export default function PasswordVerificationScreen(route: any) {
     isLengthValid,
     hasNumber,
     hasUpperCase,
+    hasSpecialChar,
     getValues,
     onHandleShowPass,
     showPass,
     showRepeatPass,
     loading,
+    showVideo,
+    ShowSuccess,
+    onHandler,
   } = PasswordVerificationLogic(route);
 
   return (
-    <KeyboardAvoidingView
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScrollView 
-      showsVerticalScrollIndicator={false}
-      automaticallyAdjustKeyboardInsets
-      onStartShouldSetResponder={KeboardDismis}>
-        <CustomHeader showBack={true} />
-        <LogoComponent style={styles.logoComponentStyle} />
-          {/* <Text style={[Styles.h3_Bold, styles.textStyles,{marginTop:'5%'}]} >
+    <>
+      {ShowSuccess ? (
+        <RegisterSuccess onClick={() => onHandler()} />
+      ) : showVideo === true ? (
+        <View style={styles.videoContainer}>
+          <Video
+            source={require('../../assets/video/tst.mp4')}
+            style={styles.videoFullscreen}
+            resizeMode="cover"
+          />
+        </View>
+      ) : (
+        <KeyboardAvoidingView
+          style={styles.flex1}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="handled">
+            <CustomHeader showBack={true} />
+            <LogoComponent style={styles.logoComponentStyle} />
+            {/* <Text style={[Styles.h3_Bold, styles.textStyles,{marginTop:'5%'}]} >
            Please enter your new
            password
           </Text> */}
 
-        <View style={styles.inputContainer}>
-          <TextView
-            title={Language.Password}
-            color={Color.black}
-            style={[Styles.title_Regular, styles.textStyles]}
-          />
-          <Controller
-            control={control}
-            name="password"
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInputComponent
-                containerStyle={styles.textInputContainer}
-                onBlur={onBlur}
-                placeholder={Language.Password}
-                handlePasswordIconClick={() => onHandleShowPass('pass')}
-                onChangeText={onChange}
-                value={value}
-                errorMessage={errors.password?.message}
-                leftIcon={<Lock width={25} height={25} />}
-                showPass={showPass}
-                isPassword={true}
-                rightIcon={true}
+            <View style={styles.inputContainer}>
+              <TextView
+                title={Language.Password}
+                color={Color.black}
+                style={[Styles.title_Regular, styles.textStyles]}
               />
-            )}
-          />
-          {/* Password Validation Feedback */}
-          {getValues().password.length > 0 &&
-            getValues().password !== getValues().repeatpassword && (
-              <View style={styles.validationFeedbackContainer}>
-                <TextView
-                  title={`8 to 20 characters`}
-                  color={isLengthValid ? Color.green : Color.red}
-                  style={[Styles.title_Regular, styles.text]}
-                  icon={isLengthValid ? <Success /> : <Reject />}
-                />
-                <TextView
-                  title={`At least 1 number`}
-                  color={hasNumber ? Color.green : Color.red}
-                  style={[Styles.title_Regular, styles.text]}
-                  icon={hasNumber ? <Success /> : <Reject />}
-                />
-                <TextView
-                  title={`At least 1 upper case letter`}
-                  color={hasUpperCase ? Color.green : Color.red}
-                  style={[Styles.title_Regular, styles.text]}
-                  icon={hasUpperCase ? <Success /> : <Reject />}
-                />
-              </View>
-            )}
-        </View>
+              <Controller
+                control={control}
+                name="password"
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInputComponent
+                    containerStyle={styles.textInputContainer}
+                    onBlur={onBlur}
+                    placeholder={Language.Password}
+                    handlePasswordIconClick={() => onHandleShowPass('pass')}
+                    onChangeText={onChange}
+                    value={value}
+                    errorMessage={errors.password?.message}
+                    leftIcon={<Lock width={25} height={25} />}
+                    showPass={showPass}
+                    isPassword={true}
+                    rightIcon={true}
+                  />
+                )}
+              />
+              {/* Password Validation Feedback */}
+              {getValues().password.length > 0 &&
+                getValues().password !== getValues().repeatpassword && (
+                  <View style={styles.validationFeedbackContainer}>
+                    <TextView
+                      title={'8 to 20 characters'}
+                      color={isLengthValid ? Color.green : Color.red}
+                      style={[Styles.title_Regular, styles.text]}
+                      icon={isLengthValid ? <Success /> : <Reject />}
+                    />
+                    <TextView
+                      title={'At least 1 number'}
+                      color={hasNumber ? Color.green : Color.red}
+                      style={[Styles.title_Regular, styles.text]}
+                      icon={hasNumber ? <Success /> : <Reject />}
+                    />
+                    <TextView
+                      title={'At least 1 upper case letter'}
+                      color={hasUpperCase ? Color.green : Color.red}
+                      style={[Styles.title_Regular, styles.text]}
+                      icon={hasUpperCase ? <Success /> : <Reject />}
+                    />
+                    <TextView
+                      title={'At least 1 special character'}
+                      color={hasSpecialChar ? Color.green : Color.red}
+                      style={[Styles.title_Regular, styles.text]}
+                      icon={hasSpecialChar ? <Success /> : <Reject />}
+                    />
+                  </View>
+                )}
+            </View>
 
-        <View style={styles.inputContainerSmallMargin}>
-          <TextView
-            title={Language.Repeat_your_password}
-            color={Color.black}
-            style={[Styles.title_Regular, styles.textStyles]}
-          />
-          <Controller
-            control={control}
-            name="repeatpassword"
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInputComponent
-                containerStyle={styles.textInputContainer}
-                onBlur={onBlur}
-                placeholder={Language.Repeat_your_password}
-                handlePasswordIconClick={() => onHandleShowPass('repeatpass')}
-                onChangeText={onChange}
-                value={value}
-                errorMessage={errors.repeatpassword?.message}
-                leftIcon={<Lock width={25} height={25} />}
-                showPass={showRepeatPass}
-                isPassword={true}
-                rightIcon={true}
+            <View style={styles.inputContainerSmallMargin}>
+              <TextView
+                title={Language.Repeat_your_password}
+                color={Color.black}
+                style={[Styles.title_Regular, styles.textStyles]}
               />
-            )}
-          />
-        </View>
-        <BottomCardComponent
-          title={Language.Next}
-          onHandler={handleSubmit(onSubmit)}
-          style={styles.buttonComponent}
-          loading={loading}
-          disabled={loading}
-        />
-      </ScrollView>
-      </KeyboardAvoidingView>
+              <Controller
+                control={control}
+                name="repeatpassword"
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInputComponent
+                    containerStyle={styles.textInputContainer}
+                    onBlur={onBlur}
+                    placeholder={Language.Repeat_your_password}
+                    handlePasswordIconClick={() =>
+                      onHandleShowPass('repeatpass')
+                    }
+                    onChangeText={onChange}
+                    value={value}
+                    errorMessage={errors.repeatpassword?.message}
+                    leftIcon={<Lock width={25} height={25} />}
+                    showPass={showRepeatPass}
+                    isPassword={true}
+                    rightIcon={true}
+                  />
+                )}
+              />
+            </View>
+            <BottomCardComponent
+              title={Language.Next}
+              onHandler={handleSubmit(onSubmit)}
+              style={styles.buttonComponent}
+              loading={loading}
+              disabled={loading}
+            />
+          </ScrollView>
+        </KeyboardAvoidingView>
+      )}
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+  videoContainer: {
+    flex: 1,
+  },
+  videoFullscreen: {
+    width: '100%',
+    height: '100%',
+  },
   textStyles: {
     textAlign: 'left',
     marginLeft: '5%',
@@ -208,4 +252,3 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 });
-

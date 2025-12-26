@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {AuthScreenNavigationProp} from '../navigation/types';
 import {VerifyCodeModel} from '../model/Auth/VerifyCodeModel';
@@ -14,20 +14,37 @@ export default function VerificationCodeLogic(route: any) {
   const [DisableTimer, setDisableTimer] = useState<boolean>(true);
   const [codeValid, setCodeValid] = useState<boolean>(true);
   const [disable, setDisable] = useState<boolean>(false);
+  const [isOtpExpired, setIsOtpExpired] = useState<boolean>(false);
+  const isOtpExpiredRef = useRef<boolean>(false);
+
+  const markOtpExpired = () => {
+    isOtpExpiredRef.current = true;
+    setIsOtpExpired(true);
+  };
+
+  const resetOtpExpired = () => {
+    isOtpExpiredRef.current = false;
+    setIsOtpExpired(false);
+  };
 
   const onCodeHandle = (value: string) => {
-    if (!restartKey) {
+    if (!restartKey || isOtpExpiredRef.current) {
       setCodeValid(false);
-      show('Something went wrong');
+      show('Code expired', {type: 'error'});
       return;
     }
     if (value.length === 5) {
       VerifyCodeModel(
         email,
         value,
-        (data) => {
+        (_data) => {
+          if (isOtpExpiredRef.current) {
+            setCodeValid(false);
+            show('Code expired', {type: 'error'});
+            return;
+          }
           navigation.navigate('PasswordVerification', {email: email});
-          show(data.detail, {type: 'success'});
+          show('Code verified', {type: 'success'});
         },
         error => {
           setCodeValid(false);
@@ -38,10 +55,14 @@ export default function VerificationCodeLogic(route: any) {
   };
 
   const ResendCode = () => {
-    if (DisableTimer) return;
+    if (DisableTimer) {
+      return;
+    }
     setDisable(true);
     setDisableTimer(true);
     setRestartKey(true);
+    resetOtpExpired();
+    setCodeValid(true);
     ResendOtpModel(
       email,
       () => {
@@ -63,5 +84,8 @@ export default function VerificationCodeLogic(route: any) {
     disable,
     email,
     ResendCode,
+    isOtpExpired,
+    markOtpExpired,
+    resetOtpExpired,
   };
 }

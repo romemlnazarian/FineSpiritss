@@ -200,52 +200,33 @@ export const getFilterProductsModel = (
   );
 };
 
-export const getProductDetailModel = (
+
+export const getProductDetailModel =  (
   token: string,
-  slug: number,
+  slug: string,
   callback: (data: any) => void,
   errorcallback: (data: string) => void,
+  callbackUnauthorized?: () => void,
 ) => {
   GET(
     Route.root,
     `${Route.product_detail}${slug}`,
-    (data: {
-      detail?: boolean | string;
-      message?: string;
-      data?: AllCategoryItem[] | any;
-      code?: string;
-      messages?: any[];
-    }) => {
-      const anyData: any = data;
-      if (anyData && typeof anyData === 'object') {
-        // Handle auth/error shapes
-        if ('code' in anyData || 'messages' in anyData || typeof anyData.detail === 'string') {
-          const msg =
-            anyData.code ??
-            anyData.detail ??
-            anyData?.messages?.[0]?.message ??
-            anyData.message ??
-            'Unexpected response';
-          errorcallback(String(msg));
-          return;
-        }
-        if ('detail' in anyData) {
-          if (anyData.detail === true) {
-            callback(anyData.data ?? anyData);
-          } else {
-            errorcallback(String(anyData.message ?? 'Unexpected response'));
-          }
-          return;
-        }
-        // Pass-through when API doesn't include 'detail'
-        callback(anyData);
-        return;
+    (data, status) => {
+      if (status === 200) {
+        callback(data);
+      } else if(status === 401) {
+        callbackUnauthorized?.();
+      } else {
+        errorcallback(data);
       }
-      errorcallback('Unexpected response');
     },
     token,
   );
 };
+
+
+
+
 
 export const getSearchProductsModel = (
   token: string,

@@ -13,7 +13,6 @@ import {Color} from '../../utiles/color';
 import Heart from '../../assets/svg/Heart.svg';
 import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import BottomCardComponent from '../BottomCard';
-// import {Language} from '../../utiles/Language/i18n'; // Removed as no longer used
 import Card from '../../assets/svg/Cart.svg';
 import {
   AddFavoriteProductModel,
@@ -21,9 +20,13 @@ import {
 } from '../../model/Favorite/Favorite';
 import useAuthStore from '../../zustland/AuthStore';
 import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
+import AddBottom from '../AddBottom';
+import LoadingModal from '../LoadingModal';
+import {addCardModel, deleteCardModel, updateCardModel} from '../../model/Card/CardModel';
+import {useToast} from '../../utiles/Toast/ToastProvider';
 
 interface ProductItem {
-  id: string;
+  id: number;
   title: string;
   description: string;
   price?: string;
@@ -34,6 +37,7 @@ interface ProductItem {
   sale_price?: string;
   abv?: string;
   is_favorite?: boolean;
+  cart_quantity: number;
 }
 
 interface ProductCardProps {
@@ -47,9 +51,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
   cardStyle,
   onPress,
 }) => {
-  const {token, refreshToken} = useAuthStore();
+  const {token, setToken, refreshToken, setRefreshToken} = useAuthStore();
   const {Styles} = StyleComponent();
   const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
+  const [count, setCount] = useState<number>(item?.cart_quantity);
+  const [visible, setVisible] = useState<boolean>(false);
+  const {show} = useToast();
+
+  // console.log('=====>',item)
+
   const toggleFavorite = () => {
     if (isFavorite) {
       setIsFavorite(false);
@@ -57,8 +67,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         token,
         item.id,
         () => {},
-        error => {
-          console.log('error', error);
+        () => {
         },
         () => {
           refreshTokenModel(
@@ -67,11 +76,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
               DeleteFavoriteProductModel(
                 data.access,
                 item.id,
-                data => {
-                  console.log('data', data);
-                },
-                error => {
-                  console.log('error', error);
+                () => {},
+                (error: string) => {
                 },
               );
             },
@@ -87,8 +93,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         () => {
           setIsFavorite(true);
         },
-        error => {
-          console.log('error', error);
+        (error: string) => {
         },
         () => {
           refreshTokenModel(
@@ -109,6 +114,182 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
+  const onClick = (value: number, type: string) => {
+
+    if (type === 'inc') {
+      setVisible(true);
+      updateCardModel(
+        token,
+        item.id,
+        value,
+        () => {
+          setCount(value);
+          setVisible(false);
+        },
+        (error: string) => {
+          setVisible(false);
+          show(error, {type: 'error'});
+        },
+        () => {
+          refreshTokenModel(
+            refreshToken,
+            refreshedTokens => {
+              setToken(refreshedTokens.access);
+              setRefreshToken(refreshedTokens.refresh);
+              updateCardModel(
+                refreshedTokens.access,
+                item.id,
+                value,
+                () => {
+                  setCount(value);
+                  setVisible(false);
+                },
+                (error: string) => {
+                  setVisible(false);
+                  show(error, {type: 'error'});
+                },
+                () => {
+                  setVisible(false);
+                },
+              );
+            },
+            () => {
+              setVisible(false);
+            },
+          );
+        },
+      );
+    } else {
+      setVisible(true);
+      if(value < 1) {
+        deleteCardModel(
+          token,
+          item.id,
+          () => {
+            setCount(value);
+            setVisible(false);
+          },
+          (error: string) => {
+            setVisible(false);
+            show(error, {type: 'error'});
+          },
+          () => {
+            refreshTokenModel(
+              refreshToken,
+              refreshedTokens => {
+                setToken(refreshedTokens.access);
+                setRefreshToken(refreshedTokens.refresh);
+                deleteCardModel(
+                  refreshedTokens.access,
+                  item.id,
+                  () => {
+                    setCount(value);
+                    setVisible(false);
+                  },
+                  (error: string) => {
+                    setVisible(false);
+                    show(error, {type: 'error'});
+                  },
+                  () => {
+                    setVisible(false);
+                  },
+                );
+              },
+              () => {
+                setVisible(false);
+              },
+            );
+          },
+        );
+      }else{
+      updateCardModel(
+        token,
+        item.id,
+        value,
+        () => {
+          setCount(value);
+          setVisible(false);
+        },
+        (error: string) => {
+          setVisible(false);
+          show(error, {type: 'error'});
+        },
+        () => {
+          refreshTokenModel(
+            refreshToken,
+            refreshedTokens => {
+              setToken(refreshedTokens.access);
+              setRefreshToken(refreshedTokens.refresh);
+              updateCardModel(
+                refreshedTokens.access,
+                item.id,
+                value,
+                () => {
+                  setCount(value);
+                  setVisible(false);
+                },
+                (error: string) => {
+                  setVisible(false);
+                  show(error, {type: 'error'});
+                },
+                () => {
+                  setVisible(false);
+                },
+              );
+            },
+            () => {
+              setVisible(false);
+            },
+          );
+        },
+      );
+    }
+    }
+  };
+
+  const onSubmit = () => {
+    setVisible(true);
+    addCardModel(
+      token,
+      item.id,
+      () => {
+        setCount(1);
+        setVisible(false);
+      },
+      (error: string) => {
+        setVisible(false);
+        show(error, {type: 'error'});
+      },
+      () => {
+        refreshTokenModel(
+          refreshToken,
+          refreshedTokens => {
+            setToken(refreshedTokens.access);
+            setRefreshToken(refreshedTokens.refresh);
+            addCardModel(
+              refreshedTokens.access,
+              item.id,
+              () => {
+                setCount(1);
+                setVisible(false);
+              },
+              (error: string) => {
+                setVisible(false);
+                show(error, {type: 'error'});
+              },
+              () => {
+                setVisible(false);
+              },
+            );
+          },
+          () => {
+            setVisible(false);
+          },
+        );
+      },
+    );
+  };
+
   return (
     <TouchableOpacity
       style={[styles.productCardContainer, cardStyle]}
@@ -123,26 +304,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </TouchableOpacity>
       <View style={Styles.justifyCenter}>
         {item?.image_url ? (
-          <Image source={{uri: item?.image_url}} style={styles.productImage} />
+          <Image source={{uri: item?.image_url}} style={styles.productImage} resizeMethod='resize' />
         ) : (
           <View style={styles.imagePlaceholder} />
         )}
       </View>
-      <Text style={[Styles.body_Medium, {marginTop: '2%'}]} numberOfLines={1}>
+      <Text style={[Styles.body_Medium, styles.productTitle]} numberOfLines={1}>
         {item.title}
       </Text>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginTop:'2%'
-        }}>
+      <View style={styles.productInfoContainer}>
         <Text
           style={[
             Styles.subtitle_Regular,
             styles.productDescription,
-            {width: '50%'},
+            styles.productCountryWidth,
           ]}
           numberOfLines={1}
           ellipsizeMode="tail">
@@ -158,7 +333,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             Styles.title_Bold,
             styles.productPrice,
             styles.priceContainer,
-            {marginTop: '17%'},
+            styles.singlePriceTopMargin,
           ]}>
           {item.price} zł
         </Text>
@@ -185,14 +360,22 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </Text>
         </>
       )}
-
-      <BottomCardComponent
-        title={'Add to Card'}
-        onHandler={() => console.log()}
-        style={styles.bottomCardButton}
-        textStyle={Styles.subtitle_Regular}
-        icon={<Card />}
-      />
+      {count === 0 ? (
+        <BottomCardComponent
+          title={'Add to Cart'}
+          onHandler={onSubmit}
+          style={styles.bottomCardButton}
+          textStyle={Styles.subtitle_Regular}
+          icon={<Card />}
+        />
+      ) : (
+        <AddBottom
+          style={styles.bottomCardButton}
+          onQuantityChange={onClick}
+          count={count}
+        />
+      )}
+      <LoadingModal isVisible={visible} />
     </TouchableOpacity>
   );
 };
@@ -200,8 +383,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
 export default ProductCard;
 
 const styles = StyleSheet.create({
+  productTitle: {marginTop: '2%'},
+  productInfoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: '2%',
+  },
+  productCountryWidth: {width: '50%'},
+  singlePriceTopMargin: {marginTop: '17%'},
   productCardContainer: {
-    padding: 15,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: Color.cardgray,
     backgroundColor: Color.white,

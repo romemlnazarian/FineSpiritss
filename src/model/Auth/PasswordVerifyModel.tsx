@@ -25,6 +25,26 @@ type PasswordVerifyProps = {
       }
 
 }
+
+const extractErrorMessage = (data: any): string => {
+  if (!data) return 'Something went wrong';
+  if (typeof data === 'string') return data;
+
+  const anyData: any = data;
+  if (anyData?.detail) return String(anyData.detail);
+  if (anyData?.message) return String(anyData.message);
+
+  const pickFirst = (v: any) => (Array.isArray(v) ? v[0] : v);
+  const passwordMsg = pickFirst(anyData?.password);
+  if (passwordMsg) return String(passwordMsg);
+  const password2Msg = pickFirst(anyData?.password2);
+  if (password2Msg) return String(password2Msg);
+  const nonField = pickFirst(anyData?.non_field_errors);
+  if (nonField) return String(nonField);
+
+  return 'Password does not meet requirements';
+};
+
   export const PasswordVerifyModel = (
     email: string,
     password: string,
@@ -40,11 +60,8 @@ type PasswordVerifyProps = {
          if(status === 200){
           callback(anyData);
           return
-         }else if(status === 400){
-          errorcallback(data.detail);
-         }else if(status === 500){
-          errorcallback(data.detail);
          }
+         errorcallback(extractErrorMessage(anyData));
       },
       '',
       {email, password, password2},

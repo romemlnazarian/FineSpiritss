@@ -1,4 +1,4 @@
-import {Text, View, StyleSheet, TouchableOpacity, Platform} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import CodeInput from '../../component/CodeInput';
@@ -7,8 +7,8 @@ import CustomHeader from '../../navigation/CustomHeader';
 import LogoComponent from '../../component/LogoComponent';
 import TextView from '../../component/TextView';
 import {Language} from '../../utiles/Language/i18n';
-import Timer from '../../Helper/Timer';
 import TimerAndroid from '../../Helper/TimerAndroid';
+import {Color} from '../../utiles/color';
 
 export default function VerificationCodeScreen(route: any) {
   const {
@@ -20,6 +20,7 @@ export default function VerificationCodeScreen(route: any) {
     DisableTimer,
     email,
     ResendCode,
+    markOtpExpired,
   } = VerificationCodeLogic(route);
   const {Styles} = StyleComponent();
   return (
@@ -28,11 +29,13 @@ export default function VerificationCodeScreen(route: any) {
       <LogoComponent />
       <TextView
         title={Language.Check_your_email_title}
-        style={[Styles.h3_Bold, styles.titleStyle]}
+        style={[Styles.h4_Bold, styles.titleStyle]}
+        color={Color.black}
       />
       <TextView
         title={`${Language.We_sent_code_to} ${email}`}
         style={[Styles.title_Regular, styles.subtitleStyle]}
+        color={Color.black}
       />
       <CodeInput isCodeValid={codeValid} onCodePress={e => onCodeHandle(e)} />
       <View style={styles.counterContainer}>
@@ -41,23 +44,14 @@ export default function VerificationCodeScreen(route: any) {
             {Language.Send_code_again}
           </Text>
         </TouchableOpacity>
-        {Platform.OS === 'ios' ? (
-          <Timer
+        <TimerAndroid
             restartKey={restartKey}
             onCountdownComplete={() => {
               setDisableTimer(false);
               setRestartKey(false);
+              markOtpExpired();
             }}
           />
-        ) : (
-          <TimerAndroid
-            restartKey={restartKey}
-            onCountdownComplete={() => {
-              setDisableTimer(false);
-              setRestartKey(false);
-            }}
-          />
-        )}
       </View>
     </View>
   );
@@ -68,11 +62,13 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginLeft: '5%',
     marginTop: '10%',
+    color: Color.black,
   },
   subtitleStyle: {
     textAlign: 'left',
     marginLeft: '5%',
     marginTop: '2%',
+    color: Color.black,
   },
   counterContainer: {
     flexDirection: 'row',
