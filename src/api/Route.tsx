@@ -39,17 +39,27 @@
   create_address:string
   card:string
   order_history:string
+  forgot_password:string
+  forgot_password_verify_code:string
+  forgot_password_resend_password:string
+  reset_password:string
 }
 
 export const Route: RouteObj = {
   root:'https://api.finespirits.pl/api/',
+  // root:'https://d57e53489d9f.ngrok-free.app/api/',
+
     // root: "https://insureautosafe.com/wp-json/mobile/v1/",
     register: 'auth/registration/',
     verify_otp: 'auth/registration/verify-email/',
     resend_otp: 'auth/registration/resend-code/',
     set_password: 'auth/registration/set-password/',
+    forgot_password: 'auth/forgot-password/',
+    forgot_password_verify_code: 'auth/forgot-password/verify-code/',
+    forgot_password_resend_password: 'auth/forgot-password/resend-code/',
+    reset_password: 'auth/forgot-password/reset-password/',
     login: 'auth/token/',
-    fotget_password: 'auth/forgot-password',
+    fotget_password: 'auth/forgot-password/',
     home_categories: 'product/categories/home/',
     top_brands: 'product/brands/top/',
     all_categories: 'product/categories/all/',

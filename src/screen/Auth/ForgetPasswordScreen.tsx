@@ -10,6 +10,7 @@ import TextInputComponent from '../../component/TextInputComponent';
 import Email from '../../assets/svg/Email.svg';
 import BottomCardComponent from '../../component/BottomCard';
 import CustomHeader from '../../navigation/CustomHeader';
+import { Color } from '../../utiles/color';
 
 export default function ForgetPasswordScreen() {
   const {Styles} = StyleComponent();
@@ -20,11 +21,13 @@ export default function ForgetPasswordScreen() {
       <LogoComponent style={{marginTop: '15%'}} />
       <TextView
         title={Language.Email_title}
-        style={[Styles.h3_Bold, styles.titleStyle]}
+        style={[Styles.h4_Bold, styles.titleStyle]}
+        color={Color.black}
       />
       <TextView
         title={Language.Email_description}
         style={[Styles.title_Regular, styles.subtitleStyle]}
+        color={Color.black}
       />
       <View style={styles.inputContainerSmallMargin}>
         <Controller

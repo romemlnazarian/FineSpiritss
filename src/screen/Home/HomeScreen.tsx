@@ -30,6 +30,7 @@ export default function HomeScreen() {
     dataSortLoading,
     homeRecommended,
     ageConfirmed,
+    onConfrim
   } = HomeLogic();
 
   useFocusEffect(
@@ -71,10 +72,11 @@ export default function HomeScreen() {
     <View style={[Styles.container, Styles.alignCenter]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <HomeHeader />
-        {/* <ModalCard
+        <ModalCard
           isVisible={ageConfirmed}
           onClose={onSubmitClose}
-        /> */}
+          onConfirm={()=>onConfrim()}
+        />
 
         <Slider data={homeAdvertising} onSubmit={onSubmitAdvertising} />
         <HomeCategory data={categories} onSubmitCategory={onSubmitCategory} />

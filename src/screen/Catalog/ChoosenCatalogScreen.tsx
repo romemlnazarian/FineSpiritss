@@ -9,6 +9,7 @@ import {BottomSheet} from '../../component/BottomSheet';
 import Search from '../../assets/svg/SearchBlack.svg';
 import ButtonSheetFilter from '../../component/CatalogComponent/buttonSheetFilter';
 import CatalogTabsFilter from '../../component/CatalogComponent/CatalogTabsFilter';
+import ActiveFiltersChips from '../../component/CatalogComponent/ActiveFiltersChips';
 
 
 export default function ChoosenCatalog(route: any) {
@@ -29,14 +30,15 @@ export default function ChoosenCatalog(route: any) {
     brands,
     volumes,
     onSearchHandler,
-    titleHeader
+    titleHeader,
+    onRemoveActiveFilter,
   } = ChoosenCatalogLogic(route);
   const {Styles} = StyleComponent();
   const sortData = useMemo(
     () => [
       {
         id: '1',
-        title: 'Filter',
+        title: 'Price',
       },
       {
         id: '2',
@@ -63,6 +65,12 @@ export default function ChoosenCatalog(route: any) {
         onHandler={() => onSearchHandler()}
       />
       <CatalogFilter onHandler={e => onSubnmitFilter(e)} sortData={sortData}/>
+      <ActiveFiltersChips
+        countries={countries}
+        brands={brands}
+        volumes={volumes}
+        onRemove={onRemoveActiveFilter}
+      />
       <CatalogList
         item={products}
         onAddSelected={onAddSelected}

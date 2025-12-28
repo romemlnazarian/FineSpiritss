@@ -307,29 +307,16 @@ const ProductCard: React.FC<{
         </Swiper>
       </View> */}
       <View style={styles.productTitleContainer}>
-        <Text style={[Styles.body_Medium]} numberOfLines={1}>
-          {item.title}
-        </Text>
-        <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginTop: '2%',
-        }}>
-        <Text
-          style={[
-            Styles.subtitle_Regular,
-            styles.productDescription,
-            {width: '50%'},
-          ]}
-          numberOfLines={1}
-          ellipsizeMode="tail">
-          {item?.country}
-        </Text>
-        <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
-          ABV {item?.abv}
-        </Text>
+      <Text style={[Styles.subtitle_Regular, styles.productTitle]} numberOfLines={1} ellipsizeMode="tail">
+        {item.title}
+      </Text>
+      <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:'2%'}}>
+      <Text style={[Styles.subtitle_Regular, styles.productDescription,{width:'50%'}]} numberOfLines={1} ellipsizeMode="tail">
+        {item?.country}
+      </Text>
+      <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
+        ABV {item?.abv}
+      </Text>
       </View>
       {item?.sale_price === null ? (
         <Text
@@ -372,7 +359,7 @@ const ProductCard: React.FC<{
           title={'Add to Cart'}
           onHandler={onSubmit}
           style={styles.bottomCardButton}
-          textStyle={Styles.subtitle_Regular}
+          textStyle={[Styles.subtitle_Regular, styles.bottomCardButtonText]}
           icon={<Card />}
         />
       ) : (
@@ -572,5 +559,9 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 12,
     backgroundColor: Color.lightGray,
+  },
+  productTitle: {marginTop: '2%'},
+  bottomCardButtonText: {
+    color: Color.white,
   },
 });

@@ -39,6 +39,8 @@ export default function CardScreen() {
       return undefined;
     }, [refreshCart]),
   );
+
+  console.log('data =>', data);
   return (
     <View style={Styles.container}>
       <CustomHeader showBack={true} title="Cart" />
@@ -70,7 +72,7 @@ export default function CardScreen() {
                         <PlusIcon name={'plus'} color={Color.black} size={20} />
                       </View>
                       <Text style={Styles.title_Regular}>
-                        create an address
+                        Create
                       </Text>
                     </TouchableOpacity>
                   ) : (
@@ -79,9 +81,9 @@ export default function CardScreen() {
                         style={[
                           Styles.title_Regular,
                           styles.ml2,
-                          {color: Color.black},
-                        ]}>
-                        {address?.street}
+                          {color: Color.black,width:'90%'},
+                        ]} numberOfLines={1} ellipsizeMode="tail">
+                        {address?.city}, {address?.street}
                       </Text>
                       <View
                         style={[
@@ -161,7 +163,7 @@ export default function CardScreen() {
                     Order
                   </Text>
                   <Text style={[Styles.title_Regular, styles.whiteText]}>
-                    {data?.summary?.total}
+                    {data?.summary?.total} zł
                   </Text>
                 </TouchableOpacity>
                 <View style={styles.spacer} />

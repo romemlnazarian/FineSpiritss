@@ -15,8 +15,6 @@ export const ForgetPasswordLogic = () => {
     email: Yup.string()
       .trim()
       .required('Email is required')
-      .email('Please enter a valid email address')
-      .matches(/@gmail\.com$/, 'Only gmail.com emails are allowed'),
   });
   const {
     control,
@@ -34,15 +32,11 @@ export const ForgetPasswordLogic = () => {
 
   const onSubmit = () => {
     const values = getValues();
-    console.log('==>', values.email.toLocaleLowerCase().trim());
     setLoading(true);
     ForgetPasswordModel(values.email.toLocaleLowerCase().trim(), (data) => {
       setLoading(false);
-         navigation.navigate('VerificationCode', {
-          otp_id: data.otp_id,
-          user_id: data.user_id,
+         navigation.navigate('ForgetPasswordVerify', {
           email: data.email,
-          otp_type: data.otp_type
          })
     }, (error) => {
       setLoading(false);

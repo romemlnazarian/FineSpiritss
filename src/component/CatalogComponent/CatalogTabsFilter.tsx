@@ -105,7 +105,7 @@ export default function CatalogTabsFilter({
                       styles.itemText,
                       isSelected && styles.selectedText,
                     ]}>
-                    {label}
+                    {label} ml
                   </Text>
                 </View>
                 <View style={[styles.checkbox, isSelected && styles.checkboxSelected]} />

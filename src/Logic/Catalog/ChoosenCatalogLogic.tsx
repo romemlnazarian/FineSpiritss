@@ -202,45 +202,17 @@ export default function ChoosenCatalogLogic(route: any) {
       : [...prev, normalized];
   }, []);
 
-  // ====================================================================
-  // 🔥 Apply Filter
-  // ====================================================================
-  const onHandlerFilter = useCallback(
-    (type: string, option: any) => {
-      setIsLoadingMore(true);
-      setFilterVisible(false);
-      setIsInitialLoading(true);
-      setProducts([]);
-
-      let nextCountries = countries;
-      let nextBrands = brands;
-      let nextVolumes = volumes;
-
-      if (type === 'country') {
-        const value = option?.value ?? option?.name ?? option;
-        nextCountries = toggleValue(countries, value);
-        setCountries(nextCountries);
-      } else if (type === 'brand') {
-        const value = option?.slug ?? option?.id ?? option;
-        nextBrands = toggleValue(brands, value);
-        setBrands(nextBrands);
-      } else if (type === 'Capacity') {
-        const value = option?.slug ?? option?.value ?? option?.label ?? option;
-        nextVolumes = toggleValue(volumes, value);
-        setVolumes(nextVolumes);
-      }
-
+  const fetchFilteredProducts = useCallback(
+    (nextCountries: string[], nextBrands: string[], nextVolumes: string[]) => {
       const countriesQuery = nextCountries.join(',');
       const brandsQuery = nextBrands.join(',');
       const volumesQuery = nextVolumes.join(',');
-
 
       const handleSuccess = (payload: any) => {
         const normalizedData = Array.isArray(payload)
           ? payload
           : payload?.results ?? payload?.data ?? [];
         setProducts(normalizedData);
-        console.log('filter normalizedData =>', normalizedData);
         setIsLoadingMore(false);
         setIsInitialLoading(false);
       };
@@ -279,17 +251,67 @@ export default function ChoosenCatalogLogic(route: any) {
           ),
       );
     },
+    [category, refreshToken, setRefreshToken, setToken, token],
+  );
+
+  // ====================================================================
+  // 🔥 Apply Filter
+  // ====================================================================
+  const onHandlerFilter = useCallback(
+    (type: string, option: any) => {
+      setIsLoadingMore(true);
+      setFilterVisible(false);
+      setIsInitialLoading(true);
+      setProducts([]);
+
+      let nextCountries = countries;
+      let nextBrands = brands;
+      let nextVolumes = volumes;
+
+      if (type === 'country') {
+        const value = option?.value ?? option?.name ?? option;
+        nextCountries = toggleValue(countries, value);
+        setCountries(nextCountries);
+      } else if (type === 'brand') {
+        const value = option?.slug ?? option?.id ?? option;
+        nextBrands = toggleValue(brands, value);
+        setBrands(nextBrands);
+      } else if (type === 'Capacity') {
+        const value = option?.slug ?? option?.value ?? option?.label ?? option;
+        nextVolumes = toggleValue(volumes, value);
+        setVolumes(nextVolumes);
+      }
+      fetchFilteredProducts(nextCountries, nextBrands, nextVolumes);
+    },
     [
-      token,
-      category,
       countries,
       brands,
       volumes,
       toggleValue,
-      refreshToken,
-      setToken,
-      setRefreshToken,
+      fetchFilteredProducts,
     ],
+  );
+
+  const onRemoveActiveFilter = useCallback(
+    (type: 'Country' | 'Brand' | 'Capacity', value: string) => {
+      setIsLoadingMore(true);
+      setIsInitialLoading(true);
+      setProducts([]);
+
+      const nextCountries =
+        type === 'Country' ? countries.filter(x => x !== value) : countries;
+      const nextBrands =
+        type === 'Brand' ? brands.filter(x => x !== value) : brands;
+      const nextVolumes =
+        type === 'Capacity' ? volumes.filter(x => x !== value) : volumes;
+
+      if (type === 'Country') setCountries(nextCountries);
+      if (type === 'Brand') setBrands(nextBrands);
+      if (type === 'Capacity') setVolumes(nextVolumes);
+
+      fetchFilteredProducts(nextCountries, nextBrands, nextVolumes);
+    },
+    [brands, countries, fetchFilteredProducts, volumes],
   );
 
   // ====================================================================
@@ -318,6 +340,7 @@ export default function ChoosenCatalogLogic(route: any) {
     countries,
     brands,
     volumes,
+    onRemoveActiveFilter,
     titleHeader
   };
 }

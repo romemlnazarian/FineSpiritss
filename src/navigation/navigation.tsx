@@ -14,7 +14,8 @@ import VerificationCodeScreen from '../screen/Auth/VerificationCodeScreen';
 import PasswordVerificationScreen from '../screen/Auth/PasswordVerificationScreen';
 import NumberVerificationScreen from '../screen/Auth/NumberVerificationScreen';
 import ForgetPasswordScreen from '../screen/Auth/ForgetPasswordScreen';
-
+import ForgetPasswordVerifyScreen from '../screen/Auth/ForgetPasswordVerifyScreen';
+ import ResetPasswordScreen from '../screen/Auth/ResetPasswordScreen';
 // import LoginScreen from '../screen/LoginScreen';
 import AppTabs from './TabNavigator';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
@@ -83,6 +84,16 @@ export default function Navigation() {
             <Stack.Screen
               name="ForgetPassword"
               component={ForgetPasswordScreen}
+              options={{gestureEnabled: false}}
+            />
+            <Stack.Screen
+              name="ForgetPasswordVerify"
+              component={ForgetPasswordVerifyScreen}
+              options={{gestureEnabled: false}}
+            />
+            <Stack.Screen
+              name="ResetPassword"
+              component={ResetPasswordScreen}
               options={{gestureEnabled: false}}
             />
             <Stack.Screen name="AppTabs" component={AppTabs} options={{gestureEnabled: false}} />

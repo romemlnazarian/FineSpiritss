@@ -21,7 +21,7 @@ export default function HomeLogic() {
   const navigation = useNavigation<ButtonScreenNavigationProp>();
   const isFocused = useIsFocused();
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
-  const {ageConfirmed, setAgeConfirmed} = useAuthStore();
+  const {ageConfirmed, setAgeConfirmed,setIsLoggedIn} = useAuthStore();
   const {setProfile} = useProfileStore();
   const {setRecommended} = useRecommendedStore();
   const {address,setAddress} = useAddressStore();
@@ -37,7 +37,17 @@ export default function HomeLogic() {
 
   const onSubmitClose = () => {
     setAgeConfirmed(false);
+    setIsLoggedIn(false);
+    // If user closes the age confirmation / auth gate, send them to Signin
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Signin' as never}],
+    });
   };
+  const onConfrim = () => {
+    setAgeConfirmed(false);
+  };
+
 
   const getCategories = useCallback(async () => {
     setIsCategoriesLoading(true);
@@ -167,19 +177,19 @@ export default function HomeLogic() {
   const getProfile = useCallback(() => {
     getProfileModel(
       token,
-      data => {
-        setProfile({...data});
+      profileData => {
+        setProfile({...profileData});
       },
       () => {
         refreshTokenModel(
           refreshToken,
-          data => {
-            setToken(data.access);
-            setRefreshToken(data.refresh);
+          refreshedTokens => {
+            setToken(refreshedTokens.access);
+            setRefreshToken(refreshedTokens.refresh);
             getProfileModel(
-              data.access,
-              data => {
-                setProfile({...data});
+              refreshedTokens.access,
+              profileData => {
+                setProfile({...profileData});
               },
               () => {},
             );
@@ -190,25 +200,15 @@ export default function HomeLogic() {
     );
   }, [token, refreshToken, setToken, setRefreshToken, setProfile]);
 
-  useEffect(() => {
-    if (!isFocused) {
-      return;
-    }
-    getAddress()
-    getCategories();
-    getTopBrands();
-    getHomeAdvertising();
-    getHomeRecommended();
-    getProfile();
-    loadSortSection(getHomeBestSalesModel);
-  }, [isFocused, getCategories, getTopBrands, getHomeAdvertising, getHomeRecommended, getProfile, loadSortSection]);
-
-
-  const getHomeRecommended = () => {
+  const getHomeRecommended = useCallback(() => {
     getHomeRecommendedModel(
       token,
       data => {
-        const items = Array.isArray(data?.results) ? data.results : Array.isArray(data) ? data : [];
+        const items = Array.isArray(data?.results)
+          ? data.results
+          : Array.isArray(data)
+            ? data
+            : [];
         setHomeRecommended(items);
         setRecommended(items);
       },
@@ -221,7 +221,11 @@ export default function HomeLogic() {
             getHomeRecommendedModel(
               refreshedTokens.access,
               data => {
-                const items = Array.isArray(data?.results) ? data.results : Array.isArray(data) ? data : [];
+                const items = Array.isArray(data?.results)
+                  ? data.results
+                  : Array.isArray(data)
+                    ? data
+                    : [];
                 setHomeRecommended(items);
                 setRecommended(items);
               },
@@ -232,7 +236,66 @@ export default function HomeLogic() {
         );
       },
     );
-  };
+  }, [token, refreshToken, setHomeRecommended, setRecommended, setToken, setRefreshToken]);
+
+  const getAddress = useCallback(() => {
+    if (address !== null) {
+      return;
+    }
+    getAddressModel(
+      token,
+      data => {
+        setAddress(data);
+      },
+      (_err: string) => {
+        console.log('getAddress error', _err);
+      },
+      () => {
+        refreshTokenModel(
+          refreshToken,
+          refreshedTokens => {
+            setToken(refreshedTokens.access);
+            setRefreshToken(refreshedTokens.refresh);
+            getAddressModel(
+              refreshedTokens.access,
+              data => {
+                setAddress(data);
+              },
+              (_err: string) => {
+                console.log('getAddress error', _err);
+              },
+              () => {},
+            );
+          },
+          _err => {
+            console.log('refreshToken error', _err);
+          },
+        );
+      },
+    );
+  }, [address, refreshToken, setAddress, setRefreshToken, setToken, token]);
+
+  useEffect(() => {
+    if (!isFocused) {
+      return;
+    }
+    getAddress();
+    getCategories();
+    getTopBrands();
+    getHomeAdvertising();
+    getHomeRecommended();
+    getProfile();
+    loadSortSection(getHomeBestSalesModel);
+  }, [
+    getAddress,
+    getCategories,
+    getHomeAdvertising,
+    getHomeRecommended,
+    getProfile,
+    getTopBrands,
+    isFocused,
+    loadSortSection,
+  ]);
 
 
   const onSubmitCategory = (item: any) => {
@@ -287,39 +350,6 @@ export default function HomeLogic() {
   );
 
 
-  const getAddress = () =>{
-    address === null &&
-    getAddressModel(
-      token,
-      (data) => {
-        setAddress(data)
-      },
-      (err: string) => {
-      },
-      () => {
-        refreshTokenModel(
-          refreshToken,
-          refreshedTokens => {
-            setToken(refreshedTokens.access);
-            setRefreshToken(refreshedTokens.refresh);
-            getAddressModel(
-              refreshedTokens.access,
-              (data) => {
-                setAddress(data)
-              },
-              (err: string) => {
-              },
-              () => {
-              },
-            );
-          },
-          () => {
-          },
-        );
-      }
-    );
-  }
-
   return {
     onSubmitClose,
     categories,
@@ -336,6 +366,7 @@ export default function HomeLogic() {
     homeRecommended,
     isTopBrandsLoading,
     ageConfirmed,
+    onConfrim
   };
 }
 

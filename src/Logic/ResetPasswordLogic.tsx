@@ -9,9 +9,11 @@ import { PasswordVerifyModel } from '../model/Auth/PasswordVerifyModel';
 import { useToast } from '../utiles/Toast/ToastProvider';
 import { BackHandler } from 'react-native';
 import useAuthStore from '../zustland/AuthStore';
-export const PasswordVerificationLogic = (route: any) => {
+import { ResetPasswordModel } from '../model/Auth/ForgetPasswordModel';
+export const ResetPasswordLogic = (route: any) => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
-  const {setToken,setRefreshToken,setIsLoggedIn} = useAuthStore();
+  const {email} = route?.route?.params;
+  const {setToken,setRefreshToken,setIsLoggedIn,setUserData,ageConfirmed,setAgeConfirmed,isLoggedIn} = useAuthStore();
   const [isLengthValid, setIsLengthValid] = useState(false);
   const [hasNumber, setHasNumber] = useState(false);
   const [hasUpperCase, setHasUpperCase] = useState(false);
@@ -19,7 +21,6 @@ export const PasswordVerificationLogic = (route: any) => {
   const [showPass, setShowPass] = useState(false);
   const [showRepeatPass, setShowRepeatPass] = useState(false);
   const [loading, setLoading] = useState(false);
-  const {email} = route?.route?.params;
   const {show} = useToast();
   const [showVideo,setShowVideo] = useState(false)
   const [ShowSuccess,setShowSuccess] = useState(false)
@@ -84,18 +85,19 @@ export const PasswordVerificationLogic = (route: any) => {
   const onSubmit = async () => {
     const values = getValues();
     setLoading(true);
-    PasswordVerifyModel(email, values.password.trim(), values.repeatpassword.trim(), (data) => {
+    ResetPasswordModel(email, values.password.trim(), values.repeatpassword.trim(), (data) => {
         reset({ password: '', repeatpassword: '' });
-        setToken(data.tokens.access_token);
-        setRefreshToken(data.tokens.refresh_token);
-        setIsLoggedIn(true);
-
-        // show('Password set successfully. Your account is now active. You can login.', {type: 'success'});
-        setShowVideo(true)
-        setTimeout(() => {
-          setShowVideo(false)
-          setShowSuccess(true) 
-        }, 10000);
+        setToken(data.access);
+        setRefreshToken(data.refresh);
+        setUserData({ email: email.trim(), password: values.password.trim() });
+        if(ageConfirmed === false){
+          setAgeConfirmed(true);
+        }
+        if(isLoggedIn === false){
+          setIsLoggedIn(true);
+        }
+        setLoading(false);
+        navigation.navigate('AppTabs');
       setLoading(false);
     }, (error: any) => {
        const msg = String(error || 'Password does not meet requirements');
@@ -111,7 +113,7 @@ export const PasswordVerificationLogic = (route: any) => {
   };
 
 const onHandler = () =>{
-navigation.navigate('AppTabs');
+navigation.navigate('Signin');
 }
 
 

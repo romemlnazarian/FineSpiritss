@@ -50,9 +50,15 @@ export default function OrderHistoryScreent() {
               Styles.alignCenter,
               Styles.justifyCenter,
             ]}>
-            <Text style={[Styles.h4_Bold, {color: Color.black}]}>
+            <Text style={[Styles.h5_SemiBold, {color: Color.black,marginTop:Height/3.5}]}>
               No order history found
             </Text>
+            {/* <View style={[Styles.alignCenter,Styles.alignSelf,{width:'93%',marginTop:'12%'}]}>
+            <Vector fill={Color.black} />
+            <Text style={[Styles.h5_Bold,{marginTop:'5%'}]}>You don’t have any orders yet!</Text>
+            <Text style={[Styles.body_Regular,Styles.textAlign,{width:'80%'}]}>Once you place an order
+            it will appear here</Text>
+           </View> */}
           </View>
         ) : (
           orderHistory.map((item: any) => (

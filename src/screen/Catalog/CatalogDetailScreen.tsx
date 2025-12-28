@@ -148,7 +148,7 @@ export default function CatalogDetailScreen(route: any) {
         {/* <Slider /> */}
         <View style={styles.detailsContainer}>
           <View style={styles.detailsHeader}>
-            <Text style={[Styles.h6_Bold]}>{product?.title}</Text>
+            <Text style={[Styles.body_Bold]}>{product?.title}</Text>
             <TouchableOpacity onPress={() => toggleFavorite(product?.id)}>
               {isFavorite ? (
                 <Heart_primary width={24} height={24} />
@@ -182,7 +182,7 @@ export default function CatalogDetailScreen(route: any) {
             sortItemContainerStyle={styles.sortItemContainer}
           /> */}
           <View style={styles.priceRow}>
-            <Text style={[Styles.h4_Bold]}>
+            <Text style={[Styles.h5_Bold]}>
               {product?.sale_price ?? product?.price} zł
             </Text>
             {product?.regular_price && (

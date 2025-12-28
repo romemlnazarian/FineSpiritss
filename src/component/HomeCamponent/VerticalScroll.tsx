@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
@@ -13,12 +7,19 @@ import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import BottomCardComponent from '../BottomCard';
 // import {Language} from '../../utiles/Language/i18n'; // Removed as no longer used
 import Card from '../../assets/svg/Cart.svg';
-import { AddFavoriteProductModel, DeleteFavoriteProductModel } from '../../model/Favorite/Favorite';
+import {
+  AddFavoriteProductModel,
+  DeleteFavoriteProductModel,
+} from '../../model/Favorite/Favorite';
 import useAuthStore from '../../zustland/AuthStore';
-import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
+import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
 import useRecommendedStore from '../../zustland/recommendedStore';
-import { useToast } from '../../utiles/Toast/ToastProvider';
-import { addCardModel, deleteCardModel, updateCardModel } from '../../model/Card/CardModel';
+import {useToast} from '../../utiles/Toast/ToastProvider';
+import {
+  addCardModel,
+  deleteCardModel,
+  updateCardModel,
+} from '../../model/Card/CardModel';
 import AddBottom from '../AddBottom';
 import LoadingModal from '../LoadingModal';
 interface ProductItem {
@@ -33,7 +34,7 @@ interface ProductItem {
   sale_price?: string;
   regular_price?: string;
   is_favorite?: boolean;
-  cart_quantity?:number
+  cart_quantity?: number;
 }
 
 interface VerticalScrollProps {
@@ -42,33 +43,32 @@ interface VerticalScrollProps {
 }
 
 // Individual Product Card Component
-const ProductCard: React.FC<{item: ProductItem; onSubmitProduct?: (item: ProductItem) => void}> = ({item, onSubmitProduct}) => {
+const ProductCard: React.FC<{
+  item: ProductItem;
+  onSubmitProduct?: (item: ProductItem) => void;
+}> = ({item, onSubmitProduct}) => {
   const {Styles} = StyleComponent();
-  const {token, refreshToken,setToken,setRefreshToken} = useAuthStore();
+  const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
   const [isFavorite, setIsFavorite] = useState(false);
   const {recommended, setRecommended} = useRecommendedStore();
   const [count, setCount] = useState<number>(item?.cart_quantity);
   const [visible, setVisible] = useState<boolean>(false);
   const {show} = useToast();
-useEffect(() => {
-  setIsFavorite(item?.is_favorite);
-}, [item?.is_favorite]);
+  useEffect(() => {
+    setIsFavorite(item?.is_favorite);
+  }, [item?.is_favorite]);
 
-  const toggleFavorite = (id:any) => {
-
+  const toggleFavorite = (id: any) => {
     if (isFavorite) {
       setIsFavorite(false);
-      const fineProduct = recommended.map((item:any) =>
-        item.id === id
-          ? { ...item, is_favorite: false }
-          : item
+      const fineProduct = recommended.map((item: any) =>
+        item.id === id ? {...item, is_favorite: false} : item,
       );
-      setRecommended(fineProduct)
+      setRecommended(fineProduct);
       DeleteFavoriteProductModel(
         token,
         id,
-        () => {
-        },
+        () => {},
         error => {
           console.log('error', error);
         },
@@ -93,16 +93,14 @@ useEffect(() => {
       );
     } else {
       setIsFavorite(true);
-      const fineProduct = recommended.map((item:any) =>
-        item.id === id
-          ? { ...item, is_favorite: true }
-          : item
+      const fineProduct = recommended.map((item: any) =>
+        item.id === id ? {...item, is_favorite: true} : item,
       );
-      setRecommended(fineProduct)
+      setRecommended(fineProduct);
       AddFavoriteProductModel(
         token,
         id,
-         () => {
+        () => {
           setIsFavorite(true);
         },
         error => {
@@ -128,7 +126,6 @@ useEffect(() => {
   };
 
   const onClick = (value: number, type: string) => {
-
     if (type === 'inc') {
       setVisible(true);
       updateCardModel(
@@ -174,7 +171,7 @@ useEffect(() => {
       );
     } else {
       setVisible(true);
-      if(value < 1) {
+      if (value < 1) {
         deleteCardModel(
           token,
           item.id,
@@ -214,49 +211,49 @@ useEffect(() => {
             );
           },
         );
-      }else{
-      updateCardModel(
-        token,
-        item.id,
-        value,
-        () => {
-          setCount(value);
-          setVisible(false);
-        },
-        (error: string) => {
-          setVisible(false);
-          show(error, {type: 'error'});
-        },
-        () => {
-          refreshTokenModel(
-            refreshToken,
-            refreshedTokens => {
-              setToken(refreshedTokens.access);
-              setRefreshToken(refreshedTokens.refresh);
-              updateCardModel(
-                refreshedTokens.access,
-                item.id,
-                value,
-                () => {
-                  setCount(value);
-                  setVisible(false);
-                },
-                (error: string) => {
-                  setVisible(false);
-                  show(error, {type: 'error'});
-                },
-                () => {
-                  setVisible(false);
-                },
-              );
-            },
-            () => {
-              setVisible(false);
-            },
-          );
-        },
-      );
-    }
+      } else {
+        updateCardModel(
+          token,
+          item.id,
+          value,
+          () => {
+            setCount(value);
+            setVisible(false);
+          },
+          (error: string) => {
+            setVisible(false);
+            show(error, {type: 'error'});
+          },
+          () => {
+            refreshTokenModel(
+              refreshToken,
+              refreshedTokens => {
+                setToken(refreshedTokens.access);
+                setRefreshToken(refreshedTokens.refresh);
+                updateCardModel(
+                  refreshedTokens.access,
+                  item.id,
+                  value,
+                  () => {
+                    setCount(value);
+                    setVisible(false);
+                  },
+                  (error: string) => {
+                    setVisible(false);
+                    show(error, {type: 'error'});
+                  },
+                  () => {
+                    setVisible(false);
+                  },
+                );
+              },
+              () => {
+                setVisible(false);
+              },
+            );
+          },
+        );
+      }
     }
   };
 
@@ -303,62 +300,99 @@ useEffect(() => {
     );
   };
 
-
   return (
-    <TouchableOpacity style={styles.productCardContainer} activeOpacity={0.6} onPress={() => onSubmitProduct?.(item)}>
-      <TouchableOpacity style={styles.favoriteButton} onPress={() => toggleFavorite(item.id)}>
+    <TouchableOpacity
+      style={styles.productCardContainer}
+      activeOpacity={0.6}
+      onPress={() => onSubmitProduct?.(item)}>
+      <TouchableOpacity
+        style={styles.favoriteButton}
+        onPress={() => toggleFavorite(item.id)}>
         {isFavorite ? (
           <Heart_primary width={24} height={24} />
         ) : (
-          <Heart width={24} height={24}  />
+          <Heart width={24} height={24} />
         )}
       </TouchableOpacity>
       <View style={Styles.justifyCenter}>
         {item?.image_url ? (
-          <Image source={{uri: item?.image_url}} style={styles.productImage} resizeMethod='resize'/>
+          <Image
+            source={{uri: item?.image_url}}
+            style={styles.productImage}
+            resizeMethod="resize"
+          />
         ) : (
           <View style={styles.imagePlaceholder} />
         )}
       </View>
-      <Text style={[Styles.subtitle_Regular, styles.productTitle]} numberOfLines={1} ellipsizeMode="tail">
+      <Text
+        style={[Styles.subtitle_Regular, styles.productTitle]}
+        numberOfLines={1}
+        ellipsizeMode="tail">
         {item.title}
       </Text>
-      <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:'2%'}}>
-      <Text style={[Styles.subtitle_Regular, styles.productDescription,{width:'50%'}]} numberOfLines={1} ellipsizeMode="tail">
-        {item?.country}
-      </Text>
-      <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
-        ABV {item?.abv}
-      </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginTop: '2%',
+        }}>
+        <Text
+          style={[
+            Styles.subtitle_Regular,
+            styles.productDescription,
+            {width: '50%'},
+          ]}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {item?.country}
+        </Text>
+        <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
+          ABV {item?.abv}
+        </Text>
       </View>
       {item.sale_price === null ? (
-        <Text style={[Styles.body_SemiBold, styles.productPrice,styles.priceContainer,{marginTop: '17%'}]}>
+        <Text
+          style={[
+            Styles.title_Bold,
+            styles.productPrice,
+            styles.priceContainer,
+            {marginTop: '17%'},
+          ]}>
           {item.price} zł
         </Text>
       ) : (
         <>
-        {item.regular_price && (
-          <Text style={[Styles.subtitle_Regular, styles.originalPriceText,styles.priceContainer]}>
-            {item.regular_price} zł
-          </Text> 
-        )}
-                      <Text style={[Styles.body_SemiBold, styles.productPrice,styles.priceContainer]}>
-          {item.sale_price ?? item.price} zł
-        </Text>
+          {item.regular_price && (
+            <Text
+              style={[
+                Styles.subtitle_Regular,
+                styles.originalPriceText,
+                styles.priceContainer,
+              ]}>
+              {item.regular_price} zł
+            </Text>
+          )}
+          <Text
+            style={[
+              Styles.title_Bold,
+              styles.productPrice,
+              styles.priceContainer,
+            ]}>
+            {item.sale_price ?? item.price} zł
+          </Text>
         </>
       )}
 
-
-  
-
-            {count === 0 ? (
-            <BottomCardComponent
-            title={'Add to Cart'}
-            onHandler={onSubmit}
-            style={styles.bottomCardButton}
-            icon={<Card />}
-            textStyle={Styles.subtitle_Regular}
-          />
+      {count === 0 ? (
+        <BottomCardComponent
+          title={'Add to Cart'}
+          onHandler={onSubmit}
+          style={styles.bottomCardButton}
+          icon={<Card />}
+          textStyle={[Styles.subtitle_Regular, styles.bottomCardButtonText]}
+        />
       ) : (
         <AddBottom
           style={styles.bottomCardButton}
@@ -372,7 +406,10 @@ useEffect(() => {
 };
 
 // Main VerticalScroll Component
-const VerticalScroll: React.FC<VerticalScrollProps> = ({item, onSubmitProduct}) => {
+const VerticalScroll: React.FC<VerticalScrollProps> = ({
+  item,
+  onSubmitProduct,
+}) => {
   const {Styles} = StyleComponent();
 
   return (
@@ -384,7 +421,11 @@ const VerticalScroll: React.FC<VerticalScrollProps> = ({item, onSubmitProduct}) 
       </View>
       <View style={styles.gridContainer}>
         {item.map(product => (
-          <ProductCard key={product.id} item={product} onSubmitProduct={onSubmitProduct} />
+          <ProductCard
+            key={product.id}
+            item={product}
+            onSubmitProduct={onSubmitProduct}
+          />
         ))}
       </View>
     </View>
@@ -463,5 +504,8 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 12,
     backgroundColor: Color.lightGray,
+  },
+  bottomCardButtonText: {
+    color: Color.white,
   },
 });

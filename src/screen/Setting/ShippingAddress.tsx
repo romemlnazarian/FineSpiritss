@@ -130,7 +130,7 @@ export default function ShippingAddress(route:any) {
             <TextInputComponent
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
-              placeholder={'Enter you phone'}
+              placeholder={'Enter Your Phone Number'}
               onChangeText={onChange}
               value={value}
               errorMessage={errors.phone?.message}

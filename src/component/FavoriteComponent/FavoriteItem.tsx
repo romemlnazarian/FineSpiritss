@@ -15,15 +15,17 @@ import { addCardModel, deleteCardModel, updateCardModel } from '../../model/Card
 import Card from '../../assets/svg/Cart.svg';
 import LoadingModal from '../LoadingModal';
 interface ProductItem {
-  id?: string;
+  id: number;
   title?: string;
   name?: string;
   country?: string;
   abv?: string | number;
   price?: string;
   regular_price?: string;
-  sale_price?: string;
-  cart_quantity: number;
+  sale_price?: string | null;
+  cart_quantity?: number;
+  is_favorite?: boolean;
+  image_url?: string;
 }
 
 
@@ -32,20 +34,20 @@ export default function FavoriteItem({favoriteProducts, onReload}: {favoriteProd
 const ProductCard = React.memo(({item}: {item: ProductItem}) => {
   const {token, refreshToken,setToken,setRefreshToken} = useAuthStore();
   const navigation: any = useNavigation();
-  const [count, setCount] = useState<number>(item?.cart_quantity);
+  const [count, setCount] = useState<number>(item?.cart_quantity ?? 0);
   const [visible, setVisible] = useState<boolean>(false);
   const {show} = useToast();
 
   
     const {Styles} = StyleComponent();
-    const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
+    const [isFavorite, setIsFavorite] = useState<boolean>(Boolean(item?.is_favorite));
   
      const onHandlerItem = (item: ProductItem) => {
       if (isFavorite) {
         setIsFavorite(false);
         DeleteFavoriteProductModel(
           token,
-          item.id,
+          String(item.id),
            () => {
              onReload?.();
            },
@@ -58,7 +60,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
               data => {
                 DeleteFavoriteProductModel(
                   data.access,
-                  item.id,
+                  String(item.id),
                    () => onReload?.(),
                   error => {
                     console.log('error', error);
@@ -73,7 +75,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
         setIsFavorite(true);
         AddFavoriteProductModel(
           token,
-          item.id,
+          String(item.id),
            () => {
             setIsFavorite(true);
              onReload?.();
@@ -87,7 +89,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
               data => {
                 AddFavoriteProductModel(
                   data.access,
-                  item.id,
+                  String(item.id),
                    () => onReload?.(),
                    () => {},
                    () => {},
@@ -287,10 +289,16 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
       <TouchableOpacity 
       onPress={() => navigation.navigate('CatalogScreen',{screen: 'CatalogDetail' ,params: {product: item, fromFavorite: true}})}
       style={[styles.mainContainer]}>
-        <View style={[ styles.leftSection,{flexDirection:'row',alignItems:'center',gap:10}]}>
-          <Image source={{uri: item.image_url}} style={{width:80,height:100,borderRadius:10}} />
+        <View style={styles.leftSection}>
+          <Image source={{uri: item.image_url}} style={styles.productImage} />
           <View style={styles.productInfo}>
-            <Text style={[Styles.body_Bold,{width:item.title?.length > 25 ? '50%' : '100%'}]} numberOfLines={1} ellipsizeMode="tail">{item.title}</Text>
+            <Text
+              style={[Styles.subtitle_Regular, styles.productTitle]}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              {item.title ?? item.name ?? ''}
+            </Text>
+
             <View style={styles.detailsContainer}>
               <Text style={[Styles.subtitle_Regular,{color:Color.gray}]}>{item.country ?? ''}</Text>
               <View style={styles.separator} />
@@ -351,7 +359,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
           title={'Add to Cart'}
           onHandler={onSubmit}
           style={styles.addBottom}
-          textStyle={Styles.subtitle_Regular}
+          textStyle={[Styles.subtitle_Regular, {color:Color.white}]}
           icon={<Card />}
         />
       ) : (
@@ -405,11 +413,18 @@ const styles = StyleSheet.create({
     },
     leftSection: {
       height: 100,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+      flex: 1,
+      minWidth: 0, // allow Text ellipsize before the absolute heart
     },
     productInfo: {
       height: 100,
       justifyContent: 'space-around',
-      marginLeft: '5%',
+      flex: 1,
+      minWidth: 0,
+      paddingRight: 48, // reserve space so title doesn't go under the heart icon
     },
     detailsContainer: {
       flexDirection: 'row',
@@ -457,5 +472,7 @@ const styles = StyleSheet.create({
       textDecorationLine: 'line-through',
       color: Color.gray,
     },
+    productTitle: {marginTop: '2%'},
+    productImage: {width: 80, height: 100, borderRadius: 10},
   });
    

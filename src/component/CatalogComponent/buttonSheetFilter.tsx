@@ -42,15 +42,15 @@ export default function ButtonSheetFilter({
         thumbTintColor={Color.primary}
       /> */}
       
-      <View style={styles.optionContainer}>
+      {/* <View style={styles.optionContainer}>
         <Text style={[Styles.body_Regular]}>Lower Price</Text>
         <TouchableOpacity 
           style={styles.radioButton}
           onPress={onLowerPricePress}
         />
-      </View>
+      </View> */}
       
-      <View style={styles.separator} />
+      {/* <View style={styles.separator} />
       
       <View style={styles.optionContainer}>
         <Text style={[Styles.body_Regular]}>Higher Price</Text>
@@ -58,7 +58,7 @@ export default function ButtonSheetFilter({
           style={styles.radioButton}
           onPress={onHigherPricePress}
         />
-      </View>
+      </View> */}
       
       <View style={styles.separator} />
     </View>

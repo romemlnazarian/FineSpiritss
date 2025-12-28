@@ -113,12 +113,12 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
         />
         <View style={styles.productInfo}>
           <Text
-            style={[Styles.h6_SemiBold, {width: '80%'}]}
+            style={[Styles.subtitle_Regular, {width: '80%'}]}
             numberOfLines={1}
             ellipsizeMode="tail">
             {item.title}
           </Text>
-          <View style={styles.detailsContainer}>
+          <View style={[styles.detailsContainer,{marginTop:'2%'}]}>
             <Text style={[Styles.subtitle_Regular, {color: Color.gray}]}>
               {item.country}
             </Text>
