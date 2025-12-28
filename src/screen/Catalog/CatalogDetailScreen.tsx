@@ -357,7 +357,7 @@ export default function CatalogDetailScreen(route: any) {
             title={'Add to Cart'}
             onHandler={onSubmit}
             style={styles.bottomCardButton}
-            textStyle={Styles.subtitle_Regular}
+            textStyle={[Styles.subtitle_Regular,{color:Color.white}]}
             icon={<Card />}
           />
         ) : (

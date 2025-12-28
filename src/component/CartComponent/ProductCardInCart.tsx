@@ -55,7 +55,7 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
             </Text>
             <View style={styles.separator} />
             <Text style={[Styles.subtitle_Regular, styles.blackText]}>
-              {item.alcoholContent ? `ABV ${item.alcoholContent}` : ''}
+              {item.abv ? `ABV ${item.abv}` : ''}
             </Text>
           </View>
           {item?.sale_price === null ? (
