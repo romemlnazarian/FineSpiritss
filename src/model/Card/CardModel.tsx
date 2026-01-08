@@ -14,6 +14,7 @@ export const getCardModel =  (
   errorcallback: (data: string) => void,
   callbackUnauthorized?: () => void,
 ) => {
+  console.log('get card data =>',Route.card)
   GET(
     Route.root,
     Route.card,

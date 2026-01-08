@@ -12,6 +12,7 @@ import useAuthStore from '../zustland/AuthStore';
 export const PasswordVerificationLogic = (route: any) => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
   const {setToken,setRefreshToken,setIsLoggedIn} = useAuthStore();
+  const {setAgeConfirmed} = useAuthStore();
   const [isLengthValid, setIsLengthValid] = useState(false);
   const [hasNumber, setHasNumber] = useState(false);
   const [hasUpperCase, setHasUpperCase] = useState(false);
@@ -23,7 +24,7 @@ export const PasswordVerificationLogic = (route: any) => {
   const {show} = useToast();
   const [showVideo,setShowVideo] = useState(false)
   const [ShowSuccess,setShowSuccess] = useState(false)
-
+  const [state, setState] = useState({access: '', refresh: ''});
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
@@ -85,18 +86,21 @@ export const PasswordVerificationLogic = (route: any) => {
     const values = getValues();
     setLoading(true);
     PasswordVerifyModel(email, values.password.trim(), values.repeatpassword.trim(), (data) => {
-        reset({ password: '', repeatpassword: '' });
-        setToken(data.tokens.access_token);
-        setRefreshToken(data.tokens.refresh_token);
-        setIsLoggedIn(true);
-
-        // show('Password set successfully. Your account is now active. You can login.', {type: 'success'});
-        setShowVideo(true)
+      console.log('aloooooo', data);
+      reset({ password: '', repeatpassword: '' });
+       setState({access: data?.access, refresh: data?.refresh});
+      // setToken(data?.access);
+      // setRefreshToken(data?.refresh);
+        setLoading(false);
+        setTimeout(() => {
+   
+          setShowVideo(true)
+        }, 300);
+        
         setTimeout(() => {
           setShowVideo(false)
           setShowSuccess(true) 
         }, 10000);
-      setLoading(false);
     }, (error: any) => {
        const msg = String(error || 'Password does not meet requirements');
        show(msg, {type: 'error'})
@@ -111,7 +115,14 @@ export const PasswordVerificationLogic = (route: any) => {
   };
 
 const onHandler = () =>{
-navigation.navigate('AppTabs');
+  console.log('barev');
+  setIsLoggedIn(true);
+  setAgeConfirmed(true);
+  setToken(state.access);
+  setRefreshToken(state.refresh);
+  setTimeout(() => {
+    navigation.navigate('AppTabs');
+  }, 300);
 }
 
 

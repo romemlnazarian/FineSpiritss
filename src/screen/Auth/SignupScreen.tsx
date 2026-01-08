@@ -39,6 +39,8 @@ export default function SignupScreen() {
     formatDate,onSubmitSignIn,
     onSubmitGoogle,
     onSubmitApple,
+    showPass,
+    setShowPass
   } = SignupLogic();
 
   return (
@@ -87,7 +89,7 @@ export default function SignupScreen() {
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
               placeholder={Language.Email_Placeholder}
-              handlePasswordIconClick={() => console.log()}
+              handlePasswordIconClick={() => setShowPass(!showPass)}
               onChangeText={onChange}
               value={value}
               errorMessage={errors.email?.message}

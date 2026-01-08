@@ -21,7 +21,7 @@ export default function HomeLogic() {
   const navigation = useNavigation<ButtonScreenNavigationProp>();
   const isFocused = useIsFocused();
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
-  const {ageConfirmed, setAgeConfirmed,setIsLoggedIn} = useAuthStore();
+  const {ageConfirmed, setAgeConfirmed,setIsLoggedIn,isLoggedIn} = useAuthStore();
   const {setProfile} = useProfileStore();
   const {setRecommended} = useRecommendedStore();
   const {address,setAddress} = useAddressStore();
@@ -36,7 +36,7 @@ export default function HomeLogic() {
   const [homeRecommended, setHomeRecommended] = useState<[]>([]);
 
   const onSubmitClose = () => {
-    setAgeConfirmed(false);
+    setAgeConfirmed(true);
     setIsLoggedIn(false);
     // If user closes the age confirmation / auth gate, send them to Signin
     navigation.reset({
@@ -47,6 +47,13 @@ export default function HomeLogic() {
   const onConfrim = () => {
     setAgeConfirmed(false);
   };
+
+//  useEffect(() => {
+//   console.log('ageConfirmed', ageConfirmed);
+//   if(ageConfirmed === false && isLoggedIn === true){
+//     setAgeConfirmed(true);
+//   }
+//  }, [ageConfirmed,isLoggedIn]);
 
 
   const getCategories = useCallback(async () => {

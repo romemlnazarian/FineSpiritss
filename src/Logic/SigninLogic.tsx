@@ -44,9 +44,7 @@ export const SigninLogic = () => {
       setToken(data.access);
       setRefreshToken(data.refresh);
       setUserData({ email: values.email.trim(), password: values.password.trim() });
-      if(ageConfirmed === false){
-        setAgeConfirmed(true);
-      }
+
       if(isLoggedIn === false){
         setIsLoggedIn(true);
       }

@@ -12,7 +12,9 @@ import CustomHeader from '../../navigation/CustomHeader';
 import OrderHistoryLogic from '../../logic/Setting/OrderHistoryLogic';
 import {Color} from '../../utiles/color';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
-
+import Vector from '../../assets/svg/Vector.svg';
+import HorizontalFlatList from '../../component/HorizontalFlatList';
+import { useNavigation } from '@react-navigation/native';
 const toDateOnly = (value: unknown): string => {
   if (value == null) {
     return '';
@@ -30,8 +32,11 @@ export default function OrderHistoryScreent() {
     onHandlerDetail,
     orderHistory,
     loading,
+    recommended,
+    refreshAll,
   } = OrderHistoryLogic();
   const {Styles, Height} = StyleComponent();
+  const navigation = useNavigation<any>();
 
   return (
     <View style={[Styles.container]}>
@@ -47,18 +52,40 @@ export default function OrderHistoryScreent() {
           <View
             style={[
               Styles.container,
-              Styles.alignCenter,
-              Styles.justifyCenter,
             ]}>
-            <Text style={[Styles.h5_SemiBold, {color: Color.black,marginTop:Height/3.5}]}>
-              No order history found
-            </Text>
-            {/* <View style={[Styles.alignCenter,Styles.alignSelf,{width:'93%',marginTop:'12%'}]}>
+      
+            <View style={[Styles.alignCenter,Styles.alignSelf,{width:'93%',marginTop:'12%'}]}>
             <Vector fill={Color.black} />
             <Text style={[Styles.h5_Bold,{marginTop:'5%'}]}>You don’t have any orders yet!</Text>
             <Text style={[Styles.body_Regular,Styles.textAlign,{width:'80%'}]}>Once you place an order
             it will appear here</Text>
-           </View> */}
+           </View>
+           <View style={[Styles.alignSelf,{width:'93%',marginTop:'10%'}]}>
+
+          
+             <HorizontalFlatList
+              callback={e =>
+
+                navigation.navigate('CatalogScreen', {
+
+                  screen: 'CatalogDetail',
+
+                  params: {product: e, fromSetting: true},
+
+                })
+
+              }
+
+              products={recommended}
+
+              onFavoriteToggled={(_id: string, _isFavorite: boolean) =>
+
+                refreshAll()
+
+              }
+
+            />
+             </View>
           </View>
         ) : (
           orderHistory.map((item: any) => (

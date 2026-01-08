@@ -46,7 +46,6 @@ const TabButton = ({
 
 export default function MyOrderItem({data}:{data:any}) {
   const {Styles} = StyleComponent();
-
   const [activeIndex, setActiveIndex] = useState<number>(data[0]?.id);
   const selected = data?.find((t:any) => t.id === activeIndex);
   const navigation = useNavigation<any>();
@@ -64,9 +63,10 @@ export default function MyOrderItem({data}:{data:any}) {
   return (
     <View style={styles.container}>
       <View style={styles.tabsRow}>
-        {data?.map((e:any) => (
+        {data?.map((e: any, idx: number) => (
           <TabButton
-            key={e.id}
+            // Some orders can contain repeated products (same id) so make the key unique.
+            key={`${String(e?.id ?? 'item')}-${idx}`}
             active={activeIndex === e.id}
             onPress={() => setActiveIndex(e.id)}
             style={styles.tabButton}

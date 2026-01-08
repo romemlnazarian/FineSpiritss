@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { CatalogScreenNavigationProp } from '../../navigation/types';
 import { useNavigation } from '@react-navigation/native';
 import { getOrderHistoryModel } from '../../model/Setting/SettingModel';
 import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
 import useAuthStore from '../../zustland/AuthStore';
+import { getHomeRecommendedModel } from '../../model/Home/HomeAdvertising';
+import useRecommendedStore from '../../zustland/recommendedStore';
 
 export interface SelectedProduct {
   id: string;
@@ -24,6 +26,8 @@ export default function OrderHistoryLogic() {
   const [periodId, setPeriodId] = useState<number>(0);
   const [orderHistory, setOrderHistory] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const {recommended, setRecommended} = useRecommendedStore();
+
   const onSubnmitFilter = (filterTitle: string) => {
     setTitle(filterTitle);
     setFilterVisible(true);
@@ -44,11 +48,13 @@ export default function OrderHistoryLogic() {
 useEffect(()=>{
 
   getOrderHistory();
+  getHomeRecommended();
 },[]);
 
   const getOrderHistory = () => {
     setLoading(true);
     getOrderHistoryModel(token, (data) => {
+      console.log('order history data =>', data);
       setOrderHistory(data.orders);
       setLoading(false);
     }, (error) => {
@@ -69,9 +75,82 @@ useEffect(()=>{
     });
   }
 
+  const getHomeRecommended = useCallback(() => {
+
+    getHomeRecommendedModel(
+
+      token,
+
+      data => {
+
+        const items = Array.isArray(data?.results) ? data.results : [];
+
+        setRecommended(items);
+
+      },
+
+      () => {
+
+        refreshTokenModel(refreshToken, tokens => {
+
+          setToken(tokens.access);
+
+          setRefreshToken(tokens.refresh);
+
+          getHomeRecommendedModel(
+
+            tokens.access,
+
+            data => {
+
+              const items = Array.isArray(data?.results) ? data.results : [];
+
+              setRecommended(items);
+
+            },
+
+            err => console.log('error', err),
+
+          );
+
+        });
+
+      },
+
+    );
+
+  }, [
+
+    refreshToken,
+
+    setRecommended,
+
+    setRefreshToken,
+
+    setToken,
+
+    token,
+
+  ]);
+
+
+
+
   const onHandlerDetail = (id: number) => {
     navigation.navigate('MyOrder',{id:id});
   };
+
+
+
+    // Refresh both product and recommended
+
+    const refreshAll = useCallback(() => {
+
+      getHomeRecommended();
+  
+    }, [getHomeRecommended]);
+
+
 
   return {
     onSubnmitFilter,
@@ -86,5 +165,7 @@ useEffect(()=>{
     onHandlerDetail,
     orderHistory,
     loading,
+    refreshAll,
+    recommended,
   };
 }

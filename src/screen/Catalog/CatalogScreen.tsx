@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
     paddingVertical: 40,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: '50%',
   },
   loadingText: {
     marginTop: 8,

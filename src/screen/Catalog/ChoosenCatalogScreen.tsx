@@ -32,8 +32,14 @@ export default function ChoosenCatalog(route: any) {
     onSearchHandler,
     titleHeader,
     onRemoveActiveFilter,
+    priceMinBound,
+    priceMaxBound,
+    selectedMinPrice,
+    selectedMaxPrice,
+    onPriceChange,
   } = ChoosenCatalogLogic(route);
   const {Styles} = StyleComponent();
+
   const sortData = useMemo(
     () => [
       {
@@ -65,10 +71,15 @@ export default function ChoosenCatalog(route: any) {
         onHandler={() => onSearchHandler()}
       />
       <CatalogFilter onHandler={e => onSubnmitFilter(e)} sortData={sortData}/>
+
       <ActiveFiltersChips
         countries={countries}
         brands={brands}
         volumes={volumes}
+        minPrice={selectedMinPrice}
+        maxPrice={selectedMaxPrice}
+        minPriceBound={priceMinBound}
+        maxPriceBound={priceMaxBound}
         onRemove={onRemoveActiveFilter}
       />
       <CatalogList
@@ -80,12 +91,19 @@ export default function ChoosenCatalog(route: any) {
         isLoadingMore={isLoadingMore}
         isInitialLoading={isInitialLoading}
       />
+
       <BottomSheet
         modalVisible={filterVisible}
-        height={350}
+        height={500}
         onClose={() => setFilterVisible(false)}>
         {title === 'filter' ? (
-          <ButtonSheetFilter />
+          <ButtonSheetFilter
+            minPrice={priceMinBound}
+            maxPrice={priceMaxBound}
+            currentMinPrice={selectedMinPrice}
+            currentMaxPrice={selectedMaxPrice}
+            onPriceChange={onPriceChange}
+          />
         ) : (
           <CatalogTabsFilter
             title={title}

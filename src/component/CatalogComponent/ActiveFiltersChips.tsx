@@ -3,16 +3,32 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
 
-type Chip = {type: 'Country' | 'Brand' | 'Capacity'; value: string; label: string};
+type Chip = {type: 'Country' | 'Brand' | 'Capacity' | 'Price'; value: string; label: string};
 
 type Props = {
   countries?: string[];
   brands?: string[];
   volumes?: string[];
+  // selected values
+  minPrice?: number;
+  maxPrice?: number;
+  // bounds from API (so we don't show chip before user changes)
+  minPriceBound?: number;
+  maxPriceBound?: number;
   onRemove: (type: Chip['type'], value: string) => void;
 };
 
-const ActiveFiltersChips = memo(({countries = [], brands = [], volumes = [], onRemove}: Props) => {
+const ActiveFiltersChips = memo(
+  ({
+    countries = [],
+    brands = [],
+    volumes = [],
+    minPrice,
+    maxPrice,
+    minPriceBound,
+    maxPriceBound,
+    onRemove,
+  }: Props) => {
   const {Styles} = StyleComponent();
 
   const chips = useMemo<Chip[]>(() => {
@@ -23,8 +39,17 @@ const ActiveFiltersChips = memo(({countries = [], brands = [], volumes = [], onR
       const isNumberLike = /^\d+(\.\d+)?$/.test(String(v));
       c.push({type: 'Capacity', value: v, label: isNumberLike ? `${v} ml` : String(v)});
     });
+    if (
+      typeof minPrice === 'number' &&
+      typeof maxPrice === 'number' &&
+      typeof minPriceBound === 'number' &&
+      typeof maxPriceBound === 'number' &&
+      (minPrice !== minPriceBound || maxPrice !== maxPriceBound)
+    ) {
+      c.push({type: 'Price', value: 'price', label: `Price: ${minPrice} - ${maxPrice}`});
+    }
     return c;
-  }, [brands, countries, volumes]);
+  }, [brands, countries, maxPrice, maxPriceBound, minPrice, minPriceBound, volumes]);
 
   if (chips.length === 0) {
     return null;

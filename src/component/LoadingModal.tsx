@@ -19,7 +19,7 @@ export default function LoadingModal({ isVisible}: ModalCardProps) {
         style={styles.modalOverlay}
       >
         <View style={[Styles.card,Styles.justifyCenter,{flexDirection:'column',borderColor:Color.white, backgroundColor:Color.white,height:150,width:'50%'}]}>
-        <Text style={Styles.h4_Bold}>Please Wait</Text>
+        <Text style={Styles.h6_Medium}>Please Wait</Text>
         <ActivityIndicator size='large' color={Color.primary} style={{marginTop:'10%'}}/>
         </View>
      

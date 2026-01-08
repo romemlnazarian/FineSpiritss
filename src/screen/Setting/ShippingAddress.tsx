@@ -16,7 +16,7 @@ export default function ShippingAddress(route:any) {
   const keyboardVerticalOffset = 40
   return (
     <KeyboardAvoidingView style={Styles.container}
-    behavior={'padding'} keyboardVerticalOffset={keyboardVerticalOffset}
+    behavior={'position'} keyboardVerticalOffset={keyboardVerticalOffset}
     >
       <CustomHeader showBack={true} title="Shipping Address" />
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -168,6 +168,6 @@ const styles = StyleSheet.create({
   },
   buttonComponent: {
     marginTop: '10%',
-    marginBottom: '10%',
+    marginBottom: '20%',
   },
 });

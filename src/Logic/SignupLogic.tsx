@@ -13,6 +13,7 @@ export const SignupLogic = () => {
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [open, setOpen] = useState(false);
+   const[showPass, setShowPass] = useState(false);
   const validationSchema = Yup.object().shape({
     username: Yup.string().trim().required('Required'),
     email: Yup.string()
@@ -115,5 +116,7 @@ export const SignupLogic = () => {
     formatDate,
     onSubmitGoogle,
     onSubmitApple,
+    showPass,
+    setShowPass
   };
 };

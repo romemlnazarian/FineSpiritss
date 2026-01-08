@@ -271,7 +271,7 @@ const ProductCard: React.FC<{
     <TouchableOpacity 
     activeOpacity={0.5}
       onPress={() => onHandlerItem?.(item)}
-    style={[styles.productCardContainer, Styles.alignCenter]}>
+    style={[styles.productCardContainer, Styles.alignCenter,]}>
       <TouchableOpacity style={styles.favoriteButton} onPress={toggleFavorite}>
         {isFavorite ? (
           <Heart_primary width={24} height={24} />
@@ -412,7 +412,7 @@ const CatalogList: React.FC<VerticalScrollProps> = ({
     }
     return (
       <View style={styles.footerContainer}>
-        <ActivityIndicator size="small" color={Color.primary} />
+        <ActivityIndicator size="large" color={Color.primary} style={{marginTop:'50%'}}/>
       </View>
     );
   }, [isLoadingMore]);
@@ -464,6 +464,7 @@ const styles = StyleSheet.create({
     width: '93%',
     alignSelf: 'center',
     marginTop: '5%',
+    paddingBottom: '15%',
   },
   headerContainer: {
     flexDirection: 'row',
@@ -544,6 +545,7 @@ const styles = StyleSheet.create({
     paddingVertical: 80,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: '50%',
   },
   loadingText: {
     marginTop: 10,

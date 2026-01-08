@@ -44,7 +44,13 @@ export default function ChoosenCatalogLogic(route: any) {
   const [countries, setCountries] = useState<string[]>([]);
   const [brands, setBrands] = useState<string[]>([]);
   const [volumes, setVolumes] = useState<string[]>([]);
-
+  // Price bounds from API (not a "selected filter")
+  const [priceMinBound, setPriceMinBound] = useState<number>(1);
+  const [priceMaxBound, setPriceMaxBound] = useState<number>(1000);
+  // Selected (applied) price filter
+  const [selectedMinPrice, setSelectedMinPrice] = useState<number>(1);
+  const [selectedMaxPrice, setSelectedMaxPrice] = useState<number>(1000);
+  const didUserSetPriceRef = useRef(false);
   // ---------- Refs to avoid stale closures ----------
   const isLoadingMoreRef = useRef(false);
   const hasNextPageRef = useRef(true);
@@ -60,6 +66,25 @@ export default function ChoosenCatalogLogic(route: any) {
   // ====================================================================
   // 🔥 Fetch Products with Pagination + Token Refresh
   // ====================================================================
+  const dedupeById = useCallback((items: any[]) => {
+    const seen = new Set<string>();
+    const out: any[] = [];
+    for (const it of items) {
+      const rawId = it?.id ?? it?.product_id ?? it?.product?.id;
+      if (rawId === undefined || rawId === null) {
+        out.push(it);
+        continue;
+      }
+      const key = String(rawId);
+      if (seen.has(key)) {
+        continue;
+      }
+      seen.add(key);
+      out.push(it);
+    }
+    return out;
+  }, []);
+
   const getProducts = useCallback(
     (requestedPage: number = 1) => {
       if (requestedPage === 1) {
@@ -83,7 +108,7 @@ export default function ChoosenCatalogLogic(route: any) {
           : data?.results ?? data?.data ?? [];
 
         setProducts(prev =>
-          requestedPage === 1 ? results : [...prev, ...results],
+          requestedPage === 1 ? dedupeById(results) : dedupeById([...prev, ...results]),
         );
 
         setHasNextPage(Boolean(data?.next));
@@ -118,7 +143,7 @@ export default function ChoosenCatalogLogic(route: any) {
         retry,
       );
     },
-    [token, refreshToken, setToken, setRefreshToken, category],
+    [token, refreshToken, setToken, setRefreshToken, category, dedupeById],
   );
 
   // ====================================================================
@@ -128,7 +153,22 @@ export default function ChoosenCatalogLogic(route: any) {
     getFilterDataModel(
       token,
       category.cat_slug,
-      data => setFilterData(data),
+      data =>{
+        console.log('filter data =>', data);
+        if (typeof data?.min_price === 'number') {
+          setPriceMinBound(data.min_price);
+          if (!didUserSetPriceRef.current) {
+            setSelectedMinPrice(data.min_price);
+          }
+        }
+        if (typeof data?.max_price === 'number') {
+          setPriceMaxBound(data.max_price);
+          if (!didUserSetPriceRef.current) {
+            setSelectedMaxPrice(data.max_price);
+          }
+        }
+        setFilterData(data);
+      },
       () =>
         refreshTokenModel(
           refreshToken,
@@ -203,7 +243,13 @@ export default function ChoosenCatalogLogic(route: any) {
   }, []);
 
   const fetchFilteredProducts = useCallback(
-    (nextCountries: string[], nextBrands: string[], nextVolumes: string[]) => {
+    (
+      nextCountries: string[],
+      nextBrands: string[],
+      nextVolumes: string[],
+      nextSelectedMinPrice: number,
+      nextSelectedMaxPrice: number,
+    ) => {
       const countriesQuery = nextCountries.join(',');
       const brandsQuery = nextBrands.join(',');
       const volumesQuery = nextVolumes.join(',');
@@ -212,7 +258,7 @@ export default function ChoosenCatalogLogic(route: any) {
         const normalizedData = Array.isArray(payload)
           ? payload
           : payload?.results ?? payload?.data ?? [];
-        setProducts(normalizedData);
+        setProducts(dedupeById(normalizedData));
         setIsLoadingMore(false);
         setIsInitialLoading(false);
       };
@@ -229,6 +275,8 @@ export default function ChoosenCatalogLogic(route: any) {
         countriesQuery,
         brandsQuery,
         volumesQuery,
+        nextSelectedMinPrice,
+        nextSelectedMaxPrice,
         handleSuccess,
         () =>
           refreshTokenModel(
@@ -243,6 +291,8 @@ export default function ChoosenCatalogLogic(route: any) {
                 countriesQuery,
                 brandsQuery,
                 volumesQuery,
+                nextSelectedMinPrice,
+                nextSelectedMaxPrice,
                 handleSuccess,
                 handleError,
               );
@@ -251,7 +301,13 @@ export default function ChoosenCatalogLogic(route: any) {
           ),
       );
     },
-    [category, refreshToken, setRefreshToken, setToken, token],
+    [
+      category,
+      refreshToken,
+      setRefreshToken,
+      setToken,
+      token,
+    ],
   );
 
   // ====================================================================
@@ -281,19 +337,27 @@ export default function ChoosenCatalogLogic(route: any) {
         nextVolumes = toggleValue(volumes, value);
         setVolumes(nextVolumes);
       }
-      fetchFilteredProducts(nextCountries, nextBrands, nextVolumes);
+      fetchFilteredProducts(
+        nextCountries,
+        nextBrands,
+        nextVolumes,
+        selectedMinPrice,
+        selectedMaxPrice,
+      );
     },
     [
       countries,
       brands,
       volumes,
+      selectedMinPrice,
+      selectedMaxPrice,
       toggleValue,
       fetchFilteredProducts,
     ],
   );
 
   const onRemoveActiveFilter = useCallback(
-    (type: 'Country' | 'Brand' | 'Capacity', value: string) => {
+    (type: 'Country' | 'Brand' | 'Capacity' | 'Price', value: string) => {
       setIsLoadingMore(true);
       setIsInitialLoading(true);
       setProducts([]);
@@ -305,13 +369,60 @@ export default function ChoosenCatalogLogic(route: any) {
       const nextVolumes =
         type === 'Capacity' ? volumes.filter(x => x !== value) : volumes;
 
-      if (type === 'Country') setCountries(nextCountries);
-      if (type === 'Brand') setBrands(nextBrands);
-      if (type === 'Capacity') setVolumes(nextVolumes);
+      if (type === 'Country') {
+        setCountries(nextCountries);
+      }
+      if (type === 'Brand') {
+        setBrands(nextBrands);
+      }
+      if (type === 'Capacity') {
+        setVolumes(nextVolumes);
+      }
+      if (type === 'Price') {
+        didUserSetPriceRef.current = false;
+        setSelectedMinPrice(priceMinBound);
+        setSelectedMaxPrice(priceMaxBound);
+      }
 
-      fetchFilteredProducts(nextCountries, nextBrands, nextVolumes);
+      fetchFilteredProducts(
+        nextCountries,
+        nextBrands,
+        nextVolumes,
+        type === 'Price' ? priceMinBound : selectedMinPrice,
+        type === 'Price' ? priceMaxBound : selectedMaxPrice,
+      );
     },
-    [brands, countries, fetchFilteredProducts, volumes],
+    [
+      brands,
+      countries,
+      fetchFilteredProducts,
+      priceMaxBound,
+      priceMinBound,
+      selectedMaxPrice,
+      selectedMinPrice,
+      volumes,
+    ],
+  );
+
+  const onPriceChange = useCallback(
+    (nextMin: number, nextMax: number) => {
+      didUserSetPriceRef.current = true;
+      const clampedMin = Math.max(priceMinBound, Math.min(nextMin, priceMaxBound));
+      const clampedMax = Math.max(priceMinBound, Math.min(nextMax, priceMaxBound));
+      const finalMin = Math.min(clampedMin, clampedMax);
+      const finalMax = Math.max(clampedMin, clampedMax);
+      setSelectedMinPrice(finalMin);
+      setSelectedMaxPrice(finalMax);
+
+      setIsLoadingMore(true);
+      setIsInitialLoading(true);
+      setProducts([]);
+      setFilterVisible(false);
+
+      // re-fetch with current country/brand/volume + new price range
+      fetchFilteredProducts(countries, brands, volumes, finalMin, finalMax);
+    },
+    [brands, countries, fetchFilteredProducts, priceMaxBound, priceMinBound, volumes],
   );
 
   // ====================================================================
@@ -341,6 +452,11 @@ export default function ChoosenCatalogLogic(route: any) {
     brands,
     volumes,
     onRemoveActiveFilter,
-    titleHeader
+    titleHeader,
+    priceMinBound,
+    priceMaxBound,
+    selectedMinPrice,
+    selectedMaxPrice,
+    onPriceChange,
   };
 }

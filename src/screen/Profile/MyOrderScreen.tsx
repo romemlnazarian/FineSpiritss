@@ -32,11 +32,9 @@ export default function MyORderScreen(route: any) {
 
   const {Styles, Height} = StyleComponent();
 
-  const navigation = useNavigation<any>();
 
   const {id} = route?.route?.params;
 
-  const {recommended, setRecommended} = useRecommendedStore();
 
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
 
@@ -47,64 +45,6 @@ export default function MyORderScreen(route: any) {
 
 
 
-
-  const getHomeRecommended = useCallback(() => {
-
-    getHomeRecommendedModel(
-
-      token,
-
-      data => {
-
-        const items = Array.isArray(data?.results) ? data.results : [];
-
-        setRecommended(items);
-
-      },
-
-      () => {
-
-        refreshTokenModel(refreshToken, tokens => {
-
-          setToken(tokens.access);
-
-          setRefreshToken(tokens.refresh);
-
-          getHomeRecommendedModel(
-
-            tokens.access,
-
-            data => {
-
-              const items = Array.isArray(data?.results) ? data.results : [];
-
-              setRecommended(items);
-
-            },
-
-            err => console.log('error', err),
-
-          );
-
-        });
-
-      },
-
-    );
-
-  }, [
-
-    refreshToken,
-
-    setRecommended,
-
-    setRefreshToken,
-
-    setToken,
-
-    token,
-
-  ]);
 
 
 
@@ -123,7 +63,7 @@ export default function MyORderScreen(route: any) {
         value,
 
         data => {
-
+          console.log('order history detail data =>', data);
           setOrderHistoryDetail(data.products);
 
           setIsLoading(false);
@@ -174,19 +114,13 @@ export default function MyORderScreen(route: any) {
 
     onSubmitDetail(id);
 
-    getHomeRecommended();
+  
 
-  }, [getHomeRecommended, id, onSubmitDetail]);
+  }, [ id, onSubmitDetail]);
 
 
 
-  // Refresh both product and recommended
 
-  const refreshAll = useCallback(() => {
-
-    getHomeRecommended();
-
-  }, [getHomeRecommended]);
 
 
 
@@ -211,47 +145,47 @@ export default function MyORderScreen(route: any) {
           />
 
         ) : (
+          <MyOrderItem data={orderHistoryDetail} />
 
-          <>
-          {orderHistoryDetail.length > 0 ? (
-            <MyOrderItem data={orderHistoryDetail} />
-          ) : (
-            <View style={[Styles.alignCenter,Styles.alignSelf,{width:'93%',marginTop:'12%'}]}>
+          // <>
+          // {orderHistoryDetail.length > 0 ? (
+          // ) : (
+          //   <View style={[Styles.alignCenter,Styles.alignSelf,{width:'93%',marginTop:'12%'}]}>
 
-            <Vector fill={Color.black}/>
+          //   <Vector fill={Color.black}/>
       
-            <Text style={[Styles.h5_Bold,{marginTop:'5%'}]}>You don’t have any orders yet!</Text>
+          //   <Text style={[Styles.h5_Bold,{marginTop:'5%'}]}>You don’t have any orders yet!</Text>
       
-            <Text style={[Styles.body_Regular,Styles.textAlign,{width:'80%'}]}>Once you place an order
+          //   <Text style={[Styles.body_Regular,Styles.textAlign,{width:'80%'}]}>Once you place an order
       
-            it will appear here</Text>
+          //   it will appear here</Text>
       
-            </View>
-          )}
-            <HorizontalFlatList
-              callback={e =>
+          //   </View>
+          // )}
+          //   <HorizontalFlatList
+          //     callback={e =>
 
-                navigation.navigate('CatalogScreen', {
+          //       navigation.navigate('CatalogScreen', {
 
-                  screen: 'CatalogDetail',
+          //         screen: 'CatalogDetail',
 
-                  params: {product: e, fromSetting: true},
+          //         params: {product: e, fromSetting: true},
 
-                })
+          //       })
 
-              }
+          //     }
 
-              products={recommended}
+          //     products={recommended}
 
-              onFavoriteToggled={(_id: string, _isFavorite: boolean) =>
+          //     onFavoriteToggled={(_id: string, _isFavorite: boolean) =>
 
-                refreshAll()
+          //       refreshAll()
 
-              }
+          //     }
 
-            />
+          //   />
 
-          </>
+          // </>
 
         )}
 
