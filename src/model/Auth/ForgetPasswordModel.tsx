@@ -23,7 +23,8 @@ export const ForgetPasswordModel = (
               callback(anyData);
               return
             }else{
-              errorcallback(String(anyData.detail));
+              console.log('forget password error====----->',anyData);
+              errorcallback(String(anyData.email[0]));
             }
         },
       "",

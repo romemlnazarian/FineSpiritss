@@ -51,6 +51,7 @@ export type CatalogStackParamList = {
   Catalog: undefined;
   ChoosenCatalog: {
     item: any;
+    title: string;
   } | undefined;
   CatalogSearch: undefined;
   CatalogDetail: {
