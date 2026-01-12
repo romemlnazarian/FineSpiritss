@@ -60,6 +60,7 @@ export default function SettingScreen() {
   } = SettingLogic();
   return (
     <View style={[Styles.container]}>
+      <View style={{height: '3%'}} />
       <Menu
         onHandler={() => {}}
         title={`${profile?.first_name ?? ''} ${profile?.last_name ?? ''}`}

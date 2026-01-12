@@ -72,7 +72,7 @@ const CategoryScreen = memo(() => {
         title="Catalog"
         onSubmitBack={() => navigation.getParent()?.navigate('Home' as never)}
       />
-      <FlatList
+       <FlatList
         data={catalog}
         renderItem={renderCategoryItem}
         keyExtractor={(item, index) =>
@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   categoryItem: {
+    marginTop: 10,
     width: '45%',
     height: 130,
     backgroundColor: Color.white,

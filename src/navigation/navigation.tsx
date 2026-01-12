@@ -1,9 +1,9 @@
 // src/navigation/Navigation.js
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {StatusBar, View, Text} from 'react-native';
+import {StatusBar, View, Text, Platform} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 const NetInfo = require('@react-native-community/netinfo');
 
 import SplashScreen from '../screen/SplashScreen';
@@ -45,61 +45,89 @@ export default function Navigation() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView
-        style={styles.container}
-        edges={Platform.OS === 'android' ? ['bottom', 'top'] : ['top']}>
-        <StatusBar barStyle="dark-content" />
+      <View style={styles.container}>
+        <StatusBar
+          barStyle="dark-content"
+          translucent={true}
+          backgroundColor="transparent"
+        />
+
         {isConnected === false && <OfflineBanner />}
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{headerShown: false ,gestureEnabled: false}}>
-            <Stack.Screen name="Splash" component={SplashScreen} options={{gestureEnabled: false}} />
-            <Stack.Screen name="Wellcome" component={WellcomeScreen} options={{gestureEnabled: false}} />
-            <Stack.Screen name="Signup" component={SignupScreen} options={{gestureEnabled: false}} />
-            <Stack.Screen name="Signin" component={SigninScreen} options={{gestureEnabled: false}} />
-            <Stack.Screen
-              name="GoogleAuth"
-              component={GoogleAuthScreen}
-              options={{headerShown: false}}
-            />
-               <Stack.Screen
-              name="AppleAuth"
-              component={AppleAuthScreen}
-              options={{headerShown: false,gestureEnabled: false}}
-            />
-            <Stack.Screen
-              name="VerificationCode"
-              component={VerificationCodeScreen}
-              options={{gestureEnabled: false}}
-            />
-            <Stack.Screen
-              name="PasswordVerification"
-              component={PasswordVerificationScreen}
-              options={{gestureEnabled: false}}
-            />
-            <Stack.Screen
-              name="NumberVerification"
-              component={NumberVerificationScreen}
-              options={{gestureEnabled: false}}
-            />
-            <Stack.Screen
-              name="ForgetPassword"
-              component={ForgetPasswordScreen}
-              options={{gestureEnabled: false}}
-            />
-            <Stack.Screen
-              name="ForgetPasswordVerify"
-              component={ForgetPasswordVerifyScreen}
-              options={{gestureEnabled: false}}
-            />
-            <Stack.Screen
-              name="ResetPassword"
-              component={ResetPasswordScreen}
-              options={{gestureEnabled: false}}
-            />
-            <Stack.Screen name="AppTabs" component={AppTabs} options={{gestureEnabled: false}} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SafeAreaView>
+
+        {/* Only apply safe area to the BOTTOM of the screen */}
+        <SafeAreaView style={styles.container} edges={[Platform.OS === 'ios' ? '' : 'bottom']}>
+          <NavigationContainer>
+            <Stack.Navigator
+              screenOptions={{headerShown: false, gestureEnabled: false}}>
+              <Stack.Screen
+                name="Splash"
+                component={SplashScreen}
+                options={{gestureEnabled: false}}
+              />
+              <Stack.Screen
+                name="Wellcome"
+                component={WellcomeScreen}
+                options={{gestureEnabled: false}}
+              />
+              <Stack.Screen
+                name="Signup"
+                component={SignupScreen}
+                options={{gestureEnabled: false}}
+              />
+              <Stack.Screen
+                name="Signin"
+                component={SigninScreen}
+                options={{gestureEnabled: false}}
+              />
+              <Stack.Screen
+                name="GoogleAuth"
+                component={GoogleAuthScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="AppleAuth"
+                component={AppleAuthScreen}
+                options={{headerShown: false, gestureEnabled: false}}
+              />
+              <Stack.Screen
+                name="VerificationCode"
+                component={VerificationCodeScreen}
+                options={{gestureEnabled: false}}
+              />
+              <Stack.Screen
+                name="PasswordVerification"
+                component={PasswordVerificationScreen}
+                options={{gestureEnabled: false}}
+              />
+              <Stack.Screen
+                name="NumberVerification"
+                component={NumberVerificationScreen}
+                options={{gestureEnabled: false}}
+              />
+              <Stack.Screen
+                name="ForgetPassword"
+                component={ForgetPasswordScreen}
+                options={{gestureEnabled: false}}
+              />
+              <Stack.Screen
+                name="ForgetPasswordVerify"
+                component={ForgetPasswordVerifyScreen}
+                options={{gestureEnabled: false}}
+              />
+              <Stack.Screen
+                name="ResetPassword"
+                component={ResetPasswordScreen}
+                options={{gestureEnabled: false}}
+              />
+              <Stack.Screen
+                name="AppTabs"
+                component={AppTabs}
+                options={{gestureEnabled: false}}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaView>
+      </View>
     </SafeAreaProvider>
   );
 }
@@ -107,6 +135,7 @@ export default function Navigation() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
 });
 

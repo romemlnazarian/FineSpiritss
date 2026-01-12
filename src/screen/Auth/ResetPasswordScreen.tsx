@@ -57,10 +57,15 @@ import {
             </Text> */}
   
               <View style={styles.inputContainer}>
+              <TextView
+                  title={'Please enter your new password'}
+                  color={Color.black}
+                  style={[Styles.h3_Bold, styles.textStyles]}
+                />
                 <TextView
                   title={Language.Password}
                   color={Color.black}
-                  style={[Styles.title_Regular, styles.textStyles]}
+                  style={[Styles.title_Regular, styles.textStyles,{marginTop:'5%'}]}
                 />
                 <Controller
                   control={control}
