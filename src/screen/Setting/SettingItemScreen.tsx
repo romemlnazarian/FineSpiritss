@@ -70,7 +70,7 @@ export default function SettingItemScreen() {
     <View style={[Styles.container, {backgroundColor: Color.white}]}>
       <CustomHeader
         showBack={true}
-        title="Setting"
+        subTitle="Setting"
         style={{backgroundColor: Color.white}}
       />
 

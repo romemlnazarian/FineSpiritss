@@ -32,7 +32,7 @@ const Counter = ({ initialValue = 0, onValueChange,stylesContainer,textStyle }: 
       <TouchableOpacity onPress={decrement} style={styles.button}>
        <Mines/>
       </TouchableOpacity>
-      <Text style={[Styles.title_Bold, styles.countText,textStyle]}>{count}</Text>
+      <Text style={[Styles.title_Regular, styles.countText,textStyle]}>{count}</Text>
       <TouchableOpacity onPress={increment} style={styles.button}>
       <Plus/>
       </TouchableOpacity>

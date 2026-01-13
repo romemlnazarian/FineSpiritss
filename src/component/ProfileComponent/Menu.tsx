@@ -7,7 +7,7 @@ export default function Menu({onHandler,icon,title,style}:{onHandler:()=>void,ic
   return (
     <View
     style={[{
-      width: '90%',
+      width: '93%',
       height: 40,
       flexDirection: 'row',
       backgroundColor: Color.white,
@@ -16,7 +16,7 @@ export default function Menu({onHandler,icon,title,style}:{onHandler:()=>void,ic
       padding: 10,
       alignItems: 'center',
     },style]}>
-        <TouchableOpacity onPress={onHandler}>
+        <TouchableOpacity onPress={onHandler} style={{marginLeft:'2%'}}>
           {icon}
         </TouchableOpacity>
     <Text style={[Styles.body_Medium, Styles.textAlign, {flex: 1}]}>

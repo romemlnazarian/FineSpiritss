@@ -309,9 +309,9 @@ const ProductCard: React.FC<{
         style={styles.favoriteButton}
         onPress={() => toggleFavorite(item.id)}>
         {isFavorite ? (
-          <Heart_primary width={24} height={24} />
+          <Heart width={24} height={24} fill={Color.red} />
         ) : (
-          <Heart width={24} height={24} />
+          <Heart width={24} height={24} fill={Color.white} />
         )}
       </TouchableOpacity>
       <View style={Styles.justifyCenter}>
@@ -326,7 +326,7 @@ const ProductCard: React.FC<{
         )}
       </View>
       <Text
-        style={[Styles.subtitle_Regular, styles.productTitle]}
+        style={[Styles.subtitle_SemiBold, styles.productTitle]}
         numberOfLines={1}
         ellipsizeMode="tail">
         {item.title}
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
     marginTop: '5%',
   },
   categoryTitle: {
-    color: Color.primary,
+    color: Color.black,
   },
   productFlatListContainer: {
     marginTop: '5%',

@@ -274,7 +274,7 @@ const ProductCard: React.FC<{
     style={[styles.productCardContainer, Styles.alignCenter,]}>
       <TouchableOpacity style={styles.favoriteButton} onPress={toggleFavorite}>
         {isFavorite ? (
-          <Heart_primary width={24} height={24} />
+          <Heart width={24} height={24} fill={Color.red} />
         ) : (
           <Heart width={24} height={24} fill={Color.white} />
         )}
@@ -307,7 +307,7 @@ const ProductCard: React.FC<{
         </Swiper>
       </View> */}
       <View style={styles.productTitleContainer}>
-      <Text style={[Styles.subtitle_Regular, styles.productTitle]} numberOfLines={1} ellipsizeMode="tail">
+      <Text style={[Styles.subtitle_SemiBold, styles.productTitle]} numberOfLines={1} ellipsizeMode="tail">
         {item.title}
       </Text>
       <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:'2%'}}>

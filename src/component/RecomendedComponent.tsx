@@ -317,7 +317,7 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
       <TouchableOpacity 
       style={styles.favoriteButton} onPress={() => toggleFavorite(item.id)}>
         {isFavorite ? (
-          <Heart_primary width={24} height={24} />
+          <Heart width={24} height={24} fill={Color.red} />
         ) : (
           <Heart width={24} height={24} fill={Color.white} />
         )}
@@ -329,7 +329,7 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
           <View style={styles.imagePlaceholder} />
         )}
       </View>
-      <Text style={[Styles.subtitle_Regular, styles.productTitle]} numberOfLines={1} ellipsizeMode="tail">
+      <Text style={[Styles.subtitle_SemiBold, styles.productTitle]} numberOfLines={1} ellipsizeMode="tail">
         {item.title}
       </Text>
       <Text style={[Styles.subtitle_Regular, styles.productDescription,{marginTop:'2%'}]}>

@@ -113,53 +113,52 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
         />
         <View style={styles.productInfo}>
           <Text
-            style={[Styles.subtitle_Regular, {width: '80%'}]}
+            style={[Styles.subtitle_SemiBold, {width: '80%'}]}
             numberOfLines={1}
             ellipsizeMode="tail">
             {item.title}
           </Text>
-          <View style={[styles.detailsContainer,{marginTop:'2%'}]}>
-            <Text style={[Styles.subtitle_Regular, {color: Color.gray}]}>
+          <View style={[styles.detailsContainer, {marginTop: '2%'}]}>
+            <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
               {item.country}
             </Text>
             <View style={styles.separator} />
-            <Text style={[Styles.subtitle_Regular, {color: Color.gray}]}>
+            <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
               {item.alcoholContent}
             </Text>
           </View>
-        {item?.sale_price === null ? (
-        <Text
-          style={[
-            Styles.title_Bold,
-            styles.productPrice,
-            styles.priceContainer,
-          ]}>
-          {item.price} zł
-        </Text>
-      ) : (
-        <>
-          {item.regular_price && (
+          {item?.sale_price === null ? (
             <Text
               style={[
-                Styles.subtitle_Regular,
-                styles.originalPriceText,
+                Styles.title_Bold,
+                styles.productPrice,
                 styles.priceContainer,
               ]}>
-              {item.regular_price} zł
+              {item.price} zł
             </Text>
+          ) : (
+            <>
+              {item.regular_price && (
+                <Text
+                  style={[
+                    Styles.subtitle_Regular,
+                    styles.originalPriceText,
+                    styles.priceContainer,
+                  ]}>
+                  {item.regular_price} zł
+                </Text>
+              )}
+
+              <Text
+                style={[
+                  Styles.title_Bold,
+                  styles.productPrice,
+                  styles.priceContainer,
+                ]}>
+                {item.price} zł
+              </Text>
+            </>
           )}
-
-          <Text
-            style={[
-              Styles.title_Bold,
-              styles.productPrice,
-              styles.priceContainer,
-            ]}>
-            {item.price} zł
-          </Text>
-        </>
-      )}
-
         </View>
       </View>
       <TouchableOpacity
@@ -168,7 +167,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
         }}
         style={styles.heartContainer}>
         {isFavorite ? (
-          <Heart_primary width={24} height={24} />
+          <Heart width={24} height={24} fill={Color.red} />
         ) : (
           <Heart width={24} height={24} fill={Color.white} />
         )}
@@ -188,8 +187,9 @@ export default function CatalogSearch() {
     [],
   );
 
-  const [displayedProductData, setDisplayedProductData] =
-    useState<ProductItem[]>([]);
+  const [displayedProductData, setDisplayedProductData] = useState<
+    ProductItem[]
+  >([]);
   const [isSearching, setIsSearching] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -207,7 +207,7 @@ export default function CatalogSearch() {
       price: item?.price ?? '',
       slug: item?.slug ?? item?.id ?? '',
       image_url:
-      item?.image_url ?? item?.image?.url ?? item?.images?.[0]?.src ?? '',
+        item?.image_url ?? item?.image?.url ?? item?.images?.[0]?.src ?? '',
       regular_price: item?.regular_price ?? '',
       sale_price: item?.sale_price ?? null,
       abv: typeof item?.abv === 'number' ? `${item.abv}%` : item?.abv ?? '',
@@ -317,13 +317,7 @@ export default function CatalogSearch() {
           ),
       );
     },
-    [
-      token,
-      refreshToken,
-      setToken,
-      setRefreshToken,
-      normalizeHistoryItems,
-    ],
+    [token, refreshToken, setToken, setRefreshToken, normalizeHistoryItems],
   );
 
   const handleSearch = useCallback(
@@ -408,50 +402,64 @@ export default function CatalogSearch() {
       </View>
       <View style={styles.separatorLine} />
       {filteredSuggestions.length > 0 && (
-        <TouchableOpacity
-          style={styles.cleanButton}
-          onPress={() => {
-            setSearchTerm('');
-            setFilteredSuggestions([]);
-            setDisplayedProductData(normalizeProducts(recommended as any[]));
-            DeleteSearchProductsHistoryModel(
-              token,
-              () => {
-                console.log('DeleteSearchProductsHistoryModel success');
-              },
-              _error => {
-                refreshTokenModel(
-                  refreshToken,
-                  newTokens => {
-                    setToken(newTokens.access);
-                    setRefreshToken(newTokens.refresh);
-                    DeleteSearchProductsHistoryModel(
-                      newTokens.access,
-                      () => {
-                        console.log('DeleteSearchProductsHistoryModel success');
-                      },
-                      _error => {
-                        console.log(
-                          'DeleteSearchProductsHistoryModel error =>',
-                          _error,
-                        );
-                      },
-                    );
-                  },
-                  _error => {
-                    console.log(
-                      'DeleteSearchProductsHistoryModel error =>',
-                      _error,
-                    );
-                  },
-                );
-              },
-            );
-          }}>
-          <Text style={[Styles.h6_Regular, styles.cleanButtonText]}>Clean</Text>
-        </TouchableOpacity>
-      )}
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '90%',
+          alignSelf: 'center',
+        }}>
+        <Text style={[Styles.h6_Bold, {marginTop: 10}]}>Search History</Text>
 
+          <TouchableOpacity
+            // style={styles.cleanButton}
+            onPress={() => {
+              setSearchTerm('');
+              setFilteredSuggestions([]);
+              setDisplayedProductData(normalizeProducts(recommended as any[]));
+              DeleteSearchProductsHistoryModel(
+                token,
+                () => {
+                  console.log('DeleteSearchProductsHistoryModel success');
+                },
+                _error => {
+                  refreshTokenModel(
+                    refreshToken,
+                    newTokens => {
+                      setToken(newTokens.access);
+                      setRefreshToken(newTokens.refresh);
+                      DeleteSearchProductsHistoryModel(
+                        newTokens.access,
+                        () => {
+                          console.log(
+                            'DeleteSearchProductsHistoryModel success',
+                          );
+                        },
+                        _error => {
+                          console.log(
+                            'DeleteSearchProductsHistoryModel error =>',
+                            _error,
+                          );
+                        },
+                      );
+                    },
+                    _error => {
+                      console.log(
+                        'DeleteSearchProductsHistoryModel error =>',
+                        _error,
+                      );
+                    },
+                  );
+                },
+              );
+            }}>
+            <Text style={[Styles.h6_Regular, styles.cleanButtonText]}>
+              Clean
+            </Text>
+          </TouchableOpacity>
+       
+      </View> )}
       <View>
         {filteredSuggestions.length > 0 && (
           <View>
@@ -463,7 +471,9 @@ export default function CatalogSearch() {
                   onPress={() => {
                     setSearchTerm(item.title);
                     setFilteredSuggestions([]);
-                    setDisplayedProductData(normalizeProducts(recommended as any[]));
+                    setDisplayedProductData(
+                      normalizeProducts(recommended as any[]),
+                    );
                     fetchSearchResults(item.title);
                   }}>
                   <Text
@@ -483,18 +493,25 @@ export default function CatalogSearch() {
             />
           </View>
         )}
-
+        <Text style={[Styles.h6_Bold, {marginLeft: '5%', marginTop: 10}]}>
+          Popular products
+        </Text>
         <FlatList
           data={displayedProductData}
           renderItem={renderProductItem}
           keyExtractor={keyExtractor}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={[styles.flatListContainer, {paddingBottom: (insets?.bottom ?? 0) + 140}]}
+          contentContainerStyle={[
+            styles.flatListContainer,
+            {paddingBottom: (insets?.bottom ?? 0) + 140},
+          ]}
           initialNumToRender={8}
           windowSize={10}
           maxToRenderPerBatch={8}
           updateCellsBatchingPeriod={50}
-          ListFooterComponent={<View style={{height: (insets?.bottom ?? 0) + 60}} />}
+          ListFooterComponent={
+            <View style={{height: (insets?.bottom ?? 0) + 60}} />
+          }
           scrollEventThrottle={16}
           decelerationRate="fast"
         />
@@ -514,6 +531,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: '5%',
   },
   cleanButton: {
     position: 'absolute',
@@ -522,8 +540,8 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   cleanButtonText: {
-    color: Color.gray,
-    marginTop: 20,
+    color: Color.primary,
+    // marginTop: 30,
   },
   searchLoader: {
     marginTop: 10,

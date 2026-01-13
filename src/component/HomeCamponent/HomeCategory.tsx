@@ -30,7 +30,7 @@ const CategoryItem = memo(({item, onSubmit}: {item: any, onSubmit: (item: any) =
         </View>
       </View>
       <Text
-        style={[Styles.title_Regular, styles.categoryItemTitle]}
+        style={[Styles.title_Medium, styles.categoryItemTitle]}
         numberOfLines={1}
         ellipsizeMode="tail"
       >
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   categoryTitle: {
-    color: Color.primary,
+    color: Color.black,
   },
   separatorLine: {
     width: '72%',

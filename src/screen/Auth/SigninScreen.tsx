@@ -95,7 +95,7 @@ export default function SigninScreen() {
         </View>
         <TouchableOpacity onPress={onSubmitForgetPass}>
           <Text
-            style={[Styles.title_Regular, {marginLeft: '5%', marginTop: '5%'}]}>
+            style={[Styles.title_Regular, {marginLeft: '5%', marginTop: '5%',color:Color.primary}]}>
             {Language.ForgetPass}
           </Text>
         </TouchableOpacity>
@@ -136,7 +136,7 @@ export default function SigninScreen() {
             <TextView
               title={Language.singUp}
               color={Color.primary}
-              style={[Styles.title_Regular, styles.signInText]}
+              style={[Styles.title_Medium, styles.signInText]}
             />
           </TouchableOpacity>
         </View>
@@ -199,7 +199,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   signInText: {
-    marginLeft: 10,
+    marginLeft: 5,
+    color:Color.primary,
   },
   socialLoginButtonsContainer: {
     width: '60%',

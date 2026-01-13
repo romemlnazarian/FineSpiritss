@@ -208,7 +208,7 @@ export const StyleComponent = () => {
     
      h6_Regular:{
       fontSize: 20,
-      fontFamily:'Satoshi-Medium',
+      fontFamily:'Satoshi-Regular',
       color:Color.black,
      },
      
@@ -239,7 +239,7 @@ export const StyleComponent = () => {
     
      body_Regular:{
       fontSize: 18,
-      fontFamily:'Satoshi-Medium',
+      fontFamily:'Satoshi-Regular',
       color:Color.black,
      },
      
@@ -271,7 +271,7 @@ export const StyleComponent = () => {
     
      title_Regular:{
       fontSize: 16,
-      fontFamily:'Satoshi-Medium',
+      fontFamily:'Satoshi-Regular',
       color:Color.black,
      },
      
@@ -302,7 +302,7 @@ export const StyleComponent = () => {
     
      subtitle_Regular:{
       fontSize: 14,
-      fontFamily:'Satoshi-Medium',
+      fontFamily:'Satoshi-Regular',
       color:Color.black,
      },
      

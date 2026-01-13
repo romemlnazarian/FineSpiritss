@@ -35,7 +35,7 @@ const SortItem = memo(({item, isSelected, onPress}: {
       onPress={() => onPress(item.id)}>
       <Text
         style={[
-          Styles.title_Regular,
+          Styles.title_Medium,
           isSelected ? styles.selectedItemText : styles.unselectedItemText,
         ]}>
         {item.title}
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   categoryTitle: {
-    color: Color.primary,
+    color: Color.black,
   },
   separatorLine: {
     width: '72%',

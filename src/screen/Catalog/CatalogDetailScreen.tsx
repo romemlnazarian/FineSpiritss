@@ -151,7 +151,7 @@ export default function CatalogDetailScreen(route: any) {
             <Text style={[Styles.body_Bold]}>{product?.title}</Text>
             <TouchableOpacity onPress={() => toggleFavorite(product?.id)}>
               {isFavorite ? (
-                <Heart_primary width={24} height={24} />
+                <Heart width={24} height={24} fill={Color.red} />
               ) : (
                 <Heart width={24} height={24} fill={Color.white} />
               )}
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     marginLeft: '5%',
-    marginTop: 10,
+    marginTop: '5%',
   },
   paragraphMuted: {
     marginLeft: '5%',

@@ -72,6 +72,7 @@ const CategoryScreen = memo(() => {
         title="Catalog"
         onSubmitBack={() => navigation.getParent()?.navigate('Home' as never)}
       />
+      <View style={{marginTop: '5%'}}/>
        <FlatList
         data={catalog}
         renderItem={renderCategoryItem}
@@ -118,7 +119,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   categoryItem: {
-    marginTop: 10,
     width: '45%',
     height: 130,
     backgroundColor: Color.white,

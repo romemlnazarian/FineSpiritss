@@ -6,7 +6,7 @@ import { useCallback } from 'react';
 
 export  function WellcomeLogic() {
     const navigation = useNavigation<AuthScreenNavigationProp>();
-    const {deleteAccountDone, resetDeleteAccountDone} = useDeleteAccountDoneStore();
+    const {deleteAccountDone, resetDeleteAccountDone, setDeleteAccountDone} = useDeleteAccountDoneStore();
     const onSubmit = (key:string) =>{
          key === 'signup'?
         navigation.navigate('Signup')
@@ -14,16 +14,17 @@ export  function WellcomeLogic() {
         navigation.navigate('Signin')
     }
 
-    useFocusEffect(
-      useCallback(() => {
-        // هر بار که صفحه فوکوس شد deleteAccountDone صفر شود
-        resetDeleteAccountDone();
-    
-        return () => {};
-      }, [])
-    );
+    //   useFocusEffect(
+    //     useCallback(() => {
+    //       // هر بار که صفحه فوکوس شد deleteAccountDone صفر شود
+    //       resetDeleteAccountDone();
+      
+    //       return () => {};
+    //     }, [])
+    // );
   const onHandlerClose = () => {
     resetDeleteAccountDone();
+    setDeleteAccountDone(false);
   }
 
 return{

@@ -21,14 +21,14 @@ export default function FavoriteScreen() {
   }
   return (
     <View style={Styles.container}>
-      <CustomHeader showBack={true} title="Wishlist" />
+      <CustomHeader showBack={true} subTitle="Wishlist" />
       <ScrollView showsVerticalScrollIndicator={false}>
       { favoriteProducts.length === 0 ? 
       
       <View style={[Styles.alignCenter,Styles.alignSelf,{width:'93%',marginTop:'8%'}]}>
       <Gllass width={100} height={100} />
-      <Text style={[Styles.h4_Bold,{textAlign:'center'}]}>There is no drinks in wishlist</Text>
-      <Text style={[Styles.h6_Regular,Styles.textAlign,{width:'80%'}]}>
+      <Text style={[Styles.h4_Bold,{textAlign:'center',width:'60%'}]}>There is no drinks in wishlist</Text>
+      <Text style={[Styles.h6_Regular,Styles.textAlign,{width:'85%'}]}>
       Once you add items from a store,
       your wishlist will appear here
       </Text>

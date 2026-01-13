@@ -160,7 +160,7 @@ export default function SignupScreen() {
           <TextView
             title={Language.singIn}
             color={Color.primary}
-            style={[Styles.title_Regular, styles.signInText]}
+            style={[Styles.title_Medium, styles.signInText]}
           />
         </TouchableOpacity>
       </View>
@@ -194,6 +194,8 @@ const styles = StyleSheet.create({
   businessClientContainer: {
     marginTop: '5%',
     alignSelf: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: Color.black,
   },
   buttonComponent: {
     marginTop: '10%',
@@ -241,7 +243,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   signInText: {
-    marginLeft: 10,
+    marginLeft: 5,
   },
   socialLoginButtonsContainer: {
     width: '60%',

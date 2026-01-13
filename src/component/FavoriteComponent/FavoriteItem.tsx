@@ -293,16 +293,16 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
           <Image source={{uri: item.image_url}} style={styles.productImage} />
           <View style={styles.productInfo}>
             <Text
-              style={[Styles.subtitle_Regular, styles.productTitle]}
+              style={[Styles.subtitle_SemiBold, styles.productTitle]}
               numberOfLines={1}
               ellipsizeMode="tail">
               {item.title ?? item.name ?? ''}
             </Text>
 
             <View style={styles.detailsContainer}>
-              <Text style={[Styles.subtitle_Regular,{color:Color.gray}]}>{item.country ?? ''}</Text>
+              <Text style={[Styles.subtitle_Regular,{color:Color.black}]}>{item.country ?? ''}</Text>
               <View style={styles.separator} />
-              <Text style={[Styles.subtitle_Regular,{color:Color.gray}]}>{item.abv ? `ABV ${item.abv}` : ''}</Text>
+              <Text style={[Styles.subtitle_Regular,{color:Color.black}]}>{item.abv ? `ABV ${item.abv}` : ''}</Text>
             </View>
             <View style={styles.priceContainer}>
          
@@ -348,7 +348,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
          onPress={() => onHandlerItem?.(item)}
         style={styles.heartContainer}>
         {isFavorite ? (
-          <Heart_primary width={24} height={24} />
+          <Heart width={24} height={24} fill={Color.red} />
         ) : (
           <Heart width={24} height={24} fill={Color.white} />
         )}

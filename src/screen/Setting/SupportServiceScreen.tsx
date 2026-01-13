@@ -156,7 +156,7 @@ const onSubmit = (key:string)=>{
               style={styles.rowGap10Center}>
                 {item.icon}
                 <View style={{gap:5}}>
-                <Text style={Styles.title_Regular}>{item.title}</Text>
+                <Text style={Styles.title_Medium}>{item.title}</Text>
                 <Text style={[Styles.title_Regular,{color:Color.gray,width:item.id === 3 ? '98%' : '100%'}]}>{item.discription}</Text>
                 </View>
             </TouchableOpacity>
@@ -173,7 +173,7 @@ const onSubmit = (key:string)=>{
               style={styles.rowGap10Center}>
                 {item.icon}
                 <View style={{gap:5}}>
-                <Text style={Styles.title_Regular}>{item.title}</Text>
+                <Text style={Styles.title_Medium}>{item.title}</Text>
                 <Text style={[Styles.title_Regular,{color:Color.gray}]}>{item.discription}</Text>
                 </View>
             </TouchableOpacity>

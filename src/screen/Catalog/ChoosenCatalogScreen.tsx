@@ -66,7 +66,7 @@ export default function ChoosenCatalog(route: any) {
     <View style={[Styles.container]}>
       <CustomHeader
         showBack={true}
-        title={titleHeader}
+        subTitle={titleHeader}
         icon={<Search />}
         onHandler={() => onSearchHandler()}
       />
