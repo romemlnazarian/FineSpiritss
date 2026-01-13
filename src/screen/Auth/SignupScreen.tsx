@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   logoComponentStyle: {
-    marginTop: '5%',
+    marginTop: '12%',
   },
   inputContainer: {
     marginTop: '10%',

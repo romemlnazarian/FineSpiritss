@@ -1,7 +1,7 @@
 import LocalizedStrings from 'react-native-localization';
 export let Language = new LocalizedStrings({
   en: {
-    wellcomTitle: 'Welcome to the Swit Alcohol shop',
+    wellcomTitle: 'Welcome to the Sweet Alcohol shop',
     wellcomeText: 'Trusted by millions to discover and buy the right wine every time',
     singIn:'Sign in',
     singUp:'Sign up',
