@@ -357,6 +357,12 @@ export default function HomeLogic() {
   );
 
 
+  const onSubmitSearch = () => {
+    navigation.navigate('CatalogScreen', {
+      screen: 'CatalogSearch',
+    });
+  };
+
   return {
     onSubmitClose,
     categories,
@@ -373,7 +379,8 @@ export default function HomeLogic() {
     homeRecommended,
     isTopBrandsLoading,
     ageConfirmed,
-    onConfrim
+    onConfrim,
+    onSubmitSearch
   };
 }
 

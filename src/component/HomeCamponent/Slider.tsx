@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   wrapper: {
     height: 200,
     borderRadius: 20,
-    marginTop: '2%',
+    marginTop: '4%',
   },
   slide1: {
     flex: 1,

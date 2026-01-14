@@ -4,6 +4,8 @@ import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
+import HorizontalFlatList from '../HorizontalFlatList';
+import OrderHistoryLogic from '../../logic/Setting/OrderHistoryLogic';
 
 
 type LocalTabButtonProps = {
@@ -49,7 +51,8 @@ export default function MyOrderItem({data}:{data:any}) {
   const [activeIndex, setActiveIndex] = useState<number>(data[0]?.id);
   const selected = data?.find((t:any) => t.id === activeIndex);
   const navigation = useNavigation<any>();
-
+  const {recommended, refreshAll} =
+    OrderHistoryLogic();
   const onSubmit = (product: any) => {
     if (!product) {
       return;
@@ -113,7 +116,21 @@ export default function MyOrderItem({data}:{data:any}) {
         />
       </TouchableOpacity>
 
+      <View style={[Styles.alignSelf, {width: '93%', marginTop: '10%'}]}>
+              <HorizontalFlatList
+                callback={e =>
+                  navigation.navigate('CatalogScreen', {
+                    screen: 'CatalogDetail',
 
+                    params: {product: e, fromSetting: true},
+                  })
+                }
+                products={recommended}
+                onFavoriteToggled={(_id: string, _isFavorite: boolean) =>
+                  refreshAll()
+                }
+              />
+            </View>
       {/* Order Status Card */}
       {/* <View style={styles.orderCard}>
         <Text style={[Styles.h4_SemiBold, Styles.textAlign]}>On the way</Text>

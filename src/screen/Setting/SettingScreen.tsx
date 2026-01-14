@@ -61,7 +61,7 @@ export default function SettingScreen() {
   } = SettingLogic();
   return (
     <View style={[Styles.container]}>
-      <View style={{height: '3%'}} />
+      <View style={{marginTop:Platform.OS === 'android' ? '5%' : '10%'}} />
       <Menu
         onHandler={() => navigation.goBack()}
         title={`${profile?.first_name ?? ''} ${profile?.last_name ?? ''}`}

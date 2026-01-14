@@ -25,7 +25,6 @@ export default function ChoosenCatalogLogic(route: any) {
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
   const category = route.route.params.item;
   const titleHeader = route.route.params.title;
-  console.log('category header =>', titleHeader);
   // ---------- UI States ----------
   const [filterVisible, setFilterVisible] = useState(false);
   const [title, setTitle] = useState('');
@@ -39,7 +38,7 @@ export default function ChoosenCatalogLogic(route: any) {
   const [hasNextPage, setHasNextPage] = useState(true);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-
+  const [countProduct, setCountProduct] = useState(0);
   // ---------- Filter States ----------
   const [filterData, setFilterData] = useState<any[]>([]);
   const [countries, setCountries] = useState<string[]>([]);
@@ -104,6 +103,7 @@ export default function ChoosenCatalogLogic(route: any) {
       };
 
       const onSuccess = (data: any) => {
+        setCountProduct(data?.count);
         const results = Array.isArray(data)
           ? data
           : data?.results ?? data?.data ?? [];
@@ -155,7 +155,6 @@ export default function ChoosenCatalogLogic(route: any) {
       token,
       category.cat_slug,
       data =>{
-        console.log('filter data =>', data);
         if (typeof data?.min_price === 'number') {
           setPriceMinBound(data.min_price);
           if (!didUserSetPriceRef.current) {
@@ -308,6 +307,7 @@ export default function ChoosenCatalogLogic(route: any) {
       setRefreshToken,
       setToken,
       token,
+      dedupeById,
     ],
   );
 
@@ -459,5 +459,6 @@ export default function ChoosenCatalogLogic(route: any) {
     selectedMinPrice,
     selectedMaxPrice,
     onPriceChange,
+    countProduct
   };
 }

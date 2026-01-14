@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 import React, {useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import CustomHeader from '../../navigation/CustomHeader';
@@ -37,6 +37,7 @@ export default function ChoosenCatalog(route: any) {
     selectedMinPrice,
     selectedMaxPrice,
     onPriceChange,
+    countProduct
   } = ChoosenCatalogLogic(route);
   const {Styles} = StyleComponent();
 
@@ -61,7 +62,6 @@ export default function ChoosenCatalog(route: any) {
     ],
     [],
   );
-
   return (
     <View style={[Styles.container]}>
       <CustomHeader
@@ -70,6 +70,13 @@ export default function ChoosenCatalog(route: any) {
         icon={<Search />}
         onHandler={() => onSearchHandler()}
       />
+      {countProduct > 0 && (
+      <View style={{width:'100%', justifyContent:'center',alignItems:'center'}}>
+      
+        <Text style={[Styles.title_Regular,]}>{countProduct} products</Text>
+     
+      </View>
+      )}
       <CatalogFilter onHandler={e => onSubnmitFilter(e)} sortData={sortData}/>
 
       <ActiveFiltersChips
