@@ -1,5 +1,5 @@
-import {View, Text, StyleSheet} from 'react-native';
-import React, { useState } from 'react';
+import {Text, StyleSheet, KeyboardAvoidingView} from 'react-native';
+import React, {useState} from 'react';
 import {Controller} from 'react-hook-form';
 import TextInputComponent from '../../component/TextInputComponent';
 import {useForm} from 'react-hook-form';
@@ -12,52 +12,50 @@ import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
 import useAuthStore from '../../zustland/AuthStore';
 import {useToast} from '../../utiles/Toast/ToastProvider';
 import useProfileStore from '../../zustland/ProfileStore';
+import {Color} from '../../utiles/color';
 export default function UpdateFullName({callBack}: {callBack: () => void}) {
   const {Styles} = StyleComponent();
   const {show} = useToast();
   const {refreshToken, setToken, setRefreshToken,token} = useAuthStore();
-  const {profile, setProfile} = useProfileStore();
+  const {updateProfile} = useProfileStore();
   const [loading, setLoading] = useState(false);
   const validationSchema = Yup.object().shape({
-    fullName: Yup.string().required('Full name is required'),
+    fullName: Yup.string().trim().required('Full name is required'),
   });
 
   const onSubmit = () => {
     setLoading(true);
-    getValues().fullName;
     UpdateFullNameModel(
       token,
       getValues().fullName,
-      data => {
+      (res) => {
         setLoading(false);
-        console.log('data ========>=>', data);
-        setProfile({
-          ...profile,
-          first_name: data.first_name,
-          last_name: data.last_name,
-          full_name: `${data.first_name} ${data.last_name}`,
+        console.log('data ========>=>', res);
+        updateProfile({
+          first_name: res.first_name,
+          last_name: res.last_name,
+          full_name: `${res.first_name} ${res.last_name}`,
         });
-        show(data.detail);
+        show(res.detail);
         callBack();
       }, () => {
         setLoading(false);
         refreshTokenModel(
           refreshToken,
-          data => {
-            setToken(data.access);
-            setRefreshToken(data.refresh);
+          (refreshRes) => {
+            setToken(refreshRes.access);
+            setRefreshToken(refreshRes.refresh);
             UpdateFullNameModel(
-              data.access,
+              refreshRes.access,
               getValues().fullName,
-              data => {
+              (res) => {
                 setLoading(false);
-                setProfile({
-                  ...profile,
-                  first_name: data.first_name,
-                  last_name: data.last_name,
-                  full_name: `${data.first_name} ${data.last_name}`,
+                updateProfile({
+                  first_name: res.first_name,
+                  last_name: res.last_name,
+                  full_name: `${res.first_name} ${res.last_name}`,
                 });
-                show(data.detail);
+                show(res.detail);
                 callBack();
               },
               () => {
@@ -87,9 +85,11 @@ export default function UpdateFullName({callBack}: {callBack: () => void}) {
     mode: 'onChange',
     resolver: yupResolver(validationSchema),
   });
+
+  const isSaveDisabled = loading || !isValid;
   return (
-    <View>
-      <Text style={[Styles.h5_Medium, Styles.textAlign, {marginTop: '5%'}]}>
+    <KeyboardAvoidingView behavior="padding">
+      <Text style={[Styles.h5_Medium, Styles.textAlign, styles.title]}>
         Update Full Name
       </Text>
 
@@ -98,7 +98,7 @@ export default function UpdateFullName({callBack}: {callBack: () => void}) {
         name="fullName"
         render={({field: {onChange, onBlur, value}}) => (
           <TextInputComponent
-            containerStyle={{marginTop: '5%'}}
+            containerStyle={styles.inputContainer}
             onChangeText={onChange}
             onBlur={onBlur}
             value={value}
@@ -111,15 +111,22 @@ export default function UpdateFullName({callBack}: {callBack: () => void}) {
       <BottomCardComponent
         title={'Save'}
         onHandler={handleSubmit(onSubmit)}
-        style={styles.buttonComponent}
+        disabled={isSaveDisabled}
+        style={[
+          styles.buttonComponent,
+          isSaveDisabled ? styles.buttonDisabled : null,
+        ]}
         loading={loading}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  title: {marginTop: '5%'},
+  inputContainer: {marginTop: '5%'},
   buttonComponent: {
     marginTop: '5%',
   },
+  buttonDisabled: {backgroundColor: Color.lightBlack, borderColor: Color.lightBlack},
 });

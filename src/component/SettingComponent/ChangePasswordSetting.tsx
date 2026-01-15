@@ -13,7 +13,7 @@ import {ChangePasswordSettingLogic} from '../../logic/Setting/ChangePasswordSett
 import Lock from '../../assets/svg/Password.svg';
 // import {Language} from '../../utiles/Language/i18n';
 import BottomCardComponent from '../BottomCard';
-import { Color } from '../../utiles/color';
+import {Color} from '../../utiles/color';
 export default function ChangePasswordSetting({onCallBack}: {onCallBack: () => void}) {
   const {Styles} = StyleComponent();
   const {
@@ -26,11 +26,15 @@ export default function ChangePasswordSetting({onCallBack}: {onCallBack: () => v
     onSubmit,
     isAllFilled,
     isLoading,
+    isValid,
+    handleSubmit,
   } = ChangePasswordSettingLogic( onCallBack );
+
+  const isSaveDisabled = isLoading || !isAllFilled || !isValid;
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <View style={[Styles.alignCenter, {marginTop: '5%'}]}>
+      <View style={[Styles.alignCenter, styles.container]}>
         <Text style={Styles.h5_Medium}>Change Password</Text>
         <Controller
           control={control}
@@ -91,21 +95,25 @@ export default function ChangePasswordSetting({onCallBack}: {onCallBack: () => v
         />
         <BottomCardComponent
           title={'Save'}
-          disabled={!isAllFilled}
+          disabled={isSaveDisabled}
           loading={isLoading}
-          onHandler={()=>onSubmit()}
-          style={styles.saveButton}
+          onHandler={handleSubmit(onSubmit)}
+          style={[styles.saveButton, isSaveDisabled ? styles.saveButtonDisabled : null]}
         />
       </View>
     </KeyboardAvoidingView>
   );
 }
 const styles = StyleSheet.create({
+  container: {marginTop: '5%'},
   textInputContainer: {
     marginTop: '5%',
   },
   saveButton: {
     marginTop: '5%',
-    backgroundColor:Color.primary
+  },
+  saveButtonDisabled: {
+    backgroundColor: Color.lightBlack,
+    borderColor: Color.lightBlack,
   },
 });

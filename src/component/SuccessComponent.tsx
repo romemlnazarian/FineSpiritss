@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, StyleProp, TextStyle} from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../utiles/styles';
 import BottomCardComponent from './BottomCard';
@@ -9,11 +9,13 @@ export default function SuccessComponent({
   discription,
   buttomVisible,
   onHandler,
+  styleDiscription,
 }: {
   title: string;
   discription: string;
   buttomVisible: boolean;
   onHandler: () => void;
+  styleDiscription?: StyleProp<TextStyle>;
 }) {
   const {Styles} = StyleComponent();
   return (
@@ -27,6 +29,7 @@ export default function SuccessComponent({
           Styles.body_Regular,
           Styles.textAlign,
           styles.description,
+          styleDiscription
         ]}>
         {discription}
       </Text>

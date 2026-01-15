@@ -8,7 +8,8 @@ export const BottomSheet: FC<{
   modalVisible: boolean;
   height: number;
   onClose?: () => void;
-}> = ({children, height, modalVisible, onClose}) => {
+  keyboardAvoidingViewEnabled?: boolean;
+}> = ({children, height, modalVisible, onClose, keyboardAvoidingViewEnabled = true}) => {
   const refRBSheet = useRef<any>(null);
 
   useEffect(() => {

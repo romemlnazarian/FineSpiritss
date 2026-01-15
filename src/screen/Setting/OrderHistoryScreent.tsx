@@ -35,8 +35,8 @@ export default function OrderHistoryScreent() {
 
   return (
     <View style={[Styles.container]}>
-      <CustomHeader showBack={true} title="Order History" />
-      {orderHistory.length > 0 && (
+      <CustomHeader showBack={true} subTitle="My Orders" />
+      {/* {orderHistory.length > 0 && (
         <View
           style={{
             width: '90%',
@@ -48,7 +48,7 @@ export default function OrderHistoryScreent() {
             {orderHistory.length} orders
           </Text>
         </View>
-      )}
+      )} */}
       <ScrollView>
         {loading ? (
           <ActivityIndicator
@@ -74,6 +74,7 @@ export default function OrderHistoryScreent() {
               </Text>
             </View>
             <View style={[Styles.alignSelf, {width: '93%', marginTop: '10%'}]}>
+              <Text style={[Styles.h4_Bold, {color: Color.black}]}>Recommendations</Text>
               <HorizontalFlatList
                 callback={e =>
                   navigation.navigate('CatalogScreen', {

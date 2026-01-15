@@ -11,9 +11,11 @@ import ShippingAddressLogic from '../../logic/Setting/ShippingAddressLogic';
 
 export default function ShippingAddress(route:any) {
   const {Styles} = StyleComponent();
-  const {control, handleSubmit, errors, onSubmit, profile,loading} = ShippingAddressLogic(route);
-  
-  const keyboardVerticalOffset = 40
+  const {control, handleSubmit, errors, onSubmit, profile, loading, isValid} =
+    ShippingAddressLogic(route);
+
+  const keyboardVerticalOffset = 40;
+  const isSaveDisabled = loading || !isValid;
   return (
     <KeyboardAvoidingView style={Styles.container}
     behavior={'position'} keyboardVerticalOffset={keyboardVerticalOffset}
@@ -143,9 +145,9 @@ export default function ShippingAddress(route:any) {
       <BottomCardComponent
         title={'Save'}
         onHandler={handleSubmit(onSubmit)}
-        // disabled={!isValid}
-        style={styles.buttonComponent}
-        disabled={loading}
+        disabled={isSaveDisabled}
+        style={[styles.buttonComponent, isSaveDisabled ? styles.buttonDisabled : null]}
+        textStyle={isSaveDisabled ? styles.buttonTextDisabled : null}
         loading={loading}
       />
       </ScrollView>
@@ -169,5 +171,13 @@ const styles = StyleSheet.create({
   buttonComponent: {
     marginTop: '10%',
     marginBottom: '25%',
+  },
+  buttonDisabled: {
+    opacity: 0.85,
+    backgroundColor: Color.lightBlack,
+    borderColor: Color.lightBlack,
+  },
+  buttonTextDisabled: {
+    opacity: 0.9,
   },
 });

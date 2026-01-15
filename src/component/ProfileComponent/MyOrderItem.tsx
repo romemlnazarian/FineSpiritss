@@ -100,7 +100,7 @@ export default function MyOrderItem({data}:{data:any}) {
             volume:
           </Text>
           <Text style={[Styles.subtitle_Regular, {color: Color.gray}]}>
-           {selected?.volume || ''}
+           {selected?.volume || ''} ml
           </Text>
         </View>
         <View style={styles.divider} />
@@ -117,6 +117,7 @@ export default function MyOrderItem({data}:{data:any}) {
       </TouchableOpacity>
 
       <View style={[Styles.alignSelf, {width: '93%', marginTop: '10%'}]}>
+      <Text style={[Styles.h4_Bold,{marginLeft:'2%'}]}>Recommendations</Text>
               <HorizontalFlatList
                 callback={e =>
                   navigation.navigate('CatalogScreen', {

@@ -130,7 +130,7 @@ export default function MyORderScreen(route: any) {
 
       <ScrollView>
 
-        <CustomHeader showBack={true} title="My Orders" />
+        <CustomHeader showBack={true} subTitle="My Orders" />
 
         {isLoading ? (
 

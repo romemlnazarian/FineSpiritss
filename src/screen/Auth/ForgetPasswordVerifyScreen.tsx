@@ -32,11 +32,14 @@ export default function ForgetPasswordVerifyScreen(route: any) {
         style={[Styles.h4_Bold, styles.titleStyle]}
         color={Color.black}
       />
+      <View style={[{flexDirection: 'row',gap: 5},styles.subtitleStyle]}>
       <TextView
-        title={`${Language.We_sent_code_to} ${email}`}
-        style={[Styles.title_Regular, styles.subtitleStyle]}
+        title={`${Language.We_sent_code_to}`}
+        style={[Styles.title_Regular]}
         color={Color.black}
       />
+      <Text style={[Styles.title_Medium,{width: '50%'}]} numberOfLines={1} ellipsizeMode="tail">{email}</Text>
+      </View>
       <CodeInput isCodeValid={codeValid} onCodePress={e => onCodeHandle(e)} />
       <View style={styles.counterContainer}>
         <TouchableOpacity onPress={ResendCode} disabled={DisableTimer}>

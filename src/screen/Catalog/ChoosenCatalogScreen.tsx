@@ -73,7 +73,7 @@ export default function ChoosenCatalog(route: any) {
       {countProduct > 0 && (
       <View style={{width:'100%', justifyContent:'center',alignItems:'center'}}>
       
-        <Text style={[Styles.title_Regular,]}>{countProduct} products</Text>
+        <Text style={[Styles.title_Regular,]}>{countProduct} Products</Text>
      
       </View>
       )}

@@ -185,6 +185,7 @@ export default function CardScreen() {
                         Styles.h6_Regular,
                         Styles.textAlign,
                         styles.emptyCartSubtitle,
+                        {width:'90%'},
                       ]}>
                       Once you add items from a store, your cart will appear
                       here
@@ -224,6 +225,7 @@ export default function CardScreen() {
                       Styles.body_Regular,
                       Styles.textAlign,
                       styles.emptyCartSubtitle,
+                      {width:'90%'},
                     ]}>
                     Once you add items from a store, your cart will appear here
                   </Text>

@@ -1,4 +1,4 @@
-import {View, Text, KeyboardAvoidingView, Platform} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Controller} from 'react-hook-form';
@@ -8,20 +8,19 @@ import {useForm} from 'react-hook-form';
 import TextInputComponent from '../TextInputComponent';
 import Email from '../../assets/svg/Email.svg';
 import BottomCardComponent from '../BottomCard';
-import { Color } from '../../utiles/color';
+import {Color} from '../../utiles/color';
 export default function EmailVerifySetting({callBack}:{callBack:(value:string)=>void}) {
   const {Styles} = StyleComponent();
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .trim()
-      .required('Email is required')
+      .required('Email is required'),
   });
   const {
     control,
     handleSubmit,
     getValues,
-    formState: {errors},
-    watch,
+    formState: {errors, isValid},
   } = useForm({
     defaultValues: {
       email: '',
@@ -32,13 +31,12 @@ export default function EmailVerifySetting({callBack}:{callBack:(value:string)=>
   });
   const onSubmit = () => {
     callBack(getValues().email);
-  }
+  };
+  const isSaveDisabled = !isValid;
   return (
-    <KeyboardAvoidingView
-    >
-    <View style={[Styles.alignCenter,{marginTop:'5%'}]}>
+    <View style={[Styles.alignCenter, styles.container]}>
       <Text style={Styles.h5_Medium}>Change Email address</Text>
-      <Text style={[Styles.title_Regular,Styles.textAlign,{marginTop:'5%',width:'80%'}]}>
+      <Text style={[Styles.title_Regular, Styles.textAlign, styles.subtitle]}>
         We’ll send you a code to verify your new email address
       </Text>
       <View style={Styles.alignCenter}>
@@ -47,7 +45,7 @@ export default function EmailVerifySetting({callBack}:{callBack:(value:string)=>
           name="email"
           render={({field: {onChange, onBlur, value}}) => (
             <TextInputComponent
-              containerStyle={{marginTop:'5%'}}
+              containerStyle={styles.input}
               onBlur={onBlur}
               placeholder={'New Email Address'}
               handlePasswordIconClick={() => console.log()}
@@ -61,11 +59,22 @@ export default function EmailVerifySetting({callBack}:{callBack:(value:string)=>
         />
       </View>
       <BottomCardComponent
-        title={'Save'}
+        title={'Next'}
         onHandler={handleSubmit(onSubmit)}
-        style={{marginTop:'5%'}}
+        disabled={isSaveDisabled}
+        style={[
+          styles.button,
+          isSaveDisabled ? styles.buttonDisabled : null,
+        ]}
       />
     </View>
-    </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {marginTop: '5%'},
+  subtitle: {marginTop: '5%', width: '80%'},
+  input: {marginTop: '5%',width: '100%'},
+  button: {marginTop: '5%'},
+  buttonDisabled: {backgroundColor: Color.lightBlack, borderColor: Color.lightBlack},
+});

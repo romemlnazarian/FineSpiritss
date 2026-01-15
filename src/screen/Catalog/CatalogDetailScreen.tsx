@@ -14,13 +14,16 @@ import {Color} from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
 import CatalogDetailLogic from '../../logic/Catalog/CatalogDetailLogic';
 import Heart from '../../assets/svg/Heart.svg';
-import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import BottomCardComponent from '../../component/BottomCard';
 import AddBottom from '../../component/AddBottom';
 import LoadingModal from '../../component/LoadingModal';
 import Card from '../../assets/svg/Cart.svg';
+import Fish from '../../assets/svg/fish.svg';
+import Cheesse from '../../assets/svg/cheese.svg';
+import Meat from '../../assets/svg/meat.svg';
+import Fruits from '../../assets/svg/fruits_and_berries.svg';
 export default function CatalogDetailScreen(route: any) {
   const {Styles, Height} = StyleComponent();
   const {
@@ -329,11 +332,17 @@ export default function CatalogDetailScreen(route: any) {
               </Text>
               {product?.gastronomy?.suggestions.map(
                 (suggestion: any, index: number) => (
-                  <Text
-                    key={index}
-                    style={[Styles.title_Regular, styles.suggestionText]}>
-                    {suggestion}
+                  
+                  <View   key={index} style={styles.suggestionText}>
+                    {suggestion === 'fish' && <Fish width={30} height={30} />}
+                    {suggestion === 'cheese' && <Cheesse width={30} height={30} />}
+                    {suggestion === 'meat' && <Meat width={30} height={30} />}
+                    {suggestion === 'fruits_and_berries' && <Fruits width={30} height={30} />}
+                   <Text
+                    style={[Styles.title_Regular, ]}>
+                    {suggestion === 'fruits_and_berries'?'Fruits and Berries':suggestion}
                   </Text>
+                  </View>
                 ),
               )}
             </>
@@ -394,6 +403,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     marginTop: '5%',
+    paddingBottom: '5%',
   },
   detailsHeader: {
     width: '90%',
@@ -408,15 +418,14 @@ const styles = StyleSheet.create({
     height: 40,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
     borderColor: Color.primary,
     borderRadius: 10,
-    padding: 10,
     marginLeft: '5%',
     marginTop: 10,
   },
   volumeText: {
-    marginLeft: '5%',
     color: Color.black,
   },
   subInfoText: {
@@ -463,9 +472,11 @@ const styles = StyleSheet.create({
     width: '60%',
   },
   suggestionText: {
+    flexDirection:'row',
+    alignItems:'center',
+    gap:10,
     marginLeft: '5%',
     marginTop: 10,
-    marginBottom: 10,
   },
   productCardContainer: {
     marginRight: 8,

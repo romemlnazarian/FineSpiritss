@@ -110,7 +110,7 @@ export default function SignupScreen() {
           activeOpacity={0.5}
           style={styles.dateContainer}>
           <Calender width={25} height={25} />
-          <Text style={[Styles.title_Regular, styles.dobPlaceholderText]}>
+          <Text style={[Styles.subtitle_Medium, styles.dobPlaceholderText]}>
             {selectedDate === '' ? Language.DOB_Placeholder : selectedDate}
           </Text>
         </TouchableOpacity>
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dobPlaceholderText: {
-    color: Color.gray,
+    color: 'gray',
     marginLeft: '2%',
   },
   scroll: { flex: 1 },
