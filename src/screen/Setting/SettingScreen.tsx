@@ -36,7 +36,7 @@ const data = [
 const dataTwo = [
   {
     id: 1,
-    title: 'Setting',
+    title: 'Settings',
     icon: <Wrench />,
   },
   {

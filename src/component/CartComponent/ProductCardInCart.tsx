@@ -3,6 +3,7 @@ import React from 'react';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
 import AddBottom from '../AddBottom';
+import Trash from '../../assets/svg/Trash.svg';
 interface ProductItem {
   id: number;
   title: string;
@@ -79,9 +80,10 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
 
       </View>
       <TouchableOpacity style={styles.heartContainer} onPress={handleRemove}>
-        <View style={styles.closeBtn}>
+        <Trash width={24} height={24} />
+        {/* <View style={styles.closeBtn}>
           <Text style={styles.closeText}>×</Text>
-        </View>
+        </View> */}
       </TouchableOpacity>
 
     </View>

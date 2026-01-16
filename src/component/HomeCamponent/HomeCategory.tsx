@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   separatorLine: {
     width: '72%',
-    height: 1,
+    height: 0.5,
     backgroundColor: Color.lightGray,
     marginLeft: 10,
     marginTop: '2%',
@@ -101,9 +101,9 @@ const styles = StyleSheet.create({
   },
   categoryItemWrapper: {
     width: '30%',
-    marginBottom: 35,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: '5%',
   },
   categoryImageContainer: {
     width: 100,

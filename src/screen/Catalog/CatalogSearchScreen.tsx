@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   Image,
 } from 'react-native';
-import React, {useState, useCallback, useMemo, useRef, useEffect} from 'react';
+import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -23,7 +23,6 @@ import {
 } from '../../model/Catalog/Catalog';
 import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
 import {useNavigation} from '@react-navigation/native';
-import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import {
   AddFavoriteProductModel,
   DeleteFavoriteProductModel,
@@ -357,12 +356,9 @@ export default function CatalogSearch() {
 
   const keyExtractor = useCallback((item: ProductItem) => item.id, []);
 
-  const getTextInputWidthStyle = useCallback(
-    (hasSuggestions: boolean): ViewStyle => {
-      return {width: '80%'};
-    },
-    [],
-  );
+  const getTextInputWidthStyle = useCallback((): ViewStyle => {
+    return {width: '80%'};
+  }, []);
 
   return (
     <View style={[Styles.container]}>
@@ -380,9 +376,7 @@ export default function CatalogSearch() {
           style={[
             styles.textInputContainer,
             Styles.body_Regular,
-            getTextInputWidthStyle(
-              filteredSuggestions.length > 0 || isSearching,
-            ),
+            getTextInputWidthStyle(),
           ]}
           value={searchTerm}
           onChangeText={handleSearch}
@@ -458,7 +452,7 @@ export default function CatalogSearch() {
               Clean
             </Text>
           </TouchableOpacity>
-       
+
       </View> )}
       <View>
         {filteredSuggestions.length > 0 && (
@@ -545,7 +539,9 @@ const styles = StyleSheet.create({
   },
   searchLoader: {
     marginTop: 10,
-    marginLeft: 8,
+    // marginRight: '5%',
+    position: 'absolute',
+    right: 20,
   },
   textInputContainer: {
     marginTop: 10,

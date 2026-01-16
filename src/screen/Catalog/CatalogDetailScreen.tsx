@@ -37,7 +37,7 @@ export default function CatalogDetailScreen(route: any) {
     onSubmit,
     count,
     visible,
-    onSubmitDetail
+    onSubmitDetail,
   } = CatalogDetailLogic(route);
   const navigation: any = useNavigation();
   const fromFavorite = Boolean(route?.route?.params?.fromFavorite);
@@ -145,7 +145,7 @@ export default function CatalogDetailScreen(route: any) {
           <Image
             source={{uri: product?.image_url}}
             style={styles.productImage}
-            resizeMethod='resize'
+            resizeMethod="resize"
           />
         </View>
         {/* <Slider /> */}
@@ -164,7 +164,6 @@ export default function CatalogDetailScreen(route: any) {
             style={[Styles.title_Regular, {marginLeft: '5%', marginTop: 10}]}>
             {product?.description}
           </Text> */}
-          {/* eslint-disable-next-line react/jsx-no-undef */}
           <View style={styles.volumeBadge}>
             <Text style={[Styles.title_Regular, styles.volumeText]}>
               {product?.volume}
@@ -240,7 +239,7 @@ export default function CatalogDetailScreen(route: any) {
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
             Tasting Characteristics
           </Text>
-          <Text style={[Styles.title_Regular, styles.paragraphMuted]}>
+          <Text style={[Styles.title_Regular, styles.paragraphMuted,{width:'85%'}]}>
             {product?.tasting_characteristics?.text}
           </Text>
 
@@ -254,15 +253,15 @@ export default function CatalogDetailScreen(route: any) {
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
                 Primary
               </Text>
-              <View style={styles.aromaRow}>
-                <Text style={[Styles.title_Regular, styles.aromaLabel]}>
+              <View style={[styles.aromaRow,{flexDirection:'column'}]}>
+                <Text style={[Styles.title_Medium, styles.aromaLabel,]}>
                   {
                     product?.tasting_characteristics?.aromas_and_flavours
                       ?.primary[0]?.name
                   }
                   :
                 </Text>
-                <Text style={[Styles.title_Regular, styles.aromaValue]}>
+                <Text style={[Styles.title_Regular, styles.aromaValue,{marginLeft:'5%'}]}>
                   {
                     product?.tasting_characteristics?.aromas_and_flavours
                       ?.primary[0]?.value
@@ -276,14 +275,15 @@ export default function CatalogDetailScreen(route: any) {
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
                 Secondary
               </Text>
-              <View style={styles.aromaRow}>
-                <Text style={[Styles.title_Regular, styles.aromaLabel]}>
+              <View style={[styles.aromaRow,{flexDirection:'column'}]}>
+                <Text style={[Styles.title_Medium, styles.aromaLabel]}>
                   {
                     product?.tasting_characteristics?.aromas_and_flavours
                       ?.secondary[0]?.name
                   }
+                  :
                 </Text>
-                <Text style={[Styles.title_Regular, styles.aromaValue]}>
+                <Text style={[Styles.title_Regular, styles.aromaValue,{marginLeft:'5%'}]}>
                   {
                     product?.tasting_characteristics?.aromas_and_flavours
                       ?.secondary[0]?.value
@@ -332,15 +332,19 @@ export default function CatalogDetailScreen(route: any) {
               </Text>
               {product?.gastronomy?.suggestions.map(
                 (suggestion: any, index: number) => (
-                  
-                  <View   key={index} style={styles.suggestionText}>
+                  <View key={index} style={styles.suggestionText}>
                     {suggestion === 'fish' && <Fish width={30} height={30} />}
                     {suggestion === 'cheese' && <Cheesse width={30} height={30} />}
                     {suggestion === 'meat' && <Meat width={30} height={30} />}
                     {suggestion === 'fruits_and_berries' && <Fruits width={30} height={30} />}
-                   <Text
-                    style={[Styles.title_Regular, ]}>
-                    {suggestion === 'fruits_and_berries'?'Fruits and Berries':suggestion}
+                    <Text style={[Styles.title_Regular]}>
+                    {(() => {
+                      const raw =
+                        suggestion === 'fruits_and_berries'
+                          ? 'Fruits and Berries'
+                          : String(suggestion ?? '').replace(/_/g, ' ');
+                      return raw ? raw.charAt(0).toUpperCase() + raw.slice(1) : raw;
+                    })()}
                   </Text>
                   </View>
                 ),
@@ -374,7 +378,7 @@ export default function CatalogDetailScreen(route: any) {
             style={styles.bottomCardButton}
             onQuantityChange={onClick}
             count={count}
-            stylesContainer={{width:'60%',justifyContent:'space-between'}}
+            stylesContainer={styles.addBottomStylesContainer}
           />
         )}
         <LoadingModal isVisible={visible} />
@@ -504,5 +508,9 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     width: '95%',
     marginBottom:10,
+  },
+  addBottomStylesContainer: {
+    width: '60%',
+    justifyContent: 'space-between',
   },
 });

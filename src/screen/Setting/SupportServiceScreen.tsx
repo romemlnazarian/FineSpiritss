@@ -145,7 +145,7 @@ const onSubmit = (key:string)=>{
 }
   return (
     <ScrollView style={Styles.container}>
-      <CustomHeader showBack={true} title="Support Service" />
+      <CustomHeader showBack={true} subTitle="Support Service" />
       <View style={styles.section}>
         <Text style={[Styles.body_Medium,{marginLeft:5}]}>Customer support</Text>
         {data.map(item => (

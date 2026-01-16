@@ -34,7 +34,7 @@ export default function SettingLogic() {
             case 'Support service':
               navigation.navigate('SupportService');
               break;
-            case 'Setting':
+            case 'Settings':
               navigation.navigate('SettingItem');
               break;
           }
