@@ -1,4 +1,13 @@
-import {ActivityIndicator, Alert, BackHandler, Platform, ScrollView, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  BackHandler,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useCallback} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import ModalCard from '../../component/ModalCard';
@@ -11,9 +20,9 @@ import HomeCategory from '../../component/HomeCamponent/HomeCategory';
 import HomeSort from '../../component/HomeCamponent/HomeSort';
 import ScrollCard from '../../component/HomeCamponent/ScrollCard';
 import VerticalScroll from '../../component/HomeCamponent/VerticalScroll';
-
+import Search from '../../assets/svg/SearchGray.svg';
 export default function HomeScreen() {
-  const {Styles,Height} = StyleComponent();
+  const {Styles, Height} = StyleComponent();
   const {
     onSubmitClose,
     categories,
@@ -30,6 +39,8 @@ export default function HomeScreen() {
     dataSortLoading,
     homeRecommended,
     ageConfirmed,
+    onConfrim,
+    onSubmitSearch
   } = HomeLogic();
 
   useFocusEffect(
@@ -49,20 +60,25 @@ export default function HomeScreen() {
         );
         return true;
       };
-      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress,
+      );
       return () => subscription.remove();
     }, []),
   );
 
   const isPageLoading =
-    isCategoriesLoading ||
-    isTopBrandsLoading ||
-    isHomeAdvertisingLoading;
+    isCategoriesLoading || isTopBrandsLoading || isHomeAdvertisingLoading;
 
   if (isPageLoading) {
     return (
       <View style={[Styles.container, Styles.alignCenter]}>
-        <ActivityIndicator size="large" color={Color.primary} style={{marginTop: Height / 2.5}}/>
+        <ActivityIndicator
+          size="large"
+          color={Color.primary}
+          style={{marginTop: Height / 2.5}}
+        />
       </View>
     );
   }
@@ -71,22 +87,47 @@ export default function HomeScreen() {
     <View style={[Styles.container, Styles.alignCenter]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <HomeHeader />
-        {/* <ModalCard
+        <TouchableOpacity
+          onPress={onSubmitSearch}
+          style={{
+            width: '90%',
+            alignSelf: 'center',
+            borderWidth: 1,
+            borderColor: Color.gray,
+            borderRadius: 14,
+            padding: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 10,
+          }}>
+          <Search width={24} height={24} />
+          <Text style={[Styles.title_Medium, {color: Color.gray}]}>Search</Text>
+        </TouchableOpacity>
+        <ModalCard
           isVisible={ageConfirmed}
           onClose={onSubmitClose}
-        /> */}
+          onConfirm={() => onConfrim()}
+        />
 
         <Slider data={homeAdvertising} onSubmit={onSubmitAdvertising} />
         <HomeCategory data={categories} onSubmitCategory={onSubmitCategory} />
 
-        <HomeSort onClick={onSubmitSort} data={dataSort} loading={dataSortLoading} onSubmitProduct={onSubmitProduct} />
+        <HomeSort
+          onClick={onSubmitSort}
+          data={dataSort}
+          loading={dataSortLoading}
+          onSubmitProduct={onSubmitProduct}
+        />
 
         {/* <BonusSection /> */}
         {/* <SpecialOffersSection /> */}
 
         <ScrollCard data={topBrands} />
 
-        <VerticalScroll item={homeRecommended} onSubmitProduct={onSubmitProduct} />
+        <VerticalScroll
+          item={homeRecommended}
+          onSubmitProduct={onSubmitProduct}
+        />
       </ScrollView>
     </View>
   );

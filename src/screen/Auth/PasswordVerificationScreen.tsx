@@ -156,7 +156,7 @@ export default function PasswordVerificationScreen(route: any) {
               />
             </View>
             <BottomCardComponent
-              title={Language.Next}
+              title={'Done'}
               onHandler={handleSubmit(onSubmit)}
               style={styles.buttonComponent}
               loading={loading}

@@ -3,15 +3,16 @@ import {
   StyleSheet,
   ViewStyle,
   View,
+  StyleProp,
 } from 'react-native';
 import {Color} from '../utiles/color';
 import Counter from './Counter'; // Import the new Counter component
 
 type Props = {
   dark?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   count?:number
-  stylesContainer?:ViewStyle
+  stylesContainer?:StyleProp<ViewStyle>
   onQuantityChange?: (value: number,type:string) => void;
 };
 

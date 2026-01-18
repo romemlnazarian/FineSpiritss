@@ -15,7 +15,7 @@ import Plus from 'react-native-vector-icons/Feather';
 import LogOutComponent from '../../component/LogOutComponent';
 import Wrench from '../../assets/svg/Wrench.svg';
 import Edit from '../../assets/svg/Edit.svg';
-
+import { useNavigation } from '@react-navigation/native';
 const data = [
   {
     id: 1,
@@ -36,7 +36,7 @@ const data = [
 const dataTwo = [
   {
     id: 1,
-    title: 'Setting',
+    title: 'Settings',
     icon: <Wrench />,
   },
   {
@@ -46,6 +46,7 @@ const dataTwo = [
   },
 ];
 export default function SettingScreen() {
+  const navigation = useNavigation();
   const {Styles} = StyleComponent();
   const {
     onSubmit,
@@ -60,11 +61,12 @@ export default function SettingScreen() {
   } = SettingLogic();
   return (
     <View style={[Styles.container]}>
+      <View style={{marginTop:Platform.OS === 'android' ? '5%' : '10%'}} />
       <Menu
-        onHandler={() => {}}
+        onHandler={() => navigation.goBack()}
         title={`${profile?.first_name ?? ''} ${profile?.last_name ?? ''}`}
         style={styles.menu}
-        icon={undefined}
+        icon={<Arrow name="arrow-back-ios" size={20} color={Color.black}/>}
       />
       {/* <TouchableOpacity onPress={onSubmitPayment} style={styles.cardRow}>
         <View style={styles.rowCenter}>
@@ -91,7 +93,7 @@ export default function SettingScreen() {
               key={item.id}
               style={styles.rowGap10Center}>
               {item.icon}
-              <Text style={Styles.title_Regular}>{item.id === 1 && address.street !== ''?address?.street:item.title}</Text>
+              <Text style={Styles.title_Medium}>{item.id === 1 && address.street !== ''?address?.street:item.title}</Text>
               {item.id === 1 ? (
                 address.street !== '' ? (
                   <View style={styles.iconRight}>
@@ -127,7 +129,7 @@ export default function SettingScreen() {
               key={item.id}
               style={styles.rowGap10Center}>
               {item.icon}
-              <Text style={Styles.title_Regular}>{item.title}</Text>
+              <Text style={Styles.title_Medium}>{item.title}</Text>
               <Arrow
                   name="arrow-forward-ios"
                   size={20}
@@ -142,8 +144,8 @@ export default function SettingScreen() {
         activeOpacity={0.5}
         style={styles.logoutButton}
         onPress={() => setLogOutModalVisible(true)}>
-        <Logout name="logout" size={22} />
-        <Text style={Styles.title_Regular}>Logout</Text>
+        <Logout name="logout" size={22} color={Color.black}/>
+        <Text style={Styles.title_Medium}>Logout</Text>
         <Arrow
           name="arrow-forward-ios"
           size={20}

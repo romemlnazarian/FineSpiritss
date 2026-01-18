@@ -156,12 +156,19 @@ export const getFilterProductsModel = (
   countries: string,
   brands: string,
   volume: string,
+  min_price: number | null,
+  max_price: number | null,
   callback: (data: any) => void,
   errorcallback: (data: string) => void,
 ) => {
+  console.log(
+    'filter products data =>',
+    `${Route.filter_products}${slug}/?countries=${countries}&brands=${brands}&volume=${volume}&price_from=${min_price}&price_to=${max_price}`,
+  );
+
   GET(
     Route.root,
-    `${Route.filter_products}${slug}/?countries=${countries}&brands=${brands}&volume=${volume}`,
+    `${Route.filter_products}${slug}/?countries=${countries}&brands=${brands}&volume=${volume}&price_from=${min_price}&price_to=${max_price}`,
     (data: {
       detail?: boolean | string;
       message?: string;
@@ -169,6 +176,7 @@ export const getFilterProductsModel = (
       code?: string;
       messages?: any[];
     }) => {
+      console.log('filter products data =>', data);
       const anyData: any = data;
       if (anyData && typeof anyData === 'object') {
         // Handle auth/error shapes
@@ -212,6 +220,7 @@ export const getProductDetailModel =  (
     Route.root,
     `${Route.product_detail}${slug}`,
     (data, status) => {
+      console.log('product detail data =>', data);
       if (status === 200) {
         callback(data);
       } else if(status === 401) {
@@ -274,6 +283,78 @@ export const getSearchProductsModel = (
     token,
   );
 };
+
+export const getSearchProductsSuggestionsModel = (
+  token: string,
+  search: string,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+) => {
+  GET(
+    Route.root,
+    `${Route.product_search_suggestions}?q=${search}`,
+    (data: {
+      detail?: boolean | string;
+      message?: string;
+      data?: AllCategoryItem[] | any;
+      results?: any;
+      code?: string;
+      messages?: any[];
+    }, status?: number, ok?: boolean) => {
+      const anyData: any = data;
+      console.log('getSearchProductsSuggestionsModel search =>', data);
+      if (ok === false) {
+        const msg =
+          anyData?.code ??
+          anyData?.detail ??
+          anyData?.messages?.[0]?.message ??
+          anyData?.message ??
+          `Request failed (${status ?? 'unknown'})`;
+        errorcallback(String(msg));
+        return;
+      }
+      if (anyData && typeof anyData === 'object') {
+        // Handle auth/error shapes
+        if ('code' in anyData || 'messages' in anyData) {
+          const msg =
+            anyData.code ??
+            anyData.detail ??
+            anyData?.messages?.[0]?.message ??
+            anyData.message ??
+            'Unexpected response';
+          errorcallback(String(msg));
+          return;
+        }
+        if ('detail' in anyData) {
+          if (anyData.detail === true) {
+            callback(anyData.data ?? anyData.results ?? anyData);
+            return;
+          }
+          if (anyData.detail === false) {
+            errorcallback(String(anyData.message ?? 'Unexpected response'));
+            return;
+          }
+          // Sometimes APIs return `detail` as a string even on success; if data/results exist, treat as success
+          if (typeof anyData.detail === 'string') {
+            if (anyData.data != null || anyData.results != null) {
+              callback(anyData.data ?? anyData.results ?? anyData);
+              return;
+            }
+            errorcallback(String(anyData.detail));
+            return;
+          }
+          return;
+        }
+        // Pass-through when API doesn't include 'detail'
+        callback(anyData.data ?? anyData.results ?? anyData);
+        return;
+      }
+      errorcallback('Unexpected response');
+    },
+    token,
+  );
+};
+
 
 
 export const getSearchProductsHistoryModel = (

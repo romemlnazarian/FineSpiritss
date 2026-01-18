@@ -5,6 +5,7 @@ import {
   Text,
   ViewStyle,
   TextStyle,
+  StyleProp,
   View,
   ActivityIndicator,
 } from 'react-native';
@@ -14,8 +15,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
   dark?: boolean;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
   title: string;
   onHandler: () => void;
   icon?: ReactNode; // Added icon prop
@@ -148,6 +149,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: 'Satoshi-Regular',
+    color: Color.white,
   },
   textEnabled: { color: Color.white },
   textDisabled: { color: Color.white },

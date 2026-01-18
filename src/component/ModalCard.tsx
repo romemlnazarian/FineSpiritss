@@ -9,9 +9,10 @@ import useAuthStore from '../zustland/AuthStore';
 interface ModalCardProps {
   isVisible: boolean;
   onClose: () => void;
+  onConfirm: () => void;
 }
 
-export default function ModalCard({ isVisible, onClose }: ModalCardProps) {
+export default function ModalCard({ isVisible, onClose, onConfirm }: ModalCardProps) {
  const {Styles} = StyleComponent();
  const { setAgeGateAcknowledged } = useAuthStore();
   return (
@@ -39,7 +40,7 @@ export default function ModalCard({ isVisible, onClose }: ModalCardProps) {
         title={Language.modal_enter_button}
         onHandler={()=>{
           setAgeGateAcknowledged(true);
-          onClose();
+          onConfirm();
         }}
         style={styles.buttonComponent}
         textStyle={{color:Color.white}}

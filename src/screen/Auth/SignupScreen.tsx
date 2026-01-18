@@ -39,6 +39,8 @@ export default function SignupScreen() {
     formatDate,onSubmitSignIn,
     onSubmitGoogle,
     onSubmitApple,
+    showPass,
+    setShowPass
   } = SignupLogic();
 
   return (
@@ -87,7 +89,7 @@ export default function SignupScreen() {
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
               placeholder={Language.Email_Placeholder}
-              handlePasswordIconClick={() => console.log()}
+              handlePasswordIconClick={() => setShowPass(!showPass)}
               onChangeText={onChange}
               value={value}
               errorMessage={errors.email?.message}
@@ -108,7 +110,7 @@ export default function SignupScreen() {
           activeOpacity={0.5}
           style={styles.dateContainer}>
           <Calender width={25} height={25} />
-          <Text style={[Styles.title_Regular, styles.dobPlaceholderText]}>
+          <Text style={[Styles.subtitle_Medium, styles.dobPlaceholderText]}>
             {selectedDate === '' ? Language.DOB_Placeholder : selectedDate}
           </Text>
         </TouchableOpacity>
@@ -158,7 +160,7 @@ export default function SignupScreen() {
           <TextView
             title={Language.singIn}
             color={Color.primary}
-            style={[Styles.title_Regular, styles.signInText]}
+            style={[Styles.title_Medium, styles.signInText]}
           />
         </TouchableOpacity>
       </View>
@@ -192,6 +194,8 @@ const styles = StyleSheet.create({
   businessClientContainer: {
     marginTop: '5%',
     alignSelf: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: Color.black,
   },
   buttonComponent: {
     marginTop: '10%',
@@ -209,7 +213,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   logoComponentStyle: {
-    marginTop: '5%',
+    marginTop: '12%',
   },
   inputContainer: {
     marginTop: '10%',
@@ -239,7 +243,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   signInText: {
-    marginLeft: 10,
+    marginLeft: 5,
   },
   socialLoginButtonsContainer: {
     width: '60%',
@@ -268,7 +272,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dobPlaceholderText: {
-    color: Color.gray,
+    color: 'gray',
     marginLeft: '2%',
   },
   scroll: { flex: 1 },

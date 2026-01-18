@@ -1,102 +1,144 @@
-import React, { useEffect, useRef } from 'react';
-import { View, ActivityIndicator, Linking, BackHandler, AppState } from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import {ActivityIndicator, Linking, StyleSheet, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import InAppBrowser from 'react-native-inappbrowser-reborn';
 import useAuthStore from '../../zustland/AuthStore';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { ButtonScreenNavigationProp } from '../../navigation/types';
+import {ButtonScreenNavigationProp} from '../../navigation/types';
 
 export default function GoogleAuthScreen() {
   const navigation = useNavigation<ButtonScreenNavigationProp>();
 
-  const { setToken, setRefreshToken, setIsLoggedIn, setUserData } = useAuthStore();
+  const {
+    setToken,
+    setRefreshToken,
+    setIsLoggedIn,
+    setUserData,
+  } = useAuthStore();
+
+  const authUrl =
+    'https://finespirits.pl/wp-json/mobile/v1/auth/social/redirect/google/?state=app';
 
   const redirectScheme = 'com.finespirits.app://SocialAuth';
-  const authUrl = 'https://finespirits.pl/wp-json/mobile/v1/auth/social/redirect/google/?state=app';
-
-  // Track flow state across effects
   const finishedRef = useRef(false);
-  const openedRef = useRef(false);
-
-  // On hardware back while focused, return to previous (e.g., Signin)
-  useFocusEffect(
-    React.useCallback(() => {
-      const onBack = () => {
-        navigation.goBack();
-        return true; // consume event
-      };
-      const sub = BackHandler.addEventListener('hardwareBackPress', onBack);
-      return () => sub.remove();
-    }, [navigation]),
-  );
 
   useEffect(() => {
-    let finished = false;
+    const parseCallbackUrl = (url: string) => {
+      const query = url.split('?')[1] || '';
+      const params: Record<string, string> = {};
 
-    const handleUrl = async ({ url }: { url: string }) => {
-      if (!url || !url.startsWith(redirectScheme)) { return; }
+      query.split('&').forEach(p => {
+        if (!p) {
+          return;
+        }
+        const [k, v = ''] = p.split('=');
+        const key = decodeURIComponent(String(k ?? '')).trim();
+        const value = decodeURIComponent(String(v ?? '')).trim();
+        if (key) {
+          params[key] = value;
+        }
+      });
+
+      return params;
+    };
+
+    const handleAuthCallback = (url: string) => {
+      if (!url?.startsWith(redirectScheme)) {
+        return;
+      }
+
       try {
-        const queryString = url.split('?')[1] || '';
-        const params: Record<string, string> = {};
-        queryString.split('&').forEach(pair => {
-          if (!pair) { return; }
-          const [rawKey, rawValue = ''] = pair.split('=');
-          const key = decodeURIComponent(rawKey || '').trim();
-          const value = decodeURIComponent(rawValue || '').trim();
-          if (key) { params[key] = value; }
-        });
-        const access = params['access'];
-        const refresh = params['refresh'];
-        const email = params['email'];
+        const params = parseCallbackUrl(url);
+        if (!params.access) {
+          return;
+        }
 
-        console.log('@ Google Login Result (deep link):', { access, refresh, email });
-
-        if (access) { setToken(access); }
-        if (refresh) { setRefreshToken(refresh); }
-        if (email) { setUserData({ email }); }
+        setToken(params.access);
+        if (params.refresh) {
+          setRefreshToken(params.refresh);
+        }
+        if (params.email) {
+          setUserData({email: params.email});
+        }
 
         setIsLoggedIn(true);
-
-        finished = true;
         finishedRef.current = true;
-        navigation.goBack();
 
-        navigation.navigate('AppTabs');
-
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'AppTabs'}],
+        });
       } catch (e) {
         console.log('Deep link parse error:', e);
       }
     };
 
-    const subscription = Linking.addEventListener('url', handleUrl);
-    // Open the auth URL in the system browser (Custom Tabs)
-    Linking.openURL(authUrl).catch(err => console.log('OpenURL error:', err));
-    openedRef.current = true;
+    const handleUrlEvent = ({url}: {url: string}) => handleAuthCallback(url);
 
-    // Handle case where the app is opened via deep link directly
-    Linking.getInitialURL().then((url) => {
-      if (url) {
-        handleUrl({ url });
-      }
-    }).catch(() => {});
+    const sub = Linking.addEventListener('url', handleUrlEvent);
 
-    // If user returns from browser without deep link, go back to previous screen
-    const appStateSub = AppState.addEventListener('change', (state) => {
-      if (state === 'active' && openedRef.current && !finishedRef.current) {
-        navigation.goBack();
+    (async () => {
+      // If app was opened by a deep-link before this screen mounted, handle it.
+      Linking.getInitialURL()
+        .then(initialUrl => {
+          if (initialUrl) {
+            handleAuthCallback(initialUrl);
+          }
+        })
+        .catch(() => {});
+
+      const isAvailable = await InAppBrowser.isAvailable().catch(() => false);
+
+      // Prefer openAuth on BOTH platforms when available: it returns the callback URL reliably.
+      if (isAvailable) {
+        const result = await InAppBrowser.openAuth(authUrl, redirectScheme, {
+          // UI
+          showTitle: false,
+          enableUrlBarHiding: true,
+          enableDefaultShare: false,
+        }).catch(err => {
+          console.log('InAppBrowser.openAuth error:', err);
+          return null;
+        });
+
+        if (result && result.type === 'success' && typeof result.url === 'string') {
+          handleAuthCallback(result.url);
+          return;
+        }
+
+        // User cancelled/dismissed: go back to previous screen (e.g. Signin)
+        if (!finishedRef.current) {
+          navigation.goBack();
+        }
+        return;
       }
-    });
+
+      // Fallback: open in browser and wait for deep-link back into the app
+      Linking.openURL(authUrl).catch(err => console.log('Linking.openURL error:', err));
+    })();
 
     return () => {
-      subscription.remove();
-      appStateSub.remove();
-      if (!finished) {
-        // stay on the screen, spinner will continue until user returns or deep link arrives
+      sub.remove();
+      if (!finishedRef.current) {
+        InAppBrowser.close();
       }
     };
-  }, [navigation, setIsLoggedIn, setRefreshToken, setToken, setUserData]);
+  }, [
+    authUrl,
+    navigation,
+    redirectScheme,
+    setIsLoggedIn,
+    setRefreshToken,
+    setToken,
+    setUserData,
+  ]);
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.container}>
       <ActivityIndicator size="large" />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {flex: 1, alignItems: 'center', justifyContent: 'center'},
+});

@@ -41,12 +41,11 @@ export const SigninLogic = () => {
     const values = getValues();
     setLoading(true);
     SingInModel(values.email.trim(), values.password.trim(), (data) => {  
+      console.log('data login', data);
       setToken(data.access);
       setRefreshToken(data.refresh);
       setUserData({ email: values.email.trim(), password: values.password.trim() });
-      if(ageConfirmed === false){
-        setAgeConfirmed(true);
-      }
+
       if(isLoggedIn === false){
         setIsLoggedIn(true);
       }

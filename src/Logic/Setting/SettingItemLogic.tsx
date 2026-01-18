@@ -4,7 +4,10 @@ import {ProfileStackParamList} from '../../navigation/types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import useProfileStore from '../../zustland/ProfileStore';
 import {useToast} from '../../utiles/Toast/ToastProvider';
-import {ChangeEmailModel, UpdateBirthdateModel} from '../../model/Setting/SettingModel';
+import {
+  ChangeEmailModel,
+  UpdateBirthdateModel,
+} from '../../model/Setting/SettingModel';
 import useAuthStore from '../../zustland/AuthStore';
 import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
 export default function SettingItemLogic() {
@@ -42,24 +45,38 @@ export default function SettingItemLogic() {
 
   const checkEmail = (email: string) => {
     setEmail(email);
-    setModalVisible(false)
-    ChangeEmailModel(token, email.toLocaleLowerCase(), data => {
-      setModalVisible(true);
-      setName('emailVerify');
-    }, () => {
-      refreshTokenModel(refreshToken, data => {
-        setToken(data.access);
-        setRefreshToken(data.refresh);
-        ChangeEmailModel(token, email.toLocaleLowerCase(), (data) => {
-          setModalVisible(true);
-          setName('emailVerify');
-        }, error => {
-          show(error, {type: 'error'});
-        });
-      }, error => {
-        show(error, {type: 'error'});
-      });
-    });
+    setModalVisible(false);
+    ChangeEmailModel(
+      token,
+      email.toLocaleLowerCase(),
+      data => {
+        setModalVisible(true);
+        setName('emailVerify');
+      },
+      () => {
+        refreshTokenModel(
+          refreshToken,
+          data => {
+            setToken(data.access);
+            setRefreshToken(data.refresh);
+            ChangeEmailModel(
+              token,
+              email.toLocaleLowerCase(),
+              data => {
+                setModalVisible(true);
+                setName('emailVerify');
+              },
+              error => {
+                show(error, {type: 'error'});
+              },
+            );
+          },
+          error => {
+            show(error, {type: 'error'});
+          },
+        );
+      },
+    );
   };
 
   const onSubmit = (key: string) => {
@@ -72,13 +89,21 @@ export default function SettingItemLogic() {
         setModalVisible(true);
         setName('emailAddress');
         break;
-        case 'emailVerify':
-          setModalVisible(true);
-          setName('emailAddress');
-          break;
+      case 'emailVerify':
+        setModalVisible(true);
+        setName('emailAddress');
+        break;
       case 'changePassword':
         setModalVisible(true);
         setName('changePassword');
+        break;
+      case 'congratulationsEmail':
+        setModalVisible(true);
+        setName('congratulationsEmail');
+        break;
+      case 'congratulationsPassword':
+        setModalVisible(true);
+        setName('congratulationsPassword');
         break;
       case 'birthDate':
         setOpen(true);
@@ -138,6 +163,14 @@ export default function SettingItemLogic() {
     );
   };
 
+  const callBackEmailVerify = () => {
+    setModalVisible(false);
+    onSubmit('congratulationsEmail');
+  };
+  const callBackChangePassword = () => {
+    setModalVisible(false);
+    onSubmit('congratulationsPassword');
+  };
   return {
     modalVisible,
     setModalVisible,
@@ -152,5 +185,7 @@ export default function SettingItemLogic() {
     setOpen,
     formatDate,
     email,
+    callBackEmailVerify,
+    callBackChangePassword,
   };
 }

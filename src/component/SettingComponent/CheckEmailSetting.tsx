@@ -57,7 +57,8 @@ export default function CheckEmailSetting({email,callBack}:{email:string,callBac
             show('Code expired', {type: 'error'});
             return;
           }
-          show(data, {type: 'success'});
+          // show(data, {type: 'success'});
+          console.log('email=========>', data);
           updateProfile({email});
           callBack();
         },
@@ -123,7 +124,7 @@ export default function CheckEmailSetting({email,callBack}:{email:string,callBac
       behavior={ 'padding'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
       style={styles.wrapper}>
-      <Text style={[Styles.h5_Medium, Styles.textAlign]}>
+      <Text style={[Styles.h5_Medium, Styles.textAlign,{marignbottom:20}]}>
         Please check your Email
       </Text>
       <Text style={[Styles.title_Regular, Styles.alignSelf, styles.subtitle]} numberOfLines={1}>

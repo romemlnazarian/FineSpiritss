@@ -32,11 +32,18 @@ export default function VerificationCodeScreen(route: any) {
         style={[Styles.h4_Bold, styles.titleStyle]}
         color={Color.black}
       />
+      <View style={styles.subtitleStyle}>
       <TextView
-        title={`${Language.We_sent_code_to} ${email}`}
-        style={[Styles.title_Regular, styles.subtitleStyle]}
+        title={`${Language.We_sent_code_to}`}
+        style={[Styles.title_Regular, ]}
         color={Color.black}
       />
+      <TextView
+        title={email}
+        style={[Styles.title_Medium]}
+        color={Color.primary}
+      />
+      </View>
       <CodeInput isCodeValid={codeValid} onCodePress={e => onCodeHandle(e)} />
       <View style={styles.counterContainer}>
         <TouchableOpacity onPress={ResendCode} disabled={DisableTimer}>
@@ -65,10 +72,12 @@ const styles = StyleSheet.create({
     color: Color.black,
   },
   subtitleStyle: {
+    flexDirection: 'row',
     textAlign: 'left',
     marginLeft: '5%',
     marginTop: '2%',
     color: Color.black,
+    gap: 5,
   },
   counterContainer: {
     flexDirection: 'row',

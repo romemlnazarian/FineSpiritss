@@ -51,14 +51,14 @@ const styles = StyleSheet.create({
   },
   categoryTitle: {
     marginTop: '5%',
-    color: Color.primary,
+    color: Color.black,
   },
   separatorLine: {
     width: '68%',
-    height: 1,
+    height: 0.5,
     backgroundColor: Color.lightGray,
     marginLeft: 10,
-    marginTop: '2%',
+    marginTop: '8%',
   },
   container: {
     height: 80,

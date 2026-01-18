@@ -29,7 +29,7 @@ export const ChangePasswordSettingLogic = (onCallBack: () => void) => {
   const {
     control,
     handleSubmit,
-    formState: {errors},
+    formState: {errors, isValid},
     getValues,
     watch,
   } = useForm({
@@ -51,12 +51,12 @@ export const ChangePasswordSettingLogic = (onCallBack: () => void) => {
     UpdatePasswordModel(token, oldpassword, password, repeatpassword, (data) => {
       onCallBack();
       setIsLoading(false);
-      show(data.detail,{type: 'success'});
+      // show(data.detail,{type: 'success'});
     }, (error) => {
        refreshTokenModel(refreshToken, (data) => {
         setToken(data.access);
         setRefreshToken(data.refresh);
-        UpdatePasswordModel(token, oldpassword, password, repeatpassword, (data) => {
+        UpdatePasswordModel(data.access, oldpassword, password, repeatpassword, (data) => {
           setIsLoading(false);
           show(data.detail);
           onCallBack();
@@ -90,6 +90,7 @@ export const ChangePasswordSettingLogic = (onCallBack: () => void) => {
     control,
     errors,
     handleSubmit,
+    isValid,
     onHandleShowPass,
     showPass,
     showOldPass,

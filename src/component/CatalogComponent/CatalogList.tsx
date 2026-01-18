@@ -271,10 +271,10 @@ const ProductCard: React.FC<{
     <TouchableOpacity 
     activeOpacity={0.5}
       onPress={() => onHandlerItem?.(item)}
-    style={[styles.productCardContainer, Styles.alignCenter]}>
+    style={[styles.productCardContainer, Styles.alignCenter,]}>
       <TouchableOpacity style={styles.favoriteButton} onPress={toggleFavorite}>
         {isFavorite ? (
-          <Heart_primary width={24} height={24} />
+          <Heart width={24} height={24} fill={Color.red} />
         ) : (
           <Heart width={24} height={24} fill={Color.white} />
         )}
@@ -307,29 +307,16 @@ const ProductCard: React.FC<{
         </Swiper>
       </View> */}
       <View style={styles.productTitleContainer}>
-        <Text style={[Styles.body_Medium]} numberOfLines={1}>
-          {item.title}
-        </Text>
-        <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginTop: '2%',
-        }}>
-        <Text
-          style={[
-            Styles.subtitle_Regular,
-            styles.productDescription,
-            {width: '50%'},
-          ]}
-          numberOfLines={1}
-          ellipsizeMode="tail">
-          {item?.country}
-        </Text>
-        <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
-          ABV {item?.abv}
-        </Text>
+      <Text style={[Styles.subtitle_SemiBold, styles.productTitle]} numberOfLines={1} ellipsizeMode="tail">
+        {item.title}
+      </Text>
+      <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:'2%'}}>
+      <Text style={[Styles.subtitle_Regular, styles.productDescription,{width:'50%'}]} numberOfLines={1} ellipsizeMode="tail">
+        {item?.country}
+      </Text>
+      <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
+        ABV {item?.abv}
+      </Text>
       </View>
       {item?.sale_price === null ? (
         <Text
@@ -372,7 +359,7 @@ const ProductCard: React.FC<{
           title={'Add to Cart'}
           onHandler={onSubmit}
           style={styles.bottomCardButton}
-          textStyle={Styles.subtitle_Regular}
+          textStyle={[Styles.subtitle_Regular, styles.bottomCardButtonText]}
           icon={<Card />}
         />
       ) : (
@@ -425,7 +412,7 @@ const CatalogList: React.FC<VerticalScrollProps> = ({
     }
     return (
       <View style={styles.footerContainer}>
-        <ActivityIndicator size="small" color={Color.primary} />
+        <ActivityIndicator size="large" color={Color.primary} style={{marginTop:'50%'}}/>
       </View>
     );
   }, [isLoadingMore]);
@@ -477,6 +464,7 @@ const styles = StyleSheet.create({
     width: '93%',
     alignSelf: 'center',
     marginTop: '5%',
+    paddingBottom: '15%',
   },
   headerContainer: {
     flexDirection: 'row',
@@ -557,6 +545,7 @@ const styles = StyleSheet.create({
     paddingVertical: 80,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: '50%',
   },
   loadingText: {
     marginTop: 10,
@@ -572,5 +561,9 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 12,
     backgroundColor: Color.lightGray,
+  },
+  productTitle: {marginTop: '2%'},
+  bottomCardButtonText: {
+    color: Color.white,
   },
 });

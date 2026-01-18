@@ -17,7 +17,7 @@ import PlusIcon from 'react-native-vector-icons/AntDesign';
 import {useFocusEffect} from '@react-navigation/native';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
 import {useNavigation} from '@react-navigation/native';
-
+import CartIcon from '../../assets/svg/Cart.svg';
 export default function CardScreen() {
   const {Styles} = StyleComponent();
   const {
@@ -29,7 +29,7 @@ export default function CardScreen() {
     onSubmit,
     error,
     recommended,
-    toggleFavorite
+    toggleFavorite,
   } = CartLogix();
   const navigation: any = useNavigation();
   useFocusEffect(
@@ -39,9 +39,10 @@ export default function CardScreen() {
       return undefined;
     }, [refreshCart]),
   );
+
   return (
     <View style={Styles.container}>
-      <CustomHeader showBack={true} title="Cart" />
+      <CustomHeader showBack={true} subTitle="Cart" />
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -69,9 +70,7 @@ export default function CardScreen() {
                       <View style={styles.plusIconContainer}>
                         <PlusIcon name={'plus'} color={Color.black} size={20} />
                       </View>
-                      <Text style={Styles.title_Regular}>
-                        create an address
-                      </Text>
+                      <Text style={Styles.title_Regular}>Create</Text>
                     </TouchableOpacity>
                   ) : (
                     <>
@@ -79,9 +78,11 @@ export default function CardScreen() {
                         style={[
                           Styles.title_Regular,
                           styles.ml2,
-                          {color: Color.black},
-                        ]}>
-                        {address?.street}
+                          {color: Color.black, width: '90%'},
+                        ]}
+                        numberOfLines={1}
+                        ellipsizeMode="tail">
+                        {address?.city}, {address?.street}
                       </Text>
                       <View
                         style={[
@@ -115,7 +116,7 @@ export default function CardScreen() {
                   <Text style={[Styles.title_Regular, styles.blackText]}>
                     My order
                   </Text>
-                  <Text style={[Styles.title_Bold, styles.blackText]}>
+                  <Text style={[Styles.title_Medium, styles.blackText]}>
                     {data?.summary?.items_count}{' '}
                     {data?.summary?.items_count === 1 ? 'item' : 'items'}
                   </Text>
@@ -124,7 +125,7 @@ export default function CardScreen() {
                   <Text style={[Styles.title_Regular, styles.blackText]}>
                     Order amount
                   </Text>
-                  <Text style={[Styles.title_Bold, styles.blackText]}>
+                  <Text style={[Styles.title_Medium, styles.blackText]}>
                     {data?.summary?.subtotal} zł
                   </Text>
                 </View>
@@ -148,7 +149,7 @@ export default function CardScreen() {
                   <Text style={[Styles.title_Regular, styles.blackText]}>
                     Delivery
                   </Text>
-                  <Text style={[Styles.title_Bold, styles.blackText]}>
+                  <Text style={[Styles.title_Medium, styles.blackText]}>
                     Free
                   </Text>
                 </View>
@@ -157,11 +158,14 @@ export default function CardScreen() {
                   activeOpacity={0.5}
                   onPress={() => onSubmit(data?.summary?.checkout_id)}
                   style={styles.orderButton}>
+                  <View style={[Styles.justifyCenter, {gap: 10}]}>
+                    <CartIcon width={24} height={24} fill={Color.white} />
+                    <Text style={[Styles.title_Regular, styles.whiteText]}>
+                      Order
+                    </Text>
+                  </View>
                   <Text style={[Styles.title_Regular, styles.whiteText]}>
-                    Order
-                  </Text>
-                  <Text style={[Styles.title_Regular, styles.whiteText]}>
-                    {data?.summary?.total}
+                    {data?.summary?.total} zł
                   </Text>
                 </TouchableOpacity>
                 <View style={styles.spacer} />
@@ -169,61 +173,64 @@ export default function CardScreen() {
             </>
           ) : (
             <View>
-              {recommended.length > 0 ?
-              <>
-              <View style={[styles.emptyCartContainer]}>
-                <ShoppingCard fill={Color.black} />
-                <Text style={[Styles.h3_Bold, styles.emptyCartTitle]}>
-                  Your Cart is Empty
-                </Text>
-                <Text
-                  style={[
-                    Styles.h6_Regular,
-                    Styles.textAlign,
-                    styles.emptyCartSubtitle,
-                  ]}>
-                  Once you add items from a store, your cart will appear here
-                </Text>
-              </View>
-              <View
-                style={[
-                  Styles.alignSelf,
-                  {width: '93%', marginTop: '8%', marginBottom: '5%'},
-                ]}>
-                <Text style={[Styles.h4_Bold, {marginLeft: '2%'}]}>
-                  Recommendations
-                </Text>
-                <HorizontalFlatList
-                  callback={(item: any) =>
-                    navigation.navigate('CatalogScreen', {
-                      screen: 'CatalogDetail',
-                      params: {product: item},
-                    })
-                  }
-                  products={recommended}
-                  onFavoriteToggled={(id: string, isFavorite: boolean) =>
-                    toggleFavorite(id)
-                  }
-                  onToggleClick={(id: number) =>refreshCart()}
-                />
-              </View>
-              </>:
-                     <View style={[styles.emptyCartContainer]}>
-                     <ShoppingCard fill={Color.black} />
-                     <Text style={[Styles.h3_Bold, styles.emptyCartTitle]}>
-                       Your Cart is Empty
-                     </Text>
-                     <Text
-                       style={[
-                         Styles.h6_Regular,
-                         Styles.textAlign,
-                         styles.emptyCartSubtitle,
-                       ]}>
-                       Once you add items from a store, your cart will appear here
-                     </Text>
-                   </View>
-              
-              }
+              {recommended.length > 0 ? (
+                <>
+                  <View style={[styles.emptyCartContainer]}>
+                    <ShoppingCard fill={Color.black} />
+                    <Text style={[Styles.h3_Bold, styles.emptyCartTitle]}>
+                      Your Cart is Empty
+                    </Text>
+                    <Text
+                      style={[
+                        Styles.h6_Regular,
+                        Styles.textAlign,
+                        styles.emptyCartSubtitle,
+                        {width:'90%'},
+                      ]}>
+                      Once you add items from a store, your cart will appear
+                      here
+                    </Text>
+                  </View>
+                  <View
+                    style={[
+                      Styles.alignSelf,
+                      {width: '93%', marginTop: '8%', marginBottom: '5%'},
+                    ]}>
+                    <Text style={[Styles.h4_Bold, {marginLeft: '2%'}]}>
+                      Recommendations
+                    </Text>
+                    <HorizontalFlatList
+                      callback={(item: any) =>
+                        navigation.navigate('CatalogScreen', {
+                          screen: 'CatalogDetail',
+                          params: {product: item},
+                        })
+                      }
+                      products={recommended}
+                      onFavoriteToggled={(id: string, isFavorite: boolean) =>
+                        toggleFavorite(id)
+                      }
+                      onToggleClick={(id: number) => refreshCart()}
+                    />
+                  </View>
+                </>
+              ) : (
+                <View style={[styles.emptyCartContainer]}>
+                  <ShoppingCard fill={Color.black} />
+                  <Text style={[Styles.h4_Bold, styles.emptyCartTitle]}>
+                    Your Cart is Empty
+                  </Text>
+                  <Text
+                    style={[
+                      Styles.body_Regular,
+                      Styles.textAlign,
+                      styles.emptyCartSubtitle,
+                      {width:'90%'},
+                    ]}>
+                    Once you add items from a store, your cart will appear here
+                  </Text>
+                </View>
+              )}
             </View>
           )}
           {/* <View style={[Styles.alignCenter,Styles.alignSelf,{width:'93%',marginTop:'12%'}]}>
@@ -348,5 +355,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     position: 'absolute',
     right: 10,
+  },
+  justifyCenter: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

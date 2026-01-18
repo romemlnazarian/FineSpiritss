@@ -297,7 +297,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onPress={() => onPress?.(item)}>
       <TouchableOpacity style={styles.favoriteButton} onPress={toggleFavorite}>
         {isFavorite ? (
-          <Heart_primary width={24} height={24} />
+          <Heart width={24} height={24} fill={Color.red} />
         ) : (
           <Heart width={24} height={24} fill={Color.white} />
         )}
@@ -309,23 +309,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <View style={styles.imagePlaceholder} />
         )}
       </View>
-      <Text style={[Styles.body_Medium, styles.productTitle]} numberOfLines={1}>
+      <Text style={[Styles.subtitle_SemiBold, styles.productTitle]} numberOfLines={1} ellipsizeMode="tail">
         {item.title}
       </Text>
-      <View style={styles.productInfoContainer}>
-        <Text
-          style={[
-            Styles.subtitle_Regular,
-            styles.productDescription,
-            styles.productCountryWidth,
-          ]}
-          numberOfLines={1}
-          ellipsizeMode="tail">
-          {item?.country}
-        </Text>
-        <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
-          ABV {item?.abv}
-        </Text>
+      <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:'2%'}}>
+      <Text style={[Styles.subtitle_Regular, styles.productDescription,{width:'50%'}]} numberOfLines={1} ellipsizeMode="tail">
+        {item?.country}
+      </Text>
+      <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
+        ABV {item?.abv}
+      </Text>
       </View>
       {item.sale_price === null ? (
         <Text
@@ -365,7 +358,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           title={'Add to Cart'}
           onHandler={onSubmit}
           style={styles.bottomCardButton}
-          textStyle={Styles.subtitle_Regular}
+          textStyle={[Styles.subtitle_Regular, styles.bottomCardButtonText]}
           icon={<Card />}
         />
       ) : (
@@ -436,5 +429,8 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 12,
     backgroundColor: Color.lightGray,
+  },
+  bottomCardButtonText: {
+    color: Color.white,
   },
 });

@@ -15,6 +15,12 @@ export type AuthStackParamList = {
     number: string
   },
   ForgetPassword:undefined,
+  ForgetPasswordVerify:{
+    email: string,
+  },
+  ResetPassword: {
+    email: string,
+  },
   Wellcome:undefined
 };
 
@@ -38,12 +44,14 @@ export type ButtonParamList = {
         params?: Record<string, any>;
       }
     | undefined;
+
 };
 
 export type CatalogStackParamList = {
   Catalog: undefined;
   ChoosenCatalog: {
     item: any;
+    title: string;
   } | undefined;
   CatalogSearch: undefined;
   CatalogDetail: {

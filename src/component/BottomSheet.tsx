@@ -1,24 +1,22 @@
-import React, { FC, useEffect, useRef } from "react";
-import RBSheet from "react-native-raw-bottom-sheet";
-import { View } from "react-native";
-import { Color } from "../utiles/color";
+import React, {FC, useEffect, useRef} from 'react';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import {StyleSheet, View} from 'react-native';
+import {Color} from '../utiles/color';
 
 export const BottomSheet: FC<{
-  children: any;
+  children: React.ReactNode;
   modalVisible: boolean;
   height: number;
   onClose?: () => void;
-}> = ({ children, height, modalVisible, onClose }) => {
-
-  const refRBSheet = useRef<RBSheet>(null);
-  const shouldTriggerClose = useRef(false); // جلوگیری از دوبار صدا شدن onClose
+  keyboardAvoidingViewEnabled?: boolean;
+}> = ({children, height, modalVisible, onClose, keyboardAvoidingViewEnabled = true}) => {
+  const refRBSheet = useRef<any>(null);
 
   useEffect(() => {
     if (modalVisible) {
       refRBSheet.current?.open();
     } else {
-      refRBSheet.current?.close(); // فقط sheet را ببند
-      // onClose را اینجا صدا نزن
+      refRBSheet.current?.close();
     }
   }, [modalVisible]);
 
@@ -28,30 +26,34 @@ export const BottomSheet: FC<{
       height={height}
       closeOnPressMask={true}
       draggable={true}
+      // Important: allow gestures inside content (e.g. Slider). Dragging should be from handle only.
       dragOnContent={false}
       onClose={() => {
-        onClose?.(); // فقط اینجا صدا زده می‌شود
+        onClose?.();
       }}
       customStyles={{
-        wrapper: { backgroundColor: "#C2C2BCE5" },
-        draggableIcon: { backgroundColor: Color.white },
+        wrapper: {backgroundColor: '#C2C2BCE5'},
+        draggableIcon: {backgroundColor: Color.white},
         container: {
           backgroundColor: Color.white,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
         },
-      }}
-    >
-      <View
-        style={{
-          width: 60,
-          height: 2,
-          borderRadius: 5,
-          backgroundColor: "#2C2C2C",
-          alignSelf: "center",
-        }}
-      />
+      }}>
+      <View style={styles.handle} />
       {children}
     </RBSheet>
   );
 };
+
+const styles = StyleSheet.create({
+  handle: {
+    width: 60,
+    height: 2,
+    borderRadius: 5,
+    backgroundColor: '#2C2C2C',
+    alignSelf: 'center',
+  },
+});
+
+

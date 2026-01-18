@@ -35,7 +35,7 @@ const SortItem = memo(({item, isSelected, onPress}: {
       onPress={() => onPress(item.id)}>
       <Text
         style={[
-          Styles.title_Regular,
+          Styles.title_Medium,
           isSelected ? styles.selectedItemText : styles.unselectedItemText,
         ]}>
         {item.title}
@@ -197,23 +197,25 @@ const styles = StyleSheet.create({
   categoryContainer: {
     width: '93%',
     alignSelf: 'center',
+    marginTop: -15,
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    
   },
   categoryTitle: {
-    color: Color.primary,
+    color: Color.black,
   },
   separatorLine: {
-    width: '72%',
-    height: 1,
+    width: '78%',
+    height: 0.5,
     backgroundColor: Color.lightGray,
     marginLeft: 10,
     marginTop: '2%',
   },
   flatListContainer: {
-    marginTop: '5%',
+    marginTop: '3%',
   },
   flatListItem: {
     paddingHorizontal: 15,

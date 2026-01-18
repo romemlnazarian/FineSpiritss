@@ -81,7 +81,7 @@ export default function DeleteAccountScreen() {
             ))}
           </View>
           <BottomCardComponent
-            title="Delete Account"
+            title="Next"
             onHandler={onSubmit}
             style={styles.buttonSpacing}
             loading={loading}

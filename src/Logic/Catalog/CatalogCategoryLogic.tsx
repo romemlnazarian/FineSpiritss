@@ -57,7 +57,7 @@ export default function CatalogCategoryLogic(route: any) {
   };
 
   const onSubmit = (item: any) => {
-    navigation.navigate('ChoosenCatalog', {item: item, title: name});
+    navigation.navigate('ChoosenCatalog', {item: item, title: item.cat_name});
   };
 
   return {

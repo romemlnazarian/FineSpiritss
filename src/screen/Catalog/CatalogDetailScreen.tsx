@@ -14,13 +14,16 @@ import {Color} from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
 import CatalogDetailLogic from '../../logic/Catalog/CatalogDetailLogic';
 import Heart from '../../assets/svg/Heart.svg';
-import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import BottomCardComponent from '../../component/BottomCard';
 import AddBottom from '../../component/AddBottom';
 import LoadingModal from '../../component/LoadingModal';
 import Card from '../../assets/svg/Cart.svg';
+import Fish from '../../assets/svg/fish.svg';
+import Cheesse from '../../assets/svg/cheese.svg';
+import Meat from '../../assets/svg/meat.svg';
+import Fruits from '../../assets/svg/fruits_and_berries.svg';
 export default function CatalogDetailScreen(route: any) {
   const {Styles, Height} = StyleComponent();
   const {
@@ -34,7 +37,7 @@ export default function CatalogDetailScreen(route: any) {
     onSubmit,
     count,
     visible,
-    onSubmitDetail
+    onSubmitDetail,
   } = CatalogDetailLogic(route);
   const navigation: any = useNavigation();
   const fromFavorite = Boolean(route?.route?.params?.fromFavorite);
@@ -142,16 +145,16 @@ export default function CatalogDetailScreen(route: any) {
           <Image
             source={{uri: product?.image_url}}
             style={styles.productImage}
-            resizeMethod='resize'
+            resizeMethod="resize"
           />
         </View>
         {/* <Slider /> */}
         <View style={styles.detailsContainer}>
           <View style={styles.detailsHeader}>
-            <Text style={[Styles.h6_Bold]}>{product?.title}</Text>
+            <Text style={[Styles.body_Bold]}>{product?.title}</Text>
             <TouchableOpacity onPress={() => toggleFavorite(product?.id)}>
               {isFavorite ? (
-                <Heart_primary width={24} height={24} />
+                <Heart width={24} height={24} fill={Color.red} />
               ) : (
                 <Heart width={24} height={24} fill={Color.white} />
               )}
@@ -161,7 +164,6 @@ export default function CatalogDetailScreen(route: any) {
             style={[Styles.title_Regular, {marginLeft: '5%', marginTop: 10}]}>
             {product?.description}
           </Text> */}
-          {/* eslint-disable-next-line react/jsx-no-undef */}
           <View style={styles.volumeBadge}>
             <Text style={[Styles.title_Regular, styles.volumeText]}>
               {product?.volume}
@@ -170,19 +172,27 @@ export default function CatalogDetailScreen(route: any) {
               ml
             </Text>
           </View>
-          <Text style={[Styles.title_Regular, styles.subInfoText]}>
-            sku:{product?.sku}
+          <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+          <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray}]}>
+            SKU:
           </Text>
-          <Text style={[Styles.title_Regular, styles.subInfoText]}>
-            stock status: {product?.stock_status || ''}
+          <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray,marginLeft:0,color:Color.black}]}>
+             {product?.sku}
           </Text>
+          </View>
+          <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+          <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray}]}>
+            Stock status:
+          </Text>
+          <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray,marginLeft:0,color:Color.black}]}>{product?.stock_status || ''}</Text>
+          </View>
           {/* <CatalogFilter
             onHandler={e => console.log(e)}
             sortData={data}
             sortItemContainerStyle={styles.sortItemContainer}
           /> */}
           <View style={styles.priceRow}>
-            <Text style={[Styles.h4_Bold]}>
+            <Text style={[Styles.h5_Bold]}>
               {product?.sale_price ?? product?.price} zł
             </Text>
             {product?.regular_price && (
@@ -237,7 +247,7 @@ export default function CatalogDetailScreen(route: any) {
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
             Tasting Characteristics
           </Text>
-          <Text style={[Styles.title_Regular, styles.paragraphMuted]}>
+          <Text style={[Styles.title_Regular, styles.paragraphMuted,{width:'85%',color:Color.black}]}>
             {product?.tasting_characteristics?.text}
           </Text>
 
@@ -251,15 +261,15 @@ export default function CatalogDetailScreen(route: any) {
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
                 Primary
               </Text>
-              <View style={styles.aromaRow}>
-                <Text style={[Styles.title_Regular, styles.aromaLabel]}>
+              <View style={[styles.aromaRow,{flexDirection:'column',}]}>
+                <Text style={[Styles.title_Medium, styles.aromaLabel,]}>
                   {
                     product?.tasting_characteristics?.aromas_and_flavours
                       ?.primary[0]?.name
                   }
                   :
                 </Text>
-                <Text style={[Styles.title_Regular, styles.aromaValue]}>
+                <Text style={[Styles.title_Regular, styles.aromaValue,{marginLeft:'5%',marginTop:0,width:'85%'}]}>
                   {
                     product?.tasting_characteristics?.aromas_and_flavours
                       ?.primary[0]?.value
@@ -273,14 +283,15 @@ export default function CatalogDetailScreen(route: any) {
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
                 Secondary
               </Text>
-              <View style={styles.aromaRow}>
-                <Text style={[Styles.title_Regular, styles.aromaLabel]}>
+              <View style={[styles.aromaRow,{flexDirection:'column'}]}>
+                <Text style={[Styles.title_Medium, styles.aromaLabel]}>
                   {
                     product?.tasting_characteristics?.aromas_and_flavours
                       ?.secondary[0]?.name
                   }
+                  :
                 </Text>
-                <Text style={[Styles.title_Regular, styles.aromaValue]}>
+                <Text style={[Styles.title_Regular, styles.aromaValue,{marginLeft:'5%',marginTop:0,width:'85%'}]}>
                   {
                     product?.tasting_characteristics?.aromas_and_flavours
                       ?.secondary[0]?.value
@@ -301,7 +312,7 @@ export default function CatalogDetailScreen(route: any) {
                       ?.tertiary[0]?.name
                   }
                 </Text>
-                <Text style={[Styles.title_Regular, styles.aromaValue]}>
+                <Text style={[Styles.title_Regular, styles.aromaValue,{marginTop:0,marginLeft:'0%',width:'85%'}]}>
                   {
                     product?.tasting_characteristics?.aromas_and_flavours
                       ?.tertiary[0]?.value
@@ -316,7 +327,7 @@ export default function CatalogDetailScreen(route: any) {
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
                 Gastronomy
               </Text>
-              <Text style={[Styles.title_Regular, styles.paragraphMuted]}>
+              <Text style={[Styles.title_Regular, styles.paragraphMuted,{color:Color.black}]}>
                 {product?.gastronomy?.text}
               </Text>
             </>
@@ -329,11 +340,21 @@ export default function CatalogDetailScreen(route: any) {
               </Text>
               {product?.gastronomy?.suggestions.map(
                 (suggestion: any, index: number) => (
-                  <Text
-                    key={index}
-                    style={[Styles.title_Regular, styles.suggestionText]}>
-                    {suggestion}
+                  <View key={index} style={styles.suggestionText}>
+                    {suggestion === 'fish' && <Fish width={30} height={30} />}
+                    {suggestion === 'cheese' && <Cheesse width={30} height={30} />}
+                    {suggestion === 'meat' && <Meat width={30} height={30} />}
+                    {suggestion === 'fruits_and_berries' && <Fruits width={30} height={30} />}
+                    <Text style={[Styles.title_Regular]}>
+                    {(() => {
+                      const raw =
+                        suggestion === 'fruits_and_berries'
+                          ? 'Fruits and Berries'
+                          : String(suggestion ?? '').replace(/_/g, ' ');
+                      return raw ? raw.charAt(0).toUpperCase() + raw.slice(1) : raw;
+                    })()}
                   </Text>
+                  </View>
                 ),
               )}
             </>
@@ -357,7 +378,7 @@ export default function CatalogDetailScreen(route: any) {
             title={'Add to Cart'}
             onHandler={onSubmit}
             style={styles.bottomCardButton}
-            textStyle={Styles.subtitle_Regular}
+            textStyle={[Styles.subtitle_Regular,{color:Color.white}]}
             icon={<Card />}
           />
         ) : (
@@ -365,7 +386,7 @@ export default function CatalogDetailScreen(route: any) {
             style={styles.bottomCardButton}
             onQuantityChange={onClick}
             count={count}
-            stylesContainer={{width:'60%',justifyContent:'space-between'}}
+            stylesContainer={styles.addBottomStylesContainer}
           />
         )}
         <LoadingModal isVisible={visible} />
@@ -394,6 +415,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     marginTop: '5%',
+    paddingBottom: '5%',
   },
   detailsHeader: {
     width: '90%',
@@ -408,15 +430,14 @@ const styles = StyleSheet.create({
     height: 40,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
     borderColor: Color.primary,
     borderRadius: 10,
-    padding: 10,
     marginLeft: '5%',
     marginTop: 10,
   },
   volumeText: {
-    marginLeft: '5%',
     color: Color.black,
   },
   subInfoText: {
@@ -443,7 +464,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     marginLeft: '5%',
-    marginTop: 10,
+    marginTop: '5%',
   },
   paragraphMuted: {
     marginLeft: '5%',
@@ -463,9 +484,11 @@ const styles = StyleSheet.create({
     width: '60%',
   },
   suggestionText: {
+    flexDirection:'row',
+    alignItems:'center',
+    gap:10,
     marginLeft: '5%',
     marginTop: 10,
-    marginBottom: 10,
   },
   productCardContainer: {
     marginRight: 8,
@@ -493,5 +516,9 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     width: '95%',
     marginBottom:10,
+  },
+  addBottomStylesContainer: {
+    width: '60%',
+    justifyContent: 'space-between',
   },
 });

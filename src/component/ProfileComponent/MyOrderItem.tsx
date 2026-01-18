@@ -4,6 +4,8 @@ import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
+import HorizontalFlatList from '../HorizontalFlatList';
+import OrderHistoryLogic from '../../logic/Setting/OrderHistoryLogic';
 
 
 type LocalTabButtonProps = {
@@ -46,11 +48,11 @@ const TabButton = ({
 
 export default function MyOrderItem({data}:{data:any}) {
   const {Styles} = StyleComponent();
-
   const [activeIndex, setActiveIndex] = useState<number>(data[0]?.id);
   const selected = data?.find((t:any) => t.id === activeIndex);
   const navigation = useNavigation<any>();
-
+  const {recommended, refreshAll} =
+    OrderHistoryLogic();
   const onSubmit = (product: any) => {
     if (!product) {
       return;
@@ -64,9 +66,10 @@ export default function MyOrderItem({data}:{data:any}) {
   return (
     <View style={styles.container}>
       <View style={styles.tabsRow}>
-        {data?.map((e:any) => (
+        {data?.map((e: any, idx: number) => (
           <TabButton
-            key={e.id}
+            // Some orders can contain repeated products (same id) so make the key unique.
+            key={`${String(e?.id ?? 'item')}-${idx}`}
             active={activeIndex === e.id}
             onPress={() => setActiveIndex(e.id)}
             style={styles.tabButton}
@@ -97,7 +100,7 @@ export default function MyOrderItem({data}:{data:any}) {
             volume:
           </Text>
           <Text style={[Styles.subtitle_Regular, {color: Color.gray}]}>
-           {selected?.volume || ''}
+           {selected?.volume || ''} ml
           </Text>
         </View>
         <View style={styles.divider} />
@@ -113,7 +116,22 @@ export default function MyOrderItem({data}:{data:any}) {
         />
       </TouchableOpacity>
 
+      <View style={[Styles.alignSelf, {width: '93%', marginTop: '10%'}]}>
+      <Text style={[Styles.h4_Bold,{marginLeft:'2%'}]}>Recommendations</Text>
+              <HorizontalFlatList
+                callback={e =>
+                  navigation.navigate('CatalogScreen', {
+                    screen: 'CatalogDetail',
 
+                    params: {product: e, fromSetting: true},
+                  })
+                }
+                products={recommended}
+                onFavoriteToggled={(_id: string, _isFavorite: boolean) =>
+                  refreshAll()
+                }
+              />
+            </View>
       {/* Order Status Card */}
       {/* <View style={styles.orderCard}>
         <Text style={[Styles.h4_SemiBold, Styles.textAlign]}>On the way</Text>

@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     borderRadius: 16,
-    color:Color.black,
+    color:Color.primary,
     marginTop:'10%'
   },
   inputFocused: {

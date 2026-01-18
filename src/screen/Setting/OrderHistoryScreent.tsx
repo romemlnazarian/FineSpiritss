@@ -12,7 +12,9 @@ import CustomHeader from '../../navigation/CustomHeader';
 import OrderHistoryLogic from '../../logic/Setting/OrderHistoryLogic';
 import {Color} from '../../utiles/color';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
-
+import Vector from '../../assets/svg/Vector.svg';
+import HorizontalFlatList from '../../component/HorizontalFlatList';
+import {useNavigation} from '@react-navigation/native';
 const toDateOnly = (value: unknown): string => {
   if (value == null) {
     return '';
@@ -26,16 +28,27 @@ const toDateOnly = (value: unknown): string => {
 };
 
 export default function OrderHistoryScreent() {
-  const {
-    onHandlerDetail,
-    orderHistory,
-    loading,
-  } = OrderHistoryLogic();
+  const {onHandlerDetail, orderHistory, loading, recommended, refreshAll} =
+    OrderHistoryLogic();
   const {Styles, Height} = StyleComponent();
+  const navigation = useNavigation<any>();
 
   return (
     <View style={[Styles.container]}>
-      <CustomHeader showBack={true} title="Order History" />
+      <CustomHeader showBack={true} subTitle="My Orders" />
+      {/* {orderHistory.length > 0 && (
+        <View
+          style={{
+            width: '90%',
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            alignSelf: 'center',
+          }}>
+          <Text style={[Styles.title_Regular,{marginLeft:'2%',color:Color.gray}]}>
+            {orderHistory.length} orders
+          </Text>
+        </View>
+      )} */}
       <ScrollView>
         {loading ? (
           <ActivityIndicator
@@ -44,15 +57,38 @@ export default function OrderHistoryScreent() {
             style={{marginTop: Height / 2.5}}
           />
         ) : orderHistory.length === 0 ? (
-          <View
-            style={[
-              Styles.container,
-              Styles.alignCenter,
-              Styles.justifyCenter,
-            ]}>
-            <Text style={[Styles.h4_Bold, {color: Color.black}]}>
-              No order history found
-            </Text>
+          <View style={[Styles.container]}>
+            <View
+              style={[
+                Styles.alignCenter,
+                Styles.alignSelf,
+                {width: '93%', marginTop: '12%'},
+              ]}>
+              <Vector fill={Color.black} />
+              <Text style={[Styles.h5_Bold, {marginTop: '5%'}]}>
+                You don’t have any orders yet!
+              </Text>
+              <Text
+                style={[Styles.body_Regular, Styles.textAlign, {width: '58%'}]}>
+                Once you place an order it will appear here
+              </Text>
+            </View>
+            <View style={[Styles.alignSelf, {width: '93%', marginTop: '10%'}]}>
+              <Text style={[Styles.h4_Bold, {color: Color.black}]}>Recommendations</Text>
+              <HorizontalFlatList
+                callback={e =>
+                  navigation.navigate('CatalogScreen', {
+                    screen: 'CatalogDetail',
+
+                    params: {product: e, fromSetting: true},
+                  })
+                }
+                products={recommended}
+                onFavoriteToggled={(_id: string, _isFavorite: boolean) =>
+                  refreshAll()
+                }
+              />
+            </View>
           </View>
         ) : (
           orderHistory.map((item: any) => (

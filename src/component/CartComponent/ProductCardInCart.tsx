@@ -2,8 +2,8 @@ import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
-import Trash from '../../assets/svg/Trash.svg';
 import AddBottom from '../AddBottom';
+import Trash from '../../assets/svg/Trash.svg';
 interface ProductItem {
   id: number;
   title: string;
@@ -29,7 +29,7 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
 }) => {
   const {Styles} = StyleComponent();
 
-  const handleQuantityChange = (newQuantity: number,type:string) => {
+  const handleQuantityChange = (newQuantity: number, type: string) => {
     onQuantityChange(item.id, newQuantity, type);
   };
 
@@ -38,23 +38,25 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
   };
 
   return (
+    <>
     <View style={[Styles.justifyBetween, styles.mainContainer]}>
       <View style={[Styles.justifyCenter, styles.leftSection]}>
         <Image source={{uri: item?.image_url}} style={styles.productImage} />
         <View style={styles.productInfo}>
           <Text
-            style={[Styles.h6_SemiBold, styles.productTitle]}
+            style={[Styles.subtitle_Bold, styles.productTitle, styles.productTitleWidth]}
             numberOfLines={1}
             ellipsizeMode="tail">
             {item.title}
           </Text>
+
           <View style={styles.detailsContainer}>
             <Text style={[Styles.subtitle_Regular, styles.blackText]}>
               {item.country}
             </Text>
             <View style={styles.separator} />
             <Text style={[Styles.subtitle_Regular, styles.blackText]}>
-              {item.alcoholContent}
+              {item.abv ? `ABV ${item.abv}` : ''}
             </Text>
           </View>
           {item?.sale_price === null ? (
@@ -75,33 +77,37 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
             </>
           )}
         </View>
+
       </View>
       <TouchableOpacity style={styles.heartContainer} onPress={handleRemove}>
-        <Trash />
+        <Trash width={24} height={24} />
+        {/* <View style={styles.closeBtn}>
+          <Text style={styles.closeText}>×</Text>
+        </View> */}
       </TouchableOpacity>
-      <AddBottom
-        style={styles.addBottom}
-        onQuantityChange={(value, type) => handleQuantityChange(value, type)}
-        count={item.quantity}
-      />
+
     </View>
+       <AddBottom
+          style={styles.addBottom}
+          onQuantityChange={(value, type) => handleQuantityChange(value, type)}
+          count={item.quantity}
+        />
+        <View style={styles.divider} />
+        </>
   );
 };
 
 const styles = StyleSheet.create({
   addBottom: {
-    width: 119,
+    width: '90%',
     height: 42,
-    position: 'absolute',
-    right: 0,
-    bottom: 10,
+    alignSelf: 'center',
+    marginTop: '2%',
   },
   mainContainer: {
     width: '100%',
     alignSelf: 'center',
     marginTop: '5%',
-    borderBottomWidth: 1,
-    borderBottomColor: Color.lightGray,
     padding: 10,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
@@ -118,7 +124,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     // reserve space for absolute controls on the right (trash + counter)
-    paddingRight: 140,
+    // paddingRight: 140,
   },
   detailsContainer: {
     flexDirection: 'row',
@@ -134,6 +140,21 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     top: 10,
+  },
+  closeBtn: {
+    width: 22,
+    height: 22,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Color.background,
+    borderWidth: 1,
+    borderColor: Color.lightGray,
+  },
+  closeText: {
+    color: Color.gray,
+    fontSize: 18,
+    marginTop: -4,
   },
   productImage: {
     width: 100,
@@ -157,8 +178,16 @@ const styles = StyleSheet.create({
   productTitle: {
     flexShrink: 1,
   },
-  productTitleLong: {width: '70%'},
-  productTitleShort: {width: '100%'},
+  productTitleWidth: {
+    width: '90%',
+  },
+  divider: {
+    width: '90%',
+    height: 1,
+    backgroundColor: Color.lightGray,
+    alignSelf: 'center',
+    marginTop: '5%',
+  },
 });
 
 export default ProductCardInCart;

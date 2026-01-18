@@ -71,6 +71,7 @@ export default function WellcomeScreen() {
           textStyle={{color: Color.primary}}
         />
       </View>
+      {deleteAccountDone && (
       <BottomSheet
         modalVisible={deleteAccountDone}
         height={350}
@@ -90,15 +91,16 @@ export default function WellcomeScreen() {
               We’re truly sad to see you go, but we’ll always be here if you
               decide to come back.
             </Text>
-            {/* <BottomCardComponent
+            <BottomCardComponent
               title="Done"
               onHandler={()=>onHandlerClose()}
               style={{marginTop: '5%'}}
-            /> */}
+            />
           </View>
         
         
       </BottomSheet>
+      )}
     </View>
   );
 }

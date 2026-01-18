@@ -9,7 +9,7 @@ import CustomHeader from '../../navigation/CustomHeader';
 import Birthday from '../../assets/svg/Birthday.svg';
 import Password from '../../assets/svg/Password.svg';
 import Edit from '../../assets/svg/Edit.svg';
-import {BottomSheet} from '../../component/BottomSheet';
+import {BottomModal} from '../../component/BottomModal';
 import SettingItemLogic from '../../logic/Setting/SettingItemLogic';
 import EmailVerifySetting from '../../component/SettingComponent/EmailVerifySetting';
 import CheckEmailSetting from '../../component/SettingComponent/CheckEmailSetting';
@@ -34,6 +34,8 @@ export default function SettingItemScreen() {
     setOpen,
     formatDate,
     email,
+    callBackEmailVerify,
+    callBackChangePassword
   } = SettingItemLogic();
   const data = [
     {
@@ -70,7 +72,7 @@ export default function SettingItemScreen() {
     <View style={[Styles.container, {backgroundColor: Color.white}]}>
       <CustomHeader
         showBack={true}
-        title="Setting"
+        subTitle="Settings"
         style={{backgroundColor: Color.white}}
       />
 
@@ -84,7 +86,7 @@ export default function SettingItemScreen() {
               key={item.id}
               style={styles.rowGap10Center}>
               {item.icon}
-              <View style={{gap: 4}}>
+              <View style={styles.itemTextContainer}>
                 <Text
                   style={[
                     Styles.title_Regular,
@@ -101,10 +103,10 @@ export default function SettingItemScreen() {
                   name="arrow-forward-ios"
                   size={20}
                   color={Color.black}
-                  style={{position: 'absolute', right: 10, color: Color.gray}}
+                  style={styles.arrow}
                 />
               ) : null}
-              <View style={{position: 'absolute', right: 10}}>
+              <View style={styles.absoluteRight}>
                 {item.id === 2 || item.id === 1 ? <Edit /> : null}
               </View>
             </TouchableOpacity>
@@ -124,27 +126,35 @@ export default function SettingItemScreen() {
         </Text>
       </TouchableOpacity>
 
-      <BottomSheet
+      <BottomModal
         modalVisible={modalVisible}
-        height={name === 'changePassword' ? 450 : 410}
+        height={name === 'changePassword' ? 480 : name === 'emailAddress' ? 380 : 350}
         onClose={() => setModalVisible(false)}>
         {name === 'fullName' ? (
           <UpdateFullName callBack={() => setModalVisible(false)} />
         ) : name === 'changePassword' ? (
-          <ChangePasswordSetting onCallBack={() => setModalVisible(false)} />
+          <ChangePasswordSetting onCallBack={callBackChangePassword} />
         ) : name === 'emailAddress' ? (
           <EmailVerifySetting callBack={checkEmail} />
         ) : name === 'emailVerify' ? (
-          <CheckEmailSetting email={email} callBack={() => setModalVisible(false)} />
-        ) : (
+          <CheckEmailSetting email={email} callBack={callBackEmailVerify} />
+        ) : name === 'congratulationsEmail' ? (
           <SuccessComponent
             title="Congratulations!"
             discription="You have succesfully Changed Email Address"
             buttomVisible={false}
+            styleDiscription={{width: '60%'}}
             onHandler={() => {}}
-          />
-        )}
-      </BottomSheet>
+          />) : name === 'congratulationsPassword' ?
+          <SuccessComponent
+          title="Congratulations!"
+          discription="You have succesfully Changed Password"
+          buttomVisible={false}
+          styleDiscription={{width: '60%'}}
+          onHandler={() => {}}
+        />:null
+        }
+      </BottomModal>
       <DatePicker
         modal
         open={open}
@@ -164,6 +174,9 @@ export default function SettingItemScreen() {
 }
 
 const styles = StyleSheet.create({
+  itemTextContainer: {gap: 4},
+  absoluteRight: {position: 'absolute', right: 10},
+  arrow: {position: 'absolute', right: 10, color: Color.gray},
   deleteAccount: {
     marginLeft: '5%',
   },

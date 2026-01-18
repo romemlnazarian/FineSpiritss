@@ -145,8 +145,9 @@ const onSubmit = (key:string)=>{
 }
   return (
     <ScrollView style={Styles.container}>
-      <CustomHeader showBack={true} title="Support Service" />
+      <CustomHeader showBack={true} subTitle="Support Service" />
       <View style={styles.section}>
+        <Text style={[Styles.body_Medium,{marginLeft:5}]}>Customer support</Text>
         {data.map(item => (
           <Fragment key={item.id}>
             <TouchableOpacity
@@ -156,7 +157,7 @@ const onSubmit = (key:string)=>{
               style={styles.rowGap10Center}>
                 {item.icon}
                 <View style={{gap:5}}>
-                <Text style={Styles.title_Regular}>{item.title}</Text>
+                <Text style={Styles.title_Medium}>{item.title}</Text>
                 <Text style={[Styles.title_Regular,{color:Color.gray,width:item.id === 3 ? '98%' : '100%'}]}>{item.discription}</Text>
                 </View>
             </TouchableOpacity>
@@ -164,6 +165,7 @@ const onSubmit = (key:string)=>{
         ))}
       </View>
       <View style={[styles.section, {marginBottom: 10}]}>
+      <Text style={[Styles.body_Medium,{marginLeft:5}]}>Social Media</Text>
         {dataTwo.map(item => (
           <Fragment key={item.id}>
                <TouchableOpacity
@@ -173,7 +175,7 @@ const onSubmit = (key:string)=>{
               style={styles.rowGap10Center}>
                 {item.icon}
                 <View style={{gap:5}}>
-                <Text style={Styles.title_Regular}>{item.title}</Text>
+                <Text style={Styles.title_Medium}>{item.title}</Text>
                 <Text style={[Styles.title_Regular,{color:Color.gray}]}>{item.discription}</Text>
                 </View>
             </TouchableOpacity>

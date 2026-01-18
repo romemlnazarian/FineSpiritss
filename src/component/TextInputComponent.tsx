@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: '85%',
     height: 56,
-    marginLeft: '2%',
     color: Color.black,
   },
   label: {
