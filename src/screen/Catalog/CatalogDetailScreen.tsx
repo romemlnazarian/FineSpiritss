@@ -172,12 +172,20 @@ export default function CatalogDetailScreen(route: any) {
               ml
             </Text>
           </View>
-          <Text style={[Styles.title_Regular, styles.subInfoText]}>
-            sku:{product?.sku}
+          <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+          <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray}]}>
+            SKU:
           </Text>
-          <Text style={[Styles.title_Regular, styles.subInfoText]}>
-            stock status: {product?.stock_status || ''}
+          <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray,marginLeft:0,color:Color.black}]}>
+             {product?.sku}
           </Text>
+          </View>
+          <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+          <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray}]}>
+            Stock status:
+          </Text>
+          <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray,marginLeft:0,color:Color.black}]}>{product?.stock_status || ''}</Text>
+          </View>
           {/* <CatalogFilter
             onHandler={e => console.log(e)}
             sortData={data}
@@ -239,7 +247,7 @@ export default function CatalogDetailScreen(route: any) {
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
             Tasting Characteristics
           </Text>
-          <Text style={[Styles.title_Regular, styles.paragraphMuted,{width:'85%'}]}>
+          <Text style={[Styles.title_Regular, styles.paragraphMuted,{width:'85%',color:Color.black}]}>
             {product?.tasting_characteristics?.text}
           </Text>
 
@@ -253,7 +261,7 @@ export default function CatalogDetailScreen(route: any) {
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
                 Primary
               </Text>
-              <View style={[styles.aromaRow,{flexDirection:'column'}]}>
+              <View style={[styles.aromaRow,{flexDirection:'column',}]}>
                 <Text style={[Styles.title_Medium, styles.aromaLabel,]}>
                   {
                     product?.tasting_characteristics?.aromas_and_flavours
@@ -261,7 +269,7 @@ export default function CatalogDetailScreen(route: any) {
                   }
                   :
                 </Text>
-                <Text style={[Styles.title_Regular, styles.aromaValue,{marginLeft:'5%'}]}>
+                <Text style={[Styles.title_Regular, styles.aromaValue,{marginLeft:'5%',marginTop:0,width:'85%'}]}>
                   {
                     product?.tasting_characteristics?.aromas_and_flavours
                       ?.primary[0]?.value
@@ -283,7 +291,7 @@ export default function CatalogDetailScreen(route: any) {
                   }
                   :
                 </Text>
-                <Text style={[Styles.title_Regular, styles.aromaValue,{marginLeft:'5%'}]}>
+                <Text style={[Styles.title_Regular, styles.aromaValue,{marginLeft:'5%',marginTop:0,width:'85%'}]}>
                   {
                     product?.tasting_characteristics?.aromas_and_flavours
                       ?.secondary[0]?.value
@@ -304,7 +312,7 @@ export default function CatalogDetailScreen(route: any) {
                       ?.tertiary[0]?.name
                   }
                 </Text>
-                <Text style={[Styles.title_Regular, styles.aromaValue]}>
+                <Text style={[Styles.title_Regular, styles.aromaValue,{marginTop:0,marginLeft:'0%',width:'85%'}]}>
                   {
                     product?.tasting_characteristics?.aromas_and_flavours
                       ?.tertiary[0]?.value
@@ -319,7 +327,7 @@ export default function CatalogDetailScreen(route: any) {
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
                 Gastronomy
               </Text>
-              <Text style={[Styles.title_Regular, styles.paragraphMuted]}>
+              <Text style={[Styles.title_Regular, styles.paragraphMuted,{color:Color.black}]}>
                 {product?.gastronomy?.text}
               </Text>
             </>

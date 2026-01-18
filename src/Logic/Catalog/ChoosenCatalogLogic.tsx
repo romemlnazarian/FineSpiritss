@@ -25,6 +25,8 @@ export default function ChoosenCatalogLogic(route: any) {
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
   const category = route.route.params.item;
   const titleHeader = route.route.params.title;
+  console.log('category =======>', category);
+
   // ---------- UI States ----------
   const [filterVisible, setFilterVisible] = useState(false);
   const [title, setTitle] = useState('');
@@ -126,7 +128,7 @@ export default function ChoosenCatalogLogic(route: any) {
 
             getProductsModel(
               tokens.access,
-              category.cat_slug,
+              category.cat_slug || category.slug,
               requestedPage,
               onSuccess,
               stopLoading,
@@ -138,7 +140,7 @@ export default function ChoosenCatalogLogic(route: any) {
 
       getProductsModel(
         token,
-        category.cat_slug,
+        category.cat_slug || category.slug,
         requestedPage,
         onSuccess,
         retry,

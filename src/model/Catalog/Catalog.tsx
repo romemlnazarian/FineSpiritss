@@ -161,8 +161,11 @@ export const getFilterProductsModel = (
   callback: (data: any) => void,
   errorcallback: (data: string) => void,
 ) => {
-  console.log('filter products data =>',`${Route.filter_products}${slug}/?countries=${countries}&brands=${brands}&volume=${volume}&price_from=${min_price}&price_to=${max_price}`),
-    
+  console.log(
+    'filter products data =>',
+    `${Route.filter_products}${slug}/?countries=${countries}&brands=${brands}&volume=${volume}&price_from=${min_price}&price_to=${max_price}`,
+  );
+
   GET(
     Route.root,
     `${Route.filter_products}${slug}/?countries=${countries}&brands=${brands}&volume=${volume}&price_from=${min_price}&price_to=${max_price}`,
@@ -280,6 +283,78 @@ export const getSearchProductsModel = (
     token,
   );
 };
+
+export const getSearchProductsSuggestionsModel = (
+  token: string,
+  search: string,
+  callback: (data: any) => void,
+  errorcallback: (data: string) => void,
+) => {
+  GET(
+    Route.root,
+    `${Route.product_search_suggestions}?q=${search}`,
+    (data: {
+      detail?: boolean | string;
+      message?: string;
+      data?: AllCategoryItem[] | any;
+      results?: any;
+      code?: string;
+      messages?: any[];
+    }, status?: number, ok?: boolean) => {
+      const anyData: any = data;
+      console.log('getSearchProductsSuggestionsModel search =>', data);
+      if (ok === false) {
+        const msg =
+          anyData?.code ??
+          anyData?.detail ??
+          anyData?.messages?.[0]?.message ??
+          anyData?.message ??
+          `Request failed (${status ?? 'unknown'})`;
+        errorcallback(String(msg));
+        return;
+      }
+      if (anyData && typeof anyData === 'object') {
+        // Handle auth/error shapes
+        if ('code' in anyData || 'messages' in anyData) {
+          const msg =
+            anyData.code ??
+            anyData.detail ??
+            anyData?.messages?.[0]?.message ??
+            anyData.message ??
+            'Unexpected response';
+          errorcallback(String(msg));
+          return;
+        }
+        if ('detail' in anyData) {
+          if (anyData.detail === true) {
+            callback(anyData.data ?? anyData.results ?? anyData);
+            return;
+          }
+          if (anyData.detail === false) {
+            errorcallback(String(anyData.message ?? 'Unexpected response'));
+            return;
+          }
+          // Sometimes APIs return `detail` as a string even on success; if data/results exist, treat as success
+          if (typeof anyData.detail === 'string') {
+            if (anyData.data != null || anyData.results != null) {
+              callback(anyData.data ?? anyData.results ?? anyData);
+              return;
+            }
+            errorcallback(String(anyData.detail));
+            return;
+          }
+          return;
+        }
+        // Pass-through when API doesn't include 'detail'
+        callback(anyData.data ?? anyData.results ?? anyData);
+        return;
+      }
+      errorcallback('Unexpected response');
+    },
+    token,
+  );
+};
+
 
 
 export const getSearchProductsHistoryModel = (

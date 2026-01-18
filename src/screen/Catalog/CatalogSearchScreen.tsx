@@ -8,8 +8,9 @@ import {
   ViewStyle,
   ActivityIndicator,
   Image,
+  useWindowDimensions,
 } from 'react-native';
-import React, {useState, useCallback, useRef, useEffect} from 'react';
+import React, {useState, useCallback, useRef, useEffect, useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -20,6 +21,7 @@ import {
   DeleteSearchProductsHistoryModel,
   getSearchProductsHistoryModel,
   getSearchProductsModel,
+  getSearchProductsSuggestionsModel,
 } from '../../model/Catalog/Catalog';
 import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
 import {useNavigation} from '@react-navigation/native';
@@ -107,17 +109,17 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
       <View style={[Styles.justifyCenter, styles.leftSection]}>
         <Image
           source={{uri: item?.image_url}}
-          style={{width: 100, height: 100}}
+          style={styles.productImage}
           resizeMode="contain"
         />
         <View style={styles.productInfo}>
           <Text
-            style={[Styles.subtitle_SemiBold, {width: '80%'}]}
+            style={[Styles.subtitle_SemiBold, styles.productTitle]}
             numberOfLines={1}
             ellipsizeMode="tail">
             {item.title}
           </Text>
-          <View style={[styles.detailsContainer, {marginTop: '2%'}]}>
+          <View style={[styles.detailsContainer, styles.detailsContainerSpacing]}>
             <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
               {item.country}
             </Text>
@@ -179,18 +181,25 @@ export default function CatalogSearch() {
   const navigation: any = useNavigation();
   const {Styles} = StyleComponent();
   const insets = useSafeAreaInsets();
+  const {height: windowHeight} = useWindowDimensions();
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
   const {recommended} = useRecommendedStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredSuggestions, setFilteredSuggestions] = useState<ProductItem[]>(
+  const [searchHistoryItems, setSearchHistoryItems] = useState<ProductItem[]>(
     [],
   );
+  const [searchSuggestionsItems, setSearchSuggestionsItems] = useState<
+    ProductItem[]
+  >([]);
 
   const [displayedProductData, setDisplayedProductData] = useState<
     ProductItem[]
   >([]);
   const [isSearching, setIsSearching] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const trimmedSearchTerm = searchTerm.trim();
+  const isTyping = trimmedSearchTerm.length > 0;
+  const isQueryLongEnough = trimmedSearchTerm.length >= 3;
 
   const normalizeProducts = useCallback((data: any[]): ProductItem[] => {
     return (data ?? []).map((item: any, index: number) => ({
@@ -232,6 +241,79 @@ export default function CatalogSearch() {
     }));
   }, []);
 
+  const normalizeSuggestionItems = useCallback((data: any[]): ProductItem[] => {
+    return (data ?? []).map((item: any, index: number) => ({
+      id: String(item?.id ?? item?.slug ?? `${item?.title ?? 'suggest'}-${index}`),
+      title:
+        item?.title ??
+        item?.query ??
+        item?.name ??
+        item?.text ??
+        item?.label ??
+        'Untitled',
+      country: item?.country ?? '',
+      alcoholContent: '',
+      price: '',
+      slug: item?.slug ?? item?.id ?? '',
+    }));
+  }, []);
+
+  const fetchSearchSuggestions = useCallback(
+    (query: string) => {
+      const q = (query ?? '').trim();
+      if (!q) {
+        setSearchSuggestionsItems([]);
+        return;
+      }
+      console.log('fetchSearchSuggestions q =>', q);
+      const handleSuccess = (payload: any) => {
+        console.log('fetchSearchSuggestions payload =>', payload.suggestions);
+        const raw = Array.isArray(payload?.suggestions)
+          ? payload.suggestions
+          : Array.isArray(payload?.results)
+          ? payload.results
+          : Array.isArray(payload?.data?.suggestions)
+          ? payload.data.suggestions
+          : Array.isArray(payload?.data)
+          ? payload.data
+          : Array.isArray(payload)
+          ? payload
+          : [];
+        setSearchSuggestionsItems(normalizeSuggestionItems(raw));
+      };
+
+      const handleError = () => {
+        // keep UI stable; just clear suggestions
+        setSearchSuggestionsItems([]);
+      };
+
+      getSearchProductsSuggestionsModel(token, q, handleSuccess, () =>
+        refreshTokenModel(
+          refreshToken,
+          newTokens => {
+            setToken(newTokens.access);
+            setRefreshToken(newTokens.refresh);
+            console.log('getSearchProductsSuggestionsModel newTokens =>', newTokens);
+            getSearchProductsSuggestionsModel(
+              newTokens.access,
+              q,
+              handleSuccess,
+              handleError,
+            );
+          },
+          handleError,
+        ),
+      );
+    },
+    [
+      token,
+      refreshToken,
+      setToken,
+      setRefreshToken,
+      normalizeSuggestionItems,
+    ],
+  );
+
   const fetchSearchResults = useCallback(
     (query: string) => {
       if (!query || query.length < 3) {
@@ -248,8 +330,7 @@ export default function CatalogSearch() {
           ? payload
           : [];
         const mapped = normalizeProducts(raw);
-        console.log('getSearchProductsModel payload =>', mapped);
-        setFilteredSuggestions(mapped);
+        // console.log('getSearchProductsModel payload =>', mapped);
         setDisplayedProductData(mapped);
       };
 
@@ -289,7 +370,7 @@ export default function CatalogSearch() {
             ? payload
             : payload?.data ?? [];
           const normalized = normalizeHistoryItems(raw);
-          setFilteredSuggestions(normalized);
+          setSearchHistoryItems(normalized);
         },
         () =>
           refreshTokenModel(
@@ -307,7 +388,7 @@ export default function CatalogSearch() {
                     ? payload
                     : payload?.data ?? [];
                   const normalized = normalizeHistoryItems(raw);
-                  setFilteredSuggestions(normalized);
+                  setSearchHistoryItems(normalized);
                 },
                 err => console.log('history error =>', err),
               );
@@ -326,19 +407,31 @@ export default function CatalogSearch() {
         clearTimeout(debounceRef.current);
       }
       debounceRef.current = setTimeout(() => {
-        if (text.length >= 3) {
-          fetchSearchResults(text);
+        const q = text.trim();
+        if (q.length >= 3) {
+          fetchSearchResults(q);
+          fetchSearchSuggestions(q);
         } else {
-          if (text.length === 0) {
-            setFilteredSuggestions([]);
+          if (q.length === 0) {
+            // show popular again + refresh search history immediately (even without blur/focus)
+            fetchSearchHistory('');
+            setSearchSuggestionsItems([]);
             setDisplayedProductData(normalizeProducts(recommended as any[]));
           } else {
-            fetchSearchHistory(text);
+            // while typing but query is too short, show suggestions (not history/popular)
+            fetchSearchSuggestions(q);
+            setDisplayedProductData([]);
           }
         }
       }, 500);
     },
-    [fetchSearchResults, fetchSearchHistory, recommended, normalizeProducts],
+    [
+      fetchSearchResults,
+      fetchSearchHistory,
+      fetchSearchSuggestions,
+      recommended,
+      normalizeProducts,
+    ],
   );
 
   useEffect(() => {
@@ -359,6 +452,27 @@ export default function CatalogSearch() {
   const getTextInputWidthStyle = useCallback((): ViewStyle => {
     return {width: '80%'};
   }, []);
+
+  const historyListMaxHeightStyle = useMemo(() => {
+    // Only Search History should scroll (Popular stays in place).
+    // Clamp height to keep popular visible on smaller screens.
+    const maxHeight = Math.min(300, Math.max(170, Math.round(windowHeight * 0.18)));
+    return {maxHeight};
+  }, [windowHeight]);
+
+  const popularContentContainerStyle = useMemo(() => {
+    return [
+      styles.flatListContainer,
+      {paddingBottom: (insets?.bottom ?? 0) + 60},
+    ];
+  }, [insets?.bottom]);
+
+  const searchResultsContentContainerStyle = useMemo(() => {
+    return [
+      styles.flatListContainer,
+      {paddingBottom: (insets?.bottom ?? 0) + 60},
+    ];
+  }, [insets?.bottom]);
 
   return (
     <View style={[Styles.container]}>
@@ -395,120 +509,184 @@ export default function CatalogSearch() {
         )}
       </View>
       <View style={styles.separatorLine} />
-      {filteredSuggestions.length > 0 && (
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          width: '90%',
-          alignSelf: 'center',
-        }}>
-        <Text style={[Styles.h6_Bold, {marginTop: 10}]}>Search History</Text>
+      <View style={styles.body}>
+        {!isTyping && (
+          <View style={styles.idleContainer}>
+            {searchHistoryItems.length > 0 && (
+              <View style={styles.searchHistoryContainer}>
+                <View style={styles.searchHistoryHeaderRow}>
+                  <Text style={[Styles.h6_Bold, styles.searchHistoryTitle]}>
+                    Search History
+                  </Text>
 
-          <TouchableOpacity
-            // style={styles.cleanButton}
-            onPress={() => {
-              setSearchTerm('');
-              setFilteredSuggestions([]);
-              setDisplayedProductData(normalizeProducts(recommended as any[]));
-              DeleteSearchProductsHistoryModel(
-                token,
-                () => {
-                  console.log('DeleteSearchProductsHistoryModel success');
-                },
-                _error => {
-                  refreshTokenModel(
-                    refreshToken,
-                    newTokens => {
-                      setToken(newTokens.access);
-                      setRefreshToken(newTokens.refresh);
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSearchTerm('');
+                      setSearchHistoryItems([]);
+                      setSearchSuggestionsItems([]);
+                      setDisplayedProductData(
+                        normalizeProducts(recommended as any[]),
+                      );
                       DeleteSearchProductsHistoryModel(
-                        newTokens.access,
+                        token,
                         () => {
-                          console.log(
-                            'DeleteSearchProductsHistoryModel success',
-                          );
+                          console.log('DeleteSearchProductsHistoryModel success');
                         },
                         _error => {
-                          console.log(
-                            'DeleteSearchProductsHistoryModel error =>',
-                            _error,
+                          refreshTokenModel(
+                            refreshToken,
+                            newTokens => {
+                              setToken(newTokens.access);
+                              setRefreshToken(newTokens.refresh);
+                              DeleteSearchProductsHistoryModel(
+                                newTokens.access,
+                                () => {
+                                  console.log(
+                                    'DeleteSearchProductsHistoryModel success',
+                                  );
+                                },
+                                err2 => {
+                                  console.log(
+                                    'DeleteSearchProductsHistoryModel error =>',
+                                    err2,
+                                  );
+                                },
+                              );
+                            },
+                            err => {
+                              console.log(
+                                'DeleteSearchProductsHistoryModel error =>',
+                                err,
+                              );
+                            },
                           );
                         },
                       );
-                    },
-                    _error => {
-                      console.log(
-                        'DeleteSearchProductsHistoryModel error =>',
-                        _error,
-                      );
-                    },
-                  );
-                },
-              );
-            }}>
-            <Text style={[Styles.h6_Regular, styles.cleanButtonText]}>
-              Clean
-            </Text>
-          </TouchableOpacity>
+                    }}>
+                    <Text style={[Styles.h6_Regular, styles.cleanButtonText]}>
+                      Clean
+                    </Text>
+                  </TouchableOpacity>
+                </View>
 
-      </View> )}
-      <View>
-        {filteredSuggestions.length > 0 && (
-          <View>
-            {/* <Text style={[Styles.h6_Medium,{marginLeft:'5%',marginTop:10}]}>Search History</Text> */}
+                <FlatList
+                  data={searchHistoryItems}
+                  scrollEnabled={true}
+                  nestedScrollEnabled={true}
+                  keyboardShouldPersistTaps="handled"
+                  showsVerticalScrollIndicator={true}
+                  renderItem={({item}) => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSearchTerm(item.title);
+                        setSearchSuggestionsItems([]);
+                        setDisplayedProductData([]);
+                        fetchSearchResults(item.title);
+                        fetchSearchSuggestions(item.title);
+                      }}>
+                      <Text
+                        style={[
+                          styles.suggestionItem,
+                          Styles.body_Regular,
+                          styles.suggestionText,
+                        ]}
+                        numberOfLines={1}
+                        ellipsizeMode="tail">
+                        {item.title}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                  keyExtractor={item => item.id}
+                  style={[
+                    styles.suggestionsList,
+                    styles.historyListContainer,
+                    historyListMaxHeightStyle,
+                  ]}
+                />
+              </View>
+            )}
+
+            <Text style={[Styles.h6_Bold, styles.popularTitle]}>
+              Popular products
+            </Text>
+
             <FlatList
-              data={filteredSuggestions}
-              renderItem={({item}) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    setSearchTerm(item.title);
-                    setFilteredSuggestions([]);
-                    setDisplayedProductData(
-                      normalizeProducts(recommended as any[]),
-                    );
-                    fetchSearchResults(item.title);
-                  }}>
-                  <Text
-                    style={[
-                      styles.suggestionItem,
-                      Styles.body_Regular,
-                      {width: '80%'},
-                    ]}
-                    numberOfLines={1}
-                    ellipsizeMode="tail">
-                    {item.title}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={item => item.id}
-              style={styles.suggestionsList}
+              data={displayedProductData}
+              renderItem={renderProductItem}
+              keyExtractor={keyExtractor}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={popularContentContainerStyle}
+              style={styles.popularList}
+              initialNumToRender={8}
+              windowSize={10}
+              maxToRenderPerBatch={8}
+              updateCellsBatchingPeriod={50}
+              scrollEventThrottle={16}
+              decelerationRate="fast"
             />
           </View>
         )}
-        <Text style={[Styles.h6_Bold, {marginLeft: '5%', marginTop: 10}]}>
-          Popular products
-        </Text>
-        <FlatList
-          data={displayedProductData}
-          renderItem={renderProductItem}
-          keyExtractor={keyExtractor}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={[
-            styles.flatListContainer,
-            {paddingBottom: (insets?.bottom ?? 0) + 140},
-          ]}
-          initialNumToRender={8}
-          windowSize={10}
-          maxToRenderPerBatch={8}
-          updateCellsBatchingPeriod={50}
-          ListFooterComponent={
-            <View style={{height: (insets?.bottom ?? 0) + 60}} />
-          }
-          scrollEventThrottle={16}
-          decelerationRate="fast"
-        />
+
+        {isTyping && (
+          <View style={styles.suggestionsContainer}>
+            {searchSuggestionsItems.length > 0 && (
+              <>
+                {/* <Text style={[Styles.h6_Bold, styles.searchHistoryTitle,{marginLeft: '5%'}]}>
+                  Suggestions
+                </Text> */}
+                <FlatList
+                  data={searchSuggestionsItems}
+                  scrollEnabled={true}
+                  nestedScrollEnabled={true}
+                  keyboardShouldPersistTaps="handled"
+                  showsVerticalScrollIndicator={true}
+                  renderItem={({item}) => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSearchTerm(item.title);
+                        setDisplayedProductData([]);
+                        fetchSearchResults(item.title);
+                        fetchSearchSuggestions(item.title);
+                      }}>
+                      <Text
+                        style={[
+                          styles.suggestionItem,
+                          Styles.body_Regular,
+                          styles.suggestionText,
+                        ]}
+                        numberOfLines={1}
+                        ellipsizeMode="tail">
+                        {item.title}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                  keyExtractor={item => item.id}
+                  style={[
+                    styles.suggestionsList,
+                    styles.historyListContainer,
+                    historyListMaxHeightStyle,
+                  ]}
+                />
+              </>
+            )}
+          </View>
+        )}
+
+        {isQueryLongEnough && (
+          <FlatList
+            data={displayedProductData}
+            renderItem={renderProductItem}
+            keyExtractor={keyExtractor}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={searchResultsContentContainerStyle}
+            initialNumToRender={8}
+            windowSize={10}
+            maxToRenderPerBatch={8}
+            updateCellsBatchingPeriod={50}
+            scrollEventThrottle={16}
+            decelerationRate="fast"
+          />
+        )}
       </View>
     </View>
   );
@@ -575,6 +753,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 5,
   },
+  detailsContainerSpacing: {
+    marginTop: 6,
+  },
   separator: {
     width: 1,
     height: 20,
@@ -592,21 +773,66 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
+  suggestionText: {
+    width: '80%',
+  },
+  footerSpacer: {
+    height: 20,
+  },
+  productImage: {
+    width: 100,
+    height: 100,
+  },
+  productTitle: {
+    width: '80%',
+  },
   suggestionsList: {
     backgroundColor: Color.background,
     borderRadius: 10,
     marginTop: 5,
     marginHorizontal: 10,
-    maxHeight: 220,
     shadowColor: Color.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
+  searchHistoryHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '90%',
+    alignSelf: 'center',
+  },
+  searchHistoryTitle: {
+    marginTop: 10,
+  },
+  popularTitle: {
+    marginLeft: '5%',
+    marginTop: 10,
+    marginBottom: 10,
+  },
   separatorLine: {
     height: 1,
     backgroundColor: Color.lightGray,
     marginVertical: 10,
+  },
+  body: {
+    flex: 1,
+  },
+  idleContainer: {
+    flex: 1,
+  },
+  searchHistoryContainer: {
+    flexShrink: 0,
+  },
+  suggestionsContainer: {
+    flexShrink: 0,
+  },
+  historyListContainer: {
+    flexGrow: 0,
+  },
+  popularList: {
+    flex: 1,
   },
   productPrice: {
     fontSize: 16,

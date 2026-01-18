@@ -43,10 +43,12 @@
   forgot_password_verify_code:string
   forgot_password_resend_password:string
   reset_password:string
+  product_search_suggestions:string
 }
 
 export const Route: RouteObj = {
   root:'https://api.finespirits.pl/api/',
+  // root:'https://5b27b569ed2d.ngrok-free.app/',
   // root:'https://d57e53489d9f.ngrok-free.app/api/',
 
     // root: "https://insureautosafe.com/wp-json/mobile/v1/",
@@ -91,5 +93,6 @@ export const Route: RouteObj = {
     get_support: 'support/about-company/',
     create_address:'order/shipping-address/',
      card:'order/cart/',
-     order_history:'order/history/'
+     order_history:'order/history/',
+     product_search_suggestions:'product/products/search/suggestions/',
 };

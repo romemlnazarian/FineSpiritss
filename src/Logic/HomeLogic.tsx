@@ -21,7 +21,7 @@ export default function HomeLogic() {
   const navigation = useNavigation<ButtonScreenNavigationProp>();
   const isFocused = useIsFocused();
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
-  const {ageConfirmed, setAgeConfirmed,setIsLoggedIn,isLoggedIn} = useAuthStore();
+  const {ageConfirmed, setAgeConfirmed,setIsLoggedIn, isLoggedIn} = useAuthStore();
   const {setProfile} = useProfileStore();
   const {setRecommended} = useRecommendedStore();
   const {address,setAddress} = useAddressStore();
@@ -34,6 +34,8 @@ export default function HomeLogic() {
   const [dataSort, setDataSort] = useState<any[]>([]);
   const [dataSortLoading, setDataSortLoading] = useState(false);
   const [homeRecommended, setHomeRecommended] = useState<[]>([]);
+
+
 
   const onSubmitClose = () => {
     setAgeConfirmed(true);
@@ -79,15 +81,22 @@ export default function HomeLogic() {
               () => {
                 setIsCategoriesLoading(false);
               },
+              
             );
           },
           () => {
             setIsCategoriesLoading(false);
           },
+          ()=>{
+            navigation.reset({
+             index: 0,
+             routes: [{name: 'Signin' as never}],
+           });
+           },
         );
       },
     );
-  }, [token, refreshToken, setToken, setRefreshToken]);
+  }, [token, refreshToken, setToken, setRefreshToken, navigation]);
 
   const getTopBrands = useCallback(async () => {
     setIsTopBrandsLoading(true);
@@ -146,6 +155,7 @@ export default function HomeLogic() {
       },
     );
   }, [token, refreshToken, setToken, setRefreshToken]);
+
 
   const loadSortSection = useCallback(
     (fetcher: (token: string, cb: (data: any) => void, err: (msg: string) => void) => void) => {
@@ -318,9 +328,10 @@ export default function HomeLogic() {
   const onSubmitAdvertising = (item: any) => {
     if (item.redirect_to === 'category') {
       navigation.navigate('CatalogScreen', {
-        screen: 'CatalogCategory',
+        screen: 'ChoosenCatalog',
         params: {
           item,
+          title: item.title,
           fromHome: true,
         },
       });
