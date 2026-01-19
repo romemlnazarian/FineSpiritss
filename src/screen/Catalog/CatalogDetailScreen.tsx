@@ -192,14 +192,35 @@ export default function CatalogDetailScreen(route: any) {
             sortItemContainerStyle={styles.sortItemContainer}
           /> */}
           <View style={styles.priceRow}>
-            <Text style={[Styles.h5_Bold]}>
-              {product?.sale_price ?? product?.price} zł
+          {product?.sale_price === null ? (
+        <Text
+          style={[
+            Styles.title_Bold,
+            Styles.h5_Bold,
+          ]}>
+          {product?.price} zł
+        </Text>
+      ) : (
+        <>
+          {product?.regular_price && (
+            <Text
+              style={[
+                Styles.subtitle_Regular,
+                styles.salePriceText,
+              ]}>
+              {product?.regular_price} zł
             </Text>
-            {product?.regular_price && (
-              <Text style={[Styles.body_Regular, styles.salePriceText]}>
-                {product?.regular_price || ''} zł
-              </Text>
-            )}
+          )}
+
+          <Text
+            style={[
+              Styles.title_Bold,
+              styles.salePriceText,
+            ]}>
+            {product?.price} zł
+          </Text>
+        </>
+      )}
           </View>
           {/* <View
             style={{

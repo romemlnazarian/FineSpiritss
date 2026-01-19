@@ -220,7 +220,7 @@ export const getProductDetailModel =  (
     Route.root,
     `${Route.product_detail}${slug}`,
     (data, status) => {
-      console.log('product detail data =>', data);
+      console.log('product detail data =>', data,status);
       if (status === 200) {
         callback(data);
       } else if(status === 401) {

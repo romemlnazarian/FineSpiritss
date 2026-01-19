@@ -336,14 +336,46 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
         {item?.country} ABV {item?.abv}
       </Text>
       <View style={styles.priceContainer}>
-        <Text style={[Styles.title_Bold, styles.productPrice]}>
+      {item.sale_price === null ? (
+        <Text
+          style={[
+            Styles.title_Bold,
+            styles.productPrice,
+            styles.priceContainer,
+          ]}>
+          {item.price} zł
+        </Text>
+      ) : (
+        <>
+          {item.regular_price && (
+            <Text
+              style={[
+                Styles.subtitle_Regular,
+                styles.originalPriceText,
+                styles.priceContainer,
+              ]}>
+              {item.regular_price} zł
+            </Text>
+          )}
+
+          <Text
+            style={[
+              Styles.title_Bold,
+              styles.productPrice,
+              styles.priceContainer,
+            ]}>
+            {item.price} zł
+          </Text>
+        </>
+      )}
+        {/* <Text style={[Styles.title_Bold, styles.productPrice]}>
           {item.sale_price ?? item.price} zł
         </Text>
         {item.regular_price && (
           <Text style={[Styles.subtitle_Regular, styles.originalPriceText]}>
             {item.regular_price} zł
           </Text>
-        )}
+        )} */}
       </View>
       {count === 0 ? (
         <BottomCardComponent

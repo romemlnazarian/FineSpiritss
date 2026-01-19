@@ -188,6 +188,7 @@ export default function CatalogDetailLogic(route: any) {
         setToken(tokens.access);
         setRefreshToken(tokens.refresh);
         getProductDetailModel(tokens.access, route?.route?.params?.product?.slug, data => {
+          console.log('dataaaaaaaaaa =>', data);
           setProduct(data);
           setIsFavorite(data?.is_favorite);
           setCount(data?.cart_quantity)
@@ -195,7 +196,7 @@ export default function CatalogDetailLogic(route: any) {
         }, err => console.log('error', err));
       }, err => console.log('error', err));
     });
-  }, [token, refreshToken, route?.route?.params?.product?.slug]);
+  }, [token, refreshToken, route?.route?.params?.product?.slug, setToken, setRefreshToken]);
 
   // Get recommended products
   const getHomeRecommended = useCallback(() => {
@@ -212,7 +213,7 @@ export default function CatalogDetailLogic(route: any) {
         }, err => console.log('error', err));
       });
     });
-  }, [token, refreshToken]);
+  }, [token, refreshToken, setToken, setRefreshToken]);
 
   // Refresh both product and recommended
   const refreshAll = useCallback(() => {
