@@ -13,6 +13,7 @@ import {Color} from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
 import CatalogLogic from '../../logic/Catalog/CatalogLogic';
 import {useNavigation} from '@react-navigation/native';
+import {Language} from '../../utiles/Language/i18n';
 
 const CategoryScreen = memo(() => {
   const {Styles} = StyleComponent();
@@ -60,7 +61,7 @@ const CategoryScreen = memo(() => {
     }
     return (
       <View style={styles.initialLoader}>
-        <Text style={styles.loadingText}>Loading categories...</Text>
+        <Text style={styles.loadingText}>{Language.catalog_loading_categories}</Text>
       </View>
     );
   }, [isInitialLoading]);
@@ -69,10 +70,10 @@ const CategoryScreen = memo(() => {
     <View style={[Styles.container]}>
       <CustomHeader
         showBack={true}
-        title="Catalog"
+        title={Language.catalog_title}
         onSubmitBack={() => navigation.getParent()?.navigate('Home' as never)}
       />
-      <View style={{marginTop: '5%'}}/>
+      <View style={styles.topSpacer} />
        <FlatList
         data={catalog}
         renderItem={renderCategoryItem}
@@ -113,6 +114,9 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     paddingBottom: 20,
+  },
+  topSpacer: {
+    marginTop: '5%',
   },
   rowStyle: {
     justifyContent: 'space-around',

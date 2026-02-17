@@ -2,6 +2,7 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
+import {Language} from '../../utiles/Language/i18n';
 import Time from '../../assets/svg/Time.svg';
 export default function AwardsProfile({onHandlerShowHistory}:{onHandlerShowHistory:()=>void}) {
   const {Styles} = StyleComponent();
@@ -16,12 +17,12 @@ export default function AwardsProfile({onHandlerShowHistory}:{onHandlerShowHisto
   ];
   return (
     <View style={styles.container}>
-      <Text style={Styles.h6_Medium}>My awards</Text>
+      <Text style={Styles.h6_Medium}>{Language.profile_my_awards}</Text>
       <View style={styles.headerRow}>
-        <Text style={Styles.h3_SemiBold}>0 Points</Text>
+        <Text style={Styles.h3_SemiBold}>0 {Language.profile_points}</Text>
         <TouchableOpacity style={styles.historyRow} onPress={onHandlerShowHistory}>
           <Time />
-          <Text style={Styles.body_Medium}>Show history</Text>
+          <Text style={Styles.body_Medium}>{Language.profile_show_history}</Text>
         </TouchableOpacity>
       </View>
 

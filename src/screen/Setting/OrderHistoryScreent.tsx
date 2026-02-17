@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   StyleSheet,
+  Image,
 } from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
@@ -15,6 +16,7 @@ import Arrow from 'react-native-vector-icons/MaterialIcons';
 import Vector from '../../assets/svg/Vector.svg';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
 import {useNavigation} from '@react-navigation/native';
+import {Language} from '../../utiles/Language/i18n';
 const toDateOnly = (value: unknown): string => {
   if (value == null) {
     return '';
@@ -35,7 +37,7 @@ export default function OrderHistoryScreent() {
 
   return (
     <View style={[Styles.container]}>
-      <CustomHeader showBack={true} subTitle="My Orders" />
+      <CustomHeader showBack={true} subTitle={Language.profile_my_orders} />
       {/* {orderHistory.length > 0 && (
         <View
           style={{
@@ -66,15 +68,17 @@ export default function OrderHistoryScreent() {
               ]}>
               <Vector fill={Color.black} />
               <Text style={[Styles.h5_Bold, {marginTop: '5%'}]}>
-                You don’t have any orders yet!
+                {Language.setting_order_empty_title}
               </Text>
               <Text
                 style={[Styles.body_Regular, Styles.textAlign, {width: '58%'}]}>
-                Once you place an order it will appear here
+                {Language.setting_order_empty_subtitle}
               </Text>
             </View>
             <View style={[Styles.alignSelf, {width: '93%', marginTop: '10%'}]}>
-              <Text style={[Styles.h4_Bold, {color: Color.black}]}>Recommendations</Text>
+              <Text style={[Styles.h4_Bold, {color: Color.black}]}>
+                {Language.profile_recommendations}
+              </Text>
               <HorizontalFlatList
                 callback={e =>
                   navigation.navigate('CatalogScreen', {
@@ -95,12 +99,13 @@ export default function OrderHistoryScreent() {
             <TouchableOpacity
               activeOpacity={0.5}
               key={item.order_number}
-              style={[Styles.card, Styles.justifyBetween, styles.cardItem]}
+              style={[Styles.card, styles.cardItem,Styles.alignCenter]}
               onPress={() => onHandlerDetail(item.order_number)}>
+                <Image source={{uri: item?.image_url}} style={styles.orderInfoContainer} />
               <View style={styles.columnGap}>
                 <View style={styles.rowGap}>
                   <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
-                    Date:
+                    {Language.setting_order_date_label}:
                   </Text>
                   <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
                     {toDateOnly(item.date)}
@@ -108,7 +113,7 @@ export default function OrderHistoryScreent() {
                 </View>
                 <View style={styles.rowGap}>
                   <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
-                    Status:
+                    {Language.setting_order_status_label}:
                   </Text>
                   <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
                     {item.status}
@@ -116,7 +121,7 @@ export default function OrderHistoryScreent() {
                 </View>
                 <View style={styles.rowGap}>
                   <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
-                    Total price:
+                    {Language.setting_order_total_price_label}:
                   </Text>
                   <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>
                     {item.total} zł
@@ -127,6 +132,7 @@ export default function OrderHistoryScreent() {
                 name="keyboard-arrow-right"
                 size={30}
                 color={Color.black}
+                style={styles.arrowIcon}
               />
             </TouchableOpacity>
           ))
@@ -159,7 +165,16 @@ export default function OrderHistoryScreent() {
 }
 
 const styles = StyleSheet.create({
-  cardItem: {marginBottom: 10},
-  columnGap: {flexDirection: 'column' as const, gap: 10},
-  rowGap: {flexDirection: 'row' as const, gap: 10},
+  cardItem: {gap: 10},
+  columnGap: {flexDirection: 'column' as const, gap: 6},
+  rowGap: {flexDirection: 'row' as const, gap: 5},
+  orderInfoContainer: {
+    width: 80,
+    height: 80,
+    backgroundColor: Color.background,
+  },
+  arrowIcon: {
+    position: 'absolute',
+    right: 10,
+  },
 });

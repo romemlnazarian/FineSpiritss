@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Image,
   useWindowDimensions,
+  Platform,
 } from 'react-native';
 import React, {useState, useCallback, useRef, useEffect, useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
@@ -30,6 +31,7 @@ import {
   DeleteFavoriteProductModel,
 } from '../../model/Favorite/Favorite';
 import useRecommendedStore from '../../zustland/recommendedStore';
+import {Language} from '../../utiles/Language/i18n';
 interface ProductItem {
   id: string;
   title: string;
@@ -209,9 +211,9 @@ export default function CatalogSearch() {
           item?.sku ??
           `${item?.title ?? 'item'}-${index}`,
       ),
-      title: item?.title ?? item?.name ?? 'Untitled product',
+      title: item?.title ?? item?.name ?? Language.catalog_search_untitled_product,
       country: item?.country ?? item?.key_details?.country ?? '',
-      alcoholContent: item?.abv ? `${item.abv}% Alc By Vol` : '',
+      alcoholContent: item?.abv ? `${item.abv}% ${Language.abv_alc_by_vol}` : '',
       price: item?.price ?? '',
       slug: item?.slug ?? item?.id ?? '',
       image_url:
@@ -485,7 +487,7 @@ export default function CatalogSearch() {
           <Arrow width={30} height={30} />
         </TouchableOpacity>
         <TextInput
-          placeholder={'Search'}
+          placeholder={Language.Search}
           placeholderTextColor={Color.gray}
           style={[
             styles.textInputContainer,
@@ -516,7 +518,7 @@ export default function CatalogSearch() {
               <View style={styles.searchHistoryContainer}>
                 <View style={styles.searchHistoryHeaderRow}>
                   <Text style={[Styles.h6_Bold, styles.searchHistoryTitle]}>
-                    Search History
+                    {Language.catalog_search_history}
                   </Text>
 
                   <TouchableOpacity
@@ -564,7 +566,7 @@ export default function CatalogSearch() {
                       );
                     }}>
                     <Text style={[Styles.h6_Regular, styles.cleanButtonText]}>
-                      Clean
+                      {Language.catalog_search_clean}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -607,7 +609,7 @@ export default function CatalogSearch() {
             )}
 
             <Text style={[Styles.h6_Bold, styles.popularTitle]}>
-              Popular products
+              {Language.catalog_search_popular_products}
             </Text>
 
             <FlatList
@@ -703,7 +705,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: '5%',
+    marginTop: Platform.OS === 'ios' ? '10%' : '5%',
   },
   cleanButton: {
     position: 'absolute',

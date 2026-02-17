@@ -8,6 +8,7 @@ import TextView from '../../component/TextView';
 import TextInputComponent from '../../component/TextInputComponent';
 import BottomCardComponent from '../../component/BottomCard';
 import ShippingAddressLogic from '../../logic/Setting/ShippingAddressLogic';
+import {Language} from '../../utiles/Language/i18n';
 
 export default function ShippingAddress(route:any) {
   const {Styles} = StyleComponent();
@@ -20,17 +21,17 @@ export default function ShippingAddress(route:any) {
     <KeyboardAvoidingView style={Styles.container}
     behavior={'position'} keyboardVerticalOffset={keyboardVerticalOffset}
     >
-      <CustomHeader showBack={true} subTitle="Shipping Address" />
+      <CustomHeader showBack={true} subTitle={Language.shipping_address_header} />
       <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'Name Surname'}
+          title={Language.Name_Surname}
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />
             <TextInputComponent
               containerStyle={styles.textInputContainer}
-              placeholder={'Type your Name Surname'}
+              placeholder={Language.Name_Surname_Placeholder}
               handlePasswordIconClick={() => console.log()}
               value={`${profile?.first_name} ${profile?.last_name}`}
                showPass={true}
@@ -39,7 +40,7 @@ export default function ShippingAddress(route:any) {
       </View>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'Email'}
+          title={Language.Email}
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />
@@ -53,7 +54,7 @@ export default function ShippingAddress(route:any) {
       </View>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'Address'}
+          title={Language.Address}
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />
@@ -64,7 +65,7 @@ export default function ShippingAddress(route:any) {
             <TextInputComponent
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
-              placeholder={'Street name,home number/appartments'}
+              placeholder={Language.street_address_placeholder}
               handlePasswordIconClick={() => console.log()}
               onChangeText={onChange}
               value={value}
@@ -76,7 +77,7 @@ export default function ShippingAddress(route:any) {
       </View>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'Postal code'}
+          title={Language.Postal_code}
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />
@@ -87,7 +88,7 @@ export default function ShippingAddress(route:any) {
             <TextInputComponent
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
-              placeholder={'XXXXX'}
+              placeholder={Language.postal_code_placeholder}
               onChangeText={onChange}
               value={value}
               errorMessage={errors.postalCode?.message}
@@ -99,7 +100,7 @@ export default function ShippingAddress(route:any) {
       </View>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'City'}
+          title={Language.City}
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />
@@ -110,7 +111,7 @@ export default function ShippingAddress(route:any) {
             <TextInputComponent
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
-              placeholder={'Type Your City'}
+              placeholder={Language.city_placeholder}
               onChangeText={onChange}
               value={value}
               errorMessage={errors.city?.message}
@@ -121,7 +122,7 @@ export default function ShippingAddress(route:any) {
       </View>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'Phone'}
+          title={Language.Phone}
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />
@@ -132,7 +133,7 @@ export default function ShippingAddress(route:any) {
             <TextInputComponent
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
-              placeholder={'Enter Your Phone Number'}
+              placeholder={Language.phone_placeholder}
               onChangeText={onChange}
               value={value}
               errorMessage={errors.phone?.message}
@@ -143,7 +144,7 @@ export default function ShippingAddress(route:any) {
         />
       </View>
       <BottomCardComponent
-        title={'Save'}
+        title={Language.Save}
         onHandler={handleSubmit(onSubmit)}
         disabled={isSaveDisabled}
         style={[styles.buttonComponent, isSaveDisabled ? styles.buttonDisabled : null]}

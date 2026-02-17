@@ -15,11 +15,11 @@ export default function BillingAddressScreen() {
   const {control, handleSubmit, errors, onSubmit, isValid} = BilingAddressLogic();
   return (
     <View style={Styles.container}>
-      <CustomHeader showBack={true} title="Billing Address" />
+      <CustomHeader showBack={true} title={Language.setting_billing_address_title} />
       <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'Name Surname'}
+          title={Language.Name_Surname}
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />
@@ -30,7 +30,7 @@ export default function BillingAddressScreen() {
             <TextInputComponent
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
-              placeholder={'Type your Name Surname'}
+              placeholder={Language.Name_Surname_Placeholder}
               handlePasswordIconClick={() => console.log()}
               onChangeText={onChange}
               value={value}
@@ -42,7 +42,7 @@ export default function BillingAddressScreen() {
       </View>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'Street'}
+          title={Language.setting_street}
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />
@@ -53,7 +53,7 @@ export default function BillingAddressScreen() {
             <TextInputComponent
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
-              placeholder={'Street name,home number/appartments'}
+              placeholder={Language.street_address_placeholder}
               handlePasswordIconClick={() => console.log()}
               onChangeText={onChange}
               value={value}
@@ -65,7 +65,7 @@ export default function BillingAddressScreen() {
       </View>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'Postal code'}
+          title={Language.Postal_code}
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />
@@ -76,7 +76,7 @@ export default function BillingAddressScreen() {
             <TextInputComponent
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
-              placeholder={'XXXXX'}
+              placeholder={Language.postal_code_placeholder}
               handlePasswordIconClick={() => console.log()}
               onChangeText={onChange}
               value={value}
@@ -89,7 +89,7 @@ export default function BillingAddressScreen() {
       </View>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'City'}
+          title={Language.City}
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />
@@ -100,7 +100,7 @@ export default function BillingAddressScreen() {
             <TextInputComponent
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
-              placeholder={'Type Your City'}
+              placeholder={Language.city_placeholder}
               handlePasswordIconClick={() => console.log()}
               onChangeText={onChange}
               value={value}
@@ -112,7 +112,7 @@ export default function BillingAddressScreen() {
       </View>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'Phone Number (Optional)'}
+          title={Language.setting_phone_optional}
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />
@@ -135,7 +135,7 @@ export default function BillingAddressScreen() {
       </View>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'Email Address'}
+          title={Language.setting_email_address}
           color={Color.black}
           style={[Styles.title_Regular, styles.textStyles]}
         />
@@ -146,7 +146,7 @@ export default function BillingAddressScreen() {
             <TextInputComponent
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
-              placeholder={'Type Your Email Address'}
+              placeholder={Language.Email_Placeholder}
               handlePasswordIconClick={() => console.log()}
               onChangeText={onChange}
               value={value}
@@ -157,7 +157,7 @@ export default function BillingAddressScreen() {
         />
       </View>
       <BottomCardComponent
-        title={'Save'}
+        title={Language.Save}
         onHandler={handleSubmit(onSubmit)}
         disabled={!isValid}
         style={styles.buttonComponent}

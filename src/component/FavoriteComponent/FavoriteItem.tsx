@@ -14,6 +14,7 @@ import { useToast } from '../../utiles/Toast/ToastProvider';
 import { addCardModel, deleteCardModel, updateCardModel } from '../../model/Card/CardModel';
 import Card from '../../assets/svg/Cart.svg';
 import LoadingModal from '../LoadingModal';
+import {Language} from '../../utiles/Language/i18n';
 interface ProductItem {
   id: number;
   title?: string;
@@ -302,7 +303,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
             <View style={styles.detailsContainer}>
               <Text style={[Styles.subtitle_Regular,{color:Color.black}]}>{item.country ?? ''}</Text>
               <View style={styles.separator} />
-              <Text style={[Styles.subtitle_Regular,{color:Color.black}]}>{item.abv ? `ABV ${item.abv}` : ''}</Text>
+              <Text style={[Styles.subtitle_Regular,{color:Color.black}]}>{item.abv ? `${Language.abv} ${item.abv}` : ''}</Text>
             </View>
             <View style={styles.priceContainer}>
          
@@ -356,7 +357,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
 
               {count === 0 ? (
         <BottomCardComponent
-          title={'Add to Cart'}
+          title={Language.product_detail_add_to_cart}
           onHandler={onSubmit}
           style={styles.addBottom}
           textStyle={[Styles.subtitle_Regular, {color:Color.white}]}

@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import React from 'react';
 import { StyleComponent } from '../../utiles/styles';
 import { Color } from '../../utiles/color';
+import { Language } from '../../utiles/Language/i18n';
 
 interface CatalogKosherProps {
   onHandler: () => void;
@@ -12,10 +13,10 @@ export default function CatalogKosher({onHandler}: CatalogKosherProps) {
   
   return (
     <View style={styles.container}>
-      <Text style={[Styles.h5_Medium, Styles.textAlign]}>Kosher</Text>
+      <Text style={[Styles.h5_Medium, Styles.textAlign]}>{Language.filter_kosher}</Text>
       
       <View style={styles.optionContainer}>
-        <Text style={[Styles.body_Regular]}>Yes</Text>
+        <Text style={[Styles.body_Regular]}>{Language.Yes}</Text>
         <TouchableOpacity 
           style={styles.radioButton}
           onPress={onHandler}
@@ -23,7 +24,7 @@ export default function CatalogKosher({onHandler}: CatalogKosherProps) {
       </View>
       
       <View style={styles.optionContainer}>
-        <Text style={[Styles.body_Regular]}>No</Text>
+        <Text style={[Styles.body_Regular]}>{Language.No}</Text>
         <TouchableOpacity 
           style={styles.radioButton}
           onPress={onHandler}

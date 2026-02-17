@@ -11,7 +11,7 @@ import {Controller} from 'react-hook-form';
 import TextInputComponent from '../TextInputComponent';
 import {ChangePasswordSettingLogic} from '../../logic/Setting/ChangePasswordSettingLogic';
 import Lock from '../../assets/svg/Password.svg';
-// import {Language} from '../../utiles/Language/i18n';
+import {Language} from '../../utiles/Language/i18n';
 import BottomCardComponent from '../BottomCard';
 import {Color} from '../../utiles/color';
 export default function ChangePasswordSetting({onCallBack}: {onCallBack: () => void}) {
@@ -35,7 +35,7 @@ export default function ChangePasswordSetting({onCallBack}: {onCallBack: () => v
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={[Styles.alignCenter, styles.container]}>
-        <Text style={Styles.h5_Medium}>Change Password</Text>
+        <Text style={Styles.h5_Medium}>{Language.setting_change_password}</Text>
         <Controller
           control={control}
           name="oldpassword"

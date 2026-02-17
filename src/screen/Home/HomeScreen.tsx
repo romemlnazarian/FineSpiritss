@@ -101,7 +101,7 @@ export default function HomeScreen() {
             gap: 10,
           }}>
           <Search width={24} height={24} />
-          <Text style={[Styles.title_Medium, {color: Color.gray}]}>Search</Text>
+          <Text style={[Styles.title_Medium, {color: Color.gray}]}>{Language.Search}</Text>
         </TouchableOpacity>
         <ModalCard
           isVisible={ageConfirmed}

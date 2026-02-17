@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, TouchableOpacity, Linking, ScrollView } from 'react-native'
-import React, { Fragment, useEffect, useState } from 'react'
-import { StyleComponent } from '../../utiles/styles'
+import {View, Text, StyleSheet, TouchableOpacity, Linking, ScrollView} from 'react-native';
+import React, {Fragment, useEffect, useState} from 'react';
+import {StyleComponent} from '../../utiles/styles';
 import CustomHeader from '../../navigation/CustomHeader'
 import { Color } from '../../utiles/color'
 import Email from '../../assets/svg/Email.svg';
@@ -15,6 +15,7 @@ import AddressIcon from 'react-native-vector-icons/FontAwesome';
 import ThreadsIcon from '../../assets/svg/Threads.svg';
 import PhoneIcon from 'react-native-vector-icons/SimpleLineIcons';
 import WebsiteIcon from 'react-native-vector-icons/Ionicons';
+import {Language} from '../../utiles/Language/i18n';
 
 export default function SupportServiceScreen() {
   const {Styles} = StyleComponent();
@@ -44,35 +45,35 @@ useEffect(() => {
 const data = [
   {
     id: 1,
-    title: 'Email address',
+    title: Language.support_email_address,
     discription:support?.support_email,
     icon: <Email/>,
     key:'email',
   },
   {
     id: 2,
-    title: 'Phone number',
+    title: Language.support_phone_number,
     discription:support?.phone,
     icon: <PhoneIcon name="phone" size={20} color={Color.black}/>,
     key:'phone',
   },
   {
     id: 3,
-    title: 'Address',
+    title: Language.support_address,
     discription:support?.address,
     icon: <AddressIcon name="address-book-o" size={22} color={Color.black}/>,
     key:'address',
   },
   {
     id: 4,
-    title: 'Telegram',
+    title: Language.support_telegram,
     discription:support?.telegram_username,
     icon: <Telegram/>,
     key:'telegram',
   },
   {
     id: 5,
-    title: 'Whatsapp',
+    title: Language.support_whatsapp,
     discription:support?.whatsapp_phone,
     icon: <Whatsapp/>,
     key:'whatsapp',
@@ -81,29 +82,29 @@ const data = [
 const dataTwo = [
   {
     id: 1,
-    title: 'Web Site',
-    discription:"Finespirits",
+    title: Language.support_website,
+    discription: Language.brand_name,
     icon: <WebsiteIcon name="earth" size={25} color={Color.black}/>,
     key:'WebsiteIcon',
   },
   {
     id: 2,
-    title: 'Facebook',
-    discription:"Finespirits",
+    title: Language.support_facebook,
+    discription: Language.brand_name,
     icon: <Facebook/>,
     key:'facebook',
   },
     {
       id: 3,
-      title: 'Instagram',
-      discription:"Finespirits",
+      title: Language.support_instagram,
+      discription: Language.brand_name,
       icon: <Instagram name="instagram" size={25} color={Color.black}/>,
       key:'instagram',
     },
     {
       id: 4,
-      title: 'Threads',
-      discription:"Finespirits",
+      title: Language.support_threads,
+      discription: Language.brand_name,
       icon: <ThreadsIcon/>,
       key:'threads',
      

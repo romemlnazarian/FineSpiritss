@@ -170,7 +170,7 @@ export default function CatalogDetailLogic(route: any) {
   
   // Get product detail
   const getProductDetail = useCallback(() => {
-    console.log('route?.route?.params?.product?.slug =>', route?.route?.params?.product?.slug);
+    console.log('route?.route?.params?.product?.slug =>', route?.route?.params?.product?.slug,token);
     setIsLoading(true);
     getProductDetailModel(token, route?.route?.params?.product?.slug, data => {
       console.log('dataaaaaaaaaa =>', data);
@@ -187,15 +187,17 @@ export default function CatalogDetailLogic(route: any) {
       refreshTokenModel(refreshToken, tokens => {
         setToken(tokens.access);
         setRefreshToken(tokens.refresh);
-        getProductDetailModel(tokens.access, route?.route?.params?.product?.slug, data => {
-          setProduct(data);
-          setIsFavorite(data?.is_favorite);
-          setCount(data?.cart_quantity)
-          setIsLoading(false);
-        }, err => console.log('error', err));
+        console.log('tokens =>', tokens);
+        // getProductDetailModel(tokens.access, route?.route?.params?.product?.slug, data => {
+        //   console.log('dataaaaaaaaaa =>', data);
+        //   setProduct(data);
+        //   setIsFavorite(data?.is_favorite);
+        //   setCount(data?.cart_quantity)
+        //   setIsLoading(false);
+        // }, err => console.log('error', err));
       }, err => console.log('error', err));
     });
-  }, [token, refreshToken, route?.route?.params?.product?.slug]);
+  }, [token, refreshToken, route?.route?.params?.product?.slug, setToken, setRefreshToken]);
 
   // Get recommended products
   const getHomeRecommended = useCallback(() => {
@@ -212,7 +214,7 @@ export default function CatalogDetailLogic(route: any) {
         }, err => console.log('error', err));
       });
     });
-  }, [token, refreshToken]);
+  }, [token, refreshToken, setToken, setRefreshToken]);
 
   // Refresh both product and recommended
   const refreshAll = useCallback(() => {

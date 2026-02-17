@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Platform} from 'react-native';
 import React, {Fragment} from 'react';
 import SettingLogic from '../../logic/Setting/SettingLogic';
 import {StyleComponent} from '../../utiles/styles';
@@ -16,35 +16,8 @@ import LogOutComponent from '../../component/LogOutComponent';
 import Wrench from '../../assets/svg/Wrench.svg';
 import Edit from '../../assets/svg/Edit.svg';
 import { useNavigation } from '@react-navigation/native';
-const data = [
-  {
-    id: 1,
-    title: 'Shipping address',
-    icon: <Iocn name="location-outline" size={25} color={Color.black} />,
-  },
-  {
-    id: 2,
-    title: 'Order History',
-    icon: <List />,
-  },
-  {
-    id: 3,
-    title: 'Support service',
-    icon: <Support />,
-  },
-];
-const dataTwo = [
-  {
-    id: 1,
-    title: 'Settings',
-    icon: <Wrench />,
-  },
-  {
-    id: 2,
-    title: 'Privacy Policy',
-    icon: <Iocn name="shield-outline" size={24} color={Color.black} />,
-  },
-];
+import {Language} from '../../utiles/Language/i18n';
+import { Switch } from 'react-native-switch';
 export default function SettingScreen() {
   const navigation = useNavigation();
   const {Styles} = StyleComponent();
@@ -58,7 +31,45 @@ export default function SettingScreen() {
     setLogOutModalVisible,
     onSubmitLogout,
     address,
+    isEnabled,
+    toggleSwitch,
   } = SettingLogic();
+
+  const data = [
+    {
+      id: 1,
+      key: 'shipping_address',
+      title: Language.setting_shipping_address,
+      icon: <Iocn name="location-outline" size={25} color={Color.black} />,
+    },
+    {
+      id: 2,
+      key: 'order_history',
+      title: Language.setting_order_history,
+      icon: <List />,
+    },
+    {
+      id: 3,
+      key: 'support_service',
+      title: Language.setting_support_service,
+      icon: <Support />,
+    },
+  ];
+  const dataTwo = [
+    {
+      id: 1,
+      key: 'settings',
+      title: Language.setting_settings,
+      icon: <Wrench />,
+    },
+    {
+      id: 2,
+      key: 'privacy_policy',
+      title: Language.setting_privacy_policy,
+      icon: <Iocn name="shield-outline" size={24} color={Color.black} />,
+    },
+  ];
+
   return (
     <View style={[Styles.container]}>
       <View style={{marginTop:Platform.OS === 'android' ? '5%' : '10%'}} />
@@ -88,7 +99,7 @@ export default function SettingScreen() {
         {data.map(item => (
           <Fragment key={item.id}>
             <TouchableOpacity
-              onPress={() => onSubmit(item.title)}
+              onPress={() => onSubmit(item.key)}
               activeOpacity={0.5}
               key={item.id}
               style={styles.rowGap10Center}>
@@ -124,7 +135,7 @@ export default function SettingScreen() {
         {dataTwo.map(item => (
           <Fragment key={item.id}>
             <TouchableOpacity
-              onPress={() => onSubmit(item.title)}
+              onPress={() => onSubmit(item.key)}
               activeOpacity={0.5}
               key={item.id}
               style={styles.rowGap10Center}>
@@ -140,12 +151,31 @@ export default function SettingScreen() {
           </Fragment>
         ))}
       </View>
+      {/* <View style={styles.switchContainer}>
+        <Text style={[styles.title,Styles.title_Medium]}>{Language.language}</Text>
+        <Switch
+          value={isEnabled}
+          onValueChange={val => toggleSwitch(val)}
+          activeText={'PL'}
+          inActiveText={'EN'}
+          circleSize={16}
+          barHeight={23}
+          circleBorderWidth={0}
+          backgroundActive={Color.primary}
+          backgroundInactive={Color.gray}
+          circleActiveColor={Color.white}
+          circleInActiveColor={Color.white}
+          switchLeftPx={5}
+          switchRightPx={5}
+          switchWidthMultiplier={3.2}
+        />
+      </View> */}
       <TouchableOpacity
         activeOpacity={0.5}
         style={styles.logoutButton}
         onPress={() => setLogOutModalVisible(true)}>
         <Logout name="logout" size={22} color={Color.black}/>
-        <Text style={Styles.title_Medium}>Logout</Text>
+        <Text style={Styles.title_Medium}>{Language.Logout}</Text>
         <Arrow
           name="arrow-forward-ios"
           size={20}
@@ -158,18 +188,18 @@ export default function SettingScreen() {
         height={200}
         onClose={() => setModalVisible(false)}>
         <View style={styles.bottomSheetContainer}>
-          <Text style={Styles.h5_Medium}>My Addresses</Text>
+          <Text style={Styles.h5_Medium}>{Language.My_Addresses}</Text>
           <TouchableOpacity
             onPress={() => onSubmitAddress('BillingAddress')}
             style={styles.bottomSheetAction}>
             <Plus name="plus-circle" size={20} color={Color.black} />
-            <Text style={Styles.body_Regular}>Billing address</Text>
+            <Text style={Styles.body_Regular}>{Language.Billing_address}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => onSubmitAddress('ShippingAddress')}
             style={styles.bottomSheetAction}>
             <Plus name="plus-circle" size={20} color={Color.black} />
-            <Text style={Styles.body_Regular}>Add Shipping Address</Text>
+            <Text style={Styles.body_Regular}>{Language.Add_Shipping_Address}</Text>
           </TouchableOpacity>
         </View>
       </BottomSheet>
@@ -262,5 +292,21 @@ const styles = StyleSheet.create({
     gap: 10,
     marginLeft: '10%',
     marginTop: '5%',
+  },
+  title: {
+    color: Color.black,
+  },
+  switchContainer: {
+    width: '93%',
+    marginTop: '5%',
+    borderColor: Color.gray,
+    backgroundColor: Color.white,
+    borderRadius: 12,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
   },
 });

@@ -22,7 +22,6 @@ export const getCategoriesModel =  (
   callback: (data: any) => void,
   errorcallback: (data: string) => void,
 ) => {
-  console.log('tokencalatog =>', token);
   GET(
     Route.root,
     Route.home_categories,

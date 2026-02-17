@@ -1,10 +1,10 @@
 import React from 'react'
 import LogoComponent from './LogoComponent'
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 export default function HomeHeader() {
   return (
-    <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center',marginTop:'5%'}}>
-      <LogoComponent width={150} height={100} style={{marginRight:'5%'}}/>
+    <View style={{flexDirection:'row', justifyContent:'flex-start', alignItems:'center',marginTop: Platform.OS === 'ios' ? '10%' : '5%'}}>
+      <LogoComponent width={120} height={80} style={{marginLeft: '5%'}}/>
     </View>
   )
 }

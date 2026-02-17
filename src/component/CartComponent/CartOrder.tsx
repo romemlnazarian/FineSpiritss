@@ -17,6 +17,7 @@ import ArrowDown from 'react-native-vector-icons/MaterialIcons';
 import ArrowUp from 'react-native-vector-icons/MaterialIcons';
 import Check from 'react-native-vector-icons/FontAwesome6';
 import BottomCardComponent from '../../component/BottomCard';
+import {Language} from '../../utiles/Language/i18n';
 
 export default function CartOrder() {
   const {Styles} = StyleComponent();
@@ -187,10 +188,11 @@ export default function CartOrder() {
           <Check name="check" size={50} color={Color.white} />
         </View>
         <View style={styles.successTextContainer}>
-        <Text style={[Styles.h5_Medium, {color: Color.black}]}>Checkout was done </Text>
-        <Text style={[Styles.h5_Medium, {color: Color.black}]}>successfully</Text>
+          <Text style={[Styles.h5_Medium, {color: Color.black}]}>
+            {Language.cart_checkout_success}
+          </Text>
         </View>
-        <BottomCardComponent title="My orders" onHandler={()=>{}} style={styles.successCard}/>
+        <BottomCardComponent title={Language.profile_my_orders} onHandler={()=>{}} style={styles.successCard}/>
       </ScrollView>
     </View>
   );

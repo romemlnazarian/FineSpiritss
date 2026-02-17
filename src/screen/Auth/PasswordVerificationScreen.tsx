@@ -100,25 +100,25 @@ export default function PasswordVerificationScreen(route: any) {
                 getValues().password !== getValues().repeatpassword && (
                   <View style={styles.validationFeedbackContainer}>
                     <TextView
-                      title={'8 to 20 characters'}
+                      title={Language.Password_rule_length}
                       color={isLengthValid ? Color.green : Color.red}
                       style={[Styles.title_Regular, styles.text]}
                       icon={isLengthValid ? <Success /> : <Reject />}
                     />
                     <TextView
-                      title={'At least 1 number'}
+                      title={Language.Password_rule_number}
                       color={hasNumber ? Color.green : Color.red}
                       style={[Styles.title_Regular, styles.text]}
                       icon={hasNumber ? <Success /> : <Reject />}
                     />
                     <TextView
-                      title={'At least 1 upper case letter'}
+                      title={Language.Password_rule_uppercase}
                       color={hasUpperCase ? Color.green : Color.red}
                       style={[Styles.title_Regular, styles.text]}
                       icon={hasUpperCase ? <Success /> : <Reject />}
                     />
                     <TextView
-                      title={'At least 1 special character'}
+                      title={Language.Password_rule_special_character}
                       color={hasSpecialChar ? Color.green : Color.red}
                       style={[Styles.title_Regular, styles.text]}
                       icon={hasSpecialChar ? <Success /> : <Reject />}

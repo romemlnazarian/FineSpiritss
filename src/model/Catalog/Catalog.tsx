@@ -161,10 +161,6 @@ export const getFilterProductsModel = (
   callback: (data: any) => void,
   errorcallback: (data: string) => void,
 ) => {
-  console.log(
-    'filter products data =>',
-    `${Route.filter_products}${slug}/?countries=${countries}&brands=${brands}&volume=${volume}&price_from=${min_price}&price_to=${max_price}`,
-  );
 
   GET(
     Route.root,
@@ -218,9 +214,9 @@ export const getProductDetailModel =  (
 ) => {
   GET(
     Route.root,
-    `${Route.product_detail}${slug}`,
+    `${Route.product_detail}${slug}/`,
     (data, status) => {
-      console.log('product detail data =>', data);
+      console.log('product detail data =>', data,status);
       if (status === 200) {
         callback(data);
       } else if(status === 401) {

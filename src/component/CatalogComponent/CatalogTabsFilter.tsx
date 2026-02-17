@@ -2,6 +2,7 @@ import {View, Text, ScrollView, TouchableOpacity, StyleSheet} from 'react-native
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
+import {Language} from '../../utiles/Language/i18n';
 
 interface CatalogCountryProps {
   data: any;
@@ -21,12 +22,34 @@ export default function CatalogTabsFilter({
   selectedVolumes = [],
 }: CatalogCountryProps) {
   const {Styles} = StyleComponent();
+  const normalizedTitle = String(title ?? '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '_');
+  const key =
+    normalizedTitle === 'country'
+      ? 'country'
+      : normalizedTitle === 'brand'
+        ? 'brand'
+        : normalizedTitle === 'capacity'
+          ? 'capacity'
+          : // Backward compat if older code passes "Country"/"Brand"/"Capacity"
+            normalizedTitle;
+
+  const titleLabel =
+    key === 'country'
+      ? Language.filter_country
+      : key === 'brand'
+        ? Language.filter_brand
+        : key === 'capacity'
+          ? Language.filter_capacity
+          : title;
 
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={[Styles.h5_Medium, Styles.textAlign]}>{title}</Text>
-        {title === 'Country' &&
+        <Text style={[Styles.h5_Medium, Styles.textAlign]}>{titleLabel}</Text>
+        {key === 'country' &&
           data?.country?.map((item: any, index: number) => {
             const value =
               typeof item === 'string'
@@ -55,7 +78,7 @@ export default function CatalogTabsFilter({
               </TouchableOpacity>
             );
           })}
-        {title === 'Brand' &&
+        {key === 'brand' &&
           data?.brand?.map((item: any, index: number) => {
             const value = item?.slug ?? item?.id ?? item?.name ?? String(item);
             const normalized = String(value);
@@ -81,7 +104,7 @@ export default function CatalogTabsFilter({
               </TouchableOpacity>
             );
           })}
-        {title === 'Capacity' &&
+        {key === 'capacity' &&
           data?.volume?.map((item: any, index: number) => {
             const value =
               typeof item === 'object'
@@ -105,7 +128,7 @@ export default function CatalogTabsFilter({
                       styles.itemText,
                       isSelected && styles.selectedText,
                     ]}>
-                    {label} ml
+                    {label} {Language.unit_ml}
                   </Text>
                 </View>
                 <View style={[styles.checkbox, isSelected && styles.checkboxSelected]} />

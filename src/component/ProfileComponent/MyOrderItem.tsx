@@ -5,6 +5,7 @@ import {StyleComponent} from '../../utiles/styles';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import HorizontalFlatList from '../HorizontalFlatList';
+import {Language} from '../../utiles/Language/i18n';
 import OrderHistoryLogic from '../../logic/Setting/OrderHistoryLogic';
 
 
@@ -92,7 +93,7 @@ export default function MyOrderItem({data}:{data:any}) {
             |
           </Text>
           <Text style={[Styles.subtitle_Regular, {color: Color.gray}]}>
-            ABV {selected?.abv || ''}
+            {Language.abv} {selected?.abv || ''}
           </Text>
         </View>
         <View style={styles.productMetaRow}>
@@ -117,7 +118,7 @@ export default function MyOrderItem({data}:{data:any}) {
       </TouchableOpacity>
 
       <View style={[Styles.alignSelf, {width: '93%', marginTop: '10%'}]}>
-      <Text style={[Styles.h4_Bold,{marginLeft:'2%'}]}>Recommendations</Text>
+      <Text style={[Styles.h4_Bold,{marginLeft:'2%'}]}>{Language.profile_recommendations}</Text>
               <HorizontalFlatList
                 callback={e =>
                   navigation.navigate('CatalogScreen', {

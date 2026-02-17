@@ -10,6 +10,7 @@ import Layer from '../../assets/svg/Layer.svg';
 import TimerAndroid from '../../Helper/TimerAndroid';
 import Warning from 'react-native-vector-icons/Ionicons';
 import { Color } from '../../utiles/color';
+import {Language} from '../../utiles/Language/i18n';
 export default function DeleteAccountVerifyScreen(route: any) {
   const {Styles} = StyleComponent();
   const {
@@ -33,16 +34,16 @@ export default function DeleteAccountVerifyScreen(route: any) {
     <View style={Styles.container}>
       <CustomHeader showBack={true} />
       <Text style={[Styles.h4_Medium, styles.title]}>
-        Deleting Confirmation
+        {Language.delete_confirm_title}
       </Text>
       <Text style={[Styles.body_Regular, styles.description]}>
-        Enter the code we’ve sent to your email ({email}) to confirm account
-        deletion.
+        {Language.delete_confirm_description_prefix} ({email}){' '}
+        {Language.delete_confirm_description_suffix}
       </Text>
       <CodeInput isCodeValid={codeValid}  onCodePress={(e) => onHandler(e)} />
       <View style={[Styles.justifyCenter, styles.timerContainer]}>
         <TouchableOpacity disabled={DisableTimer} onPress={() => onHandlerTimer()}>
-          <Text style={Styles.title_Medium}>Send Code Again</Text>
+          <Text style={Styles.title_Medium}>{Language.Send_code_again}</Text>
         </TouchableOpacity>
         <TimerAndroid
           restartKey={restartKey}
@@ -67,20 +68,20 @@ export default function DeleteAccountVerifyScreen(route: any) {
         <View style={styles.bottomSheetContainer}>
         <Warning name="warning" size={80} color={Color.primary} />
         <Text style={[Styles.h6_Medium, Styles.textAlign, styles.sheetTitle]}>
-            Are you sure you want to delete your account?
+            {Language.delete_confirm_sheet_title}
           </Text>
           <Text
             style={[Styles.title_Regular, Styles.textAlign, styles.sheetSubtitle]}>
-            This action is permanent and cannot be undone
+            {Language.delete_confirm_sheet_subtitle}
           </Text>
         </View>
         <BottomCardComponent
-          title="No"
+          title={Language.No}
           onHandler={onSubmitCancel}
           style={styles.sheetButtonPrimary}
         />
         <BottomCardComponent
-          title={`Yes${(count) < 1 ? '' : `(${count})`}`}
+          title={`${Language.Yes}${count < 1 ? '' : `(${count})`}`}
           onHandler={onSubmitConfirm}
           disabled={disable}
           loading={loading}
@@ -95,7 +96,7 @@ export default function DeleteAccountVerifyScreen(route: any) {
             <Layer />
             <Text
               style={[Styles.h6_Medium, Styles.textAlign, styles.deletedTitle]}>
-              Your account has been deleted
+              {Language.delete_deleted_title}
             </Text>
             <Text
               style={[
@@ -103,11 +104,10 @@ export default function DeleteAccountVerifyScreen(route: any) {
                 Styles.textAlign,
                 styles.deletedSubtitle,
               ]}>
-              We’re truly sad to see you go, but we’ll always be here if you
-              decide to come back.
+              {Language.delete_deleted_subtitle}
             </Text>
             <BottomCardComponent
-              title="Done"
+              title={Language.Done}
               onHandler={() => console.log('done')}
               style={styles.deletedButton}
             />

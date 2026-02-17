@@ -128,7 +128,7 @@ export default function SigninScreen() {
         </View>
         <View style={styles.alreadyHaveAccountContainer}>
           <TextView
-            title={'Don’t have an account?'}
+            title={Language.Dont_have_account}
             color={Color.black}
             style={[Styles.title_Regular]}
           />

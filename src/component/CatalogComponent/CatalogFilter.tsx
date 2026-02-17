@@ -32,7 +32,7 @@ const SortItem = memo(({item, isSelected, onPress, containerStyle, textStyle, ar
           <Text
             style={[
               Styles.title_Regular,
-              isSelected ? styles.selectedItemText : styles.unselectedItemText,
+              item.id === '1' ? styles.selectedItemText : styles.unselectedItemText,
               textStyle,
             ]}>
             {item.title}

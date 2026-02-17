@@ -26,6 +26,7 @@ import {getOrderHistoryDetailModel} from '../../model/Setting/SettingModel';
 import {useNavigation} from '@react-navigation/native';
 
 import Vector from '../../assets/svg/Vector.svg';
+import {Language} from '../../utiles/Language/i18n';
 
 
 export default function MyORderScreen(route: any) {
@@ -130,7 +131,7 @@ export default function MyORderScreen(route: any) {
 
       <ScrollView>
 
-        <CustomHeader showBack={true} subTitle="My Orders" />
+        <CustomHeader showBack={true} subTitle={Language.profile_my_orders} />
 
         {isLoading ? (
 

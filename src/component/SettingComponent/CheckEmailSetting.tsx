@@ -17,6 +17,7 @@ import useProfileStore from '../../zustland/ProfileStore';
 import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
 import useAuthStore from '../../zustland/AuthStore';
 import { Color } from '../../utiles/color';
+import { Language } from '../../utiles/Language/i18n';
 export default function CheckEmailSetting({email,callBack}:{email:string,callBack:()=>void}) {
   const {show} = useToast();
   const {Styles} = StyleComponent();
@@ -43,7 +44,7 @@ export default function CheckEmailSetting({email,callBack}:{email:string,callBac
   const onCodeHandle = (value: string) => {
     if (isOtpExpiredRef.current) {
       setCodeValid(false);
-      show('Code expired', {type: 'error'});
+      show(Language.setting_code_expired, {type: 'error'});
       return;
     }
 
@@ -54,7 +55,7 @@ export default function CheckEmailSetting({email,callBack}:{email:string,callBac
         (data) => {
           if (isOtpExpiredRef.current) {
             setCodeValid(false);
-            show('Code expired', {type: 'error'});
+            show(Language.setting_code_expired, {type: 'error'});
             return;
           }
           // show(data, {type: 'success'});
@@ -77,13 +78,13 @@ export default function CheckEmailSetting({email,callBack}:{email:string,callBac
                   callBack();
                 },
                 err => {
-                  setError(String(err || 'Verification failed'));
+                  setError(String(err || Language.setting_verification_failed));
                   setCodeValid(false);
                 },
               );
             },
             err => {
-              setError(String(err || 'Verification failed'));
+              setError(String(err || Language.setting_verification_failed));
               setCodeValid(false);
             },
           );
@@ -111,10 +112,10 @@ export default function CheckEmailSetting({email,callBack}:{email:string,callBac
     ResendOtpModel(
       email,
       () => {
-        show('Code sent again', {type: 'success'});
+        show(Language.setting_code_sent_again, {type: 'success'});
       },
       err => {
-        show(String(err || 'Resend failed'), {type: 'error'});
+        show(String(err || Language.setting_resend_failed), {type: 'error'});
       },
     );
 
@@ -125,10 +126,10 @@ export default function CheckEmailSetting({email,callBack}:{email:string,callBac
       keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
       style={styles.wrapper}>
       <Text style={[Styles.h5_Medium, Styles.textAlign,{marignbottom:20}]}>
-        Please check your Email
+        {Language.Check_your_email_title}
       </Text>
       <Text style={[Styles.title_Regular, Styles.alignSelf, styles.subtitle]} numberOfLines={1}>
-        We’ve sent a code to {email}
+        {Language.We_sent_code_to} {email}
       </Text>
       {error && (
         <Text style={[Styles.title_Regular, Styles.textAlign, styles.errorText]}>
@@ -140,7 +141,7 @@ export default function CheckEmailSetting({email,callBack}:{email:string,callBac
         <TouchableOpacity
          onPress={onHandlerTimer}
         activeOpacity={0.5} disabled={DisableTimer}>
-          <Text style={Styles.title_Medium}>Send Code Again</Text>
+          <Text style={Styles.title_Medium}>{Language.Send_code_again}</Text>
         </TouchableOpacity>
         <TimerAndroid
             restartKey={restartKey}

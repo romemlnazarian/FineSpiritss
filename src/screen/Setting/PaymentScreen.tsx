@@ -12,22 +12,23 @@ import Apple from '../../assets/svg/appleIcon.svg';
 import AddPaymentLogic from '../../logic/Setting/AddPaymentLogic';
 import { BottomSheet } from '../../component/BottomSheet';
 import AddCardSetting from '../../component/SettingComponent/AddCardSetting';
+import {Language} from '../../utiles/Language/i18n';
 const data = [
   {
     id: 1,
-    title: 'Cash',
+    title: Language.setting_cash,
     check: true,
     icon: <Money />,
   },
   {
     id: 2,
-    title: 'Google Pay',
+    title: Language.setting_google_pay,
     check: false,
     icon: <Google />,
   },
   {
     id: 3,
-    title: 'Apple Pay',
+    title: Language.setting_apple_pay,
     check: false,
     icon: <Apple/>
   },
@@ -39,9 +40,9 @@ export default function PaymentScreen() {
   const {Styles} = StyleComponent();
   return (
     <View style={Styles.container}>
-      <CustomHeader showBack={true} title="Payment Methods" />
+      <CustomHeader showBack={true} title={Language.setting_payment_methods_title} />
       <View style={styles.card}>
-        <Text style={[Styles.title_Medium, styles.cardTitle]}>With Card</Text>
+        <Text style={[Styles.title_Medium, styles.cardTitle]}>{Language.setting_with_card}</Text>
         <AddPaymentSetting
           logo={<Visa />}
           title={'Visa ... 0312'}
@@ -57,7 +58,7 @@ export default function PaymentScreen() {
         <View style={styles.sectionDivider} />
         <Text
           style={[Styles.title_Medium, styles.cardTitle, styles.mt5]}>
-          Other Way
+          {Language.setting_other_way}
         </Text>
         {data.map(item => (
           <Fragment key={item.id}>
@@ -66,7 +67,7 @@ export default function PaymentScreen() {
               activeOpacity={0.5}
               onPress={() => console.log()}>
               <View style={[styles.logoBox]}>{item.icon}
-                {item.id !== 1 && <Text style={Styles.title_Regular}>Pay</Text>}
+                {item.id !== 1 && <Text style={Styles.title_Regular}>{Language.setting_pay}</Text>}
               </View>
               <Text style={Styles.title_Medium}>{item.title}</Text>
               <View style={[styles.checkBadge, styles.checkBadgeOutline]}>

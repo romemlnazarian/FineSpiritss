@@ -5,7 +5,7 @@ import {Color} from '../../utiles/color';
 import Heart from '../../assets/svg/Heart.svg';
 import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import BottomCardComponent from '../BottomCard';
-// import {Language} from '../../utiles/Language/i18n'; // Removed as no longer used
+import {Language} from '../../utiles/Language/i18n';
 import Card from '../../assets/svg/Cart.svg';
 import {
   AddFavoriteProductModel,
@@ -349,7 +349,7 @@ const ProductCard: React.FC<{
           {item?.country}
         </Text>
         <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
-          ABV {item?.abv}
+          {Language.abv} {item?.abv}
         </Text>
       </View>
       {item.sale_price === null ? (
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderWidth: 1,
     borderColor: Color.cardgray,
-    backgroundColor: Color.white,
+    backgroundColor: Color.background,
     borderRadius: 10,
     width: '48%',
     marginBottom: 15,

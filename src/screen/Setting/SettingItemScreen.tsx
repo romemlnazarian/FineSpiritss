@@ -17,6 +17,7 @@ import SuccessComponent from '../../component/SuccessComponent';
 import ChangePasswordSetting from '../../component/SettingComponent/ChangePasswordSetting';
 import UpdateFullName from './UpdateFullName';
 import DatePicker from 'react-native-date-picker';
+import {Language} from '../../utiles/Language/i18n';
 
 export default function SettingItemScreen() {
   const {Styles} = StyleComponent();
@@ -40,7 +41,7 @@ export default function SettingItemScreen() {
   const data = [
     {
       id: 1,
-      title: 'Name Surname',
+      title: Language.setting_name_surname,
       discription: dataProfile?.full_name,
       icon: <User />,
       key: 'fullName',
@@ -48,20 +49,20 @@ export default function SettingItemScreen() {
 
     {
       id: 2,
-      title: 'Email Address',
+      title: Language.setting_email_address,
       discription: dataProfile?.email,
       icon: <Email />,
       key: 'emailAddress',
     },
     {
       id: 3,
-      title: 'Change Password',
+      title: Language.setting_change_password,
       icon: <Password />,
       key: 'changePassword',
     },
     {
       id: 4,
-      title: 'Birth date',
+      title: Language.setting_birth_date,
       discription: dataProfile?.birthdate,
       icon: <Birthday />,
       key: 'birthDate',
@@ -72,7 +73,7 @@ export default function SettingItemScreen() {
     <View style={[Styles.container, {backgroundColor: Color.white}]}>
       <CustomHeader
         showBack={true}
-        subTitle="Settings"
+        subTitle={Language.setting_settings_title}
         style={{backgroundColor: Color.white}}
       />
 
@@ -122,7 +123,7 @@ export default function SettingItemScreen() {
             styles.deleteAccount,
             {color: Color.red},
           ]}>
-          Delete Personal Account
+          {Language.setting_delete_personal_account}
         </Text>
       </TouchableOpacity>
 
@@ -140,15 +141,15 @@ export default function SettingItemScreen() {
           <CheckEmailSetting email={email} callBack={callBackEmailVerify} />
         ) : name === 'congratulationsEmail' ? (
           <SuccessComponent
-            title="Congratulations!"
-            discription="You have succesfully Changed Email Address"
+            title={Language.setting_congratulations_title}
+            discription={Language.setting_congratulations_email_changed}
             buttomVisible={false}
             styleDiscription={{width: '60%'}}
             onHandler={() => {}}
           />) : name === 'congratulationsPassword' ?
           <SuccessComponent
-          title="Congratulations!"
-          discription="You have succesfully Changed Password"
+          title={Language.setting_congratulations_title}
+          discription={Language.setting_congratulations_password_changed}
           buttomVisible={false}
           styleDiscription={{width: '60%'}}
           onHandler={() => {}}
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
     padding: 10,
     borderRadius: 10,
-    gap: 20,
+    gap: 10,
     paddingVertical: 15,
   },
   rowGap10Center: {

@@ -24,6 +24,7 @@ import Fish from '../../assets/svg/fish.svg';
 import Cheesse from '../../assets/svg/cheese.svg';
 import Meat from '../../assets/svg/meat.svg';
 import Fruits from '../../assets/svg/fruits_and_berries.svg';
+import {Language} from '../../utiles/Language/i18n';
 export default function CatalogDetailScreen(route: any) {
   const {Styles, Height} = StyleComponent();
   const {
@@ -88,29 +89,29 @@ export default function CatalogDetailScreen(route: any) {
 
   const specificationRows = useMemo(
     () => [
-      {label: 'Brand', value: product?.key_details?.brand},
-      {label: 'Country', value: product?.key_details?.country},
-      {label: 'Aged', value: product?.key_details?.aged},
-      {label: 'Finish', value: product?.key_details?.finish},
-      {label: 'Peated', value: product?.key_details?.peated},
-      {label: 'Alcohol', value: product?.key_details?.alcohol},
+      {label: Language.product_detail_brand, value: product?.key_details?.brand},
+      {label: Language.product_detail_country, value: product?.key_details?.country},
+      {label: Language.product_detail_aged, value: product?.key_details?.aged},
+      {label: Language.product_detail_finish, value: product?.key_details?.finish},
+      {label: Language.product_detail_peated, value: product?.key_details?.peated},
+      {label: Language.product_detail_alcohol, value: product?.key_details?.alcohol},
     ],
     [product],
   );
 
   const sensoryRows = useMemo(
     () => [
-      {label: 'Alcohol', value: product?.sensory_structure?.alcohol},
+      {label: Language.product_detail_alcohol, value: product?.sensory_structure?.alcohol},
       {
-        label: 'Aroma Intensity',
+        label: Language.product_detail_aroma_intensity,
         value: product?.sensory_structure?.aroma_intensity,
       },
       {
-        label: 'Flavor Profile',
+        label: Language.product_detail_flavor_profile,
         value: product?.sensory_structure?.flavor_profile,
       },
-      {label: 'Body', value: product?.sensory_structure?.body},
-      {label: 'Finish', value: product?.sensory_structure?.finish},
+      {label: Language.product_detail_body, value: product?.sensory_structure?.body},
+      {label: Language.product_detail_finish, value: product?.sensory_structure?.finish},
     ],
     [product],
   );
@@ -169,12 +170,12 @@ export default function CatalogDetailScreen(route: any) {
               {product?.volume}
             </Text>
             <Text style={[Styles.title_Regular, styles.volumeText]}>
-              ml
+              {Language.unit_ml}
             </Text>
           </View>
           <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
           <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray}]}>
-            SKU:
+            {Language.product_detail_sku}:
           </Text>
           <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray,marginLeft:0,color:Color.black}]}>
              {product?.sku}
@@ -182,7 +183,7 @@ export default function CatalogDetailScreen(route: any) {
           </View>
           <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
           <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray}]}>
-            Stock status:
+            {Language.product_detail_stock_status}:
           </Text>
           <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray,marginLeft:0,color:Color.black}]}>{product?.stock_status || ''}</Text>
           </View>
@@ -192,14 +193,35 @@ export default function CatalogDetailScreen(route: any) {
             sortItemContainerStyle={styles.sortItemContainer}
           /> */}
           <View style={styles.priceRow}>
-            <Text style={[Styles.h5_Bold]}>
-              {product?.sale_price ?? product?.price} zł
+          {product?.sale_price === null ? (
+        <Text
+          style={[
+            Styles.title_Bold,
+            Styles.h5_Bold,
+          ]}>
+          {product?.price} zł
+        </Text>
+      ) : (
+        <>
+          {product?.regular_price && (
+            <Text
+              style={[
+                Styles.subtitle_Regular,
+                styles.salePriceText,
+              ]}>
+              {product?.regular_price} zł
             </Text>
-            {product?.regular_price && (
-              <Text style={[Styles.body_Regular, styles.salePriceText]}>
-                {product?.regular_price || ''} zł
-              </Text>
-            )}
+          )}
+
+          <Text
+            style={[
+              Styles.title_Bold,
+              styles.salePriceText,
+            ]}>
+            {product?.price} zł
+          </Text>
+        </>
+      )}
           </View>
           {/* <View
             style={{
@@ -234,18 +256,18 @@ export default function CatalogDetailScreen(route: any) {
           </View> */}
           <View style={styles.sectionDivider} />
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-            Specifications
+            {Language.product_detail_specifications}
           </Text>
           {specificationRows.map(row => renderDetailRow(row.label, row.value))}
           <View style={styles.sectionDivider} />
 
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-            Sensory Structure
+            {Language.product_detail_sensory_structure}
           </Text>
           {sensoryRows.map(row => renderDetailRow(row.label, row.value))}
           <View style={styles.sectionDivider} />
           <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-            Tasting Characteristics
+            {Language.product_detail_tasting_characteristics}
           </Text>
           <Text style={[Styles.title_Regular, styles.paragraphMuted,{width:'85%',color:Color.black}]}>
             {product?.tasting_characteristics?.text}
@@ -253,13 +275,13 @@ export default function CatalogDetailScreen(route: any) {
 
           {product?.tasting_characteristics?.aromas_and_flavours && (
             <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-              Aromas and flavours:
+              {Language.product_detail_aromas_and_flavours}:
             </Text>
           )}
           {product?.tasting_characteristics?.aromas_and_flavours?.primary && (
             <>
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-                Primary
+                {Language.product_detail_primary}
               </Text>
               <View style={[styles.aromaRow,{flexDirection:'column',}]}>
                 <Text style={[Styles.title_Medium, styles.aromaLabel,]}>
@@ -281,7 +303,7 @@ export default function CatalogDetailScreen(route: any) {
           {product?.tasting_characteristics?.aromas_and_flavours?.secondary && (
             <>
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-                Secondary
+                {Language.product_detail_secondary}
               </Text>
               <View style={[styles.aromaRow,{flexDirection:'column'}]}>
                 <Text style={[Styles.title_Medium, styles.aromaLabel]}>
@@ -303,7 +325,7 @@ export default function CatalogDetailScreen(route: any) {
           {product?.tasting_characteristics?.aromas_and_flavours?.tertiary && (
             <>
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-                Tertiary
+                {Language.product_detail_tertiary}
               </Text>
               <View style={styles.aromaRow}>
                 <Text style={[Styles.title_Regular, styles.aromaLabel]}>
@@ -325,7 +347,7 @@ export default function CatalogDetailScreen(route: any) {
           {product?.gastronomy?.text && (
             <>
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-                Gastronomy
+                {Language.product_detail_gastronomy}
               </Text>
               <Text style={[Styles.title_Regular, styles.paragraphMuted,{color:Color.black}]}>
                 {product?.gastronomy?.text}
@@ -336,7 +358,7 @@ export default function CatalogDetailScreen(route: any) {
           {product?.gastronomy?.suggestions && (
             <>
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-                Suggestions
+                {Language.product_detail_suggestions}
               </Text>
               {product?.gastronomy?.suggestions.map(
                 (suggestion: any, index: number) => (
@@ -362,9 +384,9 @@ export default function CatalogDetailScreen(route: any) {
         </View>
 
         <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-          With this also watching
+          {Language.product_detail_with_this_also_watching}
         </Text>
-
+         <View style={{width:'100%',alignSelf:'center',marginBottom:'15%'}}>
         <HorizontalFlatList
         callback={(e)=>onSubmitDetail(e)}
           products={recommended}
@@ -372,10 +394,14 @@ export default function CatalogDetailScreen(route: any) {
             refreshAll()
           }
         />
-
-        {count === 0 ? (
+       </View>
+       
+        <LoadingModal isVisible={visible} />
+      </ScrollView>
+      <View style={{backgroundColor:'transparent',width:'100%',position:'absolute',bottom:0}}>
+      {count === 0 ? (
           <BottomCardComponent
-            title={'Add to Cart'}
+            title={Language.product_detail_add_to_cart}
             onHandler={onSubmit}
             style={styles.bottomCardButton}
             textStyle={[Styles.subtitle_Regular,{color:Color.white}]}
@@ -389,8 +415,8 @@ export default function CatalogDetailScreen(route: any) {
             stylesContainer={styles.addBottomStylesContainer}
           />
         )}
-        <LoadingModal isVisible={visible} />
-      </ScrollView>
+      </View>
+      
     </View>
   );
 }
@@ -405,8 +431,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   productImage: {
-    width: 200,
-    height: 200,
+    width: 300,
+    height: 370,
   },
   detailsContainer: {
     width: '100%',
@@ -500,7 +526,7 @@ const styles = StyleSheet.create({
   detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     marginTop: 10,
     paddingHorizontal: '5%',
   },
@@ -508,14 +534,14 @@ const styles = StyleSheet.create({
     color: Color.gray,
   },
   detailValue: {
-    marginLeft: 16,
+    marginLeft: 5,
     flexShrink: 1,
     textAlign: 'right',
   },
   bottomCardButton: {
-    marginTop: '10%',
+    marginTop: '2%',
     width: '95%',
-    marginBottom:10,
+    marginBottom:5,
   },
   addBottomStylesContainer: {
     width: '60%',

@@ -2,6 +2,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
+import {Language} from '../../utiles/Language/i18n';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import BottomCardComponent from '../BottomCard';
 export default function SingInProfile() {
@@ -19,7 +20,7 @@ export default function SingInProfile() {
           />
         </View>
         <Text style={[Styles.h4_Medium, Styles.textAlign, styles.mt8]}>
-          Sign in to your profile
+          {Language.profile_sign_in_to_profile}
         </Text>
         <Text
           style={[
@@ -28,9 +29,9 @@ export default function SingInProfile() {
             Styles.alignSelf,
             styles.subText,
           ]}>
-          to see your discount and personal offer for your order
+          {Language.profile_sign_in_subtitle}
         </Text>
-        <BottomCardComponent title={'Sign in'} 
+        <BottomCardComponent title={Language.singIn} 
         style={styles.mt5}
         onHandler={function (): void {
                   throw new Error('Function not implemented.');

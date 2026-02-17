@@ -11,10 +11,16 @@ import {BottomSheet} from '../../component/BottomSheet';
 import HistoryItemProfile from '../../component/ProfileComponent/HistoryItemProfile';
 import Icon from 'react-native-vector-icons/Feather';
 import {Color} from '../../utiles/color';
+import useProfileStore from '../../zustland/ProfileStore';
+import {Language} from '../../utiles/Language/i18n';
 export default function ProfileScreen() {
   const {Styles} = StyleComponent();
   const {onHandlerShowHistory, onSubmitMyOrder, onSubmitSetting} =
     ProfileLogix();
+  const {profile} = useProfileStore();
+  const headerTitle =
+    profile?.full_name ??
+    `${profile?.first_name ?? ''} ${profile?.last_name ?? ''}`.trim();
   return (
     <View style={[Styles.container]}>
       <ScrollView>
@@ -23,7 +29,7 @@ export default function ProfileScreen() {
         <Menu
           onHandler={onSubmitSetting}
           icon={<Icon name="menu" size={25} color={Color.black} />}
-          title={'Stanisław Piotrowski'}
+          title={headerTitle || ''}
         />
         <BarcodeProfile />
         <MyOrderProfile onHandler={onSubmitMyOrder} />
@@ -34,7 +40,7 @@ export default function ProfileScreen() {
           height={500}
           onClose={() => console.log()}>
           <Text style={[Styles.h5_Medium, Styles.textAlign, {marginTop: '2%'}]}>
-            Points History
+            {Language.profile_points_history}
           </Text>
           <HistoryItemProfile />
         </BottomSheet>

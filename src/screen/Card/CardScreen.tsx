@@ -6,20 +6,21 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import React, {useCallback} from 'react';
-import {StyleComponent} from '../../utiles/styles';
-import {Color} from '../../utiles/color';
+import React, { useCallback } from 'react';
+import { StyleComponent } from '../../utiles/styles';
+import { Color } from '../../utiles/color';
 import ShoppingCard from '../../assets/svg/ShoppingCart.svg';
 import CustomHeader from '../../navigation/CustomHeader';
 import CartItem from '../../component/CartComponent/CartItem';
 import CartLogix from '../../logic/Cart/CartLogix';
 import PlusIcon from 'react-native-vector-icons/AntDesign';
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import CartIcon from '../../assets/svg/Cart.svg';
+import { Language } from '../../utiles/Language/i18n';
 export default function CardScreen() {
-  const {Styles} = StyleComponent();
+  const { Styles } = StyleComponent();
   const {
     loading,
     data,
@@ -42,7 +43,7 @@ export default function CardScreen() {
 
   return (
     <View style={Styles.container}>
-      <CustomHeader showBack={true} subTitle="Cart" />
+      <CustomHeader showBack={true} subTitle={Language.cart_title} />
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -56,12 +57,12 @@ export default function CardScreen() {
               <CartItem data={data} refreshCart={refreshCart} />
               <View style={styles.sectionContainer}>
                 <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-                  Shipping Address
+                  {Language.cart_shipping_address}
                 </Text>
                 <View
                   style={[
                     styles.dropdownHeader,
-                    {borderColor: error ? Color.red : Color.primary},
+                    { borderColor: error ? Color.red : Color.primary },
                   ]}>
                   {address.street == '' ? (
                     <TouchableOpacity
@@ -70,7 +71,7 @@ export default function CardScreen() {
                       <View style={styles.plusIconContainer}>
                         <PlusIcon name={'plus'} color={Color.black} size={20} />
                       </View>
-                      <Text style={Styles.title_Regular}>Create</Text>
+                      <Text style={Styles.title_Regular}>{Language.cart_create}</Text>
                     </TouchableOpacity>
                   ) : (
                     <>
@@ -78,7 +79,7 @@ export default function CardScreen() {
                         style={[
                           Styles.title_Regular,
                           styles.ml2,
-                          {color: Color.black, width: '90%'},
+                          { color: Color.black, width: '90%' },
                         ]}
                         numberOfLines={1}
                         ellipsizeMode="tail">
@@ -110,20 +111,20 @@ export default function CardScreen() {
               </TouchableOpacity>
             </View> */}
                 <Text style={[Styles.h6_SemiBold, styles.mt5, styles.ml5]}>
-                  Order Summary
+                  {Language.cart_order_summary}
                 </Text>
                 <View style={styles.rowBetween}>
                   <Text style={[Styles.title_Regular, styles.blackText]}>
-                    My order
+                    {Language.cart_my_order}
                   </Text>
                   <Text style={[Styles.title_Medium, styles.blackText]}>
                     {data?.summary?.items_count}{' '}
-                    {data?.summary?.items_count === 1 ? 'item' : 'items'}
+                    {data?.summary?.items_count === 1 ? Language.cart_item : Language.cart_items}
                   </Text>
                 </View>
                 <View style={styles.rowBetween}>
                   <Text style={[Styles.title_Regular, styles.blackText]}>
-                    Order amount
+                    {Language.cart_order_amount}
                   </Text>
                   <Text style={[Styles.title_Medium, styles.blackText]}>
                     {data?.summary?.subtotal} zł
@@ -147,21 +148,29 @@ export default function CardScreen() {
             </View> */}
                 <View style={styles.rowBetween}>
                   <Text style={[Styles.title_Regular, styles.blackText]}>
-                    Delivery
+                    {Language.cart_delivery}
                   </Text>
                   <Text style={[Styles.title_Medium, styles.blackText]}>
-                    Free
+                    {Language.cart_free}
                   </Text>
                 </View>
                 <View style={styles.divider} />
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '90%', alignSelf: 'center', marginTop: '5%' }}>
+                  <Text style={[Styles.h5_SemiBold, {color: Color.black}]}>
+                    {Language.cart_total}
+                  </Text>
+                  <Text style={[Styles.h5_SemiBold,{color: Color.black}]}>
+                    {data?.summary?.total} zł
+                  </Text>
+                </View>
                 <TouchableOpacity
                   activeOpacity={0.5}
                   onPress={() => onSubmit(data?.summary?.checkout_id)}
                   style={styles.orderButton}>
-                  <View style={[Styles.justifyCenter, {gap: 10}]}>
+                  <View style={[Styles.justifyCenter, { gap: 10 }]}>
                     <CartIcon width={24} height={24} fill={Color.white} />
                     <Text style={[Styles.title_Regular, styles.whiteText]}>
-                      Order
+                      {Language.cart_order}
                     </Text>
                   </View>
                   <Text style={[Styles.title_Regular, styles.whiteText]}>
@@ -178,32 +187,31 @@ export default function CardScreen() {
                   <View style={[styles.emptyCartContainer]}>
                     <ShoppingCard fill={Color.black} />
                     <Text style={[Styles.h3_Bold, styles.emptyCartTitle]}>
-                      Your Cart is Empty
+                      {Language.cart_empty_title}
                     </Text>
                     <Text
                       style={[
                         Styles.h6_Regular,
                         Styles.textAlign,
                         styles.emptyCartSubtitle,
-                        {width:'90%'},
+                        { width: '90%' },
                       ]}>
-                      Once you add items from a store, your cart will appear
-                      here
+                      {Language.cart_empty_subtitle}
                     </Text>
                   </View>
                   <View
                     style={[
                       Styles.alignSelf,
-                      {width: '93%', marginTop: '8%', marginBottom: '5%'},
+                      { width: '93%', marginTop: '8%', marginBottom: '5%' },
                     ]}>
-                    <Text style={[Styles.h4_Bold, {marginLeft: '2%'}]}>
-                      Recommendations
+                    <Text style={[Styles.h4_Bold, { marginLeft: '2%' }]}>
+                    {Language.cart_you_might_also_like}
                     </Text>
                     <HorizontalFlatList
                       callback={(item: any) =>
                         navigation.navigate('CatalogScreen', {
                           screen: 'CatalogDetail',
-                          params: {product: item},
+                          params: { product: item },
                         })
                       }
                       products={recommended}
@@ -218,16 +226,16 @@ export default function CardScreen() {
                 <View style={[styles.emptyCartContainer]}>
                   <ShoppingCard fill={Color.black} />
                   <Text style={[Styles.h4_Bold, styles.emptyCartTitle]}>
-                    Your Cart is Empty
+                    {Language.cart_empty_title}
                   </Text>
                   <Text
                     style={[
                       Styles.body_Regular,
                       Styles.textAlign,
                       styles.emptyCartSubtitle,
-                      {width:'90%'},
+                      { width: '90%' },
                     ]}>
-                    Once you add items from a store, your cart will appear here
+                    {Language.cart_empty_subtitle}
                   </Text>
                 </View>
               )}
@@ -260,20 +268,20 @@ const styles = StyleSheet.create({
     marginTop: '5%',
   },
 
-  ml5: {marginLeft: '5%'},
-  activityIndicator: {marginTop: 200},
-  blackText: {color: Color.black},
-  whiteText: {color: Color.white},
+  ml5: { marginLeft: '5%' },
+  activityIndicator: { marginTop: 200 },
+  blackText: { color: Color.black },
+  whiteText: { color: Color.white },
   emptyCartContainer: {
     alignItems: 'center',
     alignSelf: 'center',
     width: '93%',
     marginTop: '12%',
   },
-  emptyCartTitle: {marginTop: 10},
-  emptyCartSubtitle: {width: '80%'},
+  emptyCartTitle: { marginTop: 10 },
+  emptyCartSubtitle: { width: '80%' },
 
-  mt5: {marginTop: '5%'},
+  mt5: { marginTop: '5%' },
   promoInput: {
     width: '90%',
     alignSelf: 'center',
@@ -287,7 +295,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
   },
-  textLightGray: {color: Color.lightGray},
+  textLightGray: { color: Color.lightGray },
   rowBetween: {
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -322,7 +330,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
-  sectionTitle: {marginLeft: '5%', marginTop: '2%'},
+  sectionTitle: { marginLeft: '5%', marginTop: '2%' },
   dropdownHeader: {
     width: '90%',
     alignSelf: 'center',
@@ -335,7 +343,7 @@ const styles = StyleSheet.create({
     marginTop: '2%',
     paddingHorizontal: 10,
   },
-  ml2: {marginLeft: '2%'},
+  ml2: { marginLeft: '2%' },
   plusIconContainer: {
     ...StyleComponent().Styles.justifyCenter,
     width: 50,
@@ -346,6 +354,7 @@ const styles = StyleSheet.create({
   },
   createAddressRow: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: 10,
   },
   dropdownIndicator: {

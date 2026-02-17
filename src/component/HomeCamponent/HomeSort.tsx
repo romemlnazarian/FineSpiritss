@@ -87,7 +87,7 @@ const HomeSort = memo(
   }) => {
     const sortData = useMemo(
       () => [
-        {id: '1', title: 'Best Sales'},
+        {id: '1', title: 'Best sellers'},
         {id: '2', title: 'New'},
         {id: '3', title: 'For Gift'},
       ],

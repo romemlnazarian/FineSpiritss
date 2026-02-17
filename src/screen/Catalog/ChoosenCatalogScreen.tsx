@@ -1,4 +1,4 @@
-import {Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React, {useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import CustomHeader from '../../navigation/CustomHeader';
@@ -10,6 +10,7 @@ import Search from '../../assets/svg/SearchBlack.svg';
 import ButtonSheetFilter from '../../component/CatalogComponent/buttonSheetFilter';
 import CatalogTabsFilter from '../../component/CatalogComponent/CatalogTabsFilter';
 import ActiveFiltersChips from '../../component/CatalogComponent/ActiveFiltersChips';
+import {Language} from '../../utiles/Language/i18n';
 
 
 export default function ChoosenCatalog(route: any) {
@@ -37,7 +38,7 @@ export default function ChoosenCatalog(route: any) {
     selectedMinPrice,
     selectedMaxPrice,
     onPriceChange,
-    countProduct
+    countProduct,
   } = ChoosenCatalogLogic(route);
   const {Styles} = StyleComponent();
 
@@ -45,19 +46,22 @@ export default function ChoosenCatalog(route: any) {
     () => [
       {
         id: '1',
-        title: 'Price',
+        title: Language.filter_price,
       },
       {
         id: '2',
-        title: 'Country',
+        key: 'country',
+        title: Language.filter_country,
       },
       {
         id: '3',
-        title: 'Brand',
+        key: 'brand',
+        title: Language.filter_brand,
       },
       {
         id: '4',
-        title: 'Capacity',
+        key: 'capacity',
+        title: Language.filter_capacity,
       },
     ],
     [],
@@ -71,11 +75,11 @@ export default function ChoosenCatalog(route: any) {
         onHandler={() => onSearchHandler()}
       />
       {countProduct > 0 && (
-      <View style={{width:'100%', justifyContent:'center',alignItems:'center'}}>
-      
-        <Text style={[Styles.title_Regular,]}>{countProduct} Products</Text>
-     
-      </View>
+        <View style={styles.countContainer}>
+          <Text style={[Styles.title_Regular]}>
+            {countProduct} {Language.Products}
+          </Text>
+        </View>
       )}
       <CatalogFilter onHandler={e => onSubnmitFilter(e)} sortData={sortData}/>
 
@@ -98,10 +102,9 @@ export default function ChoosenCatalog(route: any) {
         isLoadingMore={isLoadingMore}
         isInitialLoading={isInitialLoading}
       />
-
       <BottomSheet
         modalVisible={filterVisible}
-        height={500}
+        height={400}
         onClose={() => setFilterVisible(false)}>
         {title === 'filter' ? (
           <ButtonSheetFilter
@@ -125,3 +128,11 @@ export default function ChoosenCatalog(route: any) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  countContainer: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

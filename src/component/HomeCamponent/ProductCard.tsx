@@ -24,6 +24,7 @@ import AddBottom from '../AddBottom';
 import LoadingModal from '../LoadingModal';
 import {addCardModel, deleteCardModel, updateCardModel} from '../../model/Card/CardModel';
 import {useToast} from '../../utiles/Toast/ToastProvider';
+import {Language} from '../../utiles/Language/i18n';
 
 interface ProductItem {
   id: number;
@@ -317,7 +318,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         {item?.country}
       </Text>
       <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
-        ABV {item?.abv}
+        {Language.abv} {item?.abv}
       </Text>
       </View>
       {item.sale_price === null ? (
@@ -390,7 +391,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: Color.cardgray,
-    backgroundColor: Color.white,
+    backgroundColor: Color.background,
     borderRadius: 10,
     marginRight: 15,
     width: 240,

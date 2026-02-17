@@ -21,6 +21,7 @@ import useAuthStore from '../../zustland/AuthStore';
 import { useToast } from '../../utiles/Toast/ToastProvider';
 import LoadingModal from '../LoadingModal';
 import { addCardModel, deleteCardModel, updateCardModel } from '../../model/Card/CardModel';
+import {Language} from '../../utiles/Language/i18n';
 interface ProductItem {
   id: string;
   title: string;
@@ -315,7 +316,7 @@ const ProductCard: React.FC<{
         {item?.country}
       </Text>
       <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
-        ABV {item?.abv}
+        {Language.abv} {item?.abv}
       </Text>
       </View>
       {item?.sale_price === null ? (
@@ -489,7 +490,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderWidth: 1,
     borderColor: Color.cardgray,
-    backgroundColor: Color.white,
+    backgroundColor: Color.background,
     width: '48%',
     marginBottom: 0,
     borderRadius: 10,

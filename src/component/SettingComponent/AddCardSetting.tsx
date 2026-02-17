@@ -8,6 +8,7 @@ import TextInputComponent from '../TextInputComponent';
 import AddCardLogic from '../../logic/Setting/AddCardLogic';
 import Wallet from '../../assets/svg/wallet.svg';
 import BottomCardComponent from '../BottomCard';
+import {Language} from '../../utiles/Language/i18n';
 
 export default function AddCardSetting() {
   const {Styles} = StyleComponent();
@@ -19,7 +20,7 @@ export default function AddCardSetting() {
         Styles.alignSelf,
         {width: '93%', marginTop: '5%'},
       ]}>
-      <Text style={Styles.h5_Medium}>Add Card</Text>
+      <Text style={Styles.h5_Medium}>{Language.setting_add_card}</Text>
       <View
         style={[
           Styles.alignCenter,
@@ -111,7 +112,7 @@ export default function AddCardSetting() {
         </View>
       </View>
       <BottomCardComponent
-        title={'Add Card'}
+        title={Language.setting_add_card}
         style={{marginTop:'5%',backgroundColor:Color.lightBlack}}
         onHandler={function (): void {
           throw new Error('Function not implemented.');

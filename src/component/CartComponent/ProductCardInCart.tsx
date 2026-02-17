@@ -2,6 +2,7 @@ import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
+import {Language} from '../../utiles/Language/i18n';
 import AddBottom from '../AddBottom';
 import Trash from '../../assets/svg/Trash.svg';
 interface ProductItem {
@@ -56,7 +57,7 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
             </Text>
             <View style={styles.separator} />
             <Text style={[Styles.subtitle_Regular, styles.blackText]}>
-              {item.abv ? `ABV ${item.abv}` : ''}
+              {item.abv ? `${Language.abv} ${item.abv}` : ''}
             </Text>
           </View>
           {item?.sale_price === null ? (

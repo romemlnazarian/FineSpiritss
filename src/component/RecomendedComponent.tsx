@@ -13,7 +13,7 @@ import {Color} from '../utiles/color';
 import Heart from '../assets/svg/Heart.svg';
 import Heart_primary from '../assets/svg/Heart_Primary.svg';
 import BottomCardComponent from './BottomCard';
-// import {Language} from '../../utiles/Language/i18n'; // Removed as no longer used
+import {Language} from '../../utiles/Language/i18n';
 import Card from '../assets/svg/Cart.svg';
 import {
   AddFavoriteProductModel,
@@ -333,17 +333,49 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
         {item.title}
       </Text>
       <Text style={[Styles.subtitle_Regular, styles.productDescription,{marginTop:'2%'}]}>
-        {item?.country} ABV {item?.abv}
+        {item?.country} {Language.abv} {item?.abv}
       </Text>
       <View style={styles.priceContainer}>
-        <Text style={[Styles.title_Bold, styles.productPrice]}>
+      {item.sale_price === null ? (
+        <Text
+          style={[
+            Styles.title_Bold,
+            styles.productPrice,
+            styles.priceContainer,
+          ]}>
+          {item.price} zł
+        </Text>
+      ) : (
+        <>
+          {item.regular_price && (
+            <Text
+              style={[
+                Styles.subtitle_Regular,
+                styles.originalPriceText,
+                styles.priceContainer,
+              ]}>
+              {item.regular_price} zł
+            </Text>
+          )}
+
+          <Text
+            style={[
+              Styles.title_Bold,
+              styles.productPrice,
+              styles.priceContainer,
+            ]}>
+            {item.price} zł
+          </Text>
+        </>
+      )}
+        {/* <Text style={[Styles.title_Bold, styles.productPrice]}>
           {item.sale_price ?? item.price} zł
         </Text>
         {item.regular_price && (
           <Text style={[Styles.subtitle_Regular, styles.originalPriceText]}>
             {item.regular_price} zł
           </Text>
-        )}
+        )} */}
       </View>
       {count === 0 ? (
         <BottomCardComponent
@@ -372,7 +404,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderWidth: 1,
     borderColor: Color.cardgray,
-    backgroundColor: Color.white,
+    backgroundColor: Color.background,
     borderRadius: 10,
     marginRight: 15,
     width: 240,
