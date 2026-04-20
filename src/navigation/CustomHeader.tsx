@@ -40,13 +40,13 @@ export default function CustomHeader({
       {showBack && (
         <TouchableOpacity
           onPress={onSubmitBack ? onSubmitBack : () => navigation.goBack()} style={styles.arrowContainer}>
-          <Arrow width={30} height={30} />
+          <Arrow width={32} height={32} />
         </TouchableOpacity>
       )}
       {title && (
         <View pointerEvents="none" style={styles.titleContainer}>
           <Text
-            style={[styles.title, Styles.h6_Medium]}
+            style={[styles.title, Styles.body_Medium]}
             numberOfLines={1}
             ellipsizeMode="tail">
             {title || ''}
@@ -56,7 +56,7 @@ export default function CustomHeader({
       {subTitle && (
         <View pointerEvents="none" style={styles.subTitleContainer}>
           <Text
-            style={[styles.title, Styles.h6_Medium, Styles.textAlign]}
+            style={[styles.title, Styles.body_Medium, Styles.textAlign,{marginBottom: 6}]}
             numberOfLines={1}
             ellipsizeMode="tail">
             {subTitle || ''}
@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: Color.black,
+    marginBottom: 5,
   },
   titleContainer: {
     width: '80%',

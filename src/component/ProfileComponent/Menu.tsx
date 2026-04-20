@@ -19,7 +19,7 @@ export default function Menu({onHandler,icon,title,style}:{onHandler:()=>void,ic
         <TouchableOpacity onPress={onHandler} style={{marginLeft:'2%'}}>
           {icon}
         </TouchableOpacity>
-    <Text style={[Styles.body_Medium, Styles.textAlign, {flex: 1}]}>
+    <Text style={[Styles.body_Medium, Styles.textAlign, {flex: 1, marginBottom: 2}]}>
       {title}
     </Text>
   </View>

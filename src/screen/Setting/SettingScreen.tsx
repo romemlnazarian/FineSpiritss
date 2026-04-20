@@ -77,7 +77,7 @@ export default function SettingScreen() {
         onHandler={() => navigation.goBack()}
         title={`${profile?.first_name ?? ''} ${profile?.last_name ?? ''}`}
         style={styles.menu}
-        icon={<Arrow name="arrow-back-ios" size={20} color={Color.black}/>}
+        icon={<Arrow name="arrow-back-ios" size={22} color={Color.black}/>}
       />
       {/* <TouchableOpacity onPress={onSubmitPayment} style={styles.cardRow}>
         <View style={styles.rowCenter}>

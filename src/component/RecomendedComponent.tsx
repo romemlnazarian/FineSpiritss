@@ -11,9 +11,8 @@ import React, {useState} from 'react';
 import {StyleComponent} from '../utiles/styles';
 import {Color} from '../utiles/color';
 import Heart from '../assets/svg/Heart.svg';
-import Heart_primary from '../assets/svg/Heart_Primary.svg';
 import BottomCardComponent from './BottomCard';
-import {Language} from '../../utiles/Language/i18n';
+import {Language} from '../utiles/Language/i18n';
 import Card from '../assets/svg/Cart.svg';
 import {
   AddFavoriteProductModel,

@@ -1,5 +1,5 @@
 import {FlatList, StyleSheet} from 'react-native';
-import React, {memo, useCallback} from 'react';
+import React, {useCallback} from 'react';
 import RecomendedComponent from './RecomendedComponent';
 
 export default function HorizontalFlatList({

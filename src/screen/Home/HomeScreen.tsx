@@ -21,6 +21,8 @@ import HomeSort from '../../component/HomeCamponent/HomeSort';
 import ScrollCard from '../../component/HomeCamponent/ScrollCard';
 import VerticalScroll from '../../component/HomeCamponent/VerticalScroll';
 import Search from '../../assets/svg/SearchGray.svg';
+import { Language } from '../../utiles/Language/i18n';
+ 
 export default function HomeScreen() {
   const {Styles, Height} = StyleComponent();
   const {
