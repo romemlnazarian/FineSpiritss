@@ -35,6 +35,7 @@ import SupportServiceScreen from '../screen/Setting/SupportServiceScreen';
 import SettingItemScreen from '../screen/Setting/SettingItemScreen';
 import DeleteAccountScreen from '../screen/Setting/DeleteAccountScreen';
 import DeleteAccountVerifyScreen from '../screen/Setting/DeleteAccountVerifyScreen';
+import NotificationScreen from '../screen/Notification/NotificationScreen';
 const Tab = createBottomTabNavigator<TabParamList>();
 const Stack = createNativeStackNavigator();
 const TabIcon: React.FC<{routeName: string; isFocused: boolean}> = ({
@@ -183,8 +184,10 @@ const SettingStack = () => (
 const HomeStack = () => (
   <Stack.Navigator screenOptions={{headerShown: false}}>
     <Stack.Screen name="Home" component={HomeScreen} />
+    <Stack.Screen name="Notification" component={NotificationScreen} />
   </Stack.Navigator>
 );
+
 
 export default function AppTabs({
   initialRouteName = 'Home',

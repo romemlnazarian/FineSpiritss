@@ -16,6 +16,7 @@ import CatalogDetailLogic from '../../logic/Catalog/CatalogDetailLogic';
 import Heart from '../../assets/svg/Heart.svg';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import BottomCardComponent from '../../component/BottomCard';
 import AddBottom from '../../component/AddBottom';
 import LoadingModal from '../../component/LoadingModal';
@@ -25,8 +26,95 @@ import Cheesse from '../../assets/svg/cheese.svg';
 import Meat from '../../assets/svg/meat.svg';
 import Fruits from '../../assets/svg/fruits_and_berries.svg';
 import {Language} from '../../utiles/Language/i18n';
+import {resolveMediaUrl, resolveProductImageUrl} from '../../utiles/mediaUrl';
+
+const SUGGESTION_ICON_SIZE = 30;
+
+type AromaEntry = {
+  name?: string;
+  description: string;
+};
+
+function pickNonEmptyText(value: unknown): string | undefined {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function getAromaEntry(
+  aromas: any,
+  key: 'primary' | 'secondary' | 'tertiary',
+): AromaEntry | null {
+  const raw = aromas?.[key];
+  if (!raw) {
+    return null;
+  }
+
+  const item = Array.isArray(raw) ? raw[0] : raw;
+  const description = pickNonEmptyText(item?.description);
+  if (!description) {
+    return null;
+  }
+
+  return {
+    name: pickNonEmptyText(item?.name),
+    description,
+  };
+}
+
+function formatSuggestionLabel(suggestion: any): string {
+  if (typeof suggestion === 'string') {
+    const raw =
+      suggestion === 'fruits_and_berries'
+        ? 'Fruits and Berries'
+        : suggestion.replace(/_/g, ' ');
+    return raw ? raw.charAt(0).toUpperCase() + raw.slice(1) : '';
+  }
+
+  return suggestion?.title ?? suggestion?.name ?? suggestion?.label ?? '';
+}
+
+function renderSuggestionIcon(suggestion: any) {
+  if (typeof suggestion === 'string') {
+    switch (suggestion) {
+      case 'fish':
+        return <Fish width={SUGGESTION_ICON_SIZE} height={SUGGESTION_ICON_SIZE} />;
+      case 'cheese':
+        return <Cheesse width={SUGGESTION_ICON_SIZE} height={SUGGESTION_ICON_SIZE} />;
+      case 'meat':
+        return <Meat width={SUGGESTION_ICON_SIZE} height={SUGGESTION_ICON_SIZE} />;
+      case 'fruits_and_berries':
+        return <Fruits width={SUGGESTION_ICON_SIZE} height={SUGGESTION_ICON_SIZE} />;
+      default:
+        return null;
+    }
+  }
+
+  const imageUri =
+    resolveProductImageUrl(suggestion) ??
+    resolveMediaUrl(suggestion?.icon_url) ??
+    resolveMediaUrl(suggestion?.icon);
+
+  if (!imageUri) {
+    return null;
+  }
+
+  return (
+    <Image
+      source={{uri: imageUri}}
+      style={styles.suggestionImage}
+      resizeMode="contain"
+    />
+  );
+}
+
+const BOTTOM_ACTION_BAR_HEIGHT = 10;
+
 export default function CatalogDetailScreen(route: any) {
   const {Styles, Height} = StyleComponent();
+  const insets = useSafeAreaInsets();
   const {
     product,
     isLoading,
@@ -44,7 +132,6 @@ export default function CatalogDetailScreen(route: any) {
   const fromFavorite = Boolean(route?.route?.params?.fromFavorite);
   const fromSetting = Boolean(route?.route?.params?.fromSetting);
 
-
   const handleBack = useCallback(() => {
     if (fromFavorite) {
       navigation.navigate('FavoriteScreen', {screen: 'Favorite'});
@@ -55,7 +142,10 @@ export default function CatalogDetailScreen(route: any) {
       navigation.navigate('SettingScreen');
       return;
     } else {
-      if (typeof navigation?.canGoBack === 'function' && navigation.canGoBack()) {
+      if (
+        typeof navigation?.canGoBack === 'function' &&
+        navigation.canGoBack()
+      ) {
         navigation.goBack();
       } else {
         navigation.navigate('CatalogScreen', {screen: 'Catalog'});
@@ -87,21 +177,49 @@ export default function CatalogDetailScreen(route: any) {
     }, [fromFavorite, fromSetting, navigation]),
   );
 
+  const productImageUri = useMemo(
+    () => resolveProductImageUrl(product),
+    [product],
+  );
+
+  const scrollBottomPadding = useMemo(
+    () => BOTTOM_ACTION_BAR_HEIGHT + insets.bottom,
+    [insets.bottom],
+  );
+
   const specificationRows = useMemo(
     () => [
-      {label: Language.product_detail_brand, value: product?.key_details?.brand},
-      {label: Language.product_detail_country, value: product?.key_details?.country},
+      {
+        label: Language.product_detail_brand,
+        value: product?.key_details?.brand,
+      },
+      {
+        label: Language.product_detail_country,
+        value: product?.key_details?.country,
+      },
       {label: Language.product_detail_aged, value: product?.key_details?.aged},
-      {label: Language.product_detail_finish, value: product?.key_details?.finish},
-      {label: Language.product_detail_peated, value: product?.key_details?.peated},
-      {label: Language.product_detail_alcohol, value: product?.key_details?.alcohol},
+      {
+        label: Language.product_detail_finish,
+        value: product?.key_details?.finish,
+      },
+      {
+        label: Language.product_detail_peated,
+        value: product?.key_details?.peated ? "Yes" : "No",
+      },
+      {
+        label: Language.product_detail_alcohol,
+        value: product?.key_details?.alcohol,
+      },
     ],
     [product],
   );
 
   const sensoryRows = useMemo(
     () => [
-      {label: Language.product_detail_alcohol, value: product?.sensory_structure?.alcohol},
+      {
+        label: Language.product_detail_alcohol,
+        value: product?.sensory_structure?.alcohol,
+      },
       {
         label: Language.product_detail_aroma_intensity,
         value: product?.sensory_structure?.aroma_intensity,
@@ -110,13 +228,53 @@ export default function CatalogDetailScreen(route: any) {
         label: Language.product_detail_flavor_profile,
         value: product?.sensory_structure?.flavor_profile,
       },
-      {label: Language.product_detail_body, value: product?.sensory_structure?.body},
-      {label: Language.product_detail_finish, value: product?.sensory_structure?.finish},
+      {
+        label: Language.product_detail_body,
+        value: product?.sensory_structure?.body,
+      },
+      {
+        label: Language.product_detail_finish,
+        value: product?.sensory_structure?.finish,
+      },
     ],
     [product],
   );
 
+  const tastingCharacteristicsText = useMemo(
+    () => pickNonEmptyText(product?.tasting_characteristics?.text),
+    [product],
+  );
 
+  const primaryAroma = useMemo(
+    () =>
+      getAromaEntry(
+        product?.tasting_characteristics?.aromas_and_flavours,
+        'primary',
+      ),
+    [product],
+  );
+
+  const secondaryAroma = useMemo(
+    () =>
+      getAromaEntry(
+        product?.tasting_characteristics?.aromas_and_flavours,
+        'secondary',
+      ),
+    [product],
+  );
+
+  const tertiaryAroma = useMemo(
+    () =>
+      getAromaEntry(
+        product?.tasting_characteristics?.aromas_and_flavours,
+        'tertiary',
+      ),
+    [product],
+  );
+
+  const hasAromasAndFlavours = Boolean(
+    primaryAroma || secondaryAroma || tertiaryAroma,
+  );
 
   const renderDetailRow = (label: string, value?: string | number | null) => (
     <View key={label} style={styles.detailRow}>
@@ -126,8 +284,6 @@ export default function CatalogDetailScreen(route: any) {
       </Text>
     </View>
   );
-
-  // Memoized key extractors
   return isLoading ? (
     <ActivityIndicator
       size="large"
@@ -136,18 +292,27 @@ export default function CatalogDetailScreen(route: any) {
     />
   ) : (
     <View style={[Styles.container]}>
-      <ScrollView>
+      <ScrollView
+        contentContainerStyle={[
+          styles.scrollContent,
+          {paddingBottom: scrollBottomPadding},
+        ]}
+        showsVerticalScrollIndicator={false}>
         <CustomHeader
           showBack={true}
           title={product?.title || ''}
           onSubmitBack={handleBack}
         />
         <View style={styles.imageWrapper}>
-          <Image
-            source={{uri: product?.image_url}}
-            style={styles.productImage}
-            resizeMethod="resize"
-          />
+          {productImageUri ? (
+            <Image
+              source={{uri: productImageUri}}
+              style={styles.productImage}
+              resizeMode="contain"
+            />
+          ) : (
+            <View style={styles.imagePlaceholder} />
+          )}
         </View>
         {/* <Slider /> */}
         <View style={styles.detailsContainer}>
@@ -169,59 +334,72 @@ export default function CatalogDetailScreen(route: any) {
             <Text style={[Styles.title_Regular, styles.volumeText]}>
               {product?.volume}
             </Text>
-            <Text style={[Styles.title_Regular, styles.volumeText]}>
+            {/* <Text style={[Styles.title_Regular, styles.volumeText]}>
               {Language.unit_ml}
+            </Text> */}
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+            <Text
+              style={[
+                Styles.title_Regular,
+                styles.subInfoText,
+                {color: Color.gray},
+              ]}>
+              {Language.product_detail_sku}:
+            </Text>
+            <Text
+              style={[
+                Styles.title_Regular,
+                styles.subInfoText,
+                {color: Color.gray, marginLeft: 0, color: Color.black},
+              ]}>
+              {product?.sku}
             </Text>
           </View>
-          <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
-          <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray}]}>
-            {Language.product_detail_sku}:
-          </Text>
-          <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray,marginLeft:0,color:Color.black}]}>
-             {product?.sku}
-          </Text>
-          </View>
-          <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
-          <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray}]}>
-            {Language.product_detail_stock_status}:
-          </Text>
-          <Text style={[Styles.title_Regular, styles.subInfoText,{color:Color.gray,marginLeft:0,color:Color.black}]}>{product?.stock_status || ''}</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+            <Text
+              style={[
+                Styles.title_Regular,
+                styles.subInfoText,
+                {color: Color.gray},
+              ]}>
+              {Language.product_detail_stock_status}:
+            </Text>
+            <Text
+              style={[
+                Styles.title_Regular,
+                styles.subInfoText,
+                {color: Color.gray, marginLeft: 0, color: Color.black},
+              ]}>
+              {product?.stock_status || ''}
+            </Text>
           </View>
           {/* <CatalogFilter
             onHandler={e => console.log(e)}
             sortData={data}
             sortItemContainerStyle={styles.sortItemContainer}
           /> */}
-          <View style={styles.priceRow}>
-          {product?.sale_price === null ? (
-        <Text
-          style={[
-            Styles.title_Bold,
-            Styles.h5_Bold,
-          ]}>
-          {product?.price} zł
-        </Text>
-      ) : (
-        <>
-          {product?.regular_price && (
+          <View style={styles.priceSection}>
             <Text
               style={[
                 Styles.subtitle_Regular,
-                styles.salePriceText,
-              ]}>
-              {product?.regular_price} zł
+                styles.originalPriceText,
+                (product?.sale_price === null ||
+                  product?.sale_price === undefined) &&
+                  styles.hiddenPriceLine,
+              ]}
+              numberOfLines={1}>
+              {product?.sale_price !== null && product?.sale_price !== undefined
+                ? `${product?.price} zł`
+                : ' '}
             </Text>
-          )}
-
-          <Text
-            style={[
-              Styles.title_Bold,
-              styles.salePriceText,
-            ]}>
-            {product?.price} zł
-          </Text>
-        </>
-      )}
+            <Text
+              style={[Styles.title_Bold, styles.productPrice]}
+              numberOfLines={1}>
+              {product?.sale_price !== null && product?.sale_price !== undefined
+                ? `${product?.sale_price} zł`
+                : `${product?.price} zł`}
+            </Text>
           </View>
           {/* <View
             style={{
@@ -266,145 +444,170 @@ export default function CatalogDetailScreen(route: any) {
           </Text>
           {sensoryRows.map(row => renderDetailRow(row.label, row.value))}
           <View style={styles.sectionDivider} />
-          <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-            {Language.product_detail_tasting_characteristics}
-          </Text>
-          <Text style={[Styles.title_Regular, styles.paragraphMuted,{width:'85%',color:Color.black}]}>
-            {product?.tasting_characteristics?.text}
-          </Text>
 
-          {product?.tasting_characteristics?.aromas_and_flavours && (
-            <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-              {Language.product_detail_aromas_and_flavours}:
-            </Text>
-          )}
-          {product?.tasting_characteristics?.aromas_and_flavours?.primary && (
+          {tastingCharacteristicsText ? (
             <>
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-                {Language.product_detail_primary}
+                {Language.product_detail_tasting_characteristics}
               </Text>
-              <View style={[styles.aromaRow,{flexDirection:'column',}]}>
-                <Text style={[Styles.title_Medium, styles.aromaLabel,]}>
-                  {
-                    product?.tasting_characteristics?.aromas_and_flavours
-                      ?.primary[0]?.name
-                  }
-                  :
-                </Text>
-                <Text style={[Styles.title_Regular, styles.aromaValue,{marginLeft:'5%',marginTop:0,width:'85%'}]}>
-                  {
-                    product?.tasting_characteristics?.aromas_and_flavours
-                      ?.primary[0]?.value
-                  }
-                </Text>
-              </View>
+              <Text
+                style={[
+                  Styles.title_Regular,
+                  styles.paragraphMuted,
+                  styles.tastingCharacteristicsText,
+                ]}>
+                {tastingCharacteristicsText}
+              </Text>
             </>
-          )}
-          {product?.tasting_characteristics?.aromas_and_flavours?.secondary && (
+          ) : null}
+
+          {hasAromasAndFlavours ? (
             <>
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-                {Language.product_detail_secondary}
+                {Language.product_detail_aromas_and_flavours}:
               </Text>
-              <View style={[styles.aromaRow,{flexDirection:'column'}]}>
-                <Text style={[Styles.title_Medium, styles.aromaLabel]}>
-                  {
-                    product?.tasting_characteristics?.aromas_and_flavours
-                      ?.secondary[0]?.name
-                  }
-                  :
-                </Text>
-                <Text style={[Styles.title_Regular, styles.aromaValue,{marginLeft:'5%',marginTop:0,width:'85%'}]}>
-                  {
-                    product?.tasting_characteristics?.aromas_and_flavours
-                      ?.secondary[0]?.value
-                  }
-                </Text>
-              </View>
+              {primaryAroma ? (
+                <>
+                  <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
+                    {Language.product_detail_primary}
+                  </Text>
+                  <View style={[styles.aromaRow, styles.aromaColumn]}>
+                    {primaryAroma.name ? (
+                      <Text style={[Styles.title_Medium, styles.aromaLabel]}>
+                        {primaryAroma.name}:
+                      </Text>
+                    ) : null}
+                    <Text
+                      style={[
+                        Styles.title_Regular,
+                        styles.aromaValue,
+                        styles.aromaDescription,
+                      ]}>
+                      {primaryAroma.description}
+                    </Text>
+                  </View>
+                </>
+              ) : null}
+              {secondaryAroma ? (
+                <>
+                  <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
+                    {Language.product_detail_secondary}
+                  </Text>
+                  <View style={[styles.aromaRow, styles.aromaColumn]}>
+                    {secondaryAroma.name ? (
+                      <Text style={[Styles.title_Medium, styles.aromaLabel]}>
+                        {secondaryAroma.name}:
+                      </Text>
+                    ) : null}
+                    <Text
+                      style={[
+                        Styles.title_Regular,
+                        styles.aromaValue,
+                        styles.aromaDescription,
+                      ]}>
+                      {secondaryAroma.description}
+                    </Text>
+                  </View>
+                </>
+              ) : null}
+              {tertiaryAroma ? (
+                <>
+                  <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
+                    {Language.product_detail_tertiary}
+                  </Text>
+                  <View style={[styles.aromaRow, styles.aromaColumn]}>
+                    {tertiaryAroma.name ? (
+                      <Text style={[Styles.title_Medium, styles.aromaLabel]}>
+                        {tertiaryAroma.name}:
+                      </Text>
+                    ) : null}
+                    <Text
+                      style={[
+                        Styles.title_Regular,
+                        styles.aromaValue,
+                        styles.aromaDescription,
+                      ]}>
+                      {tertiaryAroma.description}
+                    </Text>
+                  </View>
+                </>
+              ) : null}
             </>
-          )}
-          {product?.tasting_characteristics?.aromas_and_flavours?.tertiary && (
-            <>
-              <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-                {Language.product_detail_tertiary}
-              </Text>
-              <View style={styles.aromaRow}>
-                <Text style={[Styles.title_Regular, styles.aromaLabel]}>
-                  {
-                    product?.tasting_characteristics?.aromas_and_flavours
-                      ?.tertiary[0]?.name
-                  }
-                </Text>
-                <Text style={[Styles.title_Regular, styles.aromaValue,{marginTop:0,marginLeft:'0%',width:'85%'}]}>
-                  {
-                    product?.tasting_characteristics?.aromas_and_flavours
-                      ?.tertiary[0]?.value
-                  }
-                </Text>
-              </View>
-            </>
-          )}
+          ) : null}
 
           {product?.gastronomy?.text && (
             <>
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
                 {Language.product_detail_gastronomy}
               </Text>
-              <Text style={[Styles.title_Regular, styles.paragraphMuted,{color:Color.black}]}>
+              <Text
+                style={[
+                  Styles.title_Regular,
+                  styles.paragraphMuted,
+                  {color: Color.black},
+                ]}>
                 {product?.gastronomy?.text}
               </Text>
             </>
           )}
 
-          {product?.gastronomy?.suggestions && (
+          {Array.isArray(product?.gastronomy?.suggestions) &&
+            product.gastronomy.suggestions.length > 0 && (
             <>
               <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
                 {Language.product_detail_suggestions}
               </Text>
-              {product?.gastronomy?.suggestions.map(
+              {product.gastronomy.suggestions.map(
                 (suggestion: any, index: number) => (
-                  <View key={index} style={styles.suggestionText}>
-                    {suggestion === 'fish' && <Fish width={30} height={30} />}
-                    {suggestion === 'cheese' && <Cheesse width={30} height={30} />}
-                    {suggestion === 'meat' && <Meat width={30} height={30} />}
-                    {suggestion === 'fruits_and_berries' && <Fruits width={30} height={30} />}
+                  <View
+                    key={
+                      typeof suggestion === 'string'
+                        ? suggestion
+                        : suggestion?.id ?? suggestion?.slug ?? index
+                    }
+                    style={styles.suggestionText}>
+                    {renderSuggestionIcon(suggestion)}
                     <Text style={[Styles.title_Regular]}>
-                    {(() => {
-                      const raw =
-                        suggestion === 'fruits_and_berries'
-                          ? 'Fruits and Berries'
-                          : String(suggestion ?? '').replace(/_/g, ' ');
-                      return raw ? raw.charAt(0).toUpperCase() + raw.slice(1) : raw;
-                    })()}
-                  </Text>
+                      {formatSuggestionLabel(suggestion)}
+                    </Text>
                   </View>
                 ),
               )}
             </>
           )}
         </View>
-
+         {recommended.length > 0 && (
+          <>
         <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
           {Language.product_detail_with_this_also_watching}
         </Text>
-         <View style={{width:'100%',alignSelf:'center',marginBottom:'15%'}}>
-        <HorizontalFlatList
-        callback={(e)=>onSubmitDetail(e)}
-          products={recommended}
-          onFavoriteToggled={(_id: string, _isFavorite: boolean) =>
-            refreshAll()
-          }
-        />
-       </View>
-       
+        <View style={styles.recommendedSection}>
+          <HorizontalFlatList
+            callback={e => onSubmitDetail(e)}
+            products={recommended}
+            onFavoriteToggled={(_id: string, _isFavorite: boolean) =>
+              refreshAll()
+            }
+          />
+        </View>
+        </>
+        )}
+
         <LoadingModal isVisible={visible} />
       </ScrollView>
-      <View style={{backgroundColor:'transparent',width:'100%',position:'absolute',bottom:0}}>
-      {count === 0 ? (
+      <View
+        style={{
+          backgroundColor: 'transparent',
+          width: '100%',
+          position: 'absolute',
+          bottom: 0,
+        }}>
+        {count === 0 ? (
           <BottomCardComponent
             title={Language.product_detail_add_to_cart}
             onHandler={onSubmit}
             style={styles.bottomCardButton}
-            textStyle={[Styles.subtitle_Regular,{color:Color.white}]}
+            textStyle={[Styles.subtitle_Regular, {color: Color.white}]}
             icon={<Card />}
           />
         ) : (
@@ -416,23 +619,38 @@ export default function CatalogDetailScreen(route: any) {
           />
         )}
       </View>
-      
     </View>
   );
 }
 const styles = StyleSheet.create({
+  scrollContent: {
+    flexGrow: 1,
+  },
+  recommendedSection: {
+    width: '100%',
+    alignSelf: 'center',
+  },
   sortItemContainer: {
     borderWidth: 1,
     borderRadius: 6,
     borderColor: Color.primary,
   },
   imageWrapper: {
+    width: 300,
+    height: 370,
+    alignSelf: 'center',
     alignItems: 'center',
     marginTop: 10,
   },
   productImage: {
-    width: 300,
-    height: 370,
+    width: '100%',
+    height: '100%',
+  },
+  imagePlaceholder: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 12,
+    backgroundColor: Color.lightGray,
   },
   detailsContainer: {
     width: '100%',
@@ -470,16 +688,21 @@ const styles = StyleSheet.create({
     marginLeft: '6%',
     marginTop: 10,
   },
-  priceRow: {
+  priceSection: {
     marginLeft: '5%',
     marginTop: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
+    minHeight: 44,
+    justifyContent: 'flex-end',
   },
-  salePriceText: {
-    marginLeft: '5%',
+  productPrice: {
+    color: Color.black,
+  },
+  originalPriceText: {
     color: Color.gray,
     textDecorationLine: 'line-through',
+  },
+  hiddenPriceLine: {
+    opacity: 0,
   },
   sectionDivider: {
     width: '93%',
@@ -497,12 +720,24 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: Color.gray,
   },
+  tastingCharacteristicsText: {
+    width: '85%',
+    color: Color.black,
+  },
+  aromaColumn: {
+    flexDirection: 'column',
+  },
+  aromaDescription: {
+    marginLeft: '5%',
+    marginTop: 0,
+    width: '85%',
+  },
   aromaRow: {
     flexDirection: 'row',
   },
   aromaLabel: {
     marginLeft: '5%',
-    marginTop: 10,
+    // marginTop: 10,
   },
   aromaValue: {
     marginLeft: '2%',
@@ -510,9 +745,9 @@ const styles = StyleSheet.create({
     width: '60%',
   },
   suggestionText: {
-    flexDirection:'row',
-    alignItems:'center',
-    gap:10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
     marginLeft: '5%',
     marginTop: 10,
   },
@@ -541,10 +776,15 @@ const styles = StyleSheet.create({
   bottomCardButton: {
     marginTop: '2%',
     width: '95%',
-    marginBottom:5,
+    marginBottom: 5,
   },
   addBottomStylesContainer: {
     width: '60%',
     justifyContent: 'space-between',
+  },
+  suggestionImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 10,
   },
 });

@@ -11,11 +11,12 @@ const {assetExts, sourceExts} = defaultConfig.resolver;
  */
 const config = {
   transformer: {
-    babelTransformerPath: require.resolve("react-native-svg-transformer"),
+    babelTransformerPath: require.resolve('react-native-svg-transformer/react-native'),
+    hermesParser: true,
   },
   resolver: {
-    assetExts: assetExts.filter((ext) => ext !== "svg"),
-    sourceExts: [...sourceExts, "svg"],
+    assetExts: assetExts.filter(ext => ext !== 'svg'),
+    sourceExts: [...sourceExts, 'svg'],
   },
 };
 

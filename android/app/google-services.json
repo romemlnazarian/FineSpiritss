@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "821351475080",
+    "project_id": "finespirits-6bf74",
+    "storage_bucket": "finespirits-6bf74.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:821351475080:android:a5349647bf593675597c3d",
+        "android_client_info": {
+          "package_name": "com.finespirits"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDvrG3OwGj-s4W1TaTIBCzp0x4zKblucE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

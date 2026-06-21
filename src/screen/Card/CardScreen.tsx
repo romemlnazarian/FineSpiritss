@@ -19,6 +19,8 @@ import HorizontalFlatList from '../../component/HorizontalFlatList';
 import { useNavigation } from '@react-navigation/native';
 import CartIcon from '../../assets/svg/Cart.svg';
 import { Language } from '../../utiles/Language/i18n';
+import { BottomSheet, useBottomSheetBackHandler } from '../../component/BottomSheet';
+import BottomCardComponent from '../../component/BottomCard';
 export default function CardScreen() {
   const { Styles } = StyleComponent();
   const {
@@ -28,11 +30,21 @@ export default function CardScreen() {
     refreshCart,
     onSubmitAddress,
     onSubmit,
+    onPay,
+    orderSheetVisible,
+    setOrderSheetVisible,
     error,
     recommended,
     toggleFavorite,
   } = CartLogix();
   const navigation: any = useNavigation();
+
+  const handleBack = useBottomSheetBackHandler(
+    orderSheetVisible,
+    () => setOrderSheetVisible(false),
+    navigation,
+  );
+
   useFocusEffect(
     useCallback(() => {
       refreshCart();
@@ -43,7 +55,11 @@ export default function CardScreen() {
 
   return (
     <View style={Styles.container}>
-      <CustomHeader showBack={true} subTitle={Language.cart_title} />
+      <CustomHeader
+        showBack={true}
+        subTitle={Language.cart_title}
+        onSubmitBack={handleBack}
+      />
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -253,9 +269,72 @@ export default function CardScreen() {
       </View> */}
         </ScrollView>
       )}
-      {/* <BottomSheet modalVisible={true} height={500}>
-        <CartOrder />
-      </BottomSheet> */}
+      <BottomSheet
+        modalVisible={orderSheetVisible}
+        height={480}
+        onClose={() => console.log('close')}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.sheetContent}>
+          <Text style={[Styles.h5_Medium, Styles.textAlign]}>
+            {Language.cart_order_summary}
+          </Text>
+
+          {address?.street ? (
+            <View style={styles.sheetAddressRow}>
+              <Text style={[Styles.subtitle_Regular, styles.sheetLabel]}>
+                {Language.cart_shipping_address}
+              </Text>
+              <Text style={[Styles.title_Regular, styles.sheetValue]}>
+                {address.city}, {address.street}
+              </Text>
+            </View>
+          ) : null}
+
+          <View style={styles.rowBetween}>
+            <Text style={[Styles.title_Regular, styles.blackText]}>
+              {Language.cart_my_order}
+            </Text>
+            <Text style={[Styles.title_Medium, styles.blackText]}>
+              {data?.summary?.items_count}{' '}
+              {data?.summary?.items_count === 1
+                ? Language.cart_item
+                : Language.cart_items}
+            </Text>
+          </View>
+          <View style={styles.rowBetween}>
+            <Text style={[Styles.title_Regular, styles.blackText]}>
+              {Language.cart_order_amount}
+            </Text>
+            <Text style={[Styles.title_Medium, styles.blackText]}>
+              {data?.summary?.subtotal} zł
+            </Text>
+          </View>
+          <View style={styles.rowBetween}>
+            <Text style={[Styles.title_Regular, styles.blackText]}>
+              {Language.cart_delivery}
+            </Text>
+            <Text style={[Styles.title_Medium, styles.blackText]}>
+              {Language.cart_free}
+            </Text>
+          </View>
+          <View style={styles.divider} />
+          <View style={styles.rowBetween}>
+            <Text style={[Styles.h5_SemiBold, styles.blackText]}>
+              {Language.cart_total}
+            </Text>
+            <Text style={[Styles.h5_SemiBold, styles.blackText]}>
+              {data?.summary?.total} zł
+            </Text>
+          </View>
+
+          <BottomCardComponent
+            title={Language.setting_pay}
+            onHandler={onPay}
+            style={styles.payButton}
+          />
+        </ScrollView>
+      </BottomSheet>
     </View>
   );
 }
@@ -364,6 +443,27 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     position: 'absolute',
     right: 10,
+  },
+  sheetContent: {
+    paddingHorizontal: '3%',
+    paddingBottom: 24,
+  },
+  sheetAddressRow: {
+    width: '90%',
+    alignSelf: 'center',
+    marginTop: '5%',
+  },
+  sheetLabel: {
+    color: Color.gray,
+    marginBottom: 4,
+  },
+  sheetValue: {
+    color: Color.black,
+  },
+  payButton: {
+    width: '93%',
+    alignSelf: 'center',
+    marginTop: '8%',
   },
   justifyCenter: {
     flexDirection: 'row',

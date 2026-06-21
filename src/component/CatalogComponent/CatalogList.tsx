@@ -15,13 +15,21 @@ import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import BottomCardComponent from '../BottomCard';
 import Card from '../../assets/svg/Cart.svg';
 import AddBottom from '../AddBottom';
-import { AddFavoriteProductModel, DeleteFavoriteProductModel } from '../../model/Favorite/Favorite';
-import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
+import {
+  AddFavoriteProductModel,
+  DeleteFavoriteProductModel,
+} from '../../model/Favorite/Favorite';
+import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
 import useAuthStore from '../../zustland/AuthStore';
-import { useToast } from '../../utiles/Toast/ToastProvider';
+import {useToast} from '../../utiles/Toast/ToastProvider';
 import LoadingModal from '../LoadingModal';
-import { addCardModel, deleteCardModel, updateCardModel } from '../../model/Card/CardModel';
+import {
+  addCardModel,
+  deleteCardModel,
+  updateCardModel,
+} from '../../model/Card/CardModel';
 import {Language} from '../../utiles/Language/i18n';
+import {resolveProductImageUrl} from '../../utiles/mediaUrl';
 interface ProductItem {
   id: string;
   title: string;
@@ -31,7 +39,7 @@ interface ProductItem {
   discountPrice?: string;
   image?: string;
   is_favorite?: boolean;
-  cart_quantity?:number
+  cart_quantity?: number;
 }
 interface VerticalScrollProps {
   item: ProductItem[];
@@ -57,36 +65,42 @@ const ProductCard: React.FC<{
   const [visible, setVisible] = useState<boolean>(false);
   const {show} = useToast();
 
-
-
   const toggleFavorite = useCallback(() => {
- if(isFavorite){
-  setIsFavorite(false);
-  DeleteFavoriteProductModel(token, item.id, () => {
-  }, () => {
-  }, () => {
-    refreshTokenModel(refreshToken, (data) => {
-      setToken(data.access);
-      setRefreshToken(data.refresh);
-      DeleteFavoriteProductModel(token, item.id, () => {
-      }, () => {
-      });
-    });
-  });
- }else{
-  setIsFavorite(true);
-     AddFavoriteProductModel(token, item.id, () => {
-     }, () => {
-     }, () => {
-      refreshTokenModel(refreshToken, () => {
-      });
-     });  
-    }  
+    if (isFavorite) {
+      setIsFavorite(false);
+      DeleteFavoriteProductModel(
+        token,
+        item.id,
+        () => {},
+        () => {},
+        () => {
+          refreshTokenModel(refreshToken, data => {
+            setToken(data.access);
+            setRefreshToken(data.refresh);
+            DeleteFavoriteProductModel(
+              token,
+              item.id,
+              () => {},
+              () => {},
+            );
+          });
+        },
+      );
+    } else {
+      setIsFavorite(true);
+      AddFavoriteProductModel(
+        token,
+        item.id,
+        () => {},
+        () => {},
+        () => {
+          refreshTokenModel(refreshToken, () => {});
+        },
+      );
+    }
   }, []);
 
-
   const onClick = (value: number, type: string) => {
-
     if (type === 'inc') {
       setVisible(true);
       updateCardModel(
@@ -132,7 +146,7 @@ const ProductCard: React.FC<{
       );
     } else {
       setVisible(true);
-      if(value < 1) {
+      if (value < 1) {
         deleteCardModel(
           token,
           item.id,
@@ -172,49 +186,49 @@ const ProductCard: React.FC<{
             );
           },
         );
-      }else{
-      updateCardModel(
-        token,
-        item.id,
-        value,
-        () => {
-          setCount(value);
-          setVisible(false);
-        },
-        (error: string) => {
-          setVisible(false);
-          show(error, {type: 'error'});
-        },
-        () => {
-          refreshTokenModel(
-            refreshToken,
-            refreshedTokens => {
-              setToken(refreshedTokens.access);
-              setRefreshToken(refreshedTokens.refresh);
-              updateCardModel(
-                refreshedTokens.access,
-                item.id,
-                value,
-                () => {
-                  setCount(value);
-                  setVisible(false);
-                },
-                (error: string) => {
-                  setVisible(false);
-                  show(error, {type: 'error'});
-                },
-                () => {
-                  setVisible(false);
-                },
-              );
-            },
-            () => {
-              setVisible(false);
-            },
-          );
-        },
-      );
-    }
+      } else {
+        updateCardModel(
+          token,
+          item.id,
+          value,
+          () => {
+            setCount(value);
+            setVisible(false);
+          },
+          (error: string) => {
+            setVisible(false);
+            show(error, {type: 'error'});
+          },
+          () => {
+            refreshTokenModel(
+              refreshToken,
+              refreshedTokens => {
+                setToken(refreshedTokens.access);
+                setRefreshToken(refreshedTokens.refresh);
+                updateCardModel(
+                  refreshedTokens.access,
+                  item.id,
+                  value,
+                  () => {
+                    setCount(value);
+                    setVisible(false);
+                  },
+                  (error: string) => {
+                    setVisible(false);
+                    show(error, {type: 'error'});
+                  },
+                  () => {
+                    setVisible(false);
+                  },
+                );
+              },
+              () => {
+                setVisible(false);
+              },
+            );
+          },
+        );
+      }
     }
   };
 
@@ -261,18 +275,20 @@ const ProductCard: React.FC<{
     );
   };
 
-
-
   const handleAddToCartPress = useCallback(() => {
     setShowCounter(true);
     onAddSelected?.(item, 1);
   }, [item, onAddSelected]);
 
+  const hasSalePrice =
+    item?.sale_price !== null && item?.sale_price !== undefined;
+  const productImageUri = resolveProductImageUrl(item);
+
   return (
-    <TouchableOpacity 
-    activeOpacity={0.5}
+    <TouchableOpacity
+      activeOpacity={0.5}
       onPress={() => onHandlerItem?.(item)}
-    style={[styles.productCardContainer, Styles.alignCenter,]}>
+      style={styles.productCardContainer}>
       <TouchableOpacity style={styles.favoriteButton} onPress={toggleFavorite}>
         {isFavorite ? (
           <Heart width={24} height={24} fill={Color.red} />
@@ -281,95 +297,70 @@ const ProductCard: React.FC<{
         )}
       </TouchableOpacity>
       <View style={Styles.justifyCenter}>
-        {item?.image_url ? (
-          <Image source={{uri: item?.image_url}} style={styles.productImage} />
+        {productImageUri ? (
+          <Image
+            source={{uri: productImageUri}}
+            style={styles.productImage}
+            resizeMethod="resize"
+          />
         ) : (
           <View style={styles.imagePlaceholder} />
         )}
       </View>
-      {/* <View style={styles.swiperContainer}>
-
-        <Swiper
-          style={styles.swiper}
-          showsPagination={false}
-          loop={false}
-          removeClippedSubviews={true}
-          autoplay={false}
-          scrollEnabled={true}
-          bounces={false}
-          showsHorizontalScrollIndicator={false}
-          loadMinimal={true}
-          loadMinimalSize={1}>
-          <Image
-            source={{uri: item.image_url}}
-            style={styles.slide}
-            resizeMode="contain"
-          />
-        </Swiper>
-      </View> */}
-      <View style={styles.productTitleContainer}>
-      <Text style={[Styles.subtitle_SemiBold, styles.productTitle]} numberOfLines={1} ellipsizeMode="tail">
+      <Text
+        style={[Styles.subtitle_SemiBold, styles.productTitle]}
+        numberOfLines={1}
+        ellipsizeMode="tail">
         {item.title}
       </Text>
-      <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:'2%'}}>
-      <Text style={[Styles.subtitle_Regular, styles.productDescription,{width:'50%'}]} numberOfLines={1} ellipsizeMode="tail">
-        {item?.country}
-      </Text>
-      <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
-        {Language.abv} {item?.abv}
-      </Text>
-      </View>
-      {item?.sale_price === null ? (
+      <View style={styles.productInfoRow}>
         <Text
           style={[
-            Styles.title_Bold,
-            styles.productPrice,
-            styles.priceContainer,
-            // {marginTop: '17%'},
-          ]}>
-          {item.price} zł
+            Styles.subtitle_Regular,
+            styles.productDescription,
+            styles.productCountryWidth,
+          ]}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {item?.country}
         </Text>
-      ) : (
-       
-        <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop: '2%'}}>
-                 <Text
-            style={[
-              Styles.title_Bold,
-              styles.productPrice,
-              styles.priceContainer,
-            ]}>
-            {item.price} zł
-          </Text>
-          {item.regular_price && (
-            <Text
-              style={[
-                Styles.subtitle_Regular,
-                styles.originalPriceText,
-                styles.priceContainer,
-              ]}>
-              {item.regular_price} zł
-            </Text>
-          )}
-
- 
-        </View>
-      )}
+        <Text style={[Styles.subtitle_Regular, styles.productDescription]}>
+          {Language.abv} {item?.abv}
+        </Text>
       </View>
-      {count === 0 ? (
-        <BottomCardComponent
-          title={'Add to Cart'}
-          onHandler={onSubmit}
-          style={styles.bottomCardButton}
-          textStyle={[Styles.subtitle_Regular, styles.bottomCardButtonText]}
-          icon={<Card />}
-        />
-      ) : (
-        <AddBottom
-          style={styles.bottomCardButton}
-          onQuantityChange={onClick}
-          count={count}
-        />
-      )}
+      <View style={styles.priceSection}>
+        <Text
+          style={[
+            Styles.subtitle_Regular,
+            styles.originalPriceText,
+            !hasSalePrice && styles.hiddenPriceLine,
+          ]}
+          numberOfLines={1}>
+          {hasSalePrice ? `${item.price} zł` : ' '}
+        </Text>
+        <Text
+          style={[Styles.title_Bold, styles.productPrice]}
+          numberOfLines={1}>
+          {hasSalePrice ? `${item.sale_price} zł` : `${item.price} zł`}
+        </Text>
+      </View>
+      <View style={styles.footerSection}>
+        {count === 0 ? (
+          <BottomCardComponent
+            title={'Add to Cart'}
+            onHandler={onSubmit}
+            style={styles.bottomCardButton}
+            textStyle={[Styles.subtitle_Regular, styles.bottomCardButtonText]}
+            icon={<Card />}
+          />
+        ) : (
+          <AddBottom
+            style={styles.bottomCardButton}
+            onQuantityChange={onClick}
+            count={count}
+          />
+        )}
+      </View>
       <LoadingModal isVisible={visible} />
     </TouchableOpacity>
   );
@@ -413,7 +404,11 @@ const CatalogList: React.FC<VerticalScrollProps> = ({
     }
     return (
       <View style={styles.footerContainer}>
-        <ActivityIndicator size="large" color={Color.primary} style={{marginTop:'50%'}}/>
+        <ActivityIndicator
+          size="large"
+          color={Color.primary}
+          style={{marginTop: '50%'}}
+        />
       </View>
     );
   }, [isLoadingMore]);
@@ -434,7 +429,7 @@ const CatalogList: React.FC<VerticalScrollProps> = ({
       <FlatList
         data={item}
         renderItem={renderProductItem}
-          keyExtractor={keyExtractor}
+        keyExtractor={keyExtractor}
         numColumns={2}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.flatListContainer}
@@ -457,14 +452,10 @@ const CatalogList: React.FC<VerticalScrollProps> = ({
 
 export default CatalogList;
 const styles = StyleSheet.create({
-  productTitleContainer: {
-    width: '100%',
-    marginTop: '5%',
-  },
   categoryContainer: {
     width: '93%',
     alignSelf: 'center',
-    marginTop: '5%',
+    marginTop: '2%',
     paddingBottom: '15%',
   },
   headerContainer: {
@@ -484,17 +475,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rowWrapper: {
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    gap: '4%',
   },
   productCardContainer: {
-    padding: 15,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: Color.cardgray,
     backgroundColor: Color.background,
     width: '48%',
+    height: 340,
     marginBottom: 0,
     borderRadius: 10,
     marginTop: 15,
+    alignItems: 'center',
   },
   favoriteButton: {
     alignSelf: 'flex-end',
@@ -518,10 +513,28 @@ const styles = StyleSheet.create({
   productDescription: {
     color: Color.gray,
   },
-  priceContainer: {
+  productInfoRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginTop: '2%',
+    width: '100%',
+  },
+  productCountryWidth: {
+    width: '50%',
+  },
+  priceSection: {
+    minHeight: 44,
+    marginTop: '2%',
+    justifyContent: 'flex-end',
+    width: '100%',
+  },
+  hiddenPriceLine: {
+    opacity: 0,
+  },
+  footerSection: {
+    marginTop: 'auto',
+    width: '100%',
   },
   productPrice: {
     color: Color.black,
@@ -529,13 +542,11 @@ const styles = StyleSheet.create({
   originalPriceText: {
     color: Color.gray,
     textDecorationLine: 'line-through',
-    marginLeft: 10,
   },
   bottomCardButton: {
     marginTop: '10%',
     width: '100%',
     height: 50,
-    color: Color.white,
   },
   emptyContainer: {
     paddingVertical: 60,

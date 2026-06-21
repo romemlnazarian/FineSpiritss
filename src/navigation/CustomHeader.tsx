@@ -12,6 +12,8 @@ import {useNavigation} from '@react-navigation/native';
 import {Color} from '../utiles/color';
 import Arrow from '../assets/svg/Arrows.svg';
 import {StyleComponent} from '../utiles/styles';
+import {Language} from '../utiles/Language/i18n';
+
 type CustomHeaderProps = {
   title?: string;
   showBack?: boolean;
@@ -21,6 +23,7 @@ type CustomHeaderProps = {
   description?: string;
   onSubmitBack?: () => void;
   style?: ViewStyle;
+  countProduct?: number;
 };
 
 export default function CustomHeader({
@@ -29,43 +32,59 @@ export default function CustomHeader({
   icon,
   onHandler,
   subTitle,
-  description,
   onSubmitBack,
   style,
+  countProduct,
 }: CustomHeaderProps) {
   const navigation = useNavigation();
   const {Styles} = StyleComponent();
+
   return (
     <View style={[styles.header, style]}>
-      {showBack && (
-        <TouchableOpacity
-          onPress={onSubmitBack ? onSubmitBack : () => navigation.goBack()} style={styles.arrowContainer}>
-          <Arrow width={32} height={32} />
-        </TouchableOpacity>
-      )}
-      {title && (
-        <View pointerEvents="none" style={styles.titleContainer}>
+      <View style={styles.sideSlot}>
+        {showBack ? (
+          <TouchableOpacity
+            onPress={onSubmitBack ? onSubmitBack : () => navigation.goBack()}
+            style={styles.iconButton}>
+            <Arrow width={32} height={32} />
+          </TouchableOpacity>
+        ) : null}
+      </View>
+
+      <View pointerEvents="none" style={styles.centerSlot}>
+        {title ? (
           <Text
-            style={[styles.title, Styles.body_Medium]}
+            style={[styles.centerText, Styles.body_Medium]}
             numberOfLines={1}
             ellipsizeMode="tail">
-            {title || ''}
+            {title}
           </Text>
-        </View>
-      )}
-      {subTitle && (
-        <View pointerEvents="none" style={styles.subTitleContainer}>
+        ) : null}
+        {subTitle ? (
           <Text
-            style={[styles.title, Styles.body_Medium, Styles.textAlign,{marginBottom: 6}]}
+            style={[styles.centerText, Styles.body_Medium]}
             numberOfLines={1}
             ellipsizeMode="tail">
-            {subTitle || ''}
+            {subTitle}
           </Text>
-        </View>
-      )}
-      <TouchableOpacity onPress={onHandler} style={styles.arrowContainer}>
-        <View>{icon}</View>
-      </TouchableOpacity>
+        ) : null}
+        {typeof countProduct === 'number' && countProduct > 0 ? (
+          <Text
+            style={[styles.centerText, styles.countText, Styles.subtitle_Regular]}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            {countProduct} {Language.Products}
+          </Text>
+        ) : null}
+      </View>
+
+      <View style={styles.sideSlot}>
+        {icon ? (
+          <TouchableOpacity onPress={onHandler} style={styles.iconButton}>
+            {icon}
+          </TouchableOpacity>
+        ) : null}
+      </View>
     </View>
   );
 }
@@ -74,24 +93,33 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: Color.background,
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     height: Platform.OS === 'ios' ? 70 : 70,
     paddingHorizontal: 16,
     paddingVertical: 5,
-    justifyContent: 'space-between',
-    marginTop: 10,
+    marginTop: 20,
   },
-  title: {
+  sideSlot: {
+    width: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  centerSlot: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+  },
+  centerText: {
     color: Color.black,
-    marginBottom: 5,
+    textAlign: 'center',
+    width: '100%',
   },
-  titleContainer: {
-    width: '80%',
-  },
-  subTitleContainer: {
-    width: '60%',
-  },
-  arrowContainer: {
-    width:'10%',
+  countText: {
+    marginTop: 2,
   },
 });

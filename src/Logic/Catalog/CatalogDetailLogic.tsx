@@ -154,6 +154,7 @@ import useAuthStore from '../../zustland/AuthStore';
 import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
 import { AddFavoriteProductModel, DeleteFavoriteProductModel } from '../../model/Favorite/Favorite';
 import { getHomeRecommendedModel } from '../../model/Home/HomeAdvertising';
+import { mergeProductDetail } from '../../utiles/mediaUrl';
 import { useToast } from '../../utiles/Toast/ToastProvider';
 import { addCardModel, deleteCardModel, updateCardModel } from '../../model/Card/CardModel';
 
@@ -174,8 +175,10 @@ export default function CatalogDetailLogic(route: any) {
     setIsLoading(true);
     getProductDetailModel(token, route?.route?.params?.product?.slug, data => {
       console.log('dataaaaaaaaaa =>', data);
-      setProduct(data);
-      setCount(data?.cart_quantity)
+      setProduct(
+        mergeProductDetail(data, route?.route?.params?.product),
+      );
+      setCount(data?.cart_quantity);
       setIsFavorite(data?.is_favorite);
       setIsLoading(false);
     },
@@ -188,13 +191,14 @@ export default function CatalogDetailLogic(route: any) {
         setToken(tokens.access);
         setRefreshToken(tokens.refresh);
         console.log('tokens =>', tokens);
-        // getProductDetailModel(tokens.access, route?.route?.params?.product?.slug, data => {
-        //   console.log('dataaaaaaaaaa =>', data);
-        //   setProduct(data);
-        //   setIsFavorite(data?.is_favorite);
-        //   setCount(data?.cart_quantity)
-        //   setIsLoading(false);
-        // }, err => console.log('error', err));
+        getProductDetailModel(tokens.access, route?.route?.params?.product?.slug, data => {
+          setProduct(
+            mergeProductDetail(data, route?.route?.params?.product),
+          );
+          setIsFavorite(data?.is_favorite);
+          setCount(data?.cart_quantity);
+          setIsLoading(false);
+        }, err => console.log('error', err));
       }, err => console.log('error', err));
     });
   }, [token, refreshToken, route?.route?.params?.product?.slug, setToken, setRefreshToken]);
@@ -435,8 +439,8 @@ export default function CatalogDetailLogic(route: any) {
 const onSubmitDetail = (value:any) =>{
   setIsLoading(true);
   getProductDetailModel(token, value.slug, data => {
-    setProduct(data);
-    setCount(data?.cart_quantity)
+    setProduct(mergeProductDetail(data, route?.route?.params?.product));
+    setCount(data?.cart_quantity);
     setIsFavorite(data?.is_favorite);
     setIsLoading(false);
   }, () => {
@@ -444,9 +448,9 @@ const onSubmitDetail = (value:any) =>{
       setToken(tokens.access);
       setRefreshToken(tokens.refresh);
       getProductDetailModel(tokens.access, value.slug, data => {
-        setProduct(data);
+        setProduct(mergeProductDetail(data, route?.route?.params?.product));
         setIsFavorite(data?.is_favorite);
-        setCount(data?.cart_quantity)
+        setCount(data?.cart_quantity);
         setIsLoading(false);
       }, err => console.log('error', err));
     }, err => console.log('error', err));

@@ -106,7 +106,7 @@ export const getCatalogDetailModel = (
 
 export const getFilterDataModel = (
   token: string,
-  slug: number,
+  slug: string,
   callback: (data: any) => void,
   errorcallback: (data: string) => void,
 ) => {
@@ -122,8 +122,18 @@ export const getFilterDataModel = (
     }) => {
       const anyData: any = data;
       if (anyData && typeof anyData === 'object') {
-        // Handle auth/error shapes
-        if ('code' in anyData || 'messages' in anyData || typeof anyData.detail === 'string') {
+        console.log('getFilterDataModel data =>', anyData);
+        const hasErrorMessages =
+          Array.isArray(anyData.messages) && anyData.messages.length > 0;
+        const hasErrorCode =
+          anyData.code !== undefined &&
+          anyData.code !== null &&
+          anyData.detail !== true;
+        if (
+          hasErrorCode ||
+          hasErrorMessages ||
+          typeof anyData.detail === 'string'
+        ) {
           const msg =
             anyData.code ??
             anyData.detail ??
@@ -152,7 +162,7 @@ export const getFilterDataModel = (
 };
 export const getFilterProductsModel = (
   token: string,
-  slug: number,
+  slug: string,
   countries: string,
   brands: string,
   volume: string,
@@ -216,14 +226,44 @@ export const getProductDetailModel =  (
     Route.root,
     `${Route.product_detail}${slug}/`,
     (data, status) => {
-      console.log('product detail data =>', data,status);
-      if (status === 200) {
-        callback(data);
-      } else if(status === 401) {
+      console.log('product detail data =>', data, status);
+      if (status === 401) {
         callbackUnauthorized?.();
-      } else {
-        errorcallback(data);
+        return;
       }
+      if (status !== 200) {
+        errorcallback(String((data as any)?.message ?? data ?? 'Unexpected response'));
+        return;
+      }
+
+      const anyData: any = data;
+      if (anyData && typeof anyData === 'object') {
+        if (
+          'code' in anyData ||
+          'messages' in anyData ||
+          typeof anyData.detail === 'string'
+        ) {
+          const msg =
+            anyData.code ??
+            anyData.detail ??
+            anyData?.messages?.[0]?.message ??
+            anyData.message ??
+            'Unexpected response';
+          errorcallback(String(msg));
+          return;
+        }
+        if ('detail' in anyData) {
+          if (anyData.detail === true) {
+            callback(anyData.data ?? anyData);
+          } else {
+            errorcallback(String(anyData.message ?? 'Unexpected response'));
+          }
+          return;
+        }
+        callback(anyData);
+        return;
+      }
+      errorcallback('Unexpected response');
     },
     token,
   );

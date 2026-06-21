@@ -1,120 +1,161 @@
-import {View, Text, StyleSheet, FlatList, TouchableOpacity, StyleProp, ViewStyle, TextStyle} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  StyleProp,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
 import React, {useState, useCallback, memo, useEffect} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
 import FilterIcon from '../../assets/svg/Filter.svg';
-// Memoized sort item component
-const SortItem = memo(({item, isSelected, onPress, containerStyle, textStyle, arrow}: {
-  item: {id: string; title: string | React.ReactElement};
-  isSelected: boolean;
-  onPress: (id: string) => void;
-  containerStyle?: StyleProp<ViewStyle>;
-  textStyle?: StyleProp<TextStyle>;
-  arrow?: boolean;
-}) => {
-  const {Styles} = StyleComponent();
 
-  return (
+export type CatalogFilterItem = {
+  id: string;
+  title?: string;
+  key?: string;
+  type?: 'filter-icon' | 'default';
+};
+
+const FilterIconButton = memo(
+  ({
+    onPress,
+    containerStyle,
+  }: {
+    onPress: () => void;
+    containerStyle?: StyleProp<ViewStyle>;
+  }) => (
     <TouchableOpacity
       activeOpacity={0.5}
-      style={[styles.flatListItem, containerStyle]}
-      onPress={() => onPress(item.id)}>
-      <View style={styles.itemContent}>
-        {item.id === '1' && (
-          <FilterIcon
-            width={16}
-            height={16}
-            style={styles.filterIcon}
-          />
-        )}
-        {typeof item.title === 'string' && (
-          <Text
-            style={[
-              Styles.title_Regular,
-              item.id === '1' ? styles.selectedItemText : styles.unselectedItemText,
-              textStyle,
-            ]}>
-            {item.title}
-          </Text>
-        )}
-      </View>
-      {item.id !== '1' && arrow && (
-        <Arrow name="keyboard-arrow-down" size={20} color={Color.gray} />
-      )}
+      style={[styles.flatListItem, styles.filterIconItem, containerStyle]}
+      onPress={onPress}>
+      <FilterIcon width={16} height={16} />
     </TouchableOpacity>
-  );
-});
+  ),
+);
+
+const SortItem = memo(
+  ({
+    item,
+    onPress,
+    containerStyle,
+    textStyle,
+    arrow,
+  }: {
+    item: CatalogFilterItem;
+    onPress: (item: CatalogFilterItem) => void;
+    containerStyle?: StyleProp<ViewStyle>;
+    textStyle?: StyleProp<TextStyle>;
+    arrow?: boolean;
+  }) => {
+    const {Styles} = StyleComponent();
+
+    if (item.type === 'filter-icon') {
+      return (
+        <FilterIconButton
+          containerStyle={containerStyle}
+          onPress={() => onPress(item)}
+        />
+      );
+    }
+
+    return (
+      <TouchableOpacity
+        activeOpacity={0.5}
+        style={[styles.flatListItem, containerStyle]}
+        onPress={() => onPress(item)}>
+        <View style={styles.itemContent}>
+          {item.title ? (
+            <Text style={[Styles.title_Regular, styles.itemText, textStyle]}>
+              {item.title}
+            </Text>
+          ) : null}
+        </View>
+        {arrow ? (
+          <Arrow name="keyboard-arrow-down" size={20} color={Color.gray} />
+        ) : null}
+      </TouchableOpacity>
+    );
+  },
+);
 
 interface CatalogFilterProps {
-  onHandler?: (selectedId: string) => void;
-  sortData: {id: string; title: string | React.ReactElement}[];
+  onHandler?: (key: string) => void;
+  sortData: CatalogFilterItem[];
   sortItemContainerStyle?: StyleProp<ViewStyle>;
   sortItemTextStyle?: StyleProp<TextStyle>;
   arrow?: boolean;
 }
 
-const CatalogFilter = memo(({onHandler, sortData, sortItemContainerStyle, sortItemTextStyle, arrow}: CatalogFilterProps) => {
-  const [selectedItemId, setSelectedItemId] = useState(sortData[0]?.id ?? '');
+const CatalogFilter = memo(
+  ({
+    onHandler,
+    sortData,
+    sortItemContainerStyle,
+    sortItemTextStyle,
+    arrow,
+  }: CatalogFilterProps) => {
+    const [selectedItemId, setSelectedItemId] = useState(
+      sortData.find(item => item.type !== 'filter-icon')?.id ?? '',
+    );
 
-  // Keep selection valid when data changes
-  useEffect(() => {
-    if (!sortData.find(i => i.id === selectedItemId)) {
-      setSelectedItemId(sortData[0]?.id ?? '');
-    }
-  }, [sortData, selectedItemId]);
-
-  // Memoized callback for sort item selection
-  const handleSortSelection = useCallback((id: string) => {
-    setSelectedItemId(id);
-    if (id === '1') {
-      onHandler?.('filter');
-    } else {
-      const selectedItem = sortData.find(item => item.id === id);
-      if (selectedItem && typeof selectedItem.title === 'string') {
-        onHandler?.(selectedItem.title);
+    useEffect(() => {
+      if (!sortData.find(i => i.id === selectedItemId)) {
+        setSelectedItemId(
+          sortData.find(item => item.type !== 'filter-icon')?.id ?? '',
+        );
       }
-    }
-  }, [onHandler, sortData]);
+    }, [sortData, selectedItemId]);
 
-  // Memoized render functions
-  const renderSortItem = useCallback(({item}: {item: {id: string; title: string | React.ReactElement}}) => (
-    <SortItem
-      item={item}
-      isSelected={item.id === selectedItemId}
-      onPress={handleSortSelection}
-      containerStyle={sortItemContainerStyle}
-      textStyle={sortItemTextStyle}
-      arrow={arrow}
-    />
-  ), [selectedItemId, handleSortSelection, sortItemContainerStyle, sortItemTextStyle, arrow]);
+    const handleSortSelection = useCallback(
+      (item: CatalogFilterItem) => {
+        if (item.type === 'filter-icon') {
+          onHandler?.(item.key ?? 'filter');
+          return;
+        }
+        setSelectedItemId(item.id);
+        onHandler?.(item.key ?? item.title ?? item.id);
+      },
+      [onHandler],
+    );
 
-  // Memoized key extractors
-  const sortKeyExtractor = (item: {id: string; title: string | React.ReactElement}) => item.id;
+    const renderSortItem = useCallback(
+      ({item}: {item: CatalogFilterItem}) => (
+        <SortItem
+          item={item}
+          onPress={handleSortSelection}
+          containerStyle={sortItemContainerStyle}
+          textStyle={sortItemTextStyle}
+          arrow={arrow}
+        />
+      ),
+      [handleSortSelection, sortItemContainerStyle, sortItemTextStyle, arrow],
+    );
 
-  return (
-    <View style={styles.categoryContainer}>
-      <FlatList
-        data={sortData}
-        renderItem={renderSortItem}
-        keyExtractor={sortKeyExtractor}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.flatListContainer}
-        removeClippedSubviews={true}
-        maxToRenderPerBatch={5}
-        windowSize={5}
-        initialNumToRender={3}
-        updateCellsBatchingPeriod={50}
-        getItemLayout={(data, index) => ({
-          length: 100,
-          offset: 100 * index,
-          index,
-        })}
-      />
-    </View>
-  );
-});
+    const sortKeyExtractor = (item: CatalogFilterItem) => item.id;
+
+    return (
+      <View style={styles.categoryContainer}>
+        <FlatList
+          data={sortData}
+          renderItem={renderSortItem}
+          keyExtractor={sortKeyExtractor}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          removeClippedSubviews={true}
+          maxToRenderPerBatch={5}
+          windowSize={5}
+          initialNumToRender={4}
+          updateCellsBatchingPeriod={50}
+        />
+      </View>
+    );
+  },
+);
 
 export default CatalogFilter;
 
@@ -124,17 +165,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 
-  categoryTitle: {
-    color: Color.primary,
-  },
-
-  flatListContainer: {
-    marginTop: '5%',
-  },
   flatListItem: {
     paddingHorizontal: 15,
-    paddingBottom: 10,
-    paddingTop: 10,
     paddingVertical: 5,
     borderRadius: 20,
     marginRight: 10,
@@ -143,18 +175,14 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
     flexDirection: 'row',
   },
+  filterIconItem: {
+    paddingHorizontal: 14,
+  },
   itemContent: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  filterIcon: {
-    marginRight: 6,
-  },
-
-  selectedItemText: {
-    color: Color.black,
-  },
-  unselectedItemText: {
+  itemText: {
     color: Color.gray,
   },
 });

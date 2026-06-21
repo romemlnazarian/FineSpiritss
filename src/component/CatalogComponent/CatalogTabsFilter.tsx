@@ -47,7 +47,10 @@ export default function CatalogTabsFilter({
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}>
         <Text style={[Styles.h5_Medium, Styles.textAlign]}>{titleLabel}</Text>
         {key === 'country' &&
           data?.country?.map((item: any, index: number) => {
@@ -142,9 +145,16 @@ export default function CatalogTabsFilter({
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     width: '98%',
     alignSelf: 'center',
-    marginTop: '2%',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingTop: '2%',
+    paddingBottom: 55,
   },
   itemContainer: {
     width: '95%',

@@ -14,6 +14,7 @@ import CustomHeader from '../../navigation/CustomHeader';
 import CatalogLogic from '../../logic/Catalog/CatalogLogic';
 import {useNavigation} from '@react-navigation/native';
 import {Language} from '../../utiles/Language/i18n';
+import { resolveMediaUrl } from '../../utiles/mediaUrl';
 
 const CategoryScreen = memo(() => {
   const {Styles} = StyleComponent();
@@ -31,13 +32,13 @@ const CategoryScreen = memo(() => {
           {item.cat_image && (
             <Image
               source={{
-                uri: item.cat_image,
+                uri: resolveMediaUrl(item.cat_image),
               }}
-              resizeMode="contain"
+              resizeMode="cover"
               style={styles.categoryImage}
             />
           )}
-          <Text style={styles.categoryTitle} numberOfLines={1} ellipsizeMode="tail">{item.cat_name}</Text>
+          <Text style={styles.categoryTitle}>{item.cat_name}</Text>
         </TouchableOpacity>
       );
     },
@@ -113,21 +114,22 @@ const styles = StyleSheet.create({
     color: Color.gray,
   },
   listContainer: {
-    paddingBottom: 20,
+    width:'93%',
+    alignSelf:'center',
   },
   topSpacer: {
     marginTop: '5%',
   },
   rowStyle: {
-    justifyContent: 'space-around',
-    marginBottom: 15,
+    justifyContent: 'flex-start',
+    gap: '4%',
+    marginBottom: 10,
   },
   categoryItem: {
-    width: '45%',
+    width: '48%',
     height: 130,
     backgroundColor: Color.white,
     borderRadius: 12,
-    padding: 16,
     shadowColor: Color.black,
     shadowOffset: {
       width: 0,
@@ -140,15 +142,20 @@ const styles = StyleSheet.create({
     borderColor: Color.lightGray,
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   categoryInfo: {
     flex: 1,
     justifyContent: 'center',
   },
   categoryTitle: {
-    color: Color.black,
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 14,
+    position:'absolute',
+    top:14,
+    left:15,
+    color:Color.white,
+    width:'40%',
+    lineHeight:25,
   },
   categoryDescription: {
     color: Color.gray,
@@ -159,9 +166,10 @@ const styles = StyleSheet.create({
     color: Color.primary,
   },
   categoryImage: {
-    width: 100,
-    height: 100,
+    width: '100%',
+    height: '100%',
     resizeMode: 'contain',
+    borderRadius:12,
   },
   initialLoader: {
     width: '100%',

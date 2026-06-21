@@ -1,11 +1,12 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React, {useMemo} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import {StyleComponent} from '../../utiles/styles';
 import CustomHeader from '../../navigation/CustomHeader';
 import CatalogFilter from '../../component/CatalogComponent/CatalogFilter';
 import CatalogList from '../../component/CatalogComponent/CatalogList';
 import ChoosenCatalogLogic from '../../logic/Catalog/ChoosenCatalogLogic';
-import {BottomSheet} from '../../component/BottomSheet';
+import {BottomSheet, useBottomSheetBackHandler} from '../../component/BottomSheet';
 import Search from '../../assets/svg/SearchBlack.svg';
 import ButtonSheetFilter from '../../component/CatalogComponent/buttonSheetFilter';
 import CatalogTabsFilter from '../../component/CatalogComponent/CatalogTabsFilter';
@@ -41,11 +42,24 @@ export default function ChoosenCatalog(route: any) {
     countProduct,
   } = ChoosenCatalogLogic(route);
   const {Styles} = StyleComponent();
+  const navigation = useNavigation<any>();
+
+  const handleBack = useBottomSheetBackHandler(
+    filterVisible,
+    () => setFilterVisible(false),
+    navigation,
+  );
 
   const sortData = useMemo(
     () => [
       {
+        id: 'filter-icon',
+        type: 'filter-icon' as const,
+        key: 'filter',
+      },
+      {
         id: '1',
+        key: 'price',
         title: Language.filter_price,
       },
       {
@@ -73,15 +87,21 @@ export default function ChoosenCatalog(route: any) {
         subTitle={titleHeader}
         icon={<Search />}
         onHandler={() => onSearchHandler()}
+        onSubmitBack={handleBack}
+        countProduct={countProduct}
       />
-      {countProduct > 0 && (
+      {/* {countProduct > 0 && (
         <View style={styles.countContainer}>
           <Text style={[Styles.title_Regular]}>
             {countProduct} {Language.Products}
           </Text>
         </View>
-      )}
-      <CatalogFilter onHandler={e => onSubnmitFilter(e)} sortData={sortData}/>
+      )} */}
+      <CatalogFilter
+        onHandler={e => onSubnmitFilter(e)}
+        sortData={sortData}
+        arrow
+      />
 
       <ActiveFiltersChips
         countries={countries}
@@ -106,7 +126,7 @@ export default function ChoosenCatalog(route: any) {
         modalVisible={filterVisible}
         height={400}
         onClose={() => setFilterVisible(false)}>
-        {title === 'filter' ? (
+        {title === 'price' ? (
           <ButtonSheetFilter
             minPrice={priceMinBound}
             maxPrice={priceMaxBound}
@@ -114,6 +134,8 @@ export default function ChoosenCatalog(route: any) {
             currentMaxPrice={selectedMaxPrice}
             onPriceChange={onPriceChange}
           />
+        ) : title === 'filter' ? (
+          <View />
         ) : (
           <CatalogTabsFilter
             title={title}

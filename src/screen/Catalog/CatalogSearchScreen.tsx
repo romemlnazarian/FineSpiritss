@@ -32,6 +32,7 @@ import {
 } from '../../model/Favorite/Favorite';
 import useRecommendedStore from '../../zustland/recommendedStore';
 import {Language} from '../../utiles/Language/i18n';
+import { resolveProductImageUrl } from '../../utiles/mediaUrl';
 interface ProductItem {
   id: string;
   title: string;
@@ -110,7 +111,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
       style={[Styles.justifyBetween, styles.mainContainer]}>
       <View style={[Styles.justifyCenter, styles.leftSection]}>
         <Image
-          source={{uri: item?.image_url}}
+          source={{uri: resolveProductImageUrl(item)}}
           style={styles.productImage}
           resizeMode="contain"
         />
@@ -366,6 +367,7 @@ export default function CatalogSearch() {
         token,
         query,
         (payload: any) => {
+          console.log('fetchSearchHistory payload =>', payload);
           const raw = Array.isArray(payload?.results)
             ? payload.results
             : Array.isArray(payload)

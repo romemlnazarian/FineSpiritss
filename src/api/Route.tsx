@@ -47,7 +47,7 @@
 }
 
 export const Route: RouteObj = {
-  root:'https://api.finespirits.pl/api/',
+  root:'https://gevgor.ngrok.pro/api/',
   // root:'https://5b27b569ed2d.ngrok-free.app/',
   // root:'https://d57e53489d9f.ngrok-free.app/api/',
 

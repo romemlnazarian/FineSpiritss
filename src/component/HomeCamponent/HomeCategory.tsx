@@ -2,20 +2,14 @@ import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import React, {memo, useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
-import {Route} from '../../api/Route';
+import {resolveMediaUrl} from '../../utiles/mediaUrl';
 // Memoized category item component to prevent unnecessary re-renders
 const CategoryItem = memo(({item, onSubmit}: {item: any, onSubmit: (item: any) => void}) => {
   const {Styles} = StyleComponent();
 
-  // Build absolute image URL
-  const rawImage: string | undefined =
-    item?.cat_image || item?.parent?.cat_image;
-  const base = Route.root.replace(/\/api\/?$/, '/');
-  const imageUri = rawImage
-    ? rawImage.startsWith('http')
-      ? rawImage
-      : `${base}${rawImage.replace(/^\//, '')}`
-    : undefined;
+  const imageUri = resolveMediaUrl(
+    item?.cat_image || item?.parent?.cat_image,
+  );
 
   return (
     <TouchableOpacity onPress={() => onSubmit(item)} style={styles.categoryItemWrapper}>

@@ -19,7 +19,6 @@ import Slider from '../../component/HomeCamponent/Slider';
 import HomeCategory from '../../component/HomeCamponent/HomeCategory';
 import HomeSort from '../../component/HomeCamponent/HomeSort';
 import ScrollCard from '../../component/HomeCamponent/ScrollCard';
-import VerticalScroll from '../../component/HomeCamponent/VerticalScroll';
 import Search from '../../assets/svg/SearchGray.svg';
 import { Language } from '../../utiles/Language/i18n';
  
@@ -39,7 +38,6 @@ export default function HomeScreen() {
     onSubmitProduct,
     dataSort,
     dataSortLoading,
-    homeRecommended,
     ageConfirmed,
     onConfrim,
     onSubmitSearch
@@ -113,6 +111,7 @@ export default function HomeScreen() {
 
         <Slider data={homeAdvertising} onSubmit={onSubmitAdvertising} />
         <HomeCategory data={categories} onSubmitCategory={onSubmitCategory} />
+        <ScrollCard data={topBrands} />
 
         <HomeSort
           onClick={onSubmitSort}
@@ -124,12 +123,11 @@ export default function HomeScreen() {
         {/* <BonusSection /> */}
         {/* <SpecialOffersSection /> */}
 
-        <ScrollCard data={topBrands} />
 
-        <VerticalScroll
+        {/* <VerticalScroll
           item={homeRecommended}
           onSubmitProduct={onSubmitProduct}
-        />
+        /> */}
       </ScrollView>
     </View>
   );

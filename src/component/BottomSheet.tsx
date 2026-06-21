@@ -1,6 +1,7 @@
 import React, {FC, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   Animated,
+  BackHandler,
   EmitterSubscription,
   Keyboard,
   Modal,
@@ -12,7 +13,60 @@ import {
   View,
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import type {NavigationProp} from '@react-navigation/native';
+// import CloseIcon from 'react-native-vector-icons/AntDesign';
 import {Color} from '../utiles/color';
+
+export function useBottomSheetBackHandler(
+  visible: boolean,
+  onClose: () => void,
+  navigation?: NavigationProp<any>,
+) {
+  const handleBack = useCallback(() => {
+    if (visible) {
+      onClose();
+      return;
+    }
+    navigation?.goBack();
+  }, [navigation, onClose, visible]);
+
+  useEffect(() => {
+    if (!visible) {
+      return undefined;
+    }
+
+    const onHardwareBackPress = () => {
+      onClose();
+      return true;
+    };
+
+    const subscription = BackHandler.addEventListener(
+      'hardwareBackPress',
+      onHardwareBackPress,
+    );
+    return () => subscription.remove();
+  }, [onClose, visible]);
+
+  useEffect(() => {
+    if (!navigation) {
+      return undefined;
+    }
+
+    const unsubscribe = navigation.addListener(
+      'beforeRemove',
+      (e: {preventDefault: () => void}) => {
+        if (!visible) {
+          return;
+        }
+        e.preventDefault();
+        onClose();
+      },
+    );
+    return unsubscribe;
+  }, [navigation, onClose, visible]);
+
+  return handleBack;
+}
 
 export const BottomSheet: FC<{
   children: React.ReactNode;
@@ -20,7 +74,15 @@ export const BottomSheet: FC<{
   height: number;
   onClose?: () => void;
   keyboardAvoidingViewEnabled?: boolean;
-}> = ({children, height, modalVisible, onClose, keyboardAvoidingViewEnabled = true}) => {
+  // showCloseButton?: boolean;
+}> = ({
+  children,
+  height,
+  modalVisible,
+  onClose,
+  keyboardAvoidingViewEnabled = true,
+  // showCloseButton = true,
+}) => {
   const [isRendered, setIsRendered] = useState(modalVisible);
   const translateY = useRef(new Animated.Value(height)).current;
   const dragY = useRef(new Animated.Value(0)).current;
@@ -105,6 +167,23 @@ export const BottomSheet: FC<{
     onClose?.();
   }, [onClose]);
 
+  useEffect(() => {
+    if (!modalVisible) {
+      return undefined;
+    }
+
+    const onBackPress = () => {
+      closeSheet();
+      return true;
+    };
+
+    const subscription = BackHandler.addEventListener(
+      'hardwareBackPress',
+      onBackPress,
+    );
+    return () => subscription.remove();
+  }, [closeSheet, modalVisible]);
+
   const panResponder = useMemo(
     () =>
       PanResponder.create({
@@ -142,15 +221,30 @@ export const BottomSheet: FC<{
       visible={isRendered}
       statusBarTranslucent
       animationType="none"
-      onRequestClose={closeSheet}>
+      onRequestClose={closeSheet}
+      >
       <GestureHandlerRootView style={styles.wrapper}>
         <Pressable style={styles.backdrop} onPress={closeSheet} />
         <TouchableWithoutFeedback>
           <Animated.View style={containerStyle}>
-            <View style={styles.handleHitArea} {...panResponder.panHandlers}>
-              <View style={styles.handle} />
+            <View style={styles.headerRow}>
+              <View
+                style={styles.handleHitArea}
+                {...panResponder.panHandlers}>
+                <View style={styles.handle} />
+              </View>
+              {/* {showCloseButton ? (
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={closeSheet}
+                  hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+                  accessibilityRole="button"
+                  accessibilityLabel="Close">
+                  <CloseIcon name="close" size={20} color={Color.black} />
+                </TouchableOpacity>
+              ) : null} */}
             </View>
-            {children}
+            <View style={styles.content}>{children}</View>
           </Animated.View>
         </TouchableWithoutFeedback>
       </GestureHandlerRootView>
@@ -164,7 +258,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   backdrop: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: '#C2C2BCE5',
   },
   container: {
@@ -173,11 +267,33 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     overflow: 'hidden',
   },
+  content: {
+    flex: 1,
+    minHeight: 0,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+  },
   handleHitArea: {
+    flex: 1,
     paddingTop: 10,
     paddingBottom: 10,
     alignItems: 'center',
   },
+  // closeButton: {
+  //   position: 'absolute',
+  //   right: 12,
+  //   top: 8,
+  //   width: 32,
+  //   height: 32,
+  //   borderRadius: 16,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   backgroundColor: Color.background,
+  // },
   handle: {
     width: 60,
     height: 2,
