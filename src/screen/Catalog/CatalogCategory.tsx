@@ -5,6 +5,7 @@ import CustomHeader from '../../navigation/CustomHeader';
 import CatalogCategoryLogic from '../../logic/Catalog/CatalogCategoryLogic';
 import {Color} from '../../utiles/color';
 import ArrowRight from 'react-native-vector-icons/MaterialIcons';
+import { resolveMediaUrl } from '../../utiles/mediaUrl';
 export default function CatalogCategory(route: any) {
   const {Styles} = StyleComponent();
   const {isLoading, catalogDetail, name, onSubmitBack, onSubmit} = CatalogCategoryLogic(route);
@@ -24,14 +25,14 @@ export default function CatalogCategory(route: any) {
             onPress={() => onSubmit(catalogDetail?.parent)}
             style={[
               Styles.justifyBetween,
-              {padding: 10, alignItems: 'center', gap: 10},
+              {padding: 10, alignItems: 'center', gap: 10,width:'95%',alignSelf:'center'},
             ]}>
-            <View style={[Styles.displayRow, {gap: 10}]}>
+            <View style={[Styles.displayRow, {gap: 20}]}>
               <View
                 style={{
-                  width: 100,
-                  height: 100,
-                  backgroundColor: Color.lightGray,
+                  width: 70,
+                  height: 70,
+                  backgroundColor: Color.Gray_100,
                   borderRadius: 10,
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -39,8 +40,8 @@ export default function CatalogCategory(route: any) {
                 }}>
                 {catalogDetail?.parent?.cat_image && (
                   <Image
-                    source={{uri: catalogDetail.parent.cat_image}}
-                    style={{width: 80, height: 80}}
+                    source={{uri: resolveMediaUrl(catalogDetail.parent.cat_image)}}
+                    style={{width: 60, height: 60,borderRadius:10}}
                     resizeMethod='resize'
                   />
                 )}
@@ -55,26 +56,26 @@ export default function CatalogCategory(route: any) {
               color={Color.black}
             />
           </TouchableOpacity>
-          {catalogDetail?.children?.map((item: any) => (
+          {catalogDetail?.children?.map((item: any,index:number) => (
             <TouchableOpacity
               onPress={() => onSubmit(item)}
-              key={item.id}
+              key={index}
               style={[
                 Styles.justifyBetween,
-                {padding: 10, alignItems: 'center', gap: 10},
+                {padding: 10, alignItems: 'center', gap: 10,width:'95%',alignSelf:'center'},
               ]}>
-              <View style={[Styles.displayRow, {gap: 10}]}>
+              <View style={[Styles.displayRow, {gap: 20}]}>
                 <View
                   style={{
-                    width: 100,
-                    height: 100,
-                    backgroundColor: Color.lightGray,
+                    width: 70,
+                    height: 70,
+                    backgroundColor: Color.Gray_100,
                     borderRadius: 10,
                   }}>
                   {item?.cat_image && (
                     <Image
-                      source={{uri: catalogDetail.parent.cat_image}}
-                      style={{width: 100, height: 100}}
+                      source={{uri: resolveMediaUrl(item.cat_image)}}
+                        style={{width: 70, height: 70}}
                     />
                   )}
                 </View>

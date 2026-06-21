@@ -17,8 +17,12 @@ interface ProductItem {
   abv?: string;
   is_favorite?: boolean;
   cart_quantity: number;
-
 }
+
+const getProductKey = (item: ProductItem, index: number) => {
+  const rawItem = item as ProductItem & {product_id?: number | string; slug?: string};
+  return `${String(rawItem?.id ?? rawItem?.product_id ?? rawItem?.slug ?? 'product')}-${index}`;
+};
 
 // Memoized sort item component
 const SortItem = memo(({item, isSelected, onPress}: {
@@ -157,9 +161,9 @@ const HomeSort = memo(
         </View>
       ) : (
         <View style={styles.productGridContainer}>
-          {displayData?.map(item => (
+          {displayData?.map((item, index) => (
             <ProductItemRenderer
-              key={item.id}
+              key={getProductKey(item, index)}
               item={item}
               onSubmitProduct={onSubmitProduct}
             />
@@ -197,7 +201,8 @@ const styles = StyleSheet.create({
   categoryContainer: {
     width: '93%',
     alignSelf: 'center',
-    marginTop: -15,
+    marginTop: '5%',
+    marginBottom:20
   },
   headerContainer: {
     flexDirection: 'row',
@@ -244,11 +249,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    alignItems: 'stretch',
   },
   productCardContainer: {
     marginRight: 0,
     width: '48%',
     marginTop: 15,
+    height: 340,
   },
   productColumnWrapper: {
     justifyContent: 'space-between',

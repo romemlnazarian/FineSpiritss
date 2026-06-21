@@ -15,8 +15,13 @@ type CartLogixReturn = {
   address: Address | null;
   refreshCart: () => void;
   onSubmitAddress: () => void;
-  onSubmit: (id:number) => void;
+  onSubmit: (id: number) => void;
+  onPay: () => void;
+  orderSheetVisible: boolean;
+  setOrderSheetVisible: (visible: boolean) => void;
   error: boolean;
+  recommended: any[];
+  toggleFavorite: (id: number) => void;
 };
 export default function CartLogix(): CartLogixReturn {
   const navigation = useNavigation<any>();
@@ -26,6 +31,8 @@ export default function CartLogix(): CartLogixReturn {
   const {address} = useAddressStore();
   const [refreshKey, setRefreshKey] = useState(0);
   const [error, setError] = useState<boolean>(false);
+  const [orderSheetVisible, setOrderSheetVisible] = useState(false);
+  const [pendingCheckoutId, setPendingCheckoutId] = useState<number | null>(null);
   const [recommended, setRecommended] = useState([]);
   const [isFavorite, setIsFavorite] = useState(false);
   useEffect(() => {
@@ -116,15 +123,25 @@ export default function CartLogix(): CartLogixReturn {
     });
   };
 
-  const onSubmit = (id:number) => {
-
+  const onSubmit = (id: number) => {
     if (address?.street === '') {
       setError(true);
     } else {
       setError(false);
-      Linking.openURL(`https://finespirits.pl/checkout/?user_id=${id}`);
+      setPendingCheckoutId(id);
+      setOrderSheetVisible(true);
     }
   };
+
+  const onPay = useCallback(() => {
+    if (pendingCheckoutId == null) {
+      return;
+    }
+    setOrderSheetVisible(false);
+    Linking.openURL(
+      `https://finespirits.pl/checkout/?user_id=${pendingCheckoutId}`,
+    );
+  }, [pendingCheckoutId]);
 
   const toggleFavorite = (id:number) => {
     if (isFavorite) {
@@ -190,8 +207,11 @@ export default function CartLogix(): CartLogixReturn {
     refreshCart,
     onSubmitAddress,
     onSubmit,
+    onPay,
+    orderSheetVisible,
+    setOrderSheetVisible,
     error,
     recommended,
-    toggleFavorite
+    toggleFavorite,
   };
 }

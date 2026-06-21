@@ -24,6 +24,7 @@ import AddBottom from './AddBottom';
 import LoadingModal from './LoadingModal';
 import { useToast } from '../utiles/Toast/ToastProvider';
 import { addCardModel, deleteCardModel, updateCardModel } from '../model/Card/CardModel';
+import { resolveProductImageUrl } from '../utiles/mediaUrl';
 interface ProductItem {
   id: string;
   title: string;
@@ -33,7 +34,7 @@ interface ProductItem {
   image_url?: string;
   country?: string;
   regular_price?: string;
-  sale_price?: string;
+  sale_price?: string | null;
   abv?: string;
   is_favorite?: boolean;
   cart_quantity: number;
@@ -306,8 +307,10 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
     );
   };
 
+  const hasSalePrice =
+    item.sale_price !== null && item.sale_price !== undefined;
+  const productImageUri = resolveProductImageUrl(item);
 
-  
   return (
     <TouchableOpacity
       style={[styles.productCardContainer, cardStyle]}
@@ -322,8 +325,8 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
         )}
       </TouchableOpacity>
       <View style={Styles.justifyCenter}>
-        {item?.image_url ? (
-          <Image source={{uri: item?.image_url}} style={styles.productImage} />
+        {productImageUri ? (
+          <Image source={{uri: productImageUri}} style={styles.productImage} />
         ) : (
           <View style={styles.imagePlaceholder} />
         )}
@@ -334,47 +337,21 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
       <Text style={[Styles.subtitle_Regular, styles.productDescription,{marginTop:'2%'}]}>
         {item?.country} {Language.abv} {item?.abv}
       </Text>
-      <View style={styles.priceContainer}>
-      {item.sale_price === null ? (
+      <View style={styles.priceSection}>
         <Text
           style={[
-            Styles.title_Bold,
-            styles.productPrice,
-            styles.priceContainer,
-          ]}>
-          {item.price} zł
+            Styles.subtitle_Regular,
+            styles.originalPriceText,
+            !hasSalePrice && styles.hiddenPriceLine,
+          ]}
+          numberOfLines={1}>
+          {hasSalePrice ? `${item.price} zł` : ' '}
         </Text>
-      ) : (
-        <>
-          {item.regular_price && (
-            <Text
-              style={[
-                Styles.subtitle_Regular,
-                styles.originalPriceText,
-                styles.priceContainer,
-              ]}>
-              {item.regular_price} zł
-            </Text>
-          )}
-
-          <Text
-            style={[
-              Styles.title_Bold,
-              styles.productPrice,
-              styles.priceContainer,
-            ]}>
-            {item.price} zł
-          </Text>
-        </>
-      )}
-        {/* <Text style={[Styles.title_Bold, styles.productPrice]}>
-          {item.sale_price ?? item.price} zł
+        <Text
+          style={[Styles.title_Bold, styles.productPrice]}
+          numberOfLines={1}>
+          {hasSalePrice ? `${item.sale_price} zł` : `${item.price} zł`}
         </Text>
-        {item.regular_price && (
-          <Text style={[Styles.subtitle_Regular, styles.originalPriceText]}>
-            {item.regular_price} zł
-          </Text>
-        )} */}
       </View>
       {count === 0 ? (
         <BottomCardComponent
@@ -418,10 +395,13 @@ const styles = StyleSheet.create({
   productDescription: {
     color: Color.gray,
   },
-  priceContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  priceSection: {
+    minHeight: 44,
     marginTop: '2%',
+    justifyContent: 'flex-end',
+  },
+  hiddenPriceLine: {
+    opacity: 0,
   },
   productPrice: {
     color: Color.black,
@@ -429,7 +409,6 @@ const styles = StyleSheet.create({
   originalPriceText: {
     color: Color.gray,
     textDecorationLine: 'line-through',
-    marginLeft: 10,
   },
   bottomCardButton: {
     marginTop: '10%',

@@ -9,6 +9,48 @@ import {
 } from '../../model/Catalog/Catalog';
 import {getProductsModel} from '../../model/Product/ProductModel';
 
+function parseNumericPrice(value: unknown): number | undefined {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+  if (typeof value === 'string' && value.trim().length > 0) {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+  return undefined;
+}
+
+function normalizeFilterPayload(payload: any) {
+  const source =
+    payload?.data && typeof payload.data === 'object'
+      ? payload.data
+      : payload?.filters && typeof payload.filters === 'object'
+        ? payload.filters
+        : payload;
+
+  if (!source || typeof source !== 'object' || Array.isArray(source)) {
+    return null;
+  }
+
+  return {
+    country: source.country ?? source.countries ?? [],
+    brand: source.brand ?? source.brands ?? [],
+    volume: source.volume ?? source.volumes ?? source.capacity ?? [],
+    min_price: parseNumericPrice(
+      source.min_price ?? source.price_from ?? source.price_min,
+    ),
+    max_price: parseNumericPrice(
+      source.max_price ?? source.price_to ?? source.price_max,
+    ),
+  };
+}
+
+function getCategorySlug(category?: {cat_slug?: string; slug?: string}) {
+  return category?.cat_slug || category?.slug || '';
+}
+
 // ---------- Types ----------
 export interface SelectedProduct {
   id: string;
@@ -25,6 +67,7 @@ export default function ChoosenCatalogLogic(route: any) {
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
   const category = route.route.params.item;
   const titleHeader = route.route.params.title;
+  const categorySlug = getCategorySlug(category);
   console.log('category =======>', category);
 
   // ---------- UI States ----------
@@ -42,7 +85,7 @@ export default function ChoosenCatalogLogic(route: any) {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [countProduct, setCountProduct] = useState(0);
   // ---------- Filter States ----------
-  const [filterData, setFilterData] = useState<any[]>([]);
+  const [filterData, setFilterData] = useState<any>({});
   const [countries, setCountries] = useState<string[]>([]);
   const [brands, setBrands] = useState<string[]>([]);
   const [volumes, setVolumes] = useState<string[]>([]);
@@ -128,7 +171,7 @@ export default function ChoosenCatalogLogic(route: any) {
 
             getProductsModel(
               tokens.access,
-              category.cat_slug || category.slug,
+              categorySlug,
               requestedPage,
               onSuccess,
               stopLoading,
@@ -140,49 +183,83 @@ export default function ChoosenCatalogLogic(route: any) {
 
       getProductsModel(
         token,
-        category.cat_slug || category.slug,
+        categorySlug,
         requestedPage,
         onSuccess,
         retry,
       );
     },
-    [token, refreshToken, setToken, setRefreshToken, category, dedupeById],
+    [token, refreshToken, setToken, setRefreshToken, categorySlug, dedupeById],
   );
+
+  const applyFilterData = useCallback((payload: any) => {
+    const normalized = normalizeFilterPayload(payload);
+    if (!normalized) {
+      console.log('filter data could not be normalized =>', payload);
+      return;
+    }
+
+    if (normalized.min_price !== undefined) {
+      setPriceMinBound(normalized.min_price);
+      if (!didUserSetPriceRef.current) {
+        setSelectedMinPrice(normalized.min_price);
+      }
+    }
+    if (normalized.max_price !== undefined) {
+      setPriceMaxBound(normalized.max_price);
+      if (!didUserSetPriceRef.current) {
+        setSelectedMaxPrice(normalized.max_price);
+      }
+    }
+
+    setFilterData({
+      country: normalized.country,
+      brand: normalized.brand,
+      volume: normalized.volume,
+    });
+  }, []);
 
   // ====================================================================
   // 🔥 Fetch Filter Data
   // ====================================================================
   const getFilterData = useCallback(() => {
-    getFilterDataModel(
-      token,
-      category.cat_slug,
-      data =>{
-        if (typeof data?.min_price === 'number') {
-          setPriceMinBound(data.min_price);
-          if (!didUserSetPriceRef.current) {
-            setSelectedMinPrice(data.min_price);
-          }
-        }
-        if (typeof data?.max_price === 'number') {
-          setPriceMaxBound(data.max_price);
-          if (!didUserSetPriceRef.current) {
-            setSelectedMaxPrice(data.max_price);
-          }
-        }
-        setFilterData(data);
-      },
-      () =>
-        refreshTokenModel(
-          refreshToken,
-          tokens => {
-            setToken(tokens.access);
-            setRefreshToken(tokens.refresh);
-            getFilterData();
-          },
-          () => {},
-        ),
-    );
-  }, [token, refreshToken, category, setToken, setRefreshToken]);
+    if (!categorySlug) {
+      console.log('filter data skipped: missing category slug =>', category);
+      return;
+    }
+
+    const handleSuccess = (data: any) => {
+      console.log('filter data =>', data);
+      applyFilterData(data);
+    };
+
+    const handleError = () => {
+      refreshTokenModel(
+        refreshToken,
+        tokens => {
+          setToken(tokens.access);
+          setRefreshToken(tokens.refresh);
+          getFilterDataModel(
+            tokens.access,
+            categorySlug,
+            handleSuccess,
+            () => {},
+          );
+        },
+        () => {},
+      );
+    };
+
+    getFilterDataModel(token, categorySlug, handleSuccess, handleError);
+  }, [
+    token,
+    refreshToken,
+    categorySlug,
+    category,
+    setToken,
+    setRefreshToken,
+    applyFilterData,
+  ]);
 
   // ====================================================================
   // ⏳ Initial Load
@@ -273,7 +350,7 @@ export default function ChoosenCatalogLogic(route: any) {
 
       getFilterProductsModel(
         token,
-        category.cat_slug,
+        categorySlug,
         countriesQuery,
         brandsQuery,
         volumesQuery,
@@ -289,7 +366,7 @@ export default function ChoosenCatalogLogic(route: any) {
 
               getFilterProductsModel(
                 tokens.access,
-                category.cat_slug,
+                categorySlug,
                 countriesQuery,
                 brandsQuery,
                 volumesQuery,
@@ -304,7 +381,7 @@ export default function ChoosenCatalogLogic(route: any) {
       );
     },
     [
-      category,
+      categorySlug,
       refreshToken,
       setRefreshToken,
       setToken,

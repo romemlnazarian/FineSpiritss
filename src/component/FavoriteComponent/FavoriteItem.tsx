@@ -15,6 +15,7 @@ import { addCardModel, deleteCardModel, updateCardModel } from '../../model/Card
 import Card from '../../assets/svg/Cart.svg';
 import LoadingModal from '../LoadingModal';
 import {Language} from '../../utiles/Language/i18n';
+import { resolveProductImageUrl } from '../../utiles/mediaUrl';
 interface ProductItem {
   id: number;
   title?: string;
@@ -286,12 +287,15 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
 
 
 
+    const hasSalePrice =
+      item.sale_price !== null && item.sale_price !== undefined;
+
     return (
       <TouchableOpacity 
       onPress={() => navigation.navigate('CatalogScreen',{screen: 'CatalogDetail' ,params: {product: item, fromFavorite: true}})}
       style={[styles.mainContainer]}>
         <View style={styles.leftSection}>
-          <Image source={{uri: item.image_url}} style={styles.productImage} />
+          <Image source={{uri: resolveProductImageUrl(item)}} style={styles.productImage} />
           <View style={styles.productInfo}>
             <Text
               style={[Styles.subtitle_SemiBold, styles.productTitle]}
@@ -305,43 +309,21 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
               <View style={styles.separator} />
               <Text style={[Styles.subtitle_Regular,{color:Color.black}]}>{item.abv ? `${Language.abv} ${item.abv}` : ''}</Text>
             </View>
-            <View style={styles.priceContainer}>
-         
-           {item?.sale_price === null ? (
-        <Text
-          style={[
-            Styles.title_Bold,
-            styles.productPrice,
-            styles.priceContainer,
-          ]}>
-          {item.price} zł
-        </Text>
-      ) : (
-        <>
-            <Text
-            style={[
-              Styles.title_Bold,
-              styles.productPrice,
-              styles.priceContainer,
-            ]}>
-            {item.price} zł
-          </Text>
-          {item.regular_price && ( 
-            <Text
-              style={[
-                Styles.subtitle_Regular,
-                styles.originalPriceText,
-                styles.priceContainer,
-              ]}>
-              {item.regular_price} zł
-            </Text>
-          )}
-
-      
-        </>
-      )}
-
-            
+            <View style={styles.priceSection}>
+              <Text
+                style={[
+                  Styles.subtitle_Regular,
+                  styles.originalPriceText,
+                  !hasSalePrice && styles.hiddenPriceLine,
+                ]}
+                numberOfLines={1}>
+                {hasSalePrice ? `${item.price} zł` : ' '}
+              </Text>
+              <Text
+                style={[Styles.title_Bold, styles.productPrice]}
+                numberOfLines={1}>
+                {hasSalePrice ? `${item.sale_price} zł` : `${item.price} zł`}
+              </Text>
             </View>
           </View>
         </View>
@@ -398,10 +380,13 @@ const styles = StyleSheet.create({
     marginTop:'5%',
     backgroundColor:Color.primary,
     },
-    priceContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
+    priceSection: {
+      minHeight: 44,
+      marginTop: '2%',
+      justifyContent: 'flex-end',
+    },
+    hiddenPriceLine: {
+      opacity: 0,
     },
     mainContainer: {
       width: '100%',
@@ -466,8 +451,7 @@ const styles = StyleSheet.create({
       marginVertical: 10,
     },
     productPrice: {
-      fontSize: 16,
-      fontWeight: 'bold',
+      color: Color.black,
     },
     originalPriceText: {
       textDecorationLine: 'line-through',

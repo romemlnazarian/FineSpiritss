@@ -157,13 +157,26 @@ export default function HomeLogic() {
   }, [token, refreshToken, setToken, setRefreshToken]);
 
 
+  const normalizeListResponse = useCallback((data: any): any[] => {
+    if (Array.isArray(data?.results)) {
+      return data.results;
+    }
+    if (Array.isArray(data?.data)) {
+      return data.data;
+    }
+    if (Array.isArray(data)) {
+      return data;
+    }
+    return [];
+  }, []);
+
   const loadSortSection = useCallback(
     (fetcher: (token: string, cb: (data: any) => void, err: (msg: string) => void) => void) => {
       setDataSortLoading(true);
       fetcher(
         token,
         data => {
-          setDataSort(data?.results);
+          setDataSort(normalizeListResponse(data));
           setDataSortLoading(false);
         },
         () => {
@@ -175,7 +188,7 @@ export default function HomeLogic() {
               fetcher(
                 refreshedTokens.access,
                 data => {
-                  setDataSort( data?.results);
+                  setDataSort(normalizeListResponse(data));
                   setDataSortLoading(false);
                 },
                 () => setDataSortLoading(false),
@@ -186,7 +199,7 @@ export default function HomeLogic() {
         },
       );
     },
-    [token, refreshToken, setToken, setRefreshToken],
+    [normalizeListResponse, token, refreshToken, setToken, setRefreshToken],
   );
 
 

@@ -11,6 +11,7 @@ import React, {useState, useMemo, useCallback, memo, useEffect} from 'react';
 import Swiper from 'react-native-swiper';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
+import {resolveMediaUrl} from '../../utiles/mediaUrl';
 interface SliderProps {
   style?: StyleProp<ViewStyle>;
   data?: any[];
@@ -20,7 +21,10 @@ interface SliderProps {
 const SlideItem = memo(
   ({item, onSubmit}: {item: any; onSubmit?: (item: any) => void}) => {
     const {Styles} = StyleComponent();
-    const source = item?.image_mobile_url;
+    const source = resolveMediaUrl(
+      item?.image_mobile_url ?? item?.image_url ?? item?.image_desktop_url,
+    );
+
     return (
       <TouchableOpacity activeOpacity={0.8} style={styles.slide1} onPress={() => onSubmit?.(item)}>
         <Text
@@ -37,7 +41,11 @@ const SlideItem = memo(
           ]}>
           {item.text}
         </Text>
-        <Image source={{uri: source}} style={styles.slideImage} resizeMethod='resize'/>
+        <Image
+          source={source ? {uri: source} : undefined}
+          style={styles.slideImage}
+          resizeMode="cover"
+        />
       </TouchableOpacity>
     );
   },
@@ -107,7 +115,11 @@ const Slider = memo(({style, data = [], onSubmit}: SliderProps) => {
         loadMinimal={true}
         loadMinimalSize={1}>
         {(Array.isArray(data) ? data : []).map((item, index) => (
-          <SlideItem key={index} item={item} onSubmit={onSubmit} />
+          <SlideItem
+            key={String(item?.id ?? item?.slug ?? index)}
+            item={item}
+            onSubmit={onSubmit}
+          />
         ))}
       </Swiper>
       <View style={styles.customPaginationContainer}>{paginationDots}</View>
@@ -124,6 +136,7 @@ const styles = StyleSheet.create({
     marginTop: '4%',
   },
   slide1: {
+
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
