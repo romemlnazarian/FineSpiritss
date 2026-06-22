@@ -21,10 +21,8 @@ import {
 import useAuthStore from '../zustland/AuthStore';
 import {refreshTokenModel} from '../model/Auth/RefreshTokenModel';
 import AddBottom from './AddBottom';
-import LoadingModal from './LoadingModal';
-import { useToast } from '../utiles/Toast/ToastProvider';
-import { addCardModel, deleteCardModel, updateCardModel } from '../model/Card/CardModel';
 import { resolveProductImageUrl } from '../utiles/mediaUrl';
+import {useDebouncedCartActions} from '../hooks/useDebouncedCartActions';
 interface ProductItem {
   id: string;
   title: string;
@@ -58,9 +56,16 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
   const {token, refreshToken,setToken,setRefreshToken} = useAuthStore();
   const {Styles} = StyleComponent();
   const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
-  const [count, setCount] = useState<number>(item?.cart_quantity);
-  const [visible, setVisible] = useState<boolean>(false);
-  const {show} = useToast();
+  const {count, syncedCount, onSubmit, onQuantityChange} =
+    useDebouncedCartActions({
+      productId: item.id,
+      initialCount: item?.cart_quantity ?? 0,
+      onSynced: quantity => {
+        if (quantity > 0) {
+          onToggleClick?.(item.id);
+        }
+      },
+    });
   const toggleFavorite = (id:string) => {
     if (isFavorite) {
       setIsFavorite(false);
@@ -127,186 +132,6 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
   };
 
 
-  const onClick = (value: number, type: string) => {
-
-    if (type === 'inc') {
-      setVisible(true);
-      updateCardModel(
-        token,
-        item.id,
-        value,
-        () => {
-          setCount(value);
-          setVisible(false);
-          onToggleClick?.(item.id);
-        },
-        (error: string) => {
-          setVisible(false);
-          show(error, {type: 'error'});
-        },
-        () => {
-          refreshTokenModel(
-            refreshToken,
-            refreshedTokens => {
-              setToken(refreshedTokens.access);
-              setRefreshToken(refreshedTokens.refresh);
-              updateCardModel(
-                refreshedTokens.access,
-                item.id,
-                value,
-                () => {
-                  setCount(value);
-                  setVisible(false);
-                  onToggleClick?.(item.id);
-                },
-                (error: string) => {
-                  setVisible(false);
-                  show(error, {type: 'error'});
-                },
-                () => {
-                  setVisible(false);
-                },
-              );
-            },
-            () => {
-              setVisible(false);
-            },
-          );
-        },
-      );
-    } else {
-      setVisible(true);
-      if(value < 1) {
-        deleteCardModel(
-          token,
-          item.id,
-          () => {
-            setCount(value);
-            setVisible(false);
-          },
-          (error: string) => {
-            setVisible(false);
-            show(error, {type: 'error'});
-          },
-          () => {
-            refreshTokenModel(
-              refreshToken,
-              refreshedTokens => {
-                setToken(refreshedTokens.access);
-                setRefreshToken(refreshedTokens.refresh);
-                deleteCardModel(
-                  refreshedTokens.access,
-                  item.id,
-                  () => {
-                    setCount(value);
-                    setVisible(false);
-                  },
-                  (error: string) => {
-                    setVisible(false);
-                    show(error, {type: 'error'});
-                  },
-                  () => {
-                    setVisible(false);
-                  },
-                );
-              },
-              () => {
-                setVisible(false);
-              },
-            );
-          },
-        );
-      }else{
-      updateCardModel(
-        token,
-        item.id,
-        value,
-        () => {
-          setCount(value);
-          setVisible(false);
-        },
-        (error: string) => {
-          setVisible(false);
-          show(error, {type: 'error'});
-        },
-        () => {
-          refreshTokenModel(
-            refreshToken,
-            refreshedTokens => {
-              setToken(refreshedTokens.access);
-              setRefreshToken(refreshedTokens.refresh);
-              updateCardModel(
-                refreshedTokens.access,
-                item.id,
-                value,
-                () => {
-                  setCount(value);
-                  setVisible(false);
-                },
-                (error: string) => {
-                  setVisible(false);
-                  show(error, {type: 'error'});
-                },
-                () => {
-                  setVisible(false);
-                },
-              );
-            },
-            () => {
-              setVisible(false);
-            },
-          );
-        },
-      );
-    }
-    }
-  };
-
-  const onSubmit = () => {
-    setVisible(true);
-    addCardModel(
-      token,
-      item.id,
-      () => {
-        setCount(1);
-        setVisible(false);
-        onToggleClick?.(item.id);
-      },
-      (error: string) => {
-        setVisible(false);
-        show(error, {type: 'error'});
-      },
-      () => {
-        refreshTokenModel(
-          refreshToken,
-          refreshedTokens => {
-            setToken(refreshedTokens.access);
-            setRefreshToken(refreshedTokens.refresh);
-            addCardModel(
-              refreshedTokens.access,
-              item.id,
-              () => {
-                setCount(1);
-                setVisible(false);
-                onToggleClick?.(item.id);
-              },
-              (error: string) => {
-                setVisible(false);
-                show(error, {type: 'error'});
-              },
-              () => {
-                setVisible(false);
-              },
-            );
-          },
-          () => {
-            setVisible(false);
-          },
-        );
-      },
-    );
-  };
-
   const hasSalePrice =
     item.sale_price !== null && item.sale_price !== undefined;
   const productImageUri = resolveProductImageUrl(item);
@@ -353,9 +178,13 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
           {hasSalePrice ? `${item.sale_price} zł` : `${item.price} zł`}
         </Text>
       </View>
-      {count === 0 ? (
+      {syncedCount === 0 ? (
         <BottomCardComponent
-          title={'Add to Cart'}
+          title={
+            count > 0
+              ? `${Language.product_detail_add_to_cart} (${count})`
+              : Language.product_detail_add_to_cart
+          }
           onHandler={onSubmit}
           style={styles.bottomCardButton}
           textStyle={[Styles.subtitle_Regular, styles.bottomCardButtonText]}
@@ -364,11 +193,10 @@ const RecomendedComponent: React.FC<ProductCardProps> = ({
       ) : (
         <AddBottom
           style={styles.bottomCardButton}
-          onQuantityChange={onClick}
+          onQuantityChange={onQuantityChange}
           count={count}
         />
       )}
-      <LoadingModal isVisible={visible} />
     </TouchableOpacity>
   );
 };

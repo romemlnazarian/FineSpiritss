@@ -19,7 +19,6 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import BottomCardComponent from '../../component/BottomCard';
 import AddBottom from '../../component/AddBottom';
-import LoadingModal from '../../component/LoadingModal';
 import Card from '../../assets/svg/Cart.svg';
 import Fish from '../../assets/svg/fish.svg';
 import Cheesse from '../../assets/svg/cheese.svg';
@@ -122,10 +121,10 @@ export default function CatalogDetailScreen(route: any) {
     toggleFavorite,
     recommended,
     refreshAll,
-    onClick,
+    onQuantityChange,
     onSubmit,
     count,
-    visible,
+    syncedCount,
     onSubmitDetail,
   } = CatalogDetailLogic(route);
   const navigation: any = useNavigation();
@@ -593,7 +592,6 @@ export default function CatalogDetailScreen(route: any) {
         </>
         )}
 
-        <LoadingModal isVisible={visible} />
       </ScrollView>
       <View
         style={{
@@ -602,9 +600,13 @@ export default function CatalogDetailScreen(route: any) {
           position: 'absolute',
           bottom: 0,
         }}>
-        {count === 0 ? (
+        {syncedCount === 0 ? (
           <BottomCardComponent
-            title={Language.product_detail_add_to_cart}
+            title={
+              count > 0
+                ? `${Language.product_detail_add_to_cart} (${count})`
+                : Language.product_detail_add_to_cart
+            }
             onHandler={onSubmit}
             style={styles.bottomCardButton}
             textStyle={[Styles.subtitle_Regular, {color: Color.white}]}
@@ -613,7 +615,7 @@ export default function CatalogDetailScreen(route: any) {
         ) : (
           <AddBottom
             style={styles.bottomCardButton}
-            onQuantityChange={onClick}
+            onQuantityChange={onQuantityChange}
             count={count}
             stylesContainer={styles.addBottomStylesContainer}
           />

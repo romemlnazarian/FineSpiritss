@@ -1,3 +1,29 @@
+import useLocalizationStore from '../zustland/localizationStore';
+
+const getAcceptLanguage = (): string => {
+  const lang = useLocalizationStore.getState().language?.toLowerCase() ?? 'pl';
+  if (lang.startsWith('pl')) {
+    return 'pl';
+  }
+  if (lang.startsWith('en')) {
+    return 'en';
+  }
+  return lang;
+};
+
+const buildHeaders = (secretkey: string = ''): Record<string, string> => {
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'Accept-Language': getAcceptLanguage(),
+  };
+
+  if (secretkey !== '') {
+    headers.Authorization = `Bearer ${secretkey}`;
+  }
+
+  return headers;
+};
 
 // Remove useToast from here; instead, accept a showToast function as a parameter
 export const errorhandler = (error: any, showToast?: (msg: any) => void) => {
@@ -17,11 +43,7 @@ export const POST = (
   if (secretkey !== '') {
     fetch(root + controller, {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer' + ' ' + secretkey,
-      },
+      headers: buildHeaders(secretkey),
       body: JSON.stringify(body),
     })
       .then(function (data) {
@@ -35,10 +57,7 @@ export const POST = (
   } else {
     fetch(root + controller, {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: buildHeaders(),
       body: JSON.stringify(body),
     })
       .then(function (data) {
@@ -62,11 +81,7 @@ export const GET = (
   if (secretkey !== '') {
     fetch(root + controller, {
       method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer' + ' ' + secretkey,
-      },
+      headers: buildHeaders(secretkey),
     })
       .then(function (data) {
         const status = data.status;
@@ -79,10 +94,7 @@ export const GET = (
   } else {
     fetch(root + controller, {
       method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: buildHeaders(),
     })
       .then(function (data) {
         const status = data.status;
@@ -106,11 +118,7 @@ export const PUT = (
   if (secretkey !== '') {
     fetch(root + controller, {
       method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer' + ' ' + secretkey,
-      },
+      headers: buildHeaders(secretkey),
       body: JSON.stringify(body),
     })
       .then(function (data) {
@@ -124,11 +132,7 @@ export const PUT = (
   } else {
     fetch(root + controller, {
       method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer' + ' ' + secretkey,
-      },
+      headers: buildHeaders(secretkey),
       body: JSON.stringify(body),
     })
       .then(function (data) {
@@ -153,12 +157,7 @@ export const DELETE = (
   if (secretkey !== '') {
     fetch(root + controller, {
       method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        // "pastoo_user": user_pastoo,
-        Authorization: 'Bearer' + ' ' + secretkey,
-      },
+      headers: buildHeaders(secretkey),
       body: JSON.stringify(body),
     })
       .then(function (data) {
@@ -172,10 +171,7 @@ export const DELETE = (
   } else {
     fetch(root + controller, {
       method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: buildHeaders(),
       body: JSON.stringify(body),
     })
       .then(function (data) {

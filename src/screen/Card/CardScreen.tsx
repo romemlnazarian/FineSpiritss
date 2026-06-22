@@ -146,6 +146,14 @@ export default function CardScreen() {
                     {data?.summary?.subtotal} zł
                   </Text>
                 </View>
+                <View style={styles.rowBetween}>
+                  <Text style={[Styles.title_Regular, styles.blackText]}>
+                    {Language.discount_total}
+                  </Text>
+                  <Text style={[Styles.title_Medium, styles.blackText]}>
+                    {data?.summary?.discount_total} zł
+                  </Text>
+                </View>
                 {/* <View style={styles.rowBetween}>
               <Text style={[Styles.title_Regular, styles.blackText]}>
                 Sale by promo code
@@ -163,6 +171,7 @@ export default function CardScreen() {
               </Text>
             </View> */}
                 <View style={styles.rowBetween}>
+                  
                   <Text style={[Styles.title_Regular, styles.blackText]}>
                     {Language.cart_delivery}
                   </Text>

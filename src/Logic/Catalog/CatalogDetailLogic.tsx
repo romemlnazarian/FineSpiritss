@@ -155,8 +155,7 @@ import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
 import { AddFavoriteProductModel, DeleteFavoriteProductModel } from '../../model/Favorite/Favorite';
 import { getHomeRecommendedModel } from '../../model/Home/HomeAdvertising';
 import { mergeProductDetail } from '../../utiles/mediaUrl';
-import { useToast } from '../../utiles/Toast/ToastProvider';
-import { addCardModel, deleteCardModel, updateCardModel } from '../../model/Card/CardModel';
+import { useDebouncedCartActions } from '../../hooks/useDebouncedCartActions';
 
 export default function CatalogDetailLogic(route: any) {
   const [product, setProduct] = useState<any>(null);
@@ -164,9 +163,14 @@ export default function CatalogDetailLogic(route: any) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [recommended, setRecommended] = useState([]);
   const { token, refreshToken, setToken, setRefreshToken } = useAuthStore();
-  const [count, setCount] = useState<number>(0);
-  const [visible, setVisible] = useState<boolean>(false);
-  const {show} = useToast();
+  const {count, syncedCount, onSubmit, onQuantityChange} =
+    useDebouncedCartActions({
+      productId: product?.id ?? route?.route?.params?.product?.id ?? 0,
+      initialCount:
+        product?.cart_quantity ??
+        route?.route?.params?.product?.cart_quantity ??
+        0,
+    });
 
   
   // Get product detail
@@ -178,7 +182,6 @@ export default function CatalogDetailLogic(route: any) {
       setProduct(
         mergeProductDetail(data, route?.route?.params?.product),
       );
-      setCount(data?.cart_quantity);
       setIsFavorite(data?.is_favorite);
       setIsLoading(false);
     },
@@ -196,7 +199,6 @@ export default function CatalogDetailLogic(route: any) {
             mergeProductDetail(data, route?.route?.params?.product),
           );
           setIsFavorite(data?.is_favorite);
-          setCount(data?.cart_quantity);
           setIsLoading(false);
         }, err => console.log('error', err));
       }, err => console.log('error', err));
@@ -259,188 +261,10 @@ export default function CatalogDetailLogic(route: any) {
     refreshAll();
   }, [refreshAll]);
 
-
-
-  const onClick = (value: number, type: string) => {
-    if (type === 'inc') {
-      setVisible(true);
-      updateCardModel(
-        token,
-        product.id,
-        value,
-        () => {
-          setCount(value);
-          setVisible(false);
-        },
-        (error: string) => {
-          setVisible(false);
-          show(error, {type: 'error'});
-        },
-        () => {
-          refreshTokenModel(
-            refreshToken,
-            refreshedTokens => {
-              setToken(refreshedTokens.access);
-              setRefreshToken(refreshedTokens.refresh);
-              updateCardModel(
-                refreshedTokens.access,
-                product.id,
-                value,
-                () => {
-                  setCount(value);
-                  setVisible(false);
-                },
-                (error: string) => {
-                  setVisible(false);
-                  show(error, {type: 'error'});
-                },
-                () => {
-                  setVisible(false);
-                },
-              );
-            },
-            () => {
-              setVisible(false);
-            },
-          );
-        },
-      );
-    } else {
-      setVisible(true);
-      if (value < 1) {
-        deleteCardModel(
-          token,
-          product.id,
-          () => {
-            setCount(value);
-            setVisible(false);
-          },
-          (error: string) => {
-            setVisible(false);
-            show(error, {type: 'error'});
-          },
-          () => {
-            refreshTokenModel(
-              refreshToken,
-              refreshedTokens => {
-                setToken(refreshedTokens.access);
-                setRefreshToken(refreshedTokens.refresh);
-                deleteCardModel(
-                  refreshedTokens.access,
-                  product.id,
-                  () => {
-                    setCount(value);
-                    setVisible(false);
-                  },
-                  (error: string) => {
-                    setVisible(false);
-                    show(error, {type: 'error'});
-                  },
-                  () => {
-                    setVisible(false);
-                  },
-                );
-              },
-              () => {
-                setVisible(false);
-              },
-            );
-          },
-        );
-      } else {
-        updateCardModel(
-          token,
-          product.id,
-          value,
-          () => {
-            setCount(value);
-            setVisible(false);
-          },
-          (error: string) => {
-            setVisible(false);
-            show(error, {type: 'error'});
-          },
-          () => {
-            refreshTokenModel(
-              refreshToken,
-              refreshedTokens => {
-                setToken(refreshedTokens.access);
-                setRefreshToken(refreshedTokens.refresh);
-                updateCardModel(
-                  refreshedTokens.access,
-                  product.id,
-                  value,
-                  () => {
-                    setCount(value);
-                    setVisible(false);
-                  },
-                  (error: string) => {
-                    setVisible(false);
-                    show(error, {type: 'error'});
-                  },
-                  () => {
-                    setVisible(false);
-                  },
-                );
-              },
-              () => {
-                setVisible(false);
-              },
-            );
-          },
-        );
-      }
-    }
-  };
-
-  const onSubmit = () => {
-    setVisible(true);
-    addCardModel(
-      token,
-      product.id,
-      () => {
-        setCount(1);
-        setVisible(false);
-      },
-      (error: string) => {
-        setVisible(false);
-        show(error, {type: 'error'});
-      },
-      () => {
-        refreshTokenModel(
-          refreshToken,
-          refreshedTokens => {
-            setToken(refreshedTokens.access);
-            setRefreshToken(refreshedTokens.refresh);
-            addCardModel(
-              refreshedTokens.access,
-              product.id,
-              () => {
-                setCount(1);
-                setVisible(false);
-              },
-              (error: string) => {
-                setVisible(false);
-                show(error, {type: 'error'});
-              },
-              () => {
-                setVisible(false);
-              },
-            );
-          },
-          () => {
-            setVisible(false);
-          },
-        );
-      },
-    );
-  };
-
 const onSubmitDetail = (value:any) =>{
   setIsLoading(true);
   getProductDetailModel(token, value.slug, data => {
     setProduct(mergeProductDetail(data, route?.route?.params?.product));
-    setCount(data?.cart_quantity);
     setIsFavorite(data?.is_favorite);
     setIsLoading(false);
   }, () => {
@@ -450,7 +274,6 @@ const onSubmitDetail = (value:any) =>{
       getProductDetailModel(tokens.access, value.slug, data => {
         setProduct(mergeProductDetail(data, route?.route?.params?.product));
         setIsFavorite(data?.is_favorite);
-        setCount(data?.cart_quantity);
         setIsLoading(false);
       }, err => console.log('error', err));
     }, err => console.log('error', err));
@@ -464,10 +287,10 @@ const onSubmitDetail = (value:any) =>{
     toggleFavorite,
     recommended,
     refreshAll,
-    onClick,
+    onQuantityChange,
     onSubmit,
     count,
-    visible,
+    syncedCount,
     onSubmitDetail
   };
 }

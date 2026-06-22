@@ -17,6 +17,7 @@ import Vector from '../../assets/svg/Vector.svg';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
 import {useNavigation} from '@react-navigation/native';
 import {Language} from '../../utiles/Language/i18n';
+import { resolveProductImageUrl } from '../../utiles/mediaUrl';
 const toDateOnly = (value: unknown): string => {
   if (value == null) {
     return '';
@@ -101,7 +102,7 @@ export default function OrderHistoryScreent() {
               key={item.order_number}
               style={[Styles.card, styles.cardItem,Styles.alignCenter]}
               onPress={() => onHandlerDetail(item.order_number)}>
-                <Image source={{uri: item?.image_url}} style={styles.orderInfoContainer} />
+                <Image source={{uri: resolveProductImageUrl(item)}} style={styles.orderInfoContainer} />
               <View style={styles.columnGap}>
                 <View style={styles.rowGap}>
                   <Text style={[Styles.subtitle_Regular, {color: Color.black}]}>

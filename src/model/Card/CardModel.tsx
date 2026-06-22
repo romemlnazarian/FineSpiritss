@@ -40,7 +40,7 @@ export const addCardModel =  (
     errorcallback: (data: string) => void,
     callbackUnauthorized?: () => void,
   ) => {
-    POST(
+    PUT(
       Route.root,
       Route.card,
       (data, status) => {
@@ -56,7 +56,8 @@ export const addCardModel =  (
       },
       token,
      {
-        product_id: product_id
+        product_id: product_id,
+        quantity: 1
      }
     );
   };

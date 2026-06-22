@@ -21,7 +21,7 @@ const AddBottom = (props: Props) => {
     <View
       style={[styles.container, props.style]}>
       <View style={styles.contentContainer}>
-        <Counter initialValue={props.count} onValueChange={props.onQuantityChange} stylesContainer={props.stylesContainer} />
+        <Counter initialValue={props.count} onValueChange={props.onQuantityChange} stylesContainer={props.stylesContainer ?? {}} />
       </View>
     </View>
   );

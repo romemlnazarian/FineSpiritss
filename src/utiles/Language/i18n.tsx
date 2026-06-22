@@ -133,7 +133,7 @@ export let Language = new LocalizedStrings({
       'Once you add items from a store, your cart will appear here',
     cart_you_might_also_like: 'You might also like',
     cart_checkout_success: 'Checkout was done successfully',
-
+    discount_total: 'Discount',
     // Profile / Orders
     profile_my_awards: 'My awards',
     profile_points: 'Points',

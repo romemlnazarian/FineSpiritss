@@ -1,199 +1,18 @@
 import ProductCardInCart from './ProductCardInCart';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import React, { useState } from 'react';
+import React from 'react';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
-import { useToast } from '../../utiles/Toast/ToastProvider';
-import LoadingModal from '../LoadingModal';
-import { deleteCardModel, updateCardModel } from '../../model/Card/CardModel';
-import useAuthStore from '../../zustland/AuthStore';
-import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
 
-export default function CartItem(props: { data: { products: any[]; summary: { items_count: number } }; refreshCart: () => void }) {
-  const {token, setToken, refreshToken, setRefreshToken} = useAuthStore();
-  const [visible, setVisible] = useState<boolean>(false);
-  const {show} = useToast();
-
+export default function CartItem(props: {
+  data: {products: any[]; summary: {items_count: number}};
+  refreshCart: () => void;
+}) {
   const {
     data: {products, summary} = {products: [], summary: {items_count: 0}},
     refreshCart,
   } = props;
-    const {Styles} = StyleComponent(); 
-
-  const handleQuantityChange = (id: number, type: string, newQuantity: number) => {
-    if (type === 'inc') {
-      setVisible(true);
-      updateCardModel(
-        token,
-        Number(id),
-        newQuantity,
-        () => {
-          setVisible(false);
-          refreshCart();
-        },
-        (error: string) => {
-          setVisible(false);
-          show(error, {type: 'error'});
-        },
-        () => {
-          refreshTokenModel(
-            refreshToken,
-            refreshedTokens => {
-              setToken(refreshedTokens.access);
-              setRefreshToken(refreshedTokens.refresh);
-              updateCardModel(
-                refreshedTokens.access,
-                id,
-                newQuantity,
-                () => {
-                  setVisible(false);
-                  refreshCart();
-                },
-                (error: string) => {
-                  setVisible(false);
-                  show(error, {type: 'error'});
-                },
-                () => {
-                  setVisible(false);
-                },
-              );
-            },
-            () => {
-              setVisible(false);
-            },
-          );
-        },
-      );
-    } else {
-      setVisible(true);
-      if(newQuantity < 1) {
-        deleteCardModel(
-          token,
-          Number(id),
-          () => {
-            setVisible(false);
-            refreshCart();
-          },
-          (error: string) => {
-            setVisible(false);
-            show(error, {type: 'error'});
-          },
-          () => {
-            refreshTokenModel(
-              refreshToken,
-              refreshedTokens => {
-                setToken(refreshedTokens.access);
-                setRefreshToken(refreshedTokens.refresh);
-                deleteCardModel(
-                  refreshedTokens.access,
-                  Number(id),
-                  () => {
-                    setVisible(false);
-                    refreshCart();
-                  },
-                  (error: string) => {
-                    setVisible(false);
-                    show(error, {type: 'error'});
-                  },
-                  () => {
-                    setVisible(false);
-                  },
-                );
-              },
-              () => {
-                setVisible(false);
-              },
-            );
-          },
-        );
-      }else{
-      updateCardModel(
-        token,
-        Number(id),
-        newQuantity,
-        () => {
-          setVisible(false);
-          refreshCart();
-        },
-        (error: string) => {
-          setVisible(false);
-          show(error, {type: 'error'});
-        },
-        () => {
-          refreshTokenModel(
-            refreshToken,
-            refreshedTokens => {
-              setToken(refreshedTokens.access);
-              setRefreshToken(refreshedTokens.refresh);
-              updateCardModel(
-                refreshedTokens.access,
-                id,
-                newQuantity,
-                () => {
-                  setVisible(false);
-                  refreshCart();
-                },
-                (error: string) => {
-                  setVisible(false);
-                  show(error, {type: 'error'});
-                },
-                () => {
-                  setVisible(false);
-                },
-              );
-            },
-            () => {
-              setVisible(false);
-            },
-          );
-        },
-      );
-    }
-    }
-  };
-
-  const handleRemove = (id: number) => {
-    setVisible(true);
-    deleteCardModel(
-      token,
-      Number(id),
-      () => {
-        setVisible(false);
-        refreshCart();
-      },
-      (error: string) => {
-        setVisible(false);
-        show(error, {type: 'error'});
-      },
-      () => {
-        refreshTokenModel(
-          refreshToken,
-          refreshedTokens => {
-            setToken(refreshedTokens.access);
-            setRefreshToken(refreshedTokens.refresh);
-                deleteCardModel(
-                  refreshedTokens.access,
-                  Number(id),
-                  () => {
-                    setVisible(false);
-                    refreshCart();
-                  },
-              (error: string) => {
-                setVisible(false);
-                show(error, {type: 'error'});
-              },
-              () => {
-                setVisible(false);
-              },
-            );
-          },
-          () => {
-            setVisible(false);
-          },
-    );
-      },
-    );
-  };
+  const {Styles} = StyleComponent();
 
   return (
     <View style={styles.container}>
@@ -211,12 +30,10 @@ export default function CartItem(props: { data: { products: any[]; summary: { it
           <ProductCardInCart
             key={item.id}
             item={item}
-            onQuantityChange={(id, newQuantity, type) => handleQuantityChange(id, type, newQuantity)}
-            onRemove={handleRemove}
+            onSynced={refreshCart}
           />
         ))}
       </ScrollView>
-      <LoadingModal isVisible={visible} />
     </View>
   );
 }

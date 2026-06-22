@@ -40,7 +40,7 @@ export const SigninLogic = () => {
   const onSubmit = async () => {
     const values = getValues();
     setLoading(true);
-    SingInModel(values.email.trim(), values.password.trim(), (data) => {  
+    SingInModel(values.email.trim().toLocaleLowerCase(), values.password.trim(), (data) => {  
       console.log('data login', data);
       setToken(data.access);
       setRefreshToken(data.refresh);
