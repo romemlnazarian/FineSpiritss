@@ -7,12 +7,17 @@ interface LocalizationState {
   setLanguage: (lang: string) => void;
 }
 
+export type AppLanguage = 'en' | 'pl';
+
+export const normalizeAppLanguage = (lang?: string): AppLanguage =>
+  lang?.toLowerCase().startsWith('pl') ? 'pl' : 'en';
+
 const useLocalizationStore = create<LocalizationState>()(
   persist(
     (set) => ({
       language: 'en',
       setLanguage: (lang: string) => {
-        set({ language: lang });
+        set({ language: normalizeAppLanguage(lang) });
       },
     }),
     {

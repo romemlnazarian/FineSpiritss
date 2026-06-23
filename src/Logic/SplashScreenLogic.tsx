@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Language } from '../utiles/Language/i18n';
-import useLocalizationStore from '../zustland/localizationStore';
+import useLocalizationStore, {normalizeAppLanguage} from '../zustland/localizationStore';
 import { RootStackParamList } from '../navigation/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import useAuthStore from '../zustland/AuthStore';
@@ -14,7 +14,7 @@ export default function SplashScreenLogic() {
   const { isLoggedIn, token } = useAuthStore();
 
     useEffect(()=>{
-       Language.setLanguage(language);
+       Language.setLanguage(normalizeAppLanguage(language));
        if (isLoggedIn) {
          navigation.navigate('AppTabs');
        } else {

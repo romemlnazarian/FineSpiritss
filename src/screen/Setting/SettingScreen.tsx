@@ -17,7 +17,8 @@ import Wrench from '../../assets/svg/Wrench.svg';
 import Edit from '../../assets/svg/Edit.svg';
 import { useNavigation } from '@react-navigation/native';
 import {Language} from '../../utiles/Language/i18n';
-import { Switch } from 'react-native-switch';
+import type {AppLanguage} from '../../zustland/localizationStore';
+
 export default function SettingScreen() {
   const navigation = useNavigation();
   const {Styles} = StyleComponent();
@@ -31,9 +32,14 @@ export default function SettingScreen() {
     setLogOutModalVisible,
     onSubmitLogout,
     address,
-    isEnabled,
-    toggleSwitch,
+    currentLanguage,
+    selectLanguage,
   } = SettingLogic();
+
+  const languageOptions: {id: AppLanguage; label: string}[] = [
+    {id: 'en', label: 'EN'},
+    {id: 'pl', label: 'PL'},
+  ];
 
   const data = [
     {
@@ -151,25 +157,38 @@ export default function SettingScreen() {
           </Fragment>
         ))}
       </View>
-      {/* <View style={styles.switchContainer}>
-        <Text style={[styles.title,Styles.title_Medium]}>{Language.language}</Text>
-        <Switch
-          value={isEnabled}
-          onValueChange={val => toggleSwitch(val)}
-          activeText={'PL'}
-          inActiveText={'EN'}
-          circleSize={16}
-          barHeight={23}
-          circleBorderWidth={0}
-          backgroundActive={Color.primary}
-          backgroundInactive={Color.gray}
-          circleActiveColor={Color.white}
-          circleInActiveColor={Color.white}
-          switchLeftPx={5}
-          switchRightPx={5}
-          switchWidthMultiplier={3.2}
-        />
-      </View> */}
+      <View style={styles.section}>
+        <View style={styles.languageRow}>
+          <View style={styles.rowGap10Center}>
+            <Iocn name="language-outline" size={24} color={Color.black} />
+            <Text style={Styles.title_Medium}>{Language.language}</Text>
+          </View>
+          <View style={styles.languageSwitch}>
+            {languageOptions.map(option => {
+              const isActive = currentLanguage === option.id;
+              return (
+                <TouchableOpacity
+                  key={option.id}
+                  activeOpacity={0.8}
+                  onPress={() => selectLanguage(option.id)}
+                  style={[
+                    styles.languageOption,
+                    isActive && styles.languageOptionActive,
+                  ]}>
+                  <Text
+                    style={[
+                      Styles.title_Medium,
+                      styles.languageOptionText,
+                      isActive && styles.languageOptionTextActive,
+                    ]}>
+                    {option.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+      </View>
       <TouchableOpacity
         activeOpacity={0.5}
         style={styles.logoutButton}
@@ -293,20 +312,36 @@ const styles = StyleSheet.create({
     marginLeft: '10%',
     marginTop: '5%',
   },
-  title: {
-    color: Color.black,
-  },
-  switchContainer: {
-    width: '93%',
-    marginTop: '5%',
-    borderColor: Color.gray,
-    backgroundColor: Color.white,
-    borderRadius: 12,
-    alignSelf: 'center',
+  languageRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+    gap: 12,
+  },
+  languageSwitch: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Color.background,
+    borderRadius: 12,
+    padding: 4,
+    borderWidth: 1,
+    borderColor: Color.lineGray,
+  },
+  languageOption: {
+    minWidth: 52,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  languageOptionActive: {
+    backgroundColor: Color.primary,
+  },
+  languageOptionText: {
+    color: Color.gray,
+  },
+  languageOptionTextActive: {
+    color: Color.white,
   },
 });

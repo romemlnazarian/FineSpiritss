@@ -1,13 +1,21 @@
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import useProfileStore from '../../zustland/ProfileStore';
 import useAuthStore from '../../zustland/AuthStore';
 import {Linking} from 'react-native';
 import useDeleteAccountDoneStore from '../../zustland/deleteAccountDoneStore';
 import GetAddressStore from '../../zustland/GetAddressStore';
 import {ProfileStackParamList} from '../../navigation/types';
-import useLocalizationStore from '../../zustland/localizationStore';
+import useLocalizationStore, {
+  normalizeAppLanguage,
+  type AppLanguage,
+} from '../../zustland/localizationStore';
+import {Language} from '../../utiles/Language/i18n';
+
+export type {AppLanguage};
+export {normalizeAppLanguage};
+
 export default function SettingLogic() {
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
@@ -17,16 +25,20 @@ export default function SettingLogic() {
   const {profile} = useProfileStore();
   const {setDeleteAccountDone} = useDeleteAccountDoneStore();
   const {address, resetAddress} = GetAddressStore();
-  const [isEnabled, setIsEnabled] = useState<boolean>(true);
-  const {setLanguage} = useLocalizationStore();
+  const language = useLocalizationStore(state => state.language);
+  const setLanguage = useLocalizationStore(state => state.setLanguage);
+  const currentLanguage = normalizeAppLanguage(language);
 
-
-
-  
-const toggleSwitch = (value: boolean) => {
-setIsEnabled(() => value);
-setLanguage(value ? 'PL' : 'EN');
-};
+  const selectLanguage = useCallback(
+    (lang: AppLanguage) => {
+      if (lang === currentLanguage) {
+        return;
+      }
+      setLanguage(lang);
+      Language.setLanguage(lang);
+    },
+    [currentLanguage, setLanguage],
+  );
 
 
 
@@ -85,7 +97,7 @@ setLanguage(value ? 'PL' : 'EN');
     setLogOutModalVisible,
     onSubmitLogout,
     address,
-    isEnabled,
-    toggleSwitch,
+    currentLanguage,
+    selectLanguage,
   };
 }
