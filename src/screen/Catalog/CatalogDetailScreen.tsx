@@ -627,6 +627,7 @@ export default function CatalogDetailScreen(route: any) {
 const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
+    backgroundColor: Color.background,
   },
   recommendedSection: {
     width: '100%',

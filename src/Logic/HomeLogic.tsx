@@ -16,6 +16,8 @@ import useProfileStore from '../zustland/ProfileStore';
 import useRecommendedStore from '../zustland/recommendedStore';
 import { getAddressModel } from '../model/Setting/SettingModel';
 import useAddressStore from '../zustland/GetAddressStore';
+import {requestPushNotificationAccessIfNeeded} from '../component/notifications';
+import {registerFcmTokenWithServer} from '../model/Notification/Notification';
 
 export default function HomeLogic() {
   const navigation = useNavigation<ButtonScreenNavigationProp>();
@@ -49,6 +51,19 @@ export default function HomeLogic() {
   const onConfrim = () => {
     setAgeConfirmed(false);
   };
+
+  useEffect(() => {
+    if (!isFocused || ageConfirmed) {
+      return;
+    }
+
+    requestPushNotificationAccessIfNeeded().then(result => {
+      console.log('[Notifications] home permission result:', result);
+      if (result.granted && result.fcmToken) {
+        registerFcmTokenWithServer(result.fcmToken);
+      }
+    });
+  }, [isFocused, ageConfirmed]);
 
 //  useEffect(() => {
 //   console.log('ageConfirmed', ageConfirmed);

@@ -2,19 +2,24 @@ import React, {memo, useMemo} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
+import {CatalogSortType, DEFAULT_SORT} from '../../utiles/sortProducts';
 
-type Chip = {type: 'Country' | 'Brand' | 'Capacity' | 'Price'; value: string; label: string};
+type Chip = {
+  type: 'Country' | 'Brand' | 'Capacity' | 'Price' | 'Sort';
+  value: string;
+  label: string;
+};
 
 type Props = {
   countries?: string[];
   brands?: string[];
   volumes?: string[];
-  // selected values
   minPrice?: number;
   maxPrice?: number;
-  // bounds from API (so we don't show chip before user changes)
   minPriceBound?: number;
   maxPriceBound?: number;
+  sortBy?: CatalogSortType;
+  sortLabel?: string;
   onRemove: (type: Chip['type'], value: string) => void;
 };
 
@@ -27,12 +32,17 @@ const ActiveFiltersChips = memo(
     maxPrice,
     minPriceBound,
     maxPriceBound,
+    sortBy,
+    sortLabel,
     onRemove,
   }: Props) => {
   const {Styles} = StyleComponent();
 
   const chips = useMemo<Chip[]>(() => {
     const c: Chip[] = [];
+    if (sortBy && sortBy !== DEFAULT_SORT && sortLabel) {
+      c.push({type: 'Sort', value: sortBy, label: sortLabel});
+    }
     countries.forEach(v => c.push({type: 'Country', value: v, label: v}));
     brands.forEach(v => c.push({type: 'Brand', value: v, label: v}));
     volumes.forEach(v => {
@@ -49,7 +59,17 @@ const ActiveFiltersChips = memo(
       c.push({type: 'Price', value: 'price', label: `Price: ${minPrice} - ${maxPrice}`});
     }
     return c;
-  }, [brands, countries, maxPrice, maxPriceBound, minPrice, minPriceBound, volumes]);
+  }, [
+    brands,
+    countries,
+    maxPrice,
+    maxPriceBound,
+    minPrice,
+    minPriceBound,
+    sortBy,
+    sortLabel,
+    volumes,
+  ]);
 
   if (chips.length === 0) {
     return null;

@@ -14,9 +14,8 @@ import {
   getFcmToken,
   getPushDebugTokens,
   onFcmTokenRefresh,
-  requestFcmPermissionIOS,
-  requestNotificationPermission,
 } from './notifee-service';
+import {registerFcmTokenWithServer} from '../../model/Notification/Notification';
 
 function getMessagingInstance() {
   return getMessaging();
@@ -28,19 +27,12 @@ type NotificationsBootstrapProps = {
 
 export function NotificationsBootstrap({navigationRef}: NotificationsBootstrapProps) {
   React.useEffect(() => {
-    // Setup basic channel + permission flow
     (async () => {
       await ensureDefaultChannel();
-      const notifeePerm = await requestNotificationPermission();
-      console.log('[Notifications] Notifee permission:', notifeePerm);
-
-      const fcmPerm = await requestFcmPermissionIOS();
-      console.log('[Notifications] iOS FCM permission:', fcmPerm);
 
       const tokens = await getPushDebugTokens();
       console.log('[Notifications] Push tokens:', tokens);
 
-      // Keep a direct FCM log too for easier filtering in Xcode/Metro logs.
       const token = await getFcmToken();
       console.log('[Notifications] FCM token:', token);
 
@@ -77,6 +69,7 @@ export function NotificationsBootstrap({navigationRef}: NotificationsBootstrapPr
     // Token refresh
     const unsub = onFcmTokenRefresh((token) => {
       console.log('[Notifications] FCM token refreshed:', token);
+      registerFcmTokenWithServer(token);
     });
     return () => unsub();
   }, []);

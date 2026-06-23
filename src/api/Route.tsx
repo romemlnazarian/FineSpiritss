@@ -44,6 +44,8 @@
   forgot_password_resend_password:string
   reset_password:string
   product_search_suggestions:string
+  notification:string
+  fcm_token:string
 }
 
 export const Route: RouteObj = {
@@ -96,4 +98,6 @@ export const Route: RouteObj = {
      card:'order/cart/',
      order_history:'order/history/',
      product_search_suggestions:'product/products/search/suggestions/',
+     notification:'notification/notifications/',
+     fcm_token:'notification/device-token/',
 };

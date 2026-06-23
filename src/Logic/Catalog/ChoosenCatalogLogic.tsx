@@ -8,6 +8,11 @@ import {
   getFilterProductsModel,
 } from '../../model/Catalog/Catalog';
 import {getProductsModel} from '../../model/Product/ProductModel';
+import {
+  CatalogSortType,
+  DEFAULT_SORT,
+} from '../../utiles/sortProducts';
+import {Language} from '../../utiles/Language/i18n';
 
 function parseNumericPrice(value: unknown): number | undefined {
   if (typeof value === 'number' && Number.isFinite(value)) {
@@ -78,7 +83,9 @@ export default function ChoosenCatalogLogic(route: any) {
   const [selectedQuantity, setSelectedQuantity] = useState(0);
 
   // ---------- Data States ----------
-  const [products, setProducts] = useState<any[]>([]);
+  const [productItems, setProductItems] = useState<any[]>([]);
+  const [sortBy, setSortBy] = useState<CatalogSortType>(DEFAULT_SORT);
+  const products = productItems;
   const [page, setPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(true);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -96,6 +103,7 @@ export default function ChoosenCatalogLogic(route: any) {
   const [selectedMinPrice, setSelectedMinPrice] = useState<number>(1);
   const [selectedMaxPrice, setSelectedMaxPrice] = useState<number>(1000);
   const didUserSetPriceRef = useRef(false);
+  const isFilteredListRef = useRef(false);
   // ---------- Refs to avoid stale closures ----------
   const isLoadingMoreRef = useRef(false);
   const hasNextPageRef = useRef(true);
@@ -133,6 +141,7 @@ export default function ChoosenCatalogLogic(route: any) {
   const getProducts = useCallback(
     (requestedPage: number = 1) => {
       if (requestedPage === 1) {
+        isFilteredListRef.current = false;
         setIsInitialLoading(true);
       } else {
         if (isLoadingMoreRef.current || !hasNextPageRef.current) {
@@ -153,7 +162,7 @@ export default function ChoosenCatalogLogic(route: any) {
           ? data
           : data?.results ?? data?.data ?? [];
 
-        setProducts(prev =>
+        setProductItems(prev =>
           requestedPage === 1 ? dedupeById(results) : dedupeById([...prev, ...results]),
         );
 
@@ -270,13 +279,6 @@ export default function ChoosenCatalogLogic(route: any) {
   }, [getProducts, getFilterData]);
 
   // ====================================================================
-  // 📌 Load more for FlatList
-  // ====================================================================
-  const loadMore = useCallback(() => {
-    getProducts(page + 1);
-  }, [getProducts, page]);
-
-  // ====================================================================
   // 🔍 Search Navigation
   // ====================================================================
   const onSearchHandler = () => navigation.navigate('CatalogSearch');
@@ -321,6 +323,10 @@ export default function ChoosenCatalogLogic(route: any) {
       : [...prev, normalized];
   }, []);
 
+  const isFilterQueryActive = useCallback(() => {
+    return isFilteredListRef.current;
+  }, []);
+
   const fetchFilteredProducts = useCallback(
     (
       nextCountries: string[],
@@ -328,24 +334,50 @@ export default function ChoosenCatalogLogic(route: any) {
       nextVolumes: string[],
       nextSelectedMinPrice: number,
       nextSelectedMaxPrice: number,
+      orderBy: CatalogSortType = sortBy,
+      requestedPage: number = 1,
     ) => {
+      isFilteredListRef.current = true;
+
+      if (requestedPage > 1) {
+        if (isLoadingMoreRef.current || !hasNextPageRef.current) {
+          return;
+        }
+        setIsLoadingMore(true);
+      } else {
+        setIsInitialLoading(true);
+      }
+
       const countriesQuery = nextCountries.join(',');
       const brandsQuery = nextBrands.join(',');
       const volumesQuery = nextVolumes.join(',');
+
+      const stopLoading = () => {
+        requestedPage === 1
+          ? setIsInitialLoading(false)
+          : setIsLoadingMore(false);
+      };
 
       const handleSuccess = (payload: any) => {
         const normalizedData = Array.isArray(payload)
           ? payload
           : payload?.results ?? payload?.data ?? [];
-        setProducts(dedupeById(normalizedData));
-        setIsLoadingMore(false);
-        setIsInitialLoading(false);
+        if (typeof payload?.count === 'number') {
+          setCountProduct(payload.count);
+        }
+        setProductItems(prev =>
+          requestedPage === 1
+            ? dedupeById(normalizedData)
+            : dedupeById([...prev, ...normalizedData]),
+        );
+        setHasNextPage(Boolean(payload?.next));
+        setPage(requestedPage);
+        stopLoading();
       };
 
       const handleError = (err?: any) => {
         console.log('filter error =>', err);
-        setIsLoadingMore(false);
-        setIsInitialLoading(false);
+        stopLoading();
       };
 
       getFilterProductsModel(
@@ -356,6 +388,8 @@ export default function ChoosenCatalogLogic(route: any) {
         volumesQuery,
         nextSelectedMinPrice,
         nextSelectedMaxPrice,
+        orderBy,
+        requestedPage,
         handleSuccess,
         () =>
           refreshTokenModel(
@@ -363,7 +397,6 @@ export default function ChoosenCatalogLogic(route: any) {
             tokens => {
               setToken(tokens.access);
               setRefreshToken(tokens.refresh);
-
               getFilterProductsModel(
                 tokens.access,
                 categorySlug,
@@ -372,6 +405,8 @@ export default function ChoosenCatalogLogic(route: any) {
                 volumesQuery,
                 nextSelectedMinPrice,
                 nextSelectedMaxPrice,
+                orderBy,
+                requestedPage,
                 handleSuccess,
                 handleError,
               );
@@ -387,18 +422,47 @@ export default function ChoosenCatalogLogic(route: any) {
       setToken,
       token,
       dedupeById,
+      sortBy,
     ],
   );
+
+  const loadMore = useCallback(() => {
+    const nextPage = page + 1;
+
+    if (isFilterQueryActive()) {
+      fetchFilteredProducts(
+        countries,
+        brands,
+        volumes,
+        selectedMinPrice,
+        selectedMaxPrice,
+        sortBy,
+        nextPage,
+      );
+      return;
+    }
+
+    getProducts(nextPage);
+  }, [
+    brands,
+    countries,
+    fetchFilteredProducts,
+    getProducts,
+    isFilterQueryActive,
+    page,
+    selectedMaxPrice,
+    selectedMinPrice,
+    sortBy,
+    volumes,
+  ]);
 
   // ====================================================================
   // 🔥 Apply Filter
   // ====================================================================
   const onHandlerFilter = useCallback(
     (type: string, option: any) => {
-      setIsLoadingMore(true);
       setFilterVisible(false);
-      setIsInitialLoading(true);
-      setProducts([]);
+      setProductItems([]);
 
       let nextCountries = countries;
       let nextBrands = brands;
@@ -436,11 +500,65 @@ export default function ChoosenCatalogLogic(route: any) {
     ],
   );
 
+  const onSortChange = useCallback(
+    (nextSort: CatalogSortType) => {
+      setSortBy(nextSort);
+      setFilterVisible(false);
+      setProductItems([]);
+      fetchFilteredProducts(
+        countries,
+        brands,
+        volumes,
+        selectedMinPrice,
+        selectedMaxPrice,
+        nextSort,
+      );
+    },
+    [
+      brands,
+      countries,
+      fetchFilteredProducts,
+      selectedMaxPrice,
+      selectedMinPrice,
+      volumes,
+    ],
+  );
+
+  const getSortLabel = useCallback((sort: CatalogSortType) => {
+    switch (sort) {
+      case 'oldest':
+        return Language.sort_oldest_first;
+      case 'title_asc':
+        return Language.sort_name_a_to_z;
+      case 'title_desc':
+        return Language.sort_name_z_to_a;
+      case 'price_asc':
+        return Language.sort_price_low_to_high;
+      case 'price_desc':
+        return Language.sort_price_high_to_low;
+      case 'newest':
+      default:
+        return Language.sort_newest_first;
+    }
+  }, []);
+
   const onRemoveActiveFilter = useCallback(
-    (type: 'Country' | 'Brand' | 'Capacity' | 'Price', value: string) => {
-      setIsLoadingMore(true);
-      setIsInitialLoading(true);
-      setProducts([]);
+    (type: 'Country' | 'Brand' | 'Capacity' | 'Price' | 'Sort', value: string) => {
+      if (type === 'Sort') {
+        setSortBy(DEFAULT_SORT);
+        setProductItems([]);
+        fetchFilteredProducts(
+          countries,
+          brands,
+          volumes,
+          selectedMinPrice,
+          selectedMaxPrice,
+          DEFAULT_SORT,
+        );
+        return;
+      }
+
+      setProductItems([]);
 
       const nextCountries =
         type === 'Country' ? countries.filter(x => x !== value) : countries;
@@ -494,9 +612,7 @@ export default function ChoosenCatalogLogic(route: any) {
       setSelectedMinPrice(finalMin);
       setSelectedMaxPrice(finalMax);
 
-      setIsLoadingMore(true);
-      setIsInitialLoading(true);
-      setProducts([]);
+      setProductItems([]);
       setFilterVisible(false);
 
       // re-fetch with current country/brand/volume + new price range
@@ -538,6 +654,9 @@ export default function ChoosenCatalogLogic(route: any) {
     selectedMinPrice,
     selectedMaxPrice,
     onPriceChange,
-    countProduct
+    countProduct,
+    sortBy,
+    onSortChange,
+    getSortLabel,
   };
 }

@@ -81,6 +81,13 @@ export let Language = new LocalizedStrings({
     must_be_at_most: 'must be at most',
     filter_min_greater_than_max: 'Min price must be less than or equal to max price',
     filter_kosher: 'Kosher',
+    sort_by: 'Sort by',
+    sort_newest_first: 'Newest first',
+    sort_oldest_first: 'Oldest first',
+    sort_name_a_to_z: 'Alphabet - A to Z',
+    sort_name_z_to_a: 'Alphabet - Z to A',
+    sort_price_low_to_high: 'Price: Low to High',
+    sort_price_high_to_low: 'Price: High to Low',
 
     // Catalog detail
     product_detail_specifications: 'Specifications',
@@ -252,6 +259,11 @@ export let Language = new LocalizedStrings({
     My_Addresses: 'My Addresses',
     Billing_address: 'Billing address',
     Add_Shipping_Address: 'Add Shipping Address',
+    // Notification
+    notification_title: 'No notifications yet',
+    notification_more: 'More',
+    notification_less: 'Less',
+
   },
   pl:{
     wellcomTitle: 'Witamy w starannie dobranej galerii płynnego kunsztu',
@@ -334,6 +346,13 @@ export let Language = new LocalizedStrings({
     must_be_at_most: 'musi wynosić maksymalnie',
     filter_min_greater_than_max: 'Cena minimalna musi być mniejsza lub równa cenie maksymalnej',
     filter_kosher: 'Koszerne',
+    sort_by: 'Sortuj według',
+    sort_newest_first: 'Od najnowszych',
+    sort_oldest_first: 'Od najstarszych',
+    sort_name_a_to_z: 'Alfabetycznie A–Z',
+    sort_name_z_to_a: 'Alfabetycznie Z–A',
+    sort_price_low_to_high: 'Cena: od najniższej',
+    sort_price_high_to_low: 'Cena: od najwyższej',
   
     // Catalog detail
     product_detail_specifications: 'Specyfikacja',
@@ -502,6 +521,11 @@ export let Language = new LocalizedStrings({
     My_Addresses: 'Moje adresy',
     Billing_address: 'Adres do faktury',
     Add_Shipping_Address: 'Dodaj adres dostawy',
+    
+    // Notification
+    notification_title: 'Brak powiadomień',
+    notification_more: 'Więcej',
+    notification_less: 'Mniej',
   }
   
 });

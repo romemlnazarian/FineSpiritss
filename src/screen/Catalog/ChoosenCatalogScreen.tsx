@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Dimensions, View} from 'react-native';
 import React, {useMemo} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {StyleComponent} from '../../utiles/styles';
@@ -10,6 +10,7 @@ import {BottomSheet, useBottomSheetBackHandler} from '../../component/BottomShee
 import Search from '../../assets/svg/SearchBlack.svg';
 import ButtonSheetFilter from '../../component/CatalogComponent/buttonSheetFilter';
 import CatalogTabsFilter from '../../component/CatalogComponent/CatalogTabsFilter';
+import CatalogSortFilter from '../../component/CatalogComponent/CatalogSortFilter';
 import ActiveFiltersChips from '../../component/CatalogComponent/ActiveFiltersChips';
 import {Language} from '../../utiles/Language/i18n';
 
@@ -40,9 +41,19 @@ export default function ChoosenCatalog(route: any) {
     selectedMaxPrice,
     onPriceChange,
     countProduct,
+    sortBy,
+    onSortChange,
+    getSortLabel,
   } = ChoosenCatalogLogic(route);
   const {Styles} = StyleComponent();
   const navigation = useNavigation<any>();
+
+  const sheetHeight = useMemo(() => {
+    if (title === 'filter') {
+      return Math.min(Dimensions.get('window').height * 0.72, 640);
+    }
+    return 400;
+  }, [title]);
 
   const handleBack = useBottomSheetBackHandler(
     filterVisible,
@@ -112,6 +123,8 @@ export default function ChoosenCatalog(route: any) {
         minPriceBound={priceMinBound}
         maxPriceBound={priceMaxBound}
         onRemove={onRemoveActiveFilter}
+        sortBy={sortBy}
+        sortLabel={getSortLabel(sortBy)}
       />
       <CatalogList
         item={products}
@@ -124,7 +137,7 @@ export default function ChoosenCatalog(route: any) {
       />
       <BottomSheet
         modalVisible={filterVisible}
-        height={400}
+        height={sheetHeight}
         onClose={() => setFilterVisible(false)}>
         {title === 'price' ? (
           <ButtonSheetFilter
@@ -135,7 +148,7 @@ export default function ChoosenCatalog(route: any) {
             onPriceChange={onPriceChange}
           />
         ) : title === 'filter' ? (
-          <View />
+          <CatalogSortFilter value={sortBy} onChange={onSortChange} />
         ) : (
           <CatalogTabsFilter
             title={title}
@@ -150,11 +163,3 @@ export default function ChoosenCatalog(route: any) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  countContainer: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

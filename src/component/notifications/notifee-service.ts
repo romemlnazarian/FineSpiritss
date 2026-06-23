@@ -20,6 +20,7 @@ const DEFAULT_CHANNEL_ID = 'default';
 const __seenMessageIds = new Map<string, number>();
 const SEEN_TTL_MS = 10 * 60 * 1000; // 10 minutes
 const PUSH_PREF_KEY = 'push_notifications_enabled';
+const PUSH_PERMISSION_PROMPTED_KEY = 'push_permission_prompted';
 
 function getMessagingInstance() {
   return getMessaging();
@@ -112,6 +113,37 @@ export async function requestFcmPermissionIOS(): Promise<{
     return { granted, status };
   } catch {
     return { granted: false };
+  }
+}
+
+export async function requestPushNotificationAccessIfNeeded(): Promise<{
+  granted: boolean;
+  prompted: boolean;
+  fcmToken: string | null;
+}> {
+  try {
+    const alreadyPrompted = await AsyncStorage.getItem(PUSH_PERMISSION_PROMPTED_KEY);
+    if (alreadyPrompted === 'true') {
+      return {granted: false, prompted: false, fcmToken: null};
+    }
+
+    await ensureDefaultChannel();
+    const notifeePerm = await requestNotificationPermission();
+    const fcmPerm = await requestFcmPermissionIOS();
+
+    await AsyncStorage.setItem(PUSH_PERMISSION_PROMPTED_KEY, 'true');
+
+    const granted = notifeePerm.granted && fcmPerm.granted;
+    let fcmToken: string | null = null;
+    if (granted) {
+      fcmToken = await getFcmToken();
+      console.log('[Notifications] FCM token after home permission:', fcmToken);
+    }
+
+    return {granted, prompted: true, fcmToken};
+  } catch (e) {
+    console.log('[Notifications] home permission error:', e);
+    return {granted: false, prompted: false, fcmToken: null};
   }
 }
 

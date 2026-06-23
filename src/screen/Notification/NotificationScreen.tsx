@@ -1,37 +1,19 @@
-import {FlatList, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
 import {Color} from '../../utiles/color';
 import {shadow3, StyleComponent} from '../../utiles/styles';
 import CustomHeader from '../../navigation/CustomHeader';
-
-type NotificationItem = {
-  id: string;
-  title: string;
-  description: string;
-};
-
-const NOTIFICATIONS: NotificationItem[] = [
-  {
-    id: '1',
-    title: 'Order Confirmed',
-    description: 'Your order #12345 has been confirmed and is being prepared.',
-  },
-  {
-    id: '2',
-    title: 'Special Offer',
-    description: 'Get 20% off on selected spirits this weekend only.',
-  },
-  {
-    id: '3',
-    title: 'Delivery Update',
-    description: 'Your package is out for delivery and will arrive today.',
-  },
-  {
-    id: '4',
-    title: 'New Arrival',
-    description: 'Check out the latest premium whiskey collection in our catalog.',
-  },
-];
+import NotificationLogic, {
+  NotificationItem,
+} from '../../logic/Notification/Notification';
+import { Language } from '../../utiles/Language/i18n';
 
 function NotificationCard({
   item,
@@ -42,24 +24,67 @@ function NotificationCard({
   styles: ReturnType<typeof StyleSheet.create>;
   Styles: ReturnType<typeof StyleComponent>['Styles'];
 }) {
+  const [expanded, setExpanded] = useState(false);
+  const [isTitleTruncated, setIsTitleTruncated] = useState(false);
+  const [isTextTruncated, setIsTextTruncated] = useState(false);
+  const showMore = isTitleTruncated || isTextTruncated;
+
   return (
     <View style={styles.card}>
-      <Text style={[Styles.title_SemiBold, styles.cardTitle]}>{item.title}</Text>
-      <Text style={[Styles.subtitle_Regular, styles.cardDescription]}>
-        {item.description}
+      <Text
+        style={[styles.hiddenMeasure, Styles.title_SemiBold]}
+        onTextLayout={e => {
+          setIsTitleTruncated(e.nativeEvent.lines.length > 1);
+        }}>
+        {item.title}
       </Text>
+      <Text
+        style={[Styles.title_SemiBold, styles.cardTitle]}
+        numberOfLines={expanded ? undefined : 1}>
+        {item.title}
+      </Text>
+      <Text
+        style={[styles.hiddenMeasure, Styles.subtitle_Regular]}
+        onTextLayout={e => {
+          setIsTextTruncated(e.nativeEvent.lines.length > 2);
+        }}>
+        {item.text}
+      </Text>
+      <Text
+        style={[Styles.subtitle_Regular, styles.cardDescription]}
+        numberOfLines={expanded ? undefined : 2}>
+        {item.text}
+      </Text>
+      {showMore && (
+        <TouchableOpacity
+          onPress={() => setExpanded(prev => !prev)}
+          hitSlop={{top: 8, bottom: 8, left: 8, right: 8}}>
+          <Text style={[Styles.subtitle_SemiBold, styles.moreText]}>
+            {expanded ? Language.notification_less : Language.notification_more}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
 
 export default function NotificationScreen() {
   const {Styles} = StyleComponent();
+  const {notifications, loading} = NotificationLogic();
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.loader]}>
+        <ActivityIndicator size="large" color={Color.primary} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <CustomHeader showBack subTitle="Notifications" />
       <FlatList
-        data={NOTIFICATIONS}
+        data={notifications}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
@@ -68,10 +93,7 @@ export default function NotificationScreen() {
         )}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={[Styles.h5_Medium, styles.emptyTitle]}>No notifications</Text>
-            <Text style={[Styles.subtitle_Regular, styles.emptyDescription]}>
-              You have no notifications at the moment.
-            </Text>
+            <Text style={[Styles.title_SemiBold, styles.emptyTitle]}>{Language.notification_title}</Text>
           </View>
         }
       />
@@ -83,6 +105,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.background,
+  },
+  loader: {
+    justifyContent: 'center',
   },
   listContent: {
     paddingHorizontal: '3.5%',
@@ -108,6 +133,17 @@ const styles = StyleSheet.create({
     color: Color.lightBlack,
     lineHeight: 20,
   },
+  hiddenMeasure: {
+    position: 'absolute',
+    opacity: 0,
+    zIndex: -1,
+    width: '100%',
+    lineHeight: 20,
+  },
+  moreText: {
+    color: Color.primary,
+    marginTop: 4,
+  },
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
@@ -122,6 +158,6 @@ const styles = StyleSheet.create({
     color: Color.gray,
     textAlign: 'center',
     marginTop: 8,
-    width: '70%',
+    // width: '80%',
   },
 });

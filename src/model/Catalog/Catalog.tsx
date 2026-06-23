@@ -168,13 +168,15 @@ export const getFilterProductsModel = (
   volume: string,
   min_price: number | null,
   max_price: number | null,
+  order_by: string,
+  page: number = 1,
   callback: (data: any) => void,
   errorcallback: (data: string) => void,
 ) => {
 
   GET(
     Route.root,
-    `${Route.filter_products}${slug}/?countries=${countries}&brands=${brands}&volume=${volume}&price_from=${min_price}&price_to=${max_price}`,
+    `${Route.filter_products}${slug}/?countries=${countries}&brands=${brands}&volume=${volume}&price_from=${min_price}&price_to=${max_price}&order_by=${order_by}&page=${page}`,
     (data: {
       detail?: boolean | string;
       message?: string;
