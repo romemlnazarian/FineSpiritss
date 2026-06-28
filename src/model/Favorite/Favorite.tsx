@@ -38,14 +38,14 @@ export const getFavoriteProductsModel = (
           `${Route.add_favorite_product}`,
           (data, status) => {
             console.log('data', data, status);
-            if (status === 201) {
-              callback(data.detail);
-              return 
+            if (status === 200 || status === 201) {
+              callback(data?.detail ?? data);
+              return;
             } else if(status === 401) {
               callbackUnauthorized?.();
-              return
+              return;
             } else {
-              errorcallback(data.detail);
+              errorcallback(data?.detail ?? 'Unknown error');
             }
           },
           token,
@@ -69,15 +69,17 @@ export const DeleteFavoriteProductModel = (
       Route.root,
       `${Route.delete_favorite_product}${id}/`,
       (data, status) => {
-        if (status === 200) {
-          callback(data.detail);
+        if (status === 200 || status === 204) {
+          callback(data?.detail ?? data);
         } else if(status === 401) {
           callbackUnauthorized?.();
         } else {
-          errorcallback(data.detail);
+          errorcallback(data?.detail ?? 'Unknown error');
         }
       },
       token,
+      '',
+      errorcallback,
     );
   };
   

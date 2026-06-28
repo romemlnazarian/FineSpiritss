@@ -3,7 +3,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Image,
+  ImageBackground,
   Text,
   ActivityIndicator,
 } from 'react-native';
@@ -29,16 +29,19 @@ const CategoryScreen = memo(() => {
           style={styles.categoryItem}
           onPress={() => unSubmit(item)}
           activeOpacity={0.7}>
-          {item.cat_image && (
-            <Image
-              source={{
-                uri: resolveMediaUrl(item.cat_image),
-              }}
-              resizeMode="cover"
-              style={styles.categoryImage}
-            />
+          {item.cat_image ? (
+            <ImageBackground
+              source={{uri: resolveMediaUrl(item.cat_image)}}
+              style={styles.categoryImageBackground}
+              imageStyle={styles.categoryImage}
+              resizeMode="cover">
+              <Text style={styles.categoryTitle}>{item.cat_name}</Text>
+            </ImageBackground>
+          ) : (
+            <Text style={[styles.categoryTitle, styles.categoryTitleFallback]}>
+              {item.cat_name}
+            </Text>
           )}
-          <Text style={styles.categoryTitle}>{item.cat_name}</Text>
         </TouchableOpacity>
       );
     },
@@ -130,6 +133,7 @@ const styles = StyleSheet.create({
     height: 130,
     backgroundColor: Color.white,
     borderRadius: 12,
+    overflow: 'hidden',
     shadowColor: Color.black,
     shadowOffset: {
       width: 0,
@@ -140,9 +144,11 @@ const styles = StyleSheet.create({
     elevation: 3,
     borderWidth: 1,
     borderColor: Color.lightGray,
-    justifyContent: 'center',
-    alignItems: 'center',
-
+  },
+  categoryImageBackground: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   categoryInfo: {
     flex: 1,
@@ -150,12 +156,14 @@ const styles = StyleSheet.create({
   },
   categoryTitle: {
     fontSize: 14,
-    position:'absolute',
-    top:14,
-    left:15,
-    color:Color.white,
-    width:'40%',
-    lineHeight:25,
+    marginTop: 14,
+    marginLeft: 15,
+    color: Color.white,
+    width: '40%',
+    lineHeight: 25,
+  },
+  categoryTitleFallback: {
+    color: Color.black,
   },
   categoryDescription: {
     color: Color.gray,
@@ -166,10 +174,7 @@ const styles = StyleSheet.create({
     color: Color.primary,
   },
   categoryImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
-    borderRadius:12,
+    borderRadius: 12,
   },
   initialLoader: {
     width: '100%',

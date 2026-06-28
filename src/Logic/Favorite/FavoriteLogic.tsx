@@ -120,7 +120,6 @@ export default function FavoriteLogic() {
   const [favoriteProducts, setFavoriteProducts] = useState([]);
   const [recommended, setRecommended] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [id, setId] = useState<string | undefined>(undefined);
   const fetchFavorites = useCallback((onDone?: () => void) => {
     getFavoriteProductsModel(
       token,
@@ -212,7 +211,11 @@ export default function FavoriteLogic() {
 
   const onSubmit = (id?: string, isFavorite?: boolean) => {
     console.log('id =>===>', isFavorite);
-    setId(id);
+    if (id && isFavorite === false) {
+      setFavoriteProducts(prev =>
+        prev.filter((item: any) => String(item?.id) !== String(id)),
+      );
+    }
     refreshAll(isFavorite);
   };
 

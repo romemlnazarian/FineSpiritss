@@ -316,7 +316,7 @@ export default function CatalogDetailScreen(route: any) {
         {/* <Slider /> */}
         <View style={styles.detailsContainer}>
           <View style={styles.detailsHeader}>
-            <Text style={[Styles.body_Bold]}>{product?.title}</Text>
+            <Text style={[Styles.body_Bold,{width: '90%'}]}>{product?.title}</Text>
             <TouchableOpacity onPress={() => toggleFavorite(product?.id)}>
               {isFavorite ? (
                 <Heart width={24} height={24} fill={Color.red} />
@@ -552,8 +552,13 @@ export default function CatalogDetailScreen(route: any) {
 
           {Array.isArray(product?.gastronomy?.suggestions) &&
             product.gastronomy.suggestions.length > 0 && (
-            <>
-              <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
+            <View style={styles.suggestionsSection}>
+              <Text
+                style={[
+                  Styles.h6_Medium,
+                  styles.sectionTitle,
+                  styles.suggestionsSectionTitle,
+                ]}>
                 {Language.product_detail_suggestions}
               </Text>
               {product.gastronomy.suggestions.map(
@@ -572,7 +577,7 @@ export default function CatalogDetailScreen(route: any) {
                   </View>
                 ),
               )}
-            </>
+            </View>
           )}
         </View>
          {recommended.length > 0 && (
@@ -753,6 +758,12 @@ const styles = StyleSheet.create({
     gap: 10,
     marginLeft: '5%',
     marginTop: 10,
+  },
+  suggestionsSection: {
+    marginTop: -12,
+  },
+  suggestionsSectionTitle: {
+    marginTop: 12,
   },
   productCardContainer: {
     marginRight: 8,

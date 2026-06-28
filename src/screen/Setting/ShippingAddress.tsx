@@ -10,7 +10,7 @@ import BottomCardComponent from '../../component/BottomCard';
 import ShippingAddressLogic from '../../logic/Setting/ShippingAddressLogic';
 import {Language} from '../../utiles/Language/i18n';
 
-export default function ShippingAddress(route:any) {
+export default function ShippingAddress(route: any) {
   const {Styles} = StyleComponent();
   const {control, handleSubmit, errors, onSubmit, profile, loading, isValid} =
     ShippingAddressLogic(route);
@@ -18,139 +18,146 @@ export default function ShippingAddress(route:any) {
   const keyboardVerticalOffset = 40;
   const isSaveDisabled = loading || !isValid;
   return (
-    <KeyboardAvoidingView style={Styles.container}
-    behavior={'position'} keyboardVerticalOffset={keyboardVerticalOffset}
-    >
-      <CustomHeader showBack={true} subTitle={Language.shipping_address_header} />
-      <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.inputContainerSmallMargin}>
-        <TextView
-          title={Language.Name_Surname}
-          color={Color.black}
-          style={[Styles.title_Regular, styles.textStyles]}
-        />
-            <TextInputComponent
-              containerStyle={styles.textInputContainer}
-              placeholder={Language.Name_Surname_Placeholder}
-              handlePasswordIconClick={() => console.log()}
-              value={`${profile?.first_name} ${profile?.last_name}`}
-               showPass={true}
-                edit={false}
-            />
-      </View>
-      <View style={styles.inputContainerSmallMargin}>
-        <TextView
-          title={Language.Email}
-          color={Color.black}
-          style={[Styles.title_Regular, styles.textStyles]}
-        />
-            <TextInputComponent
-              containerStyle={styles.textInputContainer}
-              handlePasswordIconClick={() => console.log()}
-              value={`${profile?.email}`}
-               showPass={true}
-                edit={false}
-            />
-      </View>
-      <View style={styles.inputContainerSmallMargin}>
-        <TextView
-          title={Language.Address}
-          color={Color.black}
-          style={[Styles.title_Regular, styles.textStyles]}
-        />
-        <Controller
-          control={control}
-          name="street"
-          render={({field: {onChange, onBlur, value}}) => (
-            <TextInputComponent
-              containerStyle={styles.textInputContainer}
-              onBlur={onBlur}
-              placeholder={Language.street_address_placeholder}
-              handlePasswordIconClick={() => console.log()}
-              onChangeText={onChange}
-              value={value}
-              errorMessage={errors.street?.message}
-              showPass={true}
-            />
-          )}
-        />
-      </View>
-      <View style={styles.inputContainerSmallMargin}>
-        <TextView
-          title={Language.Postal_code}
-          color={Color.black}
-          style={[Styles.title_Regular, styles.textStyles]}
-        />
-        <Controller
-          control={control}
-          name="postalCode"
-          render={({field: {onChange, onBlur, value}}) => (
-            <TextInputComponent
-              containerStyle={styles.textInputContainer}
-              onBlur={onBlur}
-              placeholder={Language.postal_code_placeholder}
-              onChangeText={onChange}
-              value={value}
-              errorMessage={errors.postalCode?.message}
-              showPass={true}
-              keyboard="numeric"
-            />
-          )}
-        />
-      </View>
-      <View style={styles.inputContainerSmallMargin}>
-        <TextView
-          title={Language.City}
-          color={Color.black}
-          style={[Styles.title_Regular, styles.textStyles]}
-        />
-        <Controller
-          control={control}
-          name="city"
-          render={({field: {onChange, onBlur, value}}) => (
-            <TextInputComponent
-              containerStyle={styles.textInputContainer}
-              onBlur={onBlur}
-              placeholder={Language.city_placeholder}
-              onChangeText={onChange}
-              value={value}
-              errorMessage={errors.city?.message}
-              showPass={true}
-            />
-          )}
-        />
-      </View>
-      <View style={styles.inputContainerSmallMargin}>
-        <TextView
-          title={Language.Phone}
-          color={Color.black}
-          style={[Styles.title_Regular, styles.textStyles]}
-        />
-        <Controller
-          control={control}
-          name="phone"
-          render={({field: {onChange, onBlur, value}}) => (
-            <TextInputComponent
-              containerStyle={styles.textInputContainer}
-              onBlur={onBlur}
-              placeholder={Language.phone_placeholder}
-              onChangeText={onChange}
-              value={value}
-              errorMessage={errors.phone?.message}
-              showPass={true}
-              keyboard="numeric"
-            />
-          )}
-        />
-      </View>
-      <BottomCardComponent
-        title={Language.Save}
-        onHandler={handleSubmit(onSubmit)}
-        disabled={isSaveDisabled}
-        style={[styles.buttonComponent, isSaveDisabled ? styles.buttonDisabled : null]}
-        textStyle={isSaveDisabled ? styles.buttonTextDisabled : null}
-        loading={loading}
+    <KeyboardAvoidingView
+      style={Styles.container}
+      behavior={'position'}
+      keyboardVerticalOffset={keyboardVerticalOffset}>
+      <CustomHeader
+        showBack={true}
+        subTitle={Language.shipping_address_header}
       />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.inputContainerSmallMargin}>
+          <TextView
+            title={Language.Name_Surname}
+            color={Color.black}
+            style={[Styles.title_Regular, styles.textStyles]}
+          />
+          <TextInputComponent
+            containerStyle={styles.textInputContainer}
+            placeholder={Language.Name_Surname_Placeholder}
+            handlePasswordIconClick={() => console.log()}
+            value={`${profile?.first_name} ${profile?.last_name}`}
+            showPass={true}
+            edit={false}
+          />
+        </View>
+        <View style={styles.inputContainerSmallMargin}>
+          <TextView
+            title={Language.Email}
+            color={Color.black}
+            style={[Styles.title_Regular, styles.textStyles]}
+          />
+          <TextInputComponent
+            containerStyle={styles.textInputContainer}
+            handlePasswordIconClick={() => console.log()}
+            value={`${profile?.email}`}
+            showPass={true}
+            edit={false}
+          />
+        </View>
+        <View style={styles.inputContainerSmallMargin}>
+          <TextView
+            title={Language.Address}
+            color={Color.black}
+            style={[Styles.title_Regular, styles.textStyles]}
+          />
+          <Controller
+            control={control}
+            name="street"
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInputComponent
+                containerStyle={styles.textInputContainer}
+                onBlur={onBlur}
+                placeholder={Language.street_address_placeholder}
+                handlePasswordIconClick={() => console.log()}
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.street?.message}
+                showPass={true}
+              />
+            )}
+          />
+        </View>
+        <View style={styles.inputContainerSmallMargin}>
+          <TextView
+            title={Language.Postal_code}
+            color={Color.black}
+            style={[Styles.title_Regular, styles.textStyles]}
+          />
+          <Controller
+            control={control}
+            name="postalCode"
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInputComponent
+                containerStyle={styles.textInputContainer}
+                onBlur={onBlur}
+                placeholder={Language.postal_code_placeholder}
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.postalCode?.message}
+                showPass={true}
+                keyboard="numeric"
+              />
+            )}
+          />
+        </View>
+        <View style={styles.inputContainerSmallMargin}>
+          <TextView
+            title={Language.City}
+            color={Color.black}
+            style={[Styles.title_Regular, styles.textStyles]}
+          />
+          <Controller
+            control={control}
+            name="city"
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInputComponent
+                containerStyle={styles.textInputContainer}
+                onBlur={onBlur}
+                placeholder={Language.city_placeholder}
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.city?.message}
+                showPass={true}
+              />
+            )}
+          />
+        </View>
+        <View style={styles.inputContainerSmallMargin}>
+          <TextView
+            title={Language.Phone}
+            color={Color.black}
+            style={[Styles.title_Regular, styles.textStyles]}
+          />
+          <Controller
+            control={control}
+            name="phone"
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInputComponent
+                containerStyle={styles.textInputContainer}
+                onBlur={onBlur}
+                placeholder={Language.phone_placeholder}
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.phone?.message}
+                showPass={true}
+                keyboard="numeric"
+              />
+            )}
+          />
+        </View>
+        <BottomCardComponent
+          title={Language.Save}
+          onHandler={handleSubmit(onSubmit)}
+          disabled={isSaveDisabled}
+          style={[
+            styles.buttonComponent,
+            isSaveDisabled ? styles.buttonDisabled : null,
+          ]}
+          textStyle={isSaveDisabled ? styles.buttonTextDisabled : null}
+          loading={loading}
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );

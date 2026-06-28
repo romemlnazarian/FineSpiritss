@@ -5,7 +5,6 @@ import { StyleComponent } from '../../utiles/styles'
 import AddBottom from '../AddBottom';
 import BottomCardComponent from '../BottomCard';
 import Heart from '../../assets/svg/Heart.svg';
-import Heart_primary from '../../assets/svg/Heart_Primary.svg';
 import { DeleteFavoriteProductModel, AddFavoriteProductModel } from '../../model/Favorite/Favorite';
 import { refreshTokenModel } from '../../model/Auth/RefreshTokenModel';
 import useAuthStore from '../../zustland/AuthStore';
@@ -29,7 +28,13 @@ interface ProductItem {
 }
 
 
-export default function FavoriteItem({favoriteProducts, onReload}: {favoriteProducts: ProductItem[]; onReload?: () => void}) {
+export default function FavoriteItem({
+  favoriteProducts,
+  onReload,
+}: {
+  favoriteProducts: ProductItem[];
+  onReload?: (id?: string, isFavorite?: boolean) => void;
+}) {
 // Memoized Product Card Component
 const ProductCard = React.memo(({item}: {item: ProductItem}) => {
   const {token, refreshToken,setToken,setRefreshToken} = useAuthStore();
@@ -43,32 +48,39 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
     const {Styles} = StyleComponent();
     const [isFavorite, setIsFavorite] = useState<boolean>(Boolean(item?.is_favorite));
   
-     const onHandlerItem = (item: ProductItem) => {
+     const onHandlerItem = (product: ProductItem) => {
+      console.log('id', product.id);
       if (isFavorite) {
         setIsFavorite(false);
         DeleteFavoriteProductModel(
           token,
-          String(item.id),
+          String(product.id),
            () => {
-             onReload?.();
+             onReload?.(String(product.id), false);
            },
           error => {
             console.log('error', error);
+            setIsFavorite(true);
           },
           () => {
             refreshTokenModel(
               refreshToken,
               data => {
+                setToken(data.access);
+                setRefreshToken(data.refresh);
                 DeleteFavoriteProductModel(
                   data.access,
-                  String(item.id),
-                   () => onReload?.(),
+                  String(product.id),
+                   () => onReload?.(String(product.id), false),
                   error => {
                     console.log('error', error);
+                    setIsFavorite(true);
                   },
                 );
               },
-              () => {},
+              () => {
+                setIsFavorite(true);
+              },
             );
           },
         );
@@ -76,27 +88,34 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
         setIsFavorite(true);
         AddFavoriteProductModel(
           token,
-          String(item.id),
+          String(product.id),
            () => {
             setIsFavorite(true);
-             onReload?.();
+             onReload?.(String(product.id), true);
           },
           error => {
             console.log('error', error);
+            setIsFavorite(false);
           },
           () => {
             refreshTokenModel(
               refreshToken,
               data => {
+                setToken(data.access);
+                setRefreshToken(data.refresh);
                 AddFavoriteProductModel(
                   data.access,
-                  String(item.id),
-                   () => onReload?.(),
-                   () => {},
+                  String(product.id),
+                   () => onReload?.(String(product.id), true),
+                   () => {
+                     setIsFavorite(false);
+                   },
                    () => {},
                 );
               },
-              () => {},
+              () => {
+                setIsFavorite(false);
+              },
             );
           },
         );
@@ -248,6 +267,8 @@ const styles = StyleSheet.create({
       position: 'absolute',
       right: 10,
       top: 10,
+      zIndex: 10,
+      elevation: 10,
     },
     flatListContainer: {
       paddingBottom: 20,

@@ -25,6 +25,27 @@ const buildHeaders = (secretkey: string = ''): Record<string, string> => {
   return headers;
 };
 
+const parseResponseJson = async (response: Response) => {
+  const text = await response.text();
+  if (!text.trim()) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {};
+  }
+};
+
+const handleResponse = async (
+  response: Response,
+  callback: (data: any, status?: number, ok?: boolean) => void,
+) => {
+  const data = await parseResponseJson(response);
+  callback(data, response.status, response.ok);
+};
+
 // Remove useToast from here; instead, accept a showToast function as a parameter
 export const errorhandler = (error: any, showToast?: (msg: any) => void) => {
   console.log('errr', error);
@@ -46,13 +67,7 @@ export const POST = (
       headers: buildHeaders(secretkey),
       body: JSON.stringify(body),
     })
-      .then(function (data) {
-        const status = data.status;
-        const ok = data.ok;
-        data.json().then((dd) => {
-          callback(dd, status, ok);
-        });
-      })
+      .then(data => handleResponse(data, callback))
       .catch((error) => errorhandler(error));
   } else {
     fetch(root + controller, {
@@ -60,13 +75,7 @@ export const POST = (
       headers: buildHeaders(),
       body: JSON.stringify(body),
     })
-      .then(function (data) {
-        const status = data.status;
-        const ok = data.ok;
-        data.json().then((dd) => {
-          callback(dd, status, ok);
-        });
-      })
+      .then(data => handleResponse(data, callback))
       .catch((error) => errorhandler(error));
   }
 };
@@ -83,26 +92,14 @@ export const GET = (
       method: 'GET',
       headers: buildHeaders(secretkey),
     })
-      .then(function (data) {
-        const status = data.status;
-        const ok = data.ok;
-        data.json().then((dd) => {
-          callback(dd, status, ok);
-        });
-      })
+      .then(data => handleResponse(data, callback))
       .catch((error) => errorhandler(error));
   } else {
     fetch(root + controller, {
       method: 'GET',
       headers: buildHeaders(),
     })
-      .then(function (data) {
-        const status = data.status;
-        const ok = data.ok;
-        data.json().then((dd) => {
-          callback(dd, status, ok);
-        });
-      })
+      .then(data => handleResponse(data, callback))
       .catch((error) => errorhandler(error));
   }
 };
@@ -121,13 +118,7 @@ export const PUT = (
       headers: buildHeaders(secretkey),
       body: JSON.stringify(body),
     })
-      .then(function (data) {
-        const status = data.status;
-        const ok = data.ok;
-        data.json().then((dd) => {
-          callback(dd, status, ok);
-        });
-      })
+      .then(data => handleResponse(data, callback))
       .catch((error) => errorhandler(error));
   } else {
     fetch(root + controller, {
@@ -135,13 +126,7 @@ export const PUT = (
       headers: buildHeaders(secretkey),
       body: JSON.stringify(body),
     })
-      .then(function (data) {
-        const status = data.status;
-        const ok = data.ok;
-        data.json().then((dd) => {
-          callback(dd, status, ok);
-        });
-      })
+      .then(data => handleResponse(data, callback))
       .catch((error) => errorhandler(error));
   }
 };
@@ -151,36 +136,39 @@ export const DELETE = (
   controller: string,
   callback: (data: any, status?: number, ok?: boolean) => void,
   secretkey: string = '',
-  body: any = ''
+  body: any = '',
+  errorcallback?: (error: any) => void,
 ) => {
   // console.log("secret", root,controller);
+  const hasBody = body !== '';
+  const headers = buildHeaders(secretkey);
+
+  if (!hasBody) {
+    delete headers['Content-Type'];
+  }
+
+  const requestOptions: RequestInit = {
+    method: 'DELETE',
+    headers,
+  };
+
+  if (hasBody) {
+    requestOptions.body = JSON.stringify(body);
+  }
+
   if (secretkey !== '') {
-    fetch(root + controller, {
-      method: 'DELETE',
-      headers: buildHeaders(secretkey),
-      body: JSON.stringify(body),
-    })
-      .then(function (data) {
-        const status = data.status;
-        const ok = data.ok;
-        data.json().then((dd) => {
-          callback(dd, status, ok);
-        });
-      })
-      .catch((error) => errorhandler(error));
+    fetch(root + controller, requestOptions)
+      .then(data => handleResponse(data, callback))
+      .catch((error) => {
+        errorhandler(error);
+        errorcallback?.(error);
+      });
   } else {
-    fetch(root + controller, {
-      method: 'DELETE',
-      headers: buildHeaders(),
-      body: JSON.stringify(body),
-    })
-      .then(function (data) {
-        const status = data.status;
-        const ok = data.ok;
-        data.json().then((dd) => {
-          callback(dd, status, ok);
-        });
-      })
-      .catch((error) => errorhandler(error));
+    fetch(root + controller, requestOptions)
+      .then(data => handleResponse(data, callback))
+      .catch((error) => {
+        errorhandler(error);
+        errorcallback?.(error);
+      });
   }
 };
