@@ -109,7 +109,7 @@ function renderSuggestionIcon(suggestion: any) {
   );
 }
 
-const BOTTOM_ACTION_BAR_HEIGHT = 10;
+const BOTTOM_ACTION_BAR_HEIGHT = 60;
 
 export default function CatalogDetailScreen(route: any) {
   const {Styles, Height} = StyleComponent();
@@ -130,10 +130,15 @@ export default function CatalogDetailScreen(route: any) {
   const navigation: any = useNavigation();
   const fromFavorite = Boolean(route?.route?.params?.fromFavorite);
   const fromSetting = Boolean(route?.route?.params?.fromSetting);
+  const fromCart = Boolean(route?.route?.params?.fromCart);
 
   const handleBack = useCallback(() => {
     if (fromFavorite) {
       navigation.navigate('FavoriteScreen', {screen: 'Favorite'});
+      return;
+    }
+    if (fromCart) {
+      navigation.navigate('CardScreen', {screen: 'Card'});
       return;
     }
     if (fromSetting) {
@@ -150,17 +155,19 @@ export default function CatalogDetailScreen(route: any) {
         navigation.navigate('CatalogScreen', {screen: 'Catalog'});
       }
     }
-  }, [fromFavorite, fromSetting, navigation]);
+  }, [fromFavorite, fromCart, fromSetting, navigation]);
 
-  // Android hardware back: if opened from Favorite, go back to Favorite tab
+  // Android hardware back: return to the tab that opened this detail screen
   useFocusEffect(
     useCallback(() => {
-      if (!fromFavorite && !fromSetting) {
+      if (!fromFavorite && !fromSetting && !fromCart) {
         return () => {};
       }
       const onBackPress = () => {
         if (fromFavorite) {
           navigation.navigate('FavoriteScreen', {screen: 'Favorite'});
+        } else if (fromCart) {
+          navigation.navigate('CardScreen', {screen: 'Card'});
         } else {
           navigation.navigate('SettingScreen');
         }
@@ -173,7 +180,7 @@ export default function CatalogDetailScreen(route: any) {
       return () => {
         subscription.remove();
       };
-    }, [fromFavorite, fromSetting, navigation]),
+    }, [fromFavorite, fromCart, fromSetting, navigation]),
   );
 
   const productImageUri = useMemo(
@@ -350,7 +357,7 @@ export default function CatalogDetailScreen(route: any) {
               style={[
                 Styles.title_Regular,
                 styles.subInfoText,
-                {color: Color.gray, marginLeft: 0, color: Color.black},
+                {marginLeft: 0, color: Color.black},
               ]}>
               {product?.sku}
             </Text>
@@ -368,7 +375,7 @@ export default function CatalogDetailScreen(route: any) {
               style={[
                 Styles.title_Regular,
                 styles.subInfoText,
-                {color: Color.gray, marginLeft: 0, color: Color.black},
+                {marginLeft: 0, color: Color.black},
               ]}>
               {product?.stock_status || ''}
             </Text>
@@ -761,6 +768,7 @@ const styles = StyleSheet.create({
   },
   suggestionsSection: {
     marginTop: -12,
+    marginBottom: 15,
   },
   suggestionsSectionTitle: {
     marginTop: 12,

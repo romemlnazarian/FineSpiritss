@@ -1,5 +1,5 @@
 import ProductCardInCart from './ProductCardInCart';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
@@ -23,9 +23,7 @@ export default function CartItem(props: {
         </Text>
       </View>
       <View style={styles.divider} />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.flatListContainer}>
+      <View style={styles.listContainer}>
         {products?.map((item: any) => (
           <ProductCardInCart
             key={item.id}
@@ -33,7 +31,7 @@ export default function CartItem(props: {
             onSynced={refreshCart}
           />
         ))}
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -53,7 +51,7 @@ const styles = StyleSheet.create({
     height: 1,
     marginTop: '5%',
   },
-  flatListContainer: {
+  listContainer: {
     paddingBottom: 20,
   },
   container: {width: '100%', backgroundColor: Color.white, padding: 10},

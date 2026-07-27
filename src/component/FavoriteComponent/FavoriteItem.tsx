@@ -49,7 +49,7 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
     const [isFavorite, setIsFavorite] = useState<boolean>(Boolean(item?.is_favorite));
   
      const onHandlerItem = (product: ProductItem) => {
-      console.log('id', product.id);
+      // console.log('id', product.id);
       if (isFavorite) {
         setIsFavorite(false);
         DeleteFavoriteProductModel(

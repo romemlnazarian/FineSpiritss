@@ -1,5 +1,6 @@
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
+import {useNavigation} from '@react-navigation/native';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
 import {Language} from '../../utiles/Language/i18n';
@@ -19,6 +20,7 @@ interface ProductItem {
   sale_price?: string | null;
   regular_price?: string;
   quantity: number;
+  slug?: string;
 }
 
 interface ProductCardInCartProps {
@@ -30,6 +32,7 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
   item,
   onSynced,
 }) => {
+  const navigation: any = useNavigation();
   const {Styles} = StyleComponent();
   const {count, onQuantityChange, removeImmediately} = useDebouncedCartActions({
     productId: item.id,
@@ -39,10 +42,24 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
   const hasSalePrice =
     item.sale_price !== null && item.sale_price !== undefined;
 
+  const openDetail = () => {
+    navigation.navigate('CatalogScreen', {
+      screen: 'CatalogDetail',
+      params: {
+        product: item,
+        quantity: item.quantity,
+        fromCart: true,
+      },
+    });
+  };
+
   return (
     <>
       <View style={[Styles.justifyBetween, styles.mainContainer]}>
-        <View style={[Styles.justifyCenter, styles.leftSection]}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={openDetail}
+          style={[Styles.justifyCenter, styles.leftSection]}>
           <Image
             source={{uri: resolveProductImageUrl(item)}}
             style={styles.productImage}
@@ -85,19 +102,19 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
               </Text>
             </View>
           </View>
+        </TouchableOpacity>
         <AddBottom
-        style={styles.addBottom}
-        onQuantityChange={onQuantityChange}
-        count={count}
-      />
-        </View>
+          style={styles.addBottom}
+          onQuantityChange={onQuantityChange}
+          count={count}
+        />
         <TouchableOpacity
           style={styles.heartContainer}
           onPress={removeImmediately}>
           <Trash width={24} height={24} />
         </TouchableOpacity>
       </View>
-   
+
       <View style={styles.divider} />
     </>
   );

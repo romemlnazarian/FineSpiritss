@@ -70,7 +70,13 @@ export default function CardScreen() {
           style={styles.activityIndicator}
         />
       ) : (
-        <ScrollView>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          nestedScrollEnabled
+          bounces>
           {data?.products && data.products.length > 0 ? (
             <>
               <CartItem data={data} refreshCart={refreshCart} />
@@ -249,7 +255,7 @@ export default function CardScreen() {
                       callback={(item: any) =>
                         navigation.navigate('CatalogScreen', {
                           screen: 'CatalogDetail',
-                          params: {product: item},
+                          params: {product: item, fromCart: true},
                         })
                       }
                       products={recommended}
@@ -362,6 +368,13 @@ export default function CardScreen() {
 }
 
 const styles = StyleSheet.create({
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 24,
+  },
   sectionContainer: {
     width: '100%',
     alignSelf: 'center',

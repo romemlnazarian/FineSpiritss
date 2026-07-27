@@ -1,63 +1,79 @@
 import React, {useEffect, useRef} from 'react';
-import {ActivityIndicator, Linking, StyleSheet, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {
+  ActivityIndicator,
+  AppState,
+  BackHandler,
+  Linking,
+  StyleSheet,
+  View,
+} from 'react-native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import InAppBrowser from 'react-native-inappbrowser-reborn';
-import useAuthStore from '../../zustland/AuthStore';
 import {ButtonScreenNavigationProp} from '../../navigation/types';
+import useAuthStore from '../../zustland/AuthStore';
 
 export default function GoogleAuthScreen() {
   const navigation = useNavigation<ButtonScreenNavigationProp>();
-
-  const {
-    setToken,
-    setRefreshToken,
-    setIsLoggedIn,
-    setUserData,
-  } = useAuthStore();
-
-  const authUrl =
-    'https://finespirits.pl/wp-json/mobile/v1/auth/social/redirect/google/?state=app';
+  const {setToken, setRefreshToken, setIsLoggedIn, setUserData} = useAuthStore();
 
   const redirectScheme = 'com.finespirits.app://SocialAuth';
+  const authUrl = 'https://api.finespirits.pl/api/auth/google/init/';
+
   const finishedRef = useRef(false);
+  const openedRef = useRef(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBack = () => {
+        navigation.goBack();
+        return true;
+      };
+      const sub = BackHandler.addEventListener('hardwareBackPress', onBack);
+      return () => sub.remove();
+    }, [navigation]),
+  );
 
   useEffect(() => {
     const parseCallbackUrl = (url: string) => {
-      const query = url.split('?')[1] || '';
+      const queryString = url.split('?')[1] || '';
       const params: Record<string, string> = {};
-
-      query.split('&').forEach(p => {
-        if (!p) {
+      queryString.split('&').forEach(pair => {
+        if (!pair) {
           return;
         }
-        const [k, v = ''] = p.split('=');
-        const key = decodeURIComponent(String(k ?? '')).trim();
-        const value = decodeURIComponent(String(v ?? '')).trim();
+        const [rawKey, rawValue = ''] = pair.split('=');
+        const key = decodeURIComponent(rawKey || '').trim();
+        const value = decodeURIComponent(rawValue || '').trim();
         if (key) {
           params[key] = value;
         }
       });
-
       return params;
     };
 
     const handleAuthCallback = (url: string) => {
-      if (!url?.startsWith(redirectScheme)) {
+      if (!url || !url.startsWith(redirectScheme)) {
         return;
       }
 
       try {
         const params = parseCallbackUrl(url);
-        if (!params.access) {
+        const access = params.access;
+        const refresh = params.refresh;
+        const email = params.email;
+
+        console.log('[GoogleAuth] deep link result:', {access, refresh, email});
+
+        if (!access) {
           return;
         }
 
-        setToken(params.access);
-        if (params.refresh) {
-          setRefreshToken(params.refresh);
+        setToken(access);
+        if (refresh) {
+          setRefreshToken(refresh);
         }
-        if (params.email) {
-          setUserData({email: params.email});
+        if (email) {
+          setUserData({email});
         }
 
         setIsLoggedIn(true);
@@ -68,35 +84,36 @@ export default function GoogleAuthScreen() {
           routes: [{name: 'AppTabs'}],
         });
       } catch (e) {
-        console.log('Deep link parse error:', e);
+        console.log('[GoogleAuth] deep link parse error:', e);
       }
     };
 
-    const handleUrlEvent = ({url}: {url: string}) => handleAuthCallback(url);
-
-    const sub = Linking.addEventListener('url', handleUrlEvent);
+    const subscription = Linking.addEventListener('url', ({url}) =>
+      handleAuthCallback(url),
+    );
 
     (async () => {
-      // If app was opened by a deep-link before this screen mounted, handle it.
       Linking.getInitialURL()
-        .then(initialUrl => {
-          if (initialUrl) {
-            handleAuthCallback(initialUrl);
+        .then(url => {
+          if (url) {
+            handleAuthCallback(url);
           }
         })
         .catch(() => {});
 
       const isAvailable = await InAppBrowser.isAvailable().catch(() => false);
 
-      // Prefer openAuth on BOTH platforms when available: it returns the callback URL reliably.
       if (isAvailable) {
         const result = await InAppBrowser.openAuth(authUrl, redirectScheme, {
-          // UI
           showTitle: false,
           enableUrlBarHiding: true,
           enableDefaultShare: false,
+          ephemeralWebSession: false,
+          headers: {
+            'ngrok-skip-browser-warning': 'true',
+          },
         }).catch(err => {
-          console.log('InAppBrowser.openAuth error:', err);
+          console.log('[GoogleAuth] InAppBrowser.openAuth error:', err);
           return null;
         });
 
@@ -105,19 +122,27 @@ export default function GoogleAuthScreen() {
           return;
         }
 
-        // User cancelled/dismissed: go back to previous screen (e.g. Signin)
         if (!finishedRef.current) {
           navigation.goBack();
         }
         return;
       }
 
-      // Fallback: open in browser and wait for deep-link back into the app
-      Linking.openURL(authUrl).catch(err => console.log('Linking.openURL error:', err));
+      Linking.openURL(authUrl).catch(err =>
+        console.log('[GoogleAuth] Linking.openURL error:', err),
+      );
+      openedRef.current = true;
     })();
 
+    const appStateSub = AppState.addEventListener('change', state => {
+      if (state === 'active' && openedRef.current && !finishedRef.current) {
+        navigation.goBack();
+      }
+    });
+
     return () => {
-      sub.remove();
+      subscription.remove();
+      appStateSub.remove();
       if (!finishedRef.current) {
         InAppBrowser.close();
       }

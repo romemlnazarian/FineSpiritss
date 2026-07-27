@@ -11,7 +11,7 @@ export default function AppleAuthScreen() {
   const { setToken, setRefreshToken, setIsLoggedIn, setUserData } = useAuthStore();
 
   const redirectScheme = 'com.finespirits.app://SocialAuth';
-  const authUrl = 'https://finespirits.pl/wp-json/mobile/v1/auth/social/redirect/apple/?state=app';
+  const authUrl = 'https://api.finespirits.pl/api/auth/apple/callback/';
 
   // Track flow state across effects
   const finishedRef = useRef(false);

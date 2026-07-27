@@ -55,7 +55,7 @@ export const FcmTokenModel = (
       }
     },
     token,
-    {fcm_token, device_type},
+    {token:fcm_token, device_type},
   );
 };
 
@@ -78,7 +78,7 @@ export function registerFcmTokenWithServer(fcmToken: string): void {
       fcmToken,
       device_type,
       data => {
-        console.log('[Notifications] FCM token registered:', data);
+        console.log('[Notifications] FCM token registered:====>', data);
       },
       error => {
         console.log('[Notifications] FCM register error:', error);
@@ -94,7 +94,7 @@ export function registerFcmTokenWithServer(fcmToken: string): void {
               fcmToken,
               device_type,
               data => {
-                console.log('[Notifications] FCM token registered after refresh:', data);
+                console.log('[Notifications] FCM token registered after refresh---------->:', data);
               },
               error => {
                 console.log('[Notifications] FCM register error:', error);

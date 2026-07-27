@@ -163,6 +163,7 @@ import {
   const styles = StyleSheet.create({
     flex1: {
       flex: 1,
+      backgroundColor: Color.white,
     },
     videoContainer: {
       flex: 1,

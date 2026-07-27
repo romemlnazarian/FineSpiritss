@@ -5,6 +5,8 @@ export type AuthStackParamList = {
   Signup:undefined
   Signin:undefined
   Splash: undefined
+  GoogleAuth: undefined
+  AppleAuth: undefined
   VerificationCode:{
     email: string,
   }
@@ -34,6 +36,9 @@ export type ButtonParamList = {
   CatalogDetail: {
     product: any;
     quantity?: number;
+    fromFavorite?: boolean;
+    fromSetting?: boolean;
+    fromCart?: boolean;
   } | undefined;
   CatalogCategory: {
     item?: any;
@@ -57,6 +62,9 @@ export type CatalogStackParamList = {
   CatalogDetail: {
     product: any;
     quantity?: number;
+    fromFavorite?: boolean;
+    fromSetting?: boolean;
+    fromCart?: boolean;
   } | undefined;
   CatalogCategory: {
     item?: any;
