@@ -1,5 +1,5 @@
 import React from 'react';
-import {Linking} from 'react-native';
+import {Linking, Platform} from 'react-native';
 import notifee, {EventType} from '@notifee/react-native';
 import type {NavigationContainerRef} from '@react-navigation/native';
 import {
@@ -32,9 +32,21 @@ export function NotificationsBootstrap({navigationRef}: NotificationsBootstrapPr
 
       const tokens = await getPushDebugTokens();
       console.log('[Notifications] Push tokens:', tokens);
+      if (Platform.OS === 'ios') {
+        console.log('[Notifications][iOS] bootstrap APNs token:', tokens.apnsToken);
+        console.log('[Notifications][iOS] bootstrap FCM token:', tokens.fcmToken);
+      }
 
       const token = await getFcmToken();
       console.log('[Notifications] FCM token:', token);
+      if (Platform.OS === 'ios') {
+        console.log('[Notifications][iOS] bootstrap getFcmToken:', token);
+      }
+      if (token) {
+        registerFcmTokenWithServer(token);
+      } else {
+        console.log('[Notifications] skip FCM register: token is null');
+      }
 
       // If app was opened by tapping a notification
       try {

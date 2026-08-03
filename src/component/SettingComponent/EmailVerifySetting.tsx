@@ -9,12 +9,13 @@ import TextInputComponent from '../TextInputComponent';
 import Email from '../../assets/svg/Email.svg';
 import BottomCardComponent from '../BottomCard';
 import {Color} from '../../utiles/color';
+import {Language} from '../../utiles/Language/i18n';
 export default function EmailVerifySetting({callBack}:{callBack:(value:string)=>void}) {
   const {Styles} = StyleComponent();
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .trim()
-      .required('Email is required'),
+      .required(Language.Email),
   });
   const {
     control,
@@ -35,9 +36,9 @@ export default function EmailVerifySetting({callBack}:{callBack:(value:string)=>
   const isSaveDisabled = !isValid;
   return (
     <View style={[Styles.alignCenter, styles.container]}>
-      <Text style={Styles.h5_Medium}>Change Email address</Text>
+      <Text style={Styles.h5_Medium}>{Language.change_email_title}</Text>
       <Text style={[Styles.title_Regular, Styles.textAlign, styles.subtitle]}>
-        We’ll send you a code to verify your new email address
+        {Language.change_email_subtitle}
       </Text>
       <View style={Styles.alignCenter}>
       <Controller
@@ -47,7 +48,7 @@ export default function EmailVerifySetting({callBack}:{callBack:(value:string)=>
             <TextInputComponent
               containerStyle={styles.input}
               onBlur={onBlur}
-              placeholder={'New Email Address'}
+              placeholder={Language.new_email_address}
               handlePasswordIconClick={() => console.log()}
               onChangeText={onChange}
               value={value}
@@ -59,7 +60,7 @@ export default function EmailVerifySetting({callBack}:{callBack:(value:string)=>
         />
       </View>
       <BottomCardComponent
-        title={'Next'}
+        title={Language.Next}
         onHandler={handleSubmit(onSubmit)}
         disabled={isSaveDisabled}
         style={[

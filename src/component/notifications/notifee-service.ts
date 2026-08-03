@@ -89,8 +89,13 @@ export async function requestNotificationPermission(): Promise<{
     const granted =
       settings.authorizationStatus === 1 || // AUTHORIZED
       settings.authorizationStatus === 2; // PROVISIONAL
+    console.log('[Notifications][iOS] Notifee permission:', {
+      authorizationStatus: settings.authorizationStatus,
+      granted,
+    });
     return { granted, status: String(settings.authorizationStatus) };
   } catch (e) {
+    console.log('[Notifications][iOS] Notifee permission error:', e);
     return { granted: false, status: String((e as any)?.message ?? e) };
   }
 }
@@ -110,8 +115,13 @@ export async function requestFcmPermissionIOS(): Promise<{
     const granted =
       status === AuthorizationStatus.AUTHORIZED ||
       status === AuthorizationStatus.PROVISIONAL;
+    console.log('[Notifications][iOS] Firebase permission:', {
+      status,
+      granted,
+    });
     return { granted, status };
-  } catch {
+  } catch (e) {
+    console.log('[Notifications][iOS] Firebase permission error:', e);
     return { granted: false };
   }
 }
@@ -124,7 +134,9 @@ export async function requestPushNotificationAccessIfNeeded(): Promise<{
   try {
     const alreadyPrompted = await AsyncStorage.getItem(PUSH_PERMISSION_PROMPTED_KEY);
     if (alreadyPrompted === 'true') {
-      return {granted: false, prompted: false, fcmToken: null};
+      const fcmToken = await getFcmToken();
+      console.log('[Notifications] existing permission FCM token:', fcmToken);
+      return {granted: Boolean(fcmToken), prompted: false, fcmToken};
     }
 
     await ensureDefaultChannel();
@@ -150,9 +162,25 @@ export async function requestPushNotificationAccessIfNeeded(): Promise<{
 // FC Token (FCM token)
 export async function getFcmToken(): Promise<string | null> {
   try {
+    if (Platform.OS === 'ios') {
+      const apnsToken = await getAPNSToken(getMessagingInstance()).catch(error => {
+        console.log('[Notifications][iOS] APNs token error before FCM:', error);
+        return null;
+      });
+      console.log('[Notifications][iOS] APNs token before FCM:', apnsToken);
+    }
+
     const token = await getToken(getMessagingInstance());
+    console.log('[Notifications] getFcmToken result:', {
+      platform: Platform.OS,
+      token,
+    });
     return token || null;
-  } catch {
+  } catch (error) {
+    console.log('[Notifications] getFcmToken error:', {
+      platform: Platform.OS,
+      error,
+    });
     return null;
   }
 }
@@ -163,17 +191,30 @@ export async function getPushDebugTokens(): Promise<{
 }> {
   try {
     const [fcmToken, apnsToken] = await Promise.all([
-      getToken(getMessagingInstance()).catch(() => null),
+      getToken(getMessagingInstance()).catch(error => {
+        console.log('[Notifications] debug FCM token error:', error);
+        return null;
+      }),
       Platform.OS === 'ios'
-        ? getAPNSToken(getMessagingInstance()).catch(() => null)
+        ? getAPNSToken(getMessagingInstance()).catch(error => {
+            console.log('[Notifications][iOS] debug APNs token error:', error);
+            return null;
+          })
         : Promise.resolve(null),
     ]);
+
+    console.log('[Notifications] debug push tokens:', {
+      platform: Platform.OS,
+      fcmToken,
+      apnsToken,
+    });
 
     return {
       fcmToken: fcmToken || null,
       apnsToken: apnsToken || null,
     };
-  } catch {
+  } catch (error) {
+    console.log('[Notifications] debug push tokens error:', error);
     return {
       fcmToken: null,
       apnsToken: null,

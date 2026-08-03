@@ -3,6 +3,7 @@ import {useNavigation} from '@react-navigation/native';
 import {AuthScreenNavigationProp} from '../navigation/types';
 import {useToast} from '../utiles/Toast/ToastProvider';
 import { ResendOtpForgetPasswordModel, VerifyCodeForgetPasswordModel } from '../model/Auth/ForgetPasswordModel';
+import {Language} from '../utiles/Language/i18n';
 
 export default function ForgetPasswordVerifyLogic(route: any) {
   const navigation = useNavigation<AuthScreenNavigationProp>();
@@ -29,7 +30,7 @@ export default function ForgetPasswordVerifyLogic(route: any) {
   const onCodeHandle = (value: string) => {
     if (!restartKey || isOtpExpiredRef.current) {
       setCodeValid(false);
-      show('Code expired', {type: 'error'});
+      show(Language.setting_code_expired, {type: 'error'});
       return;
     }
     if (value.length === 5) {
@@ -39,11 +40,11 @@ export default function ForgetPasswordVerifyLogic(route: any) {
         (_data) => {
           if (isOtpExpiredRef.current) {
             setCodeValid(false);
-            show('Code expired', {type: 'error'});
+            show(Language.setting_code_expired, {type: 'error'});
             return;
           }
           navigation.navigate('ResetPassword',{email:email});
-          show('Code verified', {type: 'success'});
+          show(Language.code_verified, {type: 'success'});
         },
         error => {
           setCodeValid(false);
@@ -65,7 +66,7 @@ export default function ForgetPasswordVerifyLogic(route: any) {
     ResendOtpForgetPasswordModel(
       email,
       () => {
-        show('Code sent again', {type: 'success'});
+        show(Language.setting_code_sent_again, {type: 'success'});
       },
       error => {
         show(String(error || 'Resend failed'), {type: 'error'});

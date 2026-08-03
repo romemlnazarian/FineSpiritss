@@ -8,6 +8,7 @@ import type {Address} from '../../zustland/GetAddressStore';
 import { Linking } from 'react-native';
 import { getHomeRecommendedModel } from '../../model/Home/HomeAdvertising';
 import { AddFavoriteProductModel, DeleteFavoriteProductModel } from '../../model/Favorite/Favorite';
+import useCartBadgeStore, {getCartItemsCount} from '../../zustland/cartBadgeStore';
 
 type CartLogixReturn = {
   loading: boolean;
@@ -83,6 +84,7 @@ export default function CartLogix(): CartLogixReturn {
       fetchedData => {
         console.log('data', fetchedData);
         setData(fetchedData);
+        useCartBadgeStore.getState().setCount(getCartItemsCount(fetchedData));
         setLoading(false);
       },
       () => {
@@ -98,6 +100,9 @@ export default function CartLogix(): CartLogixReturn {
               refreshedTokens.access,
               fetchedData => {
                 setData(fetchedData);
+                useCartBadgeStore
+                  .getState()
+                  .setCount(getCartItemsCount(fetchedData));
                 setLoading(false);
               },
               () => {

@@ -43,7 +43,7 @@ export default function ChangePasswordSetting({onCallBack}: {onCallBack: () => v
             <TextInputComponent
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
-              placeholder={'Old Password'}
+              placeholder={Language.old_password}
               handlePasswordIconClick={() => onHandleShowPass('oldPass')}
               onChangeText={onChange}
               value={value}
@@ -62,7 +62,7 @@ export default function ChangePasswordSetting({onCallBack}: {onCallBack: () => v
             <TextInputComponent
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
-              placeholder={'New Password'}
+              placeholder={Language.new_password}
               handlePasswordIconClick={() => onHandleShowPass('pass')}
               onChangeText={onChange}
               value={value}
@@ -81,7 +81,7 @@ export default function ChangePasswordSetting({onCallBack}: {onCallBack: () => v
             <TextInputComponent
               containerStyle={styles.textInputContainer}
               onBlur={onBlur}
-              placeholder={'New Password Again'}
+              placeholder={Language.new_password_again}
               handlePasswordIconClick={() => onHandleShowPass('repeatPass')}
               onChangeText={onChange}
               value={value}
@@ -94,7 +94,7 @@ export default function ChangePasswordSetting({onCallBack}: {onCallBack: () => v
           )}
         />
         <BottomCardComponent
-          title={'Save'}
+          title={Language.Save}
           disabled={isSaveDisabled}
           loading={isLoading}
           onHandler={handleSubmit(onSubmit)}

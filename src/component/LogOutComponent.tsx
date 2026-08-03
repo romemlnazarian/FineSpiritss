@@ -3,6 +3,7 @@ import React from 'react'
 import { shadow3, StyleComponent } from '../utiles/styles'
 import BottomCardComponent from './BottomCard';
 import { Color } from '../utiles/color';
+import {Language} from '../utiles/Language/i18n';
 export default function LogOutComponent({onClose,logOutModalVisible,setLogOutModalVisible}:{onClose:()=>void,logOutModalVisible:boolean,setLogOutModalVisible:()=>void}) {
   const {Styles} = StyleComponent();
   return (
@@ -20,11 +21,10 @@ export default function LogOutComponent({onClose,logOutModalVisible,setLogOutMod
         <View style={styles.cardContainer}>
 
          <Text style={[Styles.h6_Regular, Styles.textAlign, styles.modalTitleText]}>
-         Are you sure you want
-         to logout?
+{Language.logout_confirm}
          </Text>
          <BottomCardComponent
-        title={'Logout'}
+        title={Language.Logout}
         onHandler={()=>{
           onClose();
         }}
@@ -32,7 +32,7 @@ export default function LogOutComponent({onClose,logOutModalVisible,setLogOutMod
         textStyle={{color:Color.primary}}
       />
            <BottomCardComponent
-        title={'Cancel'}
+        title={Language.Cancel}
         onHandler={()=>setLogOutModalVisible(false)}
         style={{ ...styles.buttonComponent, ...styles.noButtonMarginTop }}
         textStyle={{color:Color.white}}

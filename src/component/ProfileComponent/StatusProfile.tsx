@@ -4,6 +4,7 @@ import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import Star from 'react-native-vector-icons/AntDesign';
 import Svg, {Circle} from 'react-native-svg';
+import {Language} from '../../utiles/Language/i18n';
 
 type StatusProfileProps = {
   currentPoints?: number;
@@ -51,10 +52,9 @@ export default function StatusProfile({
         </View>
       </View>
       <View style={styles.textBlock}>
-          <Text style={[Styles.title_Bold]}>Your Status - Standard</Text>
+          <Text style={[Styles.title_Bold]}>{Language.status_your_standard}</Text>
           <Text style={[Styles.title_Regular, styles.descWidth]}>
-          Accumulate 600 points before 09/03/2025,
-          to get your Basic status for a 3% discount!
+          {Language.status_accumulate_points}
           </Text>
         </View>
     </View>

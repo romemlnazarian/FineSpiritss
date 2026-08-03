@@ -6,19 +6,31 @@ import {AuthScreenNavigationProp} from '../navigation/types';
 import { useState} from 'react';
 import { useToast } from '../utiles/Toast/ToastProvider';
 import {Register} from '../model/Auth/SignupModel';
+import {signInWithApple} from '../service/appleSignInService';
+import useAuthStore from '../zustland/AuthStore';
+import { Language } from '../utiles/Language/i18n';
+
 export const SignupLogic = () => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
   const { show } = useToast();
+  const {
+    setUserData,
+    setToken,
+    setRefreshToken,
+    setIsLoggedIn,
+    setAgeConfirmed,
+  } = useAuthStore();
   const [date, setDate] = useState(new Date());
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [open, setOpen] = useState(false);
-   const[showPass, setShowPass] = useState(false);
+  const [showPass, setShowPass] = useState(false);
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
   const validationSchema = Yup.object().shape({
-    username: Yup.string().trim().required('Required'),
+    username: Yup.string().trim().required(Language.required_field).min(5, Language.username_min_length),
     email: Yup.string()
       .trim()
-      .required('Email is required')
+      .required(Language.email_required)
   });
   const {
     control,
@@ -39,9 +51,13 @@ export const SignupLogic = () => {
 
   const onSubmit = async () => {
     const values = getValues();
+    if (!privacyAgreed) {
+      show(Language.signup_privacy_required, {type: 'error'});
+      return;
+    }
     // Require birthdate selection
     if (!selectedDate) {
-      show('Please select your birthdate', { type: 'error' });
+      show(Language.select_birthdate, { type: 'error' });
       return;
     }
     // Enforce 18+ age
@@ -55,11 +71,11 @@ export const SignupLogic = () => {
         (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate());
       if (hasNotHadBirthdayThisYear) age -= 1;
       if (age < 18) {
-        show('You must be at least 18 years old to register', { type: 'error' });
+        show(Language.must_be_18_register, { type: 'error' });
         return;
       }
     } catch {
-      show('Invalid birthdate', { type: 'error' });
+      show(Language.invalid_birthdate, { type: 'error' });
       return;
     }
     setLoading(true);
@@ -94,11 +110,82 @@ export const SignupLogic = () => {
     setSelectedDate(result);
   };
 
-  const onSubmitGoogle =  () => {
-    navigation.navigate('GoogleAuth' as never);
+  const onSubmitGoogle = async () => {
+    navigation.navigate('GoogleAuth');
   };
-  const onSubmitApple =  () => {
-    navigation.navigate('AppleAuth' as never);
+
+  const onSubmitApple = async () => {
+    setLoading(true);
+    try {
+      const result = await signInWithApple();
+
+      if (!result.identityToken) {
+        throw new Error('Apple sign-in did not return identity token');
+      }
+
+      const res = await fetch(
+        'https://api.finespirits.pl/api/auth/apple/callback/',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+          },
+          body: JSON.stringify({
+            identity_token: result.identityToken,
+            first_name: result.user.fullName?.givenName ?? null,
+            last_name: result.user.fullName?.familyName ?? null,
+          }),
+        },
+      );
+
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch {
+        data = {};
+      }
+
+      if (res.status !== 200) {
+        const message =
+          data?.error ||
+          data?.detail ||
+          data?.message ||
+          `Apple signup failed (${res.status})`;
+        show(String(message), {type: 'error'});
+        return;
+      }
+
+      if (!data?.access || !data?.refresh) {
+        show('Unexpected response from Apple signup', {type: 'error'});
+        return;
+      }
+
+      setToken(data.access);
+      setRefreshToken(data.refresh);
+      setIsLoggedIn(true);
+      setAgeConfirmed(true);
+
+      const email = data?.email || result.user.email;
+      if (email) {
+        setUserData({email});
+      }
+
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'AppTabs'}],
+      });
+    } catch (error: any) {
+      const message =
+        typeof error?.message === 'string'
+          ? error.message
+          : 'Apple sign-in failed';
+      console.log('[SignupLogic] Apple sign-in error:', error);
+      show(message, {type: 'error'});
+    } finally {
+      setLoading(false);
+    }
   };
   return {
     control,
@@ -117,6 +204,8 @@ export const SignupLogic = () => {
     onSubmitGoogle,
     onSubmitApple,
     showPass,
-    setShowPass
+    setShowPass,
+    privacyAgreed,
+    setPrivacyAgreed,
   };
 };

@@ -1,5 +1,6 @@
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
+import {useNavigation} from '@react-navigation/native';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
 import {Language} from '../../utiles/Language/i18n';
@@ -19,6 +20,7 @@ interface ProductItem {
   sale_price?: string | null;
   regular_price?: string;
   quantity: number;
+  slug?: string;
 }
 
 interface ProductCardInCartProps {
@@ -30,6 +32,7 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
   item,
   onSynced,
 }) => {
+  const navigation: any = useNavigation();
   const {Styles} = StyleComponent();
   const {count, onQuantityChange, removeImmediately} = useDebouncedCartActions({
     productId: item.id,
@@ -39,10 +42,24 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
   const hasSalePrice =
     item.sale_price !== null && item.sale_price !== undefined;
 
+  const openDetail = () => {
+    navigation.navigate('CatalogScreen', {
+      screen: 'CatalogDetail',
+      params: {
+        product: item,
+        quantity: item.quantity,
+        fromCart: true,
+      },
+    });
+  };
+
   return (
     <>
       <View style={[Styles.justifyBetween, styles.mainContainer]}>
-        <View style={[Styles.justifyCenter, styles.leftSection]}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={openDetail}
+          style={[Styles.justifyCenter, styles.leftSection]}>
           <Image
             source={{uri: resolveProductImageUrl(item)}}
             style={styles.productImage}
@@ -53,6 +70,7 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
                 Styles.title_SemiBold,
                 styles.productTitle,
                 styles.productTitleWidth,
+                {fontSize: 22},
               ]}
               numberOfLines={1}
               ellipsizeMode="tail">
@@ -74,30 +92,32 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
                   Styles.subtitle_Regular,
                   styles.originalPriceText,
                   !hasSalePrice && styles.hiddenPriceLine,
+                  {fontSize: 16},
                 ]}
                 numberOfLines={1}>
                 {hasSalePrice ? `${item.price} zł` : ' '}
               </Text>
               <Text
-                style={[Styles.title_Bold, styles.productPrice]}
+                style={[Styles.title_Bold, styles.productPrice, {fontSize: 20}]}
                 numberOfLines={1}>
                 {hasSalePrice ? `${item.sale_price} zł` : `${item.price} zł`}
               </Text>
             </View>
           </View>
+        </TouchableOpacity>
         <AddBottom
-        style={styles.addBottom}
-        onQuantityChange={onQuantityChange}
-        count={count}
-      />
-        </View>
+          compact
+          style={styles.addBottom}
+          onQuantityChange={onQuantityChange}
+          count={count}
+        />
         <TouchableOpacity
           style={styles.heartContainer}
           onPress={removeImmediately}>
           <Trash width={24} height={24} />
         </TouchableOpacity>
       </View>
-   
+
       <View style={styles.divider} />
     </>
   );
@@ -105,12 +125,12 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
 
 const styles = StyleSheet.create({
   addBottom: {
-    width: '30%',
-    height: 42,
+    width: 112,
+    height: 36,
     alignSelf: 'center',
     position: 'absolute',
-    right: 0,
-    bottom: 0,
+    right: 8,
+    bottom: 8,
   },
   mainContainer: {
     width: '100%',
@@ -121,21 +141,25 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
   },
   leftSection: {
-    height: 100,
+    height: 110,
     flex: 1,
     minWidth: 0,
+    paddingRight: 40,
   },
   productInfo: {
-    height: 100,
-    justifyContent: 'space-around',
+    height: 110,
+    justifyContent: 'space-between',
     marginLeft: '5%',
     flex: 1,
     minWidth: 0,
+    paddingVertical: 2,
   },
   detailsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
+    marginTop: 6,
+    marginBottom: 20,
   },
   separator: {
     width: 1,
@@ -151,8 +175,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: Color.lightGray,
   },
   blackText: {
     color: Color.black,
@@ -174,9 +196,11 @@ const styles = StyleSheet.create({
   },
   productTitle: {
     flexShrink: 1,
+    maxWidth: '100%',
   },
   productTitleWidth: {
-    width: '80%',
+    width: '100%',
+    paddingRight: 8,
   },
   divider: {
     width: '90%',

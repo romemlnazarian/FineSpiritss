@@ -55,7 +55,7 @@ export default function CartOrder() {
                 Styles.title_Regular,
                 activeTab === 'summary' ? styles.tabTextActive : styles.tabText,
               ]}>
-              Order summary
+              {Language.cart_order_summary}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -85,12 +85,12 @@ export default function CartOrder() {
         ) : (
           <View style={styles.p16}>
             <Text style={Styles.title_Regular}>
-              Choose address and delivery options.
+              {Language.cart_choose_address}
             </Text>
           </View>
         )}
         <Text style={[Styles.h6_Medium, styles.sectionTitle]}>
-          Payment methods
+          {Language.setting_payment_methods_title}
         </Text>
         <View style={styles.dropdownHeader}>
           <selectedMethod.Logo />
@@ -131,7 +131,7 @@ export default function CartOrder() {
             setOpen(prev => !prev);
           }}>
           <Text style={[Styles.title_Regular, Styles.textAlign, styles.mt2]}>
-            All payment methods
+            {Language.cart_all_payment_methods}
           </Text>
           {open ? (
             <ArrowUp name="keyboard-arrow-up" size={30} style={{marginTop:'2%'}}/>
@@ -142,29 +142,29 @@ export default function CartOrder() {
         <View style={styles.divider} />
 
         <Text style={[Styles.h6_SemiBold, styles.mt5, styles.ml5]}>
-          Order Summary
+          {Language.cart_order_summary}
         </Text>
         <View style={styles.rowBetween}>
           <Text style={[Styles.title_Regular, {color: Color.black}]}>
-            My order
+            {Language.cart_my_order}
           </Text>
           <Text style={[Styles.title_Bold, {color: Color.black}]}>2 items</Text>
         </View>
         <View style={styles.rowBetween}>
           <Text style={[Styles.title_Regular, {color: Color.black}]}>
-            Order amount
+            {Language.cart_order_amount}
           </Text>
           <Text style={[Styles.title_Bold, {color: Color.black}]}>$212.98</Text>
         </View>
         <View style={styles.rowBetween}>
           <Text style={[Styles.title_Regular, {color: Color.black}]}>
-            Sale by promo code
+            {Language.cart_sale_by_promo}
           </Text>
           <Text style={[Styles.title_Bold, {color: Color.black}]}>-$15</Text>
         </View>
         <View style={styles.rowBetween}>
           <Text style={[Styles.title_Regular, {color: Color.black}]}>
-            Constant discount
+            {Language.cart_constant_discount}
           </Text>
           <Text style={[Styles.title_Bold, {color: Color.black}]}>-3% </Text>
         </View>

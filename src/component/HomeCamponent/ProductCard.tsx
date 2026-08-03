@@ -55,7 +55,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const {token, setToken, refreshToken, setRefreshToken} = useAuthStore();
   const {Styles} = StyleComponent();
   const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
-  const {count, syncedCount, onSubmit, onQuantityChange} =
+  const {count, onSubmit, onQuantityChange} =
     useDebouncedCartActions({
       productId: item.id,
       initialCount: item?.cart_quantity ?? 0,
@@ -183,17 +183,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </View>
 
       <View style={styles.footerSection}>
-        {syncedCount === 0 ? (
+        {count === 0 ? (
           <BottomCardComponent
-            title={
-              count > 0
-                ? `${Language.product_detail_add_to_cart} (${count})`
-                : Language.product_detail_add_to_cart
-            }
+            title={Language.product_detail_add_to_cart}
             onHandler={onSubmit}
             style={styles.bottomCardButton}
             textStyle={[Styles.subtitle_Regular, styles.bottomCardButtonText]}
-            icon={<Card />}
+            icon={<Card fill={Color.white} />}
           />
         ) : (
           <AddBottom

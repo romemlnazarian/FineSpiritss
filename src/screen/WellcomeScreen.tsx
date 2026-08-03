@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, BackHandler} from 'react-native';
+import {View, Text, StyleSheet, BackHandler, TouchableOpacity} from 'react-native';
 import React from 'react';
 import LogoComponent from '../component/LogoComponent';
 import {StyleComponent} from '../utiles/styles';
@@ -8,34 +8,50 @@ import {Language} from '../utiles/Language/i18n';
 import {WellcomeLogic} from '../logic/WellcomeLogic';
 import {Image} from 'react-native';
 import Layer from '../assets/svg/Layer.svg';
-import { BottomSheet } from '../component/BottomSheet';
+import {BottomSheet} from '../component/BottomSheet';
 import {useFocusEffect} from '@react-navigation/native';
- 
+import type {AppLanguage} from '../zustland/localizationStore';
+
 export default function WellcomeScreen() {
   const {Styles} = StyleComponent();
-  const {onSubmit, deleteAccountDone, onHandlerClose} = WellcomeLogic();
+  const {
+    onSubmit,
+    deleteAccountDone,
+    onHandlerClose,
+    currentLanguage,
+    selectLanguage,
+  } = WellcomeLogic();
 
-  // Exit app on Android hardware back from Wellcome screen
+  const languageOptions: {id: AppLanguage; label: string}[] = [
+    {id: 'en', label: 'EN'},
+    {id: 'pl', label: 'PL'},
+  ];
+
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
         BackHandler.exitApp();
         return true;
       };
-      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress,
+      );
       return () => {
         subscription.remove();
       };
     }, []),
   );
+
   return (
     <View style={Styles.container}>
       <View style={[StyleSheet.absoluteFill]}>
         <Image
           source={require('../assets/images/background.png')}
-          style={{width:'100%',height:'100%',opacity:0.5}}
+          style={{width: '100%', height: '100%', opacity: 0.5}}
         />
       </View>
+
       <LogoComponent width={300} style={styles.margintop} />
       <Text
         style={[
@@ -58,7 +74,32 @@ export default function WellcomeScreen() {
         ]}>
         {Language.wellcomeText}
       </Text>
+
       <View style={styles.bottomStyles}>
+        <View style={styles.languageSwitch}>
+          {languageOptions.map(option => {
+            const isActive = currentLanguage === option.id;
+            return (
+              <TouchableOpacity
+                key={option.id}
+                activeOpacity={0.8}
+                onPress={() => selectLanguage(option.id)}
+                style={[
+                  styles.languageOption,
+                  isActive && styles.languageOptionActive,
+                ]}>
+                <Text
+                  style={[
+                    Styles.title_Medium,
+                    styles.languageOptionText,
+                    isActive && styles.languageOptionTextActive,
+                  ]}>
+                  {option.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
         <BottomCardComponent
           title={Language.singUp}
           onHandler={() => onSubmit('signup')}
@@ -72,15 +113,15 @@ export default function WellcomeScreen() {
         />
       </View>
       {deleteAccountDone && (
-      <BottomSheet
-        modalVisible={deleteAccountDone}
-        height={350}
-        onClose={()=>onHandlerClose()}>
+        <BottomSheet
+          modalVisible={deleteAccountDone}
+          height={350}
+          onClose={() => onHandlerClose()}>
           <View style={styles.bottomSheetContainer}>
             <Layer />
             <Text
               style={[Styles.h6_Medium, Styles.textAlign, {marginTop: '5%'}]}>
-              Your account has been deleted
+              {Language.delete_deleted_title}
             </Text>
             <Text
               style={[
@@ -88,18 +129,15 @@ export default function WellcomeScreen() {
                 Styles.textAlign,
                 {marginTop: '2%'},
               ]}>
-              We’re truly sad to see you go, but we’ll always be here if you
-              decide to come back.
+              {Language.delete_deleted_subtitle}
             </Text>
             <BottomCardComponent
-              title="Done"
-              onHandler={()=>onHandlerClose()}
+              title={Language.Done}
+              onHandler={() => onHandlerClose()}
               style={{marginTop: '5%'}}
             />
           </View>
-        
-        
-      </BottomSheet>
+        </BottomSheet>
       )}
     </View>
   );
@@ -131,5 +169,34 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: '2%',
     alignItems: 'center',
+  },
+  languageSwitch: {
+    alignSelf: 'center',
+    marginBottom: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    borderRadius: 12,
+    padding: 4,
+    borderWidth: 1,
+    borderColor: Color.primary,
+  },
+  languageOption: {
+    minWidth: 44,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  languageOptionActive: {
+    backgroundColor: Color.primary,
+  },
+  languageOptionText: {
+    color: Color.primary,
+  },
+  languageOptionTextActive: {
+    color: Color.white,
   },
 });

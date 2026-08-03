@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     height: Platform.OS === 'ios' ? 70 : 70,
     paddingHorizontal: 16,
     paddingVertical: 5,
-    marginTop: 20,
+    marginTop: Platform.OS === 'ios' ? 40 : 20,
   },
   sideSlot: {
     width: 40,

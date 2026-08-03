@@ -98,7 +98,7 @@ export default function MyOrderItem({data}:{data:any}) {
         </View>
         <View style={styles.productMetaRow}>
           <Text style={[Styles.subtitle_Regular, {color: Color.gray}]}>
-            volume:
+            {Language.volume_label}
           </Text>
           <Text style={[Styles.subtitle_Regular, {color: Color.gray}]}>
            {selected?.volume || ''} ml
@@ -135,7 +135,7 @@ export default function MyOrderItem({data}:{data:any}) {
             </View>
       {/* Order Status Card */}
       {/* <View style={styles.orderCard}>
-        <Text style={[Styles.h4_SemiBold, Styles.textAlign]}>On the way</Text>
+        <Text style={[Styles.h4_SemiBold, Styles.textAlign]}>{Language.order_on_the_way}</Text>
         <Text style={[Styles.subtitle_Regular, styles.planText]}>
           We plan to deliver on September 10th
         </Text>
@@ -204,14 +204,14 @@ export default function MyOrderItem({data}:{data:any}) {
       </View> */}
 
        {/* <View style={[styles.orderCard,{alignItems:'center',height:250}]}>
-       <Text style={[Styles.h4_SemiBold, Styles.textAlign]}>Take your order from</Text>
+       <Text style={[Styles.h4_SemiBold, Styles.textAlign]}>{Language.order_take_from}</Text>
         <Text style={[Styles.subtitle_Regular, styles.planText]}>
         Cybernetyki 17, 02-677 Warszawa
         </Text>
         <View style={{marginTop:'5%'}}>
         <HomeTwo/>
         </View>
-         <BottomCardComponent title="My Code" onHandler={()=>{}} style={styles.button} textStyle={styles.buttonText}/>
+         <BottomCardComponent title={Language.my_code} onHandler={()=>{}} style={styles.button} textStyle={styles.buttonText}/>
        </View> */}
 
     </View>

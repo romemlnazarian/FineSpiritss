@@ -45,112 +45,95 @@ export default function OrderHistoryLogic() {
     }
   };
 
-useEffect(()=>{
-
-  getOrderHistory();
-  getHomeRecommended();
-},[]);
+useEffect(() => {
+    getOrderHistory();
+    getHomeRecommended();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const getOrderHistory = () => {
     setLoading(true);
-    getOrderHistoryModel(token, (data) => {
-      console.log('order history data =>', data);
-      setOrderHistory(data.orders);
-      setLoading(false);
-    }, (error) => {
-      setLoading(false);
-      console.log(error);
-    },()=>{
-      refreshTokenModel(refreshToken, (data) => {
-        setToken(data.access);
-        setRefreshToken(data.refresh);
-        getOrderHistoryModel(data.access,(data)=>{
-          setOrderHistory(data.orders);
-          setLoading(false);
-        },()=>{},);
-      }, (error) => {
-        console.log(error);
-        setLoading(false);
-      });
-    });
-  }
-
-  const getHomeRecommended = useCallback(() => {
-
-    getHomeRecommendedModel(
-
+    getOrderHistoryModel(
       token,
-
       data => {
-
-        const items = Array.isArray(data?.results) ? data.results : [];
-
-        setRecommended(items);
-
+        console.log('order history data =>', data);
+        setOrderHistory(Array.isArray(data?.orders) ? data.orders : []);
+        setLoading(false);
       },
-
+      error => {
+        setLoading(false);
+        console.log(error);
+      },
       () => {
-
-        refreshTokenModel(refreshToken, tokens => {
-
-          setToken(tokens.access);
-
-          setRefreshToken(tokens.refresh);
-
-          getHomeRecommendedModel(
-
-            tokens.access,
-
-            data => {
-
-              const items = Array.isArray(data?.results) ? data.results : [];
-
-              setRecommended(items);
-
-            },
-
-            err => console.log('error', err),
-
-          );
-
-        });
-
+        refreshTokenModel(
+          refreshToken,
+          data => {
+            setToken(data.access);
+            setRefreshToken(data.refresh);
+            getOrderHistoryModel(
+              data.access,
+              historyData => {
+                setOrderHistory(
+                  Array.isArray(historyData?.orders) ? historyData.orders : [],
+                );
+                setLoading(false);
+              },
+              () => {
+                setLoading(false);
+              },
+            );
+          },
+          error => {
+            console.log(error);
+            setLoading(false);
+          },
+        );
       },
-
     );
-
-  }, [
-
-    refreshToken,
-
-    setRecommended,
-
-    setRefreshToken,
-
-    setToken,
-
-    token,
-
-  ]);
-
-
-
-
-  const onHandlerDetail = (id: number) => {
-    navigation.navigate('MyOrder',{id:id});
   };
 
+  const normalizeRecommended = (data: any) => {
+    if (Array.isArray(data?.results)) {
+      return data.results;
+    }
+    if (Array.isArray(data?.data)) {
+      return data.data;
+    }
+    if (Array.isArray(data)) {
+      return data;
+    }
+    return [];
+  };
 
+  const getHomeRecommended = useCallback(() => {
+    getHomeRecommendedModel(
+      token,
+      data => {
+        setRecommended(normalizeRecommended(data));
+      },
+      () => {
+        refreshTokenModel(refreshToken, tokens => {
+          setToken(tokens.access);
+          setRefreshToken(tokens.refresh);
+          getHomeRecommendedModel(
+            tokens.access,
+            data => {
+              setRecommended(normalizeRecommended(data));
+            },
+            err => console.log('error', err),
+          );
+        });
+      },
+    );
+  }, [refreshToken, setRecommended, setRefreshToken, setToken, token]);
 
-    // Refresh both product and recommended
+  const onHandlerDetail = (id: number) => {
+    navigation.navigate('MyOrder', {id: id});
+  };
 
-    const refreshAll = useCallback(() => {
-
-      getHomeRecommended();
-  
-    }, [getHomeRecommended]);
-
-
+  const refreshAll = useCallback(() => {
+    getHomeRecommended();
+  }, [getHomeRecommended]);
 
   return {
     onSubnmitFilter,

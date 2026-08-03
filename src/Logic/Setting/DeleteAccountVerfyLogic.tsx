@@ -10,6 +10,7 @@ import { AuthStackParamList } from "../../navigation/types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
  import useProfileStore from "../../zustland/ProfileStore";
 import useDeleteAccountDoneStore from "../../zustland/deleteAccountDoneStore";
+import {Language} from '../../utiles/Language/i18n';
 
 export default function DeleteAccountVerfyLogic(route: any) {
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
@@ -156,14 +157,14 @@ export default function DeleteAccountVerfyLogic(route: any) {
     console.log('email', email);
     DeleteAccountModel(token, item, () => {
       setLoading(false);
-      show('Code sent again', {type: 'success'});
+      show(Language.setting_code_sent_again, {type: 'success'});
     }, () => {
      refreshTokenModel(refreshToken, (data) => {
       setToken(data.access);
       setRefreshToken(data.refresh);
       DeleteAccountModel(token, item, () => {
         setLoading(false);
-        show('Code sent again', {type: 'success'});
+        show(Language.setting_code_sent_again, {type: 'success'});
       }, (error) => { 
         setLoading(false);
         show(error, {type: 'error'});
@@ -179,7 +180,7 @@ export default function DeleteAccountVerfyLogic(route: any) {
 const onHandler = (value: string) => {
   if (isOtpExpiredRef.current) {
     setCodeValid(false);
-    show('Code expired', {type: 'error'});
+    show(Language.setting_code_expired, {type: 'error'});
     return;
   }
   if (value.length === 5) {

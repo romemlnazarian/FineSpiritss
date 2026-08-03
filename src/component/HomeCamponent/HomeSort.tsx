@@ -3,6 +3,8 @@ import React, {useState, useMemo, useCallback, memo, useEffect} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import ProductCard from './ProductCard';
+import {Language} from '../../utiles/Language/i18n';
+import useLocalizationStore from '../../zustland/localizationStore';
 
 interface ProductItem {
   id: number;
@@ -68,10 +70,13 @@ const ProductItemRenderer = memo(
 // Memoized header component
 const SortHeader = memo(() => {
   const {Styles} = StyleComponent();
+  useLocalizationStore(state => state.language);
 
   return (
     <View style={styles.headerContainer}>
-      <Text style={[Styles.h6_SemiBold, styles.categoryTitle]}>Sort By</Text>
+      <Text style={[Styles.h6_SemiBold, styles.categoryTitle]}>
+        {Language.sort_by}
+      </Text>
       <View style={styles.separatorLine} />
     </View>
   );
@@ -89,13 +94,14 @@ const HomeSort = memo(
     loading?: boolean;
     onSubmitProduct?: (item: ProductItem) => void;
   }) => {
+    const language = useLocalizationStore(state => state.language);
     const sortData = useMemo(
       () => [
-        {id: '1', title: 'Best sellers'},
-        {id: '2', title: 'New'},
-        {id: '3', title: 'For Gift'},
+        {id: '1', title: Language.home_sort_best_sellers},
+        {id: '2', title: Language.home_sort_new},
+        {id: '3', title: Language.home_sort_for_gift},
       ],
-      [],
+      [language],
     );
 
 
@@ -207,20 +213,19 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    
   },
   categoryTitle: {
     color: Color.black,
+    flexShrink: 0,
   },
   separatorLine: {
-    width: '78%',
-    height: 0.5,
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
     backgroundColor: Color.lightGray,
     marginLeft: 10,
-    marginTop: '2%',
   },
   flatListContainer: {
-    marginTop: '3%',
+    marginTop: 8,
   },
   flatListItem: {
     paddingHorizontal: 15,

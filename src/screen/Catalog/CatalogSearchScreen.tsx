@@ -42,7 +42,7 @@ interface ProductItem {
   slug?: string;
   image_url?: string;
   regular_price?: string;
-  sale_price?: string;
+  sale_price?: string | null;
   abv?: string;
   volume?: string;
   is_favorite?: boolean;
@@ -54,6 +54,8 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
   const navigation: any = useNavigation();
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
   const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
+  const hasSalePrice =
+    item.sale_price !== null && item.sale_price !== undefined;
   const toggleFavorite = (id: string) => {
     if (isFavorite) {
       setIsFavorite(false);
@@ -131,38 +133,22 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
               {item.alcoholContent}
             </Text>
           </View>
-          {item?.sale_price === null ? (
+          <View style={styles.priceSection}>
             <Text
               style={[
-                Styles.title_Bold,
-                styles.productPrice,
-                styles.priceContainer,
-              ]}>
-              {item.price} zł
+                Styles.subtitle_Regular,
+                styles.originalPriceText,
+                !hasSalePrice && styles.hiddenPriceLine,
+              ]}
+              numberOfLines={1}>
+              {hasSalePrice ? `${item.price} zł` : ' '}
             </Text>
-          ) : (
-            <>
-              {item.regular_price && (
-                <Text
-                  style={[
-                    Styles.subtitle_Regular,
-                    styles.originalPriceText,
-                    styles.priceContainer,
-                  ]}>
-                  {item.regular_price} zł
-                </Text>
-              )}
-
-              <Text
-                style={[
-                  Styles.title_Bold,
-                  styles.productPrice,
-                  styles.priceContainer,
-                ]}>
-                {item.price} zł
-              </Text>
-            </>
-          )}
+            <Text
+              style={[Styles.title_Bold, styles.productPrice]}
+              numberOfLines={1}>
+              {hasSalePrice ? `${item.sale_price} zł` : `${item.price} zł`}
+            </Text>
+          </View>
         </View>
       </View>
       <TouchableOpacity
@@ -842,8 +828,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  priceContainer: {
+  priceSection: {
     marginTop: 5,
+  },
+  hiddenPriceLine: {
+    opacity: 0,
   },
   originalPriceText: {
     textDecorationLine: 'line-through',

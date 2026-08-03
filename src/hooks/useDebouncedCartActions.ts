@@ -7,6 +7,7 @@ import {
   updateCardModel,
 } from '../model/Card/CardModel';
 import {useToast} from '../utiles/Toast/ToastProvider';
+import useCartBadgeStore from '../zustland/cartBadgeStore';
 
 const DEFAULT_DEBOUNCE_MS = 1000;
 
@@ -29,6 +30,8 @@ export function useDebouncedCartActions({
   const [syncedCount, setSyncedCount] = useState(initialCount);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const syncedCountRef = useRef(initialCount);
+  const countRef = useRef(initialCount);
+  const pendingTargetRef = useRef<number | null>(null);
 
   useEffect(() => {
     syncedCountRef.current = syncedCount;
@@ -38,6 +41,8 @@ export function useDebouncedCartActions({
     setCount(initialCount);
     setSyncedCount(initialCount);
     syncedCountRef.current = initialCount;
+    countRef.current = initialCount;
+    pendingTargetRef.current = null;
     if (timerRef.current) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
@@ -52,19 +57,47 @@ export function useDebouncedCartActions({
     };
   }, []);
 
+  const applyDisplayCount = useCallback((nextCount: number) => {
+    const previousCount = countRef.current;
+    const normalizedCount = Math.max(0, nextCount);
+    countRef.current = normalizedCount;
+    setCount(normalizedCount);
+
+    const wasInCart = previousCount > 0;
+    const willBeInCart = normalizedCount > 0;
+    if (!wasInCart && willBeInCart) {
+      useCartBadgeStore.getState().adjustCount(1);
+    } else if (wasInCart && !willBeInCart) {
+      useCartBadgeStore.getState().adjustCount(-1);
+    }
+  }, []);
+
   const failSync = useCallback(
-    (error: string, rollbackCount: number) => {
-      setCount(rollbackCount);
+    (error: string, rollbackCount: number, targetQuantity: number) => {
+      if (pendingTargetRef.current === targetQuantity) {
+        pendingTargetRef.current = null;
+        applyDisplayCount(rollbackCount);
+      }
       show(error, {type: 'error'});
     },
-    [show],
+    [applyDisplayCount, show],
   );
 
   const finalizeSync = useCallback(
     (nextCount: number) => {
-      setSyncedCount(nextCount);
       syncedCountRef.current = nextCount;
-      setCount(nextCount);
+      setSyncedCount(nextCount);
+
+      if (pendingTargetRef.current === nextCount) {
+        pendingTargetRef.current = null;
+      }
+
+      // Keep optimistic UI if user already moved to a newer quantity
+      if (!timerRef.current) {
+        countRef.current = nextCount;
+        setCount(nextCount);
+      }
+
       onSynced?.(nextCount);
     },
     [onSynced],
@@ -89,6 +122,7 @@ export function useDebouncedCartActions({
     (targetQuantity: number) => {
       const productIdNum = Number(productId);
       const rollbackCount = syncedCountRef.current;
+      pendingTargetRef.current = targetQuantity;
 
       if (!Number.isFinite(productIdNum)) {
         return;
@@ -100,7 +134,7 @@ export function useDebouncedCartActions({
           productIdNum,
           targetQuantity,
           () => finalizeSync(targetQuantity),
-          error => failSync(error, rollbackCount),
+          error => failSync(error, rollbackCount, targetQuantity),
           () => withUnauthorizedRetry(accessToken => runUpdate(accessToken)),
         );
       };
@@ -110,7 +144,7 @@ export function useDebouncedCartActions({
           accessToken,
           productIdNum,
           () => finalizeSync(0),
-          error => failSync(error, rollbackCount),
+          error => failSync(error, rollbackCount, targetQuantity),
           () => withUnauthorizedRetry(accessToken => runDelete(accessToken)),
         );
       };
@@ -126,7 +160,7 @@ export function useDebouncedCartActions({
               finalizeSync(targetQuantity);
             }
           },
-          error => failSync(error, rollbackCount),
+          error => failSync(error, rollbackCount, targetQuantity),
           () => withUnauthorizedRetry(accessToken => runAdd(accessToken)),
         );
       };
@@ -155,7 +189,7 @@ export function useDebouncedCartActions({
       };
 
       if (!token) {
-        failSync('error please try again', rollbackCount);
+        failSync('error please try again', rollbackCount, targetQuantity);
         return;
       }
 
@@ -167,22 +201,23 @@ export function useDebouncedCartActions({
   const queueQuantity = useCallback(
     (nextCount: number) => {
       const normalizedCount = Math.max(0, nextCount);
-      setCount(normalizedCount);
+      applyDisplayCount(normalizedCount);
 
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
 
       timerRef.current = setTimeout(() => {
+        timerRef.current = null;
         syncQuantity(normalizedCount);
       }, debounceMs);
     },
-    [debounceMs, syncQuantity],
+    [applyDisplayCount, debounceMs, syncQuantity],
   );
 
   const onSubmit = useCallback(() => {
-    queueQuantity(count + 1);
-  }, [count, queueQuantity]);
+    queueQuantity(countRef.current + 1);
+  }, [queueQuantity]);
 
   const onQuantityChange = useCallback(
     (value: number, _type: string) => {
@@ -196,9 +231,9 @@ export function useDebouncedCartActions({
       clearTimeout(timerRef.current);
       timerRef.current = null;
     }
-    setCount(0);
+    applyDisplayCount(0);
     syncQuantity(0);
-  }, [syncQuantity]);
+  }, [applyDisplayCount, syncQuantity]);
 
   return {
     count,

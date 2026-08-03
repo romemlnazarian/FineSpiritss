@@ -3,6 +3,7 @@ import React from 'react'
 import { StyleComponent } from '../../utiles/styles'
 import { Color } from '../../utiles/color'
 import Icon from 'react-native-vector-icons/AntDesign'
+import {Language} from '../../utiles/Language/i18n';
 export default function ShowBySetting({onCallback, selectedIds}: {onCallback: (title:string,id:number)=>void, selectedIds?: number}) {
 
 const data: {id: number, title: string}[] = [
@@ -19,7 +20,7 @@ const {Styles} = StyleComponent();
 
    return (
     <View style={styles.container}>
-      <Text style={[Styles.h5_Medium,Styles.textAlign,styles.marginVertical]}>Show by</Text>
+      <Text style={[Styles.h5_Medium,Styles.textAlign,styles.marginVertical]}>{Language.show_by}</Text>
       {data.map((item)=>(
         <TouchableOpacity activeOpacity={0.5} key={item.id} onPress={()=>onHandler(item.id, item.title)} style={styles.row}>
           <Text style={[Styles.body_Regular]}>{item.title}</Text>

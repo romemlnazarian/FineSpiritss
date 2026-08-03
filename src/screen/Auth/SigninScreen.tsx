@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   lineStyle: {
-    width: 100,
+    width: 65,
     height: 1,
     backgroundColor: Color.lightGray,
   },

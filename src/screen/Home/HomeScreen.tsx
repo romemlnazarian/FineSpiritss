@@ -4,6 +4,7 @@ import {
   BackHandler,
   Platform,
   ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -20,8 +21,8 @@ import HomeCategory from '../../component/HomeCamponent/HomeCategory';
 import HomeSort from '../../component/HomeCamponent/HomeSort';
 import ScrollCard from '../../component/HomeCamponent/ScrollCard';
 import Search from '../../assets/svg/SearchGray.svg';
-import { Language } from '../../utiles/Language/i18n';
- 
+import {Language} from '../../utiles/Language/i18n';
+
 export default function HomeScreen() {
   const {Styles, Height} = StyleComponent();
   const {
@@ -40,7 +41,7 @@ export default function HomeScreen() {
     dataSortLoading,
     ageConfirmed,
     onConfrim,
-    onSubmitSearch
+    onSubmitSearch,
   } = HomeLogic();
 
   useFocusEffect(
@@ -50,11 +51,11 @@ export default function HomeScreen() {
       }
       const onBackPress = () => {
         Alert.alert(
-          'Exit App',
-          'Are you sure you want to exit?',
+          Language.exit_app,
+          Language.exit_confirm,
           [
-            {text: 'No', style: 'cancel'},
-            {text: 'Yes', onPress: () => BackHandler.exitApp()},
+            {text: Language.No, style: 'cancel'},
+            {text: Language.Yes, onPress: () => BackHandler.exitApp()},
           ],
           {cancelable: true},
         );
@@ -84,24 +85,22 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={[Styles.container, Styles.alignCenter]}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <View style={Styles.container}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        nestedScrollEnabled
+        keyboardShouldPersistTaps="handled">
         <HomeHeader />
         <TouchableOpacity
           onPress={onSubmitSearch}
-          style={{
-            width: '90%',
-            alignSelf: 'center',
-            borderWidth: 1,
-            borderColor: Color.gray,
-            borderRadius: 14,
-            padding: 10,
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 10,
-          }}>
+          activeOpacity={0.7}
+          style={styles.searchBar}>
           <Search width={24} height={24} />
-          <Text style={[Styles.title_Medium, {color: Color.gray}]}>{Language.Search}</Text>
+          <Text style={[Styles.title_Medium, styles.searchText]}>
+            {Language.Search}
+          </Text>
         </TouchableOpacity>
         <ModalCard
           isVisible={ageConfirmed}
@@ -119,16 +118,32 @@ export default function HomeScreen() {
           loading={dataSortLoading}
           onSubmitProduct={onSubmitProduct}
         />
-
-        {/* <BonusSection /> */}
-        {/* <SpecialOffersSection /> */}
-
-
-        {/* <VerticalScroll
-          item={homeRecommended}
-          onSubmitProduct={onSubmitProduct}
-        /> */}
       </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 32,
+    flexGrow: 1,
+  },
+  searchBar: {
+    width: '90%',
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: Color.gray,
+    borderRadius: 14,
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 4,
+  },
+  searchText: {
+    color: Color.gray,
+  },
+});

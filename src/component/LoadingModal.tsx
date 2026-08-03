@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleComponent } from '../utiles/styles'; // Assuming shadow3 is defined here
 import { Color } from '../utiles/color';
 import { Text } from 'react-native-gesture-handler';
+import {Language} from '../utiles/Language/i18n';
 interface ModalCardProps {
   isVisible: boolean;
 }
@@ -19,7 +20,7 @@ export default function LoadingModal({ isVisible}: ModalCardProps) {
         style={styles.modalOverlay}
       >
         <View style={[Styles.card,Styles.justifyCenter,{flexDirection:'column',borderColor:Color.white, backgroundColor:Color.white,height:150,width:'50%'}]}>
-        <Text style={Styles.h6_Medium}>Please Wait</Text>
+        <Text style={Styles.h6_Medium}>{Language.please_wait}</Text>
         <ActivityIndicator size='large' color={Color.primary} style={{marginTop:'10%'}}/>
         </View>
      

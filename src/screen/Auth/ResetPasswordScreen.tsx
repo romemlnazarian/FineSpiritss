@@ -52,8 +52,7 @@ import {
               <CustomHeader showBack={true} />
               <LogoComponent style={styles.logoComponentStyle} />
               {/* <Text style={[Styles.h3_Bold, styles.textStyles,{marginTop:'5%'}]} >
-             Please enter your new
-             password
+             {Language.Reset_password_title}
             </Text> */}
   
               <View style={styles.inputContainer}>
@@ -163,6 +162,7 @@ import {
   const styles = StyleSheet.create({
     flex1: {
       flex: 1,
+      backgroundColor: Color.white,
     },
     videoContainer: {
       flex: 1,

@@ -45,7 +45,7 @@ const ProductCard: React.FC<{
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
   const [isFavorite, setIsFavorite] = useState(false);
   const {recommended, setRecommended} = useRecommendedStore();
-  const {count, syncedCount, onSubmit, onQuantityChange} =
+  const {count, onSubmit, onQuantityChange} =
     useDebouncedCartActions({
       productId: item.id,
       initialCount: item?.cart_quantity ?? 0,
@@ -206,16 +206,12 @@ const ProductCard: React.FC<{
         </>
       )}
 
-      {syncedCount === 0 ? (
+      {count === 0 ? (
         <BottomCardComponent
-          title={
-            count > 0
-              ? `${Language.product_detail_add_to_cart} (${count})`
-              : Language.product_detail_add_to_cart
-          }
+          title={Language.product_detail_add_to_cart}
           onHandler={onSubmit}
           style={styles.bottomCardButton}
-          icon={<Card />}
+          icon={<Card fill={Color.white} />}
           textStyle={[Styles.subtitle_Regular, styles.bottomCardButtonText]}
         />
       ) : (
@@ -240,7 +236,7 @@ const VerticalScroll: React.FC<VerticalScrollProps> = ({
     <View style={styles.categoryContainer}>
       <View style={styles.headerContainer}>
         <Text style={[Styles.h6_SemiBold, styles.categoryTitle]}>
-          Maybe looking for something else?
+          {Language.home_looking_for_something_else}
         </Text>
       </View>
       <View style={styles.gridContainer}>

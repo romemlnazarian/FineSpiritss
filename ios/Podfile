@@ -23,6 +23,7 @@ target 'FineSpirits' do
   pod 'FirebaseCore', :modular_headers => true
   pod 'FirebaseCoreInternal', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
+  pod 'RecaptchaInterop', :modular_headers => true
 
   use_react_native!(
     :path => config[:reactNativePath],
@@ -41,6 +42,12 @@ target 'FineSpirits' do
     )
 
     installer.pods_project.targets.each do |target|
+      if ['RecaptchaInterop', 'AppCheckCore'].include?(target.name)
+        target.build_configurations.each do |build_config|
+          build_config.build_settings['DEFINES_MODULE'] = 'YES'
+        end
+      end
+
       next unless target.name.start_with?('RNFB')
 
       target.build_configurations.each do |build_config|

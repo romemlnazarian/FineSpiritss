@@ -1,37 +1,49 @@
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { AuthScreenNavigationProp } from '../navigation/types';
+import {useNavigation} from '@react-navigation/native';
+import {AuthScreenNavigationProp} from '../navigation/types';
 import useDeleteAccountDoneStore from '../zustland/deleteAccountDoneStore';
-import { useCallback } from 'react';
+import {useCallback} from 'react';
+import useLocalizationStore, {
+  normalizeAppLanguage,
+  type AppLanguage,
+} from '../zustland/localizationStore';
+import {Language} from '../utiles/Language/i18n';
 
+export function WellcomeLogic() {
+  const navigation = useNavigation<AuthScreenNavigationProp>();
+  const {deleteAccountDone, resetDeleteAccountDone, setDeleteAccountDone} =
+    useDeleteAccountDoneStore();
+  const language = useLocalizationStore(state => state.language);
+  const setLanguage = useLocalizationStore(state => state.setLanguage);
+  const currentLanguage = normalizeAppLanguage(language);
 
-export  function WellcomeLogic() {
-    const navigation = useNavigation<AuthScreenNavigationProp>();
-    const {deleteAccountDone, resetDeleteAccountDone, setDeleteAccountDone} = useDeleteAccountDoneStore();
-    const onSubmit = (key:string) =>{
-         key === 'signup'?
-        navigation.navigate('Signup')
-        :
-        navigation.navigate('Signin')
-    }
+  const onSubmit = (key: string) => {
+    key === 'signup'
+      ? navigation.navigate('Signup')
+      : navigation.navigate('Signin');
+  };
 
-    //   useFocusEffect(
-    //     useCallback(() => {
-    //       // هر بار که صفحه فوکوس شد deleteAccountDone صفر شود
-    //       resetDeleteAccountDone();
-      
-    //       return () => {};
-    //     }, [])
-    // );
+  const selectLanguage = useCallback(
+    (lang: AppLanguage) => {
+      if (lang === currentLanguage) {
+        return;
+      }
+      setLanguage(lang);
+      Language.setLanguage(lang);
+    },
+    [currentLanguage, setLanguage],
+  );
+
   const onHandlerClose = () => {
     resetDeleteAccountDone();
     setDeleteAccountDone(false);
-  }
+  };
 
-return{
+  return {
     onSubmit,
     deleteAccountDone,
     resetDeleteAccountDone,
     onHandlerClose,
-}
-
+    currentLanguage,
+    selectLanguage,
+  };
 }
