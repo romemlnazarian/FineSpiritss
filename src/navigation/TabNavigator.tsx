@@ -1,7 +1,7 @@
 // src/navigation/AppTabs.js
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import {Color} from '../utiles/color';
 import HomeScreen from '../screen/Home/HomeScreen';
 import Catalog from '../screen/Catalog/CatalogScreen';
@@ -13,8 +13,6 @@ import Glass_Primary from '../assets/svg/Glass_Primary.svg';
 import Glass from '../assets/svg/Glass.svg';
 import Profile from '../assets/svg/profile.svg';
 import Profile_primary from '../assets/svg/Profile_primary.svg';
-import Card_Icon from '../assets/svg/Card.svg';
-import Card_Primary from '../assets/svg/Card_Primary.svg';
 import HomePrimary from '../assets/svg/HomePrimary.svg';
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import type {TabParamList} from './types';
@@ -36,12 +34,22 @@ import SettingItemScreen from '../screen/Setting/SettingItemScreen';
 import DeleteAccountScreen from '../screen/Setting/DeleteAccountScreen';
 import DeleteAccountVerifyScreen from '../screen/Setting/DeleteAccountVerifyScreen';
 import NotificationScreen from '../screen/Notification/NotificationScreen';
+import Shop from '../assets/svg/Shop.svg';
+import Shop_primary from '../assets/svg/Shop_primary.svg';
+import useCartBadgeStore, {getCartItemsCount} from '../zustland/cartBadgeStore';
+import useAuthStore from '../zustland/AuthStore';
+import {getCardModel} from '../model/Card/CardModel';
+import {refreshTokenModel} from '../model/Auth/RefreshTokenModel';
+
 const Tab = createBottomTabNavigator<TabParamList>();
 const Stack = createNativeStackNavigator();
+
 const TabIcon: React.FC<{routeName: string; isFocused: boolean}> = ({
   routeName,
   isFocused,
 }) => {
+  const cartCount = useCartBadgeStore(store => store.count);
+
   switch (routeName) {
     case 'Home':
       return isFocused ? (
@@ -56,10 +64,21 @@ const TabIcon: React.FC<{routeName: string; isFocused: boolean}> = ({
         <Glass width={25} height={25} />
       );
     case 'CardScreen':
-      return isFocused ? (
-        <Card_Primary width={25} height={25} />
-      ) : (
-        <Card_Icon width={25} height={25} fill={Color.black}/>
+      return (
+        <View style={styles.cartIconWrap}>
+          {isFocused ? (
+            <Shop_primary width={25} height={25} />
+          ) : (
+            <Shop width={25} height={25} />
+          )}
+          {cartCount > 0 ? (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>
+                {cartCount > 99 ? '99+' : String(cartCount)}
+              </Text>
+            </View>
+          ) : null}
+        </View>
       );
     case 'FavoriteScreen':
       return isFocused ? (
@@ -83,6 +102,37 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
   descriptors,
   navigation,
 }) => {
+  const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
+  const setCartCount = useCartBadgeStore(store => store.setCount);
+
+  useEffect(() => {
+    if (!token) {
+      setCartCount(0);
+      return;
+    }
+
+    const applyCart = (data: any) => {
+      setCartCount(getCartItemsCount(data));
+    };
+
+    getCardModel(
+      token,
+      applyCart,
+      () => {},
+      () => {
+        refreshTokenModel(
+          refreshToken,
+          refreshedTokens => {
+            setToken(refreshedTokens.access);
+            setRefreshToken(refreshedTokens.refresh);
+            getCardModel(refreshedTokens.access, applyCart, () => {}, () => {});
+          },
+          () => {},
+        );
+      },
+    );
+  }, [token, refreshToken, setToken, setRefreshToken, setCartCount]);
+
   return (
     <View style={styles.tabBarContainer}>
       {state.routes.map((route, index) => {
@@ -233,5 +283,30 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderBottomRightRadius: 10,
     borderBottomLeftRadius: 10,
+  },
+  cartIconWrap: {
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badge: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    minWidth: 22,
+    height: 22,
+    borderRadius: 22,
+    paddingHorizontal: 4,
+    backgroundColor: Color.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: {
+    color: Color.white,
+    fontSize: 10,
+    fontFamily: 'Satoshi-Bold',
+    lineHeight: 12,
+    textAlign: 'center',
   },
 });

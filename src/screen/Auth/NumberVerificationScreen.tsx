@@ -27,11 +27,11 @@ export default function NumberVerificationScreen() {
       <CustomHeader showBack={true} />
       <LogoComponent />
       <TextView
-        title={'Phone Verification'}
+        title={Language.Phone_Verification_Title}
         style={[Styles.h3_Bold, styles.titleStyle]}
       />
       <TextView
-        title={'We need to register your phone number before getting started '}
+        title={'{Language.Phone_Verification_Subtitle} '}
         style={[Styles.title_Regular, styles.subtitleStyle]}
       />
       <TouchableOpacity

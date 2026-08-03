@@ -52,8 +52,7 @@ import {
               <CustomHeader showBack={true} />
               <LogoComponent style={styles.logoComponentStyle} />
               {/* <Text style={[Styles.h3_Bold, styles.textStyles,{marginTop:'5%'}]} >
-             Please enter your new
-             password
+             {Language.Reset_password_title}
             </Text> */}
   
               <View style={styles.inputContainer}>

@@ -18,9 +18,11 @@ import ChangePasswordSetting from '../../component/SettingComponent/ChangePasswo
 import UpdateFullName from './UpdateFullName';
 import DatePicker from 'react-native-date-picker';
 import {Language} from '../../utiles/Language/i18n';
+import useLocalizationStore from '../../zustland/localizationStore';
 
 export default function SettingItemScreen() {
   const {Styles} = StyleComponent();
+  const language = useLocalizationStore(state => state.language);
   const {
     modalVisible,
     setModalVisible,
@@ -161,6 +163,10 @@ export default function SettingItemScreen() {
         open={open}
         date={date}
         mode="date"
+        locale={language === 'pl' ? 'pl' : 'en'}
+        title={Language.Date_of_birth}
+        confirmText={Language.Done}
+        cancelText={Language.Cancel}
         onConfirm={pickedDate => {
           setOpen(false);
           setDate(pickedDate);

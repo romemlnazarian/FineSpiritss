@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  Platform,
 } from 'react-native';
 import Eye from '../assets/svg/Eye.svg';
 import EyeClose from '../assets/svg/EyeClose.svg';
@@ -153,6 +154,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   inputContainer: {
+    marginLeft:Platform.OS === 'ios' ? 5 : 0,
     width: '85%',
     height: 56,
     color: Color.black,

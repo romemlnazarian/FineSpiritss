@@ -6,6 +6,7 @@ import {AuthScreenNavigationProp} from '../navigation/types';
 import { ForgetPasswordModel } from '../model/Auth/ForgetPasswordModel';
 import { useState } from 'react';
 import { useToast } from '../utiles/Toast/ToastProvider';
+import {Language} from '../utiles/Language/i18n';
 
 export const ForgetPasswordLogic = () => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
@@ -14,7 +15,7 @@ export const ForgetPasswordLogic = () => {
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .trim()
-      .required('Email is required')
+      .required(Language.email_required)
   });
   const {
     control,

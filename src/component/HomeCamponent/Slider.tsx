@@ -131,12 +131,12 @@ export default Slider;
 
 const styles = StyleSheet.create({
   wrapper: {
+    width: '100%',
     height: 200,
     borderRadius: 20,
-    marginTop: '4%',
+    marginTop: 16,
   },
   slide1: {
-
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
     height: 200,
     alignSelf: 'center',
     borderRadius: 20,
+    overflow: 'hidden',
   },
   slideImage: {
     width: '100%',

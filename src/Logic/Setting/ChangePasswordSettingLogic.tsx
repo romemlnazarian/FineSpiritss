@@ -6,6 +6,7 @@ import {UpdatePasswordModel} from '../../model/Setting/SettingModel';
 import useAuthStore from '../../zustland/AuthStore';
 import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
 import {useToast} from '../../utiles/Toast/ToastProvider';
+import {Language} from '../../utiles/Language/i18n';
 
 export const ChangePasswordSettingLogic = (onCallBack: () => void) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,15 +16,15 @@ export const ChangePasswordSettingLogic = (onCallBack: () => void) => {
   const [showRepeatPass, setShowRepeatPass] = useState(false);
 
   const validationSchema = Yup.object().shape({
-    oldpassword: Yup.string().required('Password is required'),
+    oldpassword: Yup.string().required(Language.password_required),
     password: Yup.string()
-      .required('Password is required')
+      .required(Language.password_required)
       .min(8, '')
       .max(20, '')
       .matches(/[0-9]/, '')
       .matches(/[A-Z]/, ''),
     repeatpassword: Yup.string()
-      .required('Repeat password is required')
+      .required(Language.repeat_password_required)
       .oneOf([Yup.ref('password')], 'Passwords must match'),
   });
   const {

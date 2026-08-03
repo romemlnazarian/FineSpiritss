@@ -35,7 +35,7 @@ export default function AddCardSetting() {
         ]}></View>
       <View style={styles.inputContainerSmallMargin}>
         <TextView
-          title={'Card Number'}
+          title={Language.card_number}
           color={Color.gray}
           style={[Styles.title_Regular, styles.textStyles]}
         />
@@ -66,7 +66,7 @@ export default function AddCardSetting() {
         }}>
         <View style={{width: '48%'}}>
           <TextView
-            title={'Card Number'}
+            title={Language.card_number}
             color={Color.gray}
             style={[Styles.title_Regular, styles.textStyles]}
           />
@@ -88,7 +88,7 @@ export default function AddCardSetting() {
         </View>
         <View style={{width: '48%'}}>
           <TextView
-            title={'Card Number'}
+            title={Language.card_number}
             color={Color.gray}
             style={[Styles.title_Regular, styles.textStyles]}
           />

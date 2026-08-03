@@ -60,41 +60,46 @@ export default function OrderHistoryScreent() {
             style={{marginTop: Height / 2.5}}
           />
         ) : orderHistory.length === 0 ? (
-          <View style={[Styles.container]}>
+          <>
             <View
               style={[
                 Styles.alignCenter,
                 Styles.alignSelf,
-                {width: '93%', marginTop: '12%'},
+                styles.emptyStateContainer,
               ]}>
               <Vector fill={Color.black} />
-              <Text style={[Styles.h5_Bold, {marginTop: '5%'}]}>
+              <Text style={[Styles.h5_Bold, styles.emptyTitle]}>
                 {Language.setting_order_empty_title}
               </Text>
               <Text
-                style={[Styles.body_Regular, Styles.textAlign, {width: '58%'}]}>
+                style={[
+                  Styles.body_Regular,
+                  Styles.textAlign,
+                  styles.emptySubtitle,
+                ]}>
                 {Language.setting_order_empty_subtitle}
               </Text>
             </View>
-            <View style={[Styles.alignSelf, {width: '93%', marginTop: '10%'}]}>
-              <Text style={[Styles.h4_Bold, {color: Color.black}]}>
-                {Language.profile_recommendations}
-              </Text>
-              <HorizontalFlatList
-                callback={e =>
-                  navigation.navigate('CatalogScreen', {
-                    screen: 'CatalogDetail',
-
-                    params: {product: e, fromSetting: true},
-                  })
-                }
-                products={recommended}
-                onFavoriteToggled={(_id: string, _isFavorite: boolean) =>
-                  refreshAll()
-                }
-              />
-            </View>
-          </View>
+            {recommended?.length > 0 ? (
+              <View style={[Styles.alignSelf, styles.recommendationsContainer]}>
+                <Text style={[Styles.h4_Bold, {color: Color.black}]}>
+                  {Language.profile_recommendations}
+                </Text>
+                <HorizontalFlatList
+                  callback={e =>
+                    navigation.navigate('CatalogScreen', {
+                      screen: 'CatalogDetail',
+                      params: {product: e, fromSetting: true},
+                    })
+                  }
+                  products={recommended}
+                  onFavoriteToggled={(_id: string, _isFavorite: boolean) =>
+                    refreshAll()
+                  }
+                />
+              </View>
+            ) : null}
+          </>
         ) : (
           orderHistory.map((item: any) => (
             <TouchableOpacity
@@ -166,6 +171,24 @@ export default function OrderHistoryScreent() {
 }
 
 const styles = StyleSheet.create({
+  emptyStateContainer: {
+    width: '93%',
+    marginTop: '12%',
+  },
+  emptyTitle: {
+    marginTop: '5%',
+    textAlign: 'center',
+  },
+  emptySubtitle: {
+    width: '58%',
+    textAlign: 'center',
+  },
+  recommendationsContainer: {
+    width: '93%',
+    marginTop: '10%',
+    marginBottom: 24,
+    minHeight: 360,
+  },
   cardItem: {gap: 10},
   columnGap: {flexDirection: 'column' as const, gap: 6},
   rowGap: {flexDirection: 'row' as const, gap: 5},

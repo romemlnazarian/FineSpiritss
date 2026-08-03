@@ -3,6 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 import {Color} from '../../utiles/color';
 import {StyleComponent} from '../../utiles/styles';
+import {Language} from '../../utiles/Language/i18n';
 
 export default function CartItem(props: {
   data: {products: any[]; summary: {items_count: number}};
@@ -17,9 +18,9 @@ export default function CartItem(props: {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={[Styles.body_SemiBold]}>My bag</Text>
+        <Text style={[Styles.body_SemiBold]}>{Language.cart_my_bag}</Text>
         <Text style={[Styles.title_Regular, Styles.textAlign]}>
-          {summary.items_count} {summary.items_count === 1 ? 'item' : 'items'}
+          {summary.items_count} {summary.items_count === 1 ? Language.cart_item : Language.cart_items}
         </Text>
       </View>
       <View style={styles.divider} />

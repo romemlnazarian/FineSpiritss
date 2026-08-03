@@ -39,7 +39,7 @@ export default function FavoriteItem({
 const ProductCard = React.memo(({item}: {item: ProductItem}) => {
   const {token, refreshToken,setToken,setRefreshToken} = useAuthStore();
   const navigation: any = useNavigation();
-  const {count, syncedCount, onSubmit, onQuantityChange} =
+  const {count, onSubmit, onQuantityChange} =
     useDebouncedCartActions({
       productId: item.id,
       initialCount: item?.cart_quantity ?? 0,
@@ -175,17 +175,13 @@ const ProductCard = React.memo(({item}: {item: ProductItem}) => {
         )}
         </TouchableOpacity>
 
-              {syncedCount === 0 ? (
+              {count === 0 ? (
         <BottomCardComponent
-          title={
-            count > 0
-              ? `${Language.product_detail_add_to_cart} (${count})`
-              : Language.product_detail_add_to_cart
-          }
+          title={Language.product_detail_add_to_cart}
           onHandler={onSubmit}
           style={styles.addBottom}
           textStyle={[Styles.subtitle_Regular, {color:Color.white}]}
-          icon={<Card />}
+          icon={<Card fill={Color.white} />}
         />
       ) : (
         <AddBottom

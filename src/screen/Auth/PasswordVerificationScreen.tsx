@@ -172,6 +172,7 @@ export default function PasswordVerificationScreen(route: any) {
 const styles = StyleSheet.create({
   flex1: {
     flex: 1,
+    backgroundColor: Color.background,
   },
   videoContainer: {
     flex: 1,

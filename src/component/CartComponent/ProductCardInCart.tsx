@@ -70,6 +70,7 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
                 Styles.title_SemiBold,
                 styles.productTitle,
                 styles.productTitleWidth,
+                {fontSize: 22},
               ]}
               numberOfLines={1}
               ellipsizeMode="tail">
@@ -91,12 +92,13 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
                   Styles.subtitle_Regular,
                   styles.originalPriceText,
                   !hasSalePrice && styles.hiddenPriceLine,
+                  {fontSize: 16},
                 ]}
                 numberOfLines={1}>
                 {hasSalePrice ? `${item.price} zł` : ' '}
               </Text>
               <Text
-                style={[Styles.title_Bold, styles.productPrice]}
+                style={[Styles.title_Bold, styles.productPrice, {fontSize: 20}]}
                 numberOfLines={1}>
                 {hasSalePrice ? `${item.sale_price} zł` : `${item.price} zł`}
               </Text>
@@ -104,6 +106,7 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
           </View>
         </TouchableOpacity>
         <AddBottom
+          compact
           style={styles.addBottom}
           onQuantityChange={onQuantityChange}
           count={count}
@@ -122,12 +125,12 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
 
 const styles = StyleSheet.create({
   addBottom: {
-    width: '30%',
-    height: 42,
+    width: 112,
+    height: 36,
     alignSelf: 'center',
     position: 'absolute',
-    right: 0,
-    bottom: 0,
+    right: 8,
+    bottom: 8,
   },
   mainContainer: {
     width: '100%',
@@ -138,21 +141,25 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
   },
   leftSection: {
-    height: 100,
+    height: 110,
     flex: 1,
     minWidth: 0,
+    paddingRight: 40,
   },
   productInfo: {
-    height: 100,
-    justifyContent: 'space-around',
+    height: 110,
+    justifyContent: 'space-between',
     marginLeft: '5%',
     flex: 1,
     minWidth: 0,
+    paddingVertical: 2,
   },
   detailsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
+    marginTop: 6,
+    marginBottom: 20,
   },
   separator: {
     width: 1,
@@ -168,8 +175,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: Color.lightGray,
   },
   blackText: {
     color: Color.black,
@@ -191,9 +196,11 @@ const styles = StyleSheet.create({
   },
   productTitle: {
     flexShrink: 1,
+    maxWidth: '100%',
   },
   productTitleWidth: {
-    width: '80%',
+    width: '100%',
+    paddingRight: 8,
   },
   divider: {
     width: '90%',

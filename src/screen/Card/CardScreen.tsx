@@ -229,8 +229,8 @@ export default function CardScreen() {
               {recommended.length > 0 ? (
                 <>
                   <View style={[styles.emptyCartContainer]}>
-                    <ShoppingCard fill={Color.black} />
-                    <Text style={[Styles.h3_Bold, styles.emptyCartTitle]}>
+                    <ShoppingCard fill={Color.black} width={110} height={110} />
+                    <Text style={[Styles.h4_Bold, styles.emptyCartTitle]}>
                       {Language.cart_empty_title}
                     </Text>
                     <Text
@@ -238,9 +238,18 @@ export default function CardScreen() {
                         Styles.h6_Regular,
                         Styles.textAlign,
                         styles.emptyCartSubtitle,
-                        {width: '90%'},
+                        {width: '90%',marginTop:5},
                       ]}>
-                      {Language.cart_empty_subtitle}
+                      {Language.cart_empty_subtitle_line1}
+                    </Text>
+                    <Text
+                      style={[
+                        Styles.h6_Regular,
+                        Styles.textAlign,
+                        styles.emptyCartSubtitle,
+                        {width: '90%',marginTop:1},
+                      ]}>
+                      {Language.cart_empty_subtitle_line2}
                     </Text>
                   </View>
                   <View
@@ -268,7 +277,7 @@ export default function CardScreen() {
                 </>
               ) : (
                 <View style={[styles.emptyCartContainer]}>
-                  <ShoppingCard fill={Color.black} />
+                  <ShoppingCard fill={Color.black} width={110} height={110} />
                   <Text style={[Styles.h4_Bold, styles.emptyCartTitle]}>
                     {Language.cart_empty_title}
                   </Text>
@@ -277,9 +286,18 @@ export default function CardScreen() {
                       Styles.body_Regular,
                       Styles.textAlign,
                       styles.emptyCartSubtitle,
-                      {width: '90%'},
+                      {width: '90%',marginTop:5},
                     ]}>
-                    {Language.cart_empty_subtitle}
+                    {Language.cart_empty_subtitle_line1}
+                  </Text>
+                  <Text
+                    style={[
+                      Styles.body_Regular,
+                      Styles.textAlign,
+                      styles.emptyCartSubtitle,
+                      {width: '90%',marginTop:2},
+                    ]}>
+                    {Language.cart_empty_subtitle_line2}
                   </Text>
                 </View>
               )}
@@ -390,9 +408,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     width: '93%',
-    marginTop: '12%',
+    marginTop: '5%',
   },
-  emptyCartTitle: {marginTop: 10},
+  emptyCartTitle: {marginTop:0},
   emptyCartSubtitle: {width: '80%'},
 
   mt5: {marginTop: '5%'},

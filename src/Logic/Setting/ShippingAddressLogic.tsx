@@ -9,6 +9,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import GetAddressStore from '../../zustland/GetAddressStore';
 import { useState, useEffect, useCallback } from 'react';
 import { BackHandler } from 'react-native';
+import {Language} from '../../utiles/Language/i18n';
 interface AddressData {
   street: string;
   postal_code: string;
@@ -23,9 +24,9 @@ export default function ShippingAddressLogic(route:any) {
    const [loading,setLoading] = useState(false)
    const navigation = useNavigation<any>()
     const validationSchema = Yup.object().shape({
-      street: Yup.string().trim().required('Required'),
-      postalCode: Yup.string().trim().required('Required'),
-      city: Yup.string().trim().required('Required'),
+      street: Yup.string().trim().required(Language.required_field),
+      postalCode: Yup.string().trim().required(Language.required_field),
+      city: Yup.string().trim().required(Language.required_field),
       phone: Yup.string().trim(),
 
       });

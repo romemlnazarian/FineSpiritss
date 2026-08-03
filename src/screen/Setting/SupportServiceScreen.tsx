@@ -146,9 +146,9 @@ const onSubmit = (key:string)=>{
 }
   return (
     <ScrollView style={Styles.container}>
-      <CustomHeader showBack={true} subTitle="Support Service" />
+      <CustomHeader showBack={true} subTitle={Language.setting_support_service_title} />
       <View style={styles.section}>
-        <Text style={[Styles.body_Medium,{marginLeft:5}]}>Customer support</Text>
+        <Text style={[Styles.body_Medium,{marginLeft:5}]}>{Language.setting_support_customer_support}</Text>
         {data.map(item => (
           <Fragment key={item.id}>
             <TouchableOpacity
@@ -166,7 +166,7 @@ const onSubmit = (key:string)=>{
         ))}
       </View>
       <View style={[styles.section, {marginBottom: 10}]}>
-      <Text style={[Styles.body_Medium,{marginLeft:5}]}>Social Media</Text>
+      <Text style={[Styles.body_Medium,{marginLeft:5}]}>{Language.setting_support_social_media}</Text>
         {dataTwo.map(item => (
           <Fragment key={item.id}>
                <TouchableOpacity

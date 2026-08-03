@@ -89,7 +89,7 @@ export default function SettingScreen() {
         <View style={styles.rowCenter}>
           <Wallet />
           <View style={styles.walletTextBlock}>
-            <Text style={Styles.title_Medium}>Payment methods</Text>
+            <Text style={Styles.title_Medium}>{Language.setting_payment_methods_title}</Text>
             <Text style={[Styles.subtitle_Regular, styles.lightGrayText]}>
               Visa .... 0312
             </Text>

@@ -10,6 +10,7 @@ import { useToast } from '../utiles/Toast/ToastProvider';
 import { BackHandler } from 'react-native';
 import useAuthStore from '../zustland/AuthStore';
 import { ResetPasswordModel } from '../model/Auth/ForgetPasswordModel';
+import {Language} from '../utiles/Language/i18n';
 export const ResetPasswordLogic = (route: any) => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
   const {email} = route?.route?.params;
@@ -41,7 +42,7 @@ export const ResetPasswordLogic = (route: any) => {
   
   const validationSchema = Yup.object().shape({
     password: Yup.string()
-      .required('Password is required')
+      .required(Language.password_required)
       .min(8, 'Password must be at least 8 characters')
       .max(20, 'Password must be at most 20 characters')
       .matches(/[0-9]/, 'Password must include at least 1 number')
@@ -50,7 +51,7 @@ export const ResetPasswordLogic = (route: any) => {
       .trim(),
     repeatpassword: Yup.string()
     .trim()
-      .required('Repeat password is required')
+      .required(Language.repeat_password_required)
       .oneOf([Yup.ref('password')], 'Passwords must match'),
   });
   const {

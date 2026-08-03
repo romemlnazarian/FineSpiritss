@@ -163,7 +163,7 @@ export default function CatalogDetailLogic(route: any) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [recommended, setRecommended] = useState([]);
   const { token, refreshToken, setToken, setRefreshToken } = useAuthStore();
-  const {count, syncedCount, onSubmit, onQuantityChange} =
+  const {count, onSubmit, onQuantityChange} =
     useDebouncedCartActions({
       productId: product?.id ?? route?.route?.params?.product?.id ?? 0,
       initialCount:
@@ -290,7 +290,6 @@ const onSubmitDetail = (value:any) =>{
     onQuantityChange,
     onSubmit,
     count,
-    syncedCount,
     onSubmitDetail
   };
 }

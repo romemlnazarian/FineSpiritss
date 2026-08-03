@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
 import { AuthScreenNavigationProp } from '../navigation/types';
+import {Language} from '../utiles/Language/i18n';
 
 
 export default function LoginLogic() {
@@ -13,23 +14,23 @@ export default function LoginLogic() {
   const [rule, setRule] = useState<boolean>(false);
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().trim().required('Required'),
-    // lastname: Yup.string().trim().required('Required'), // Assuming lastname is not for login
+    username: Yup.string().trim().required(Language.required_field),
+    // lastname: Yup.string().trim().required(Language.required_field), // Assuming lastname is not for login
     email: Yup.string()
       .trim()
-      .required('Email is required')
+      .required(Language.email_required)
       .email('Please enter a valid email address'),
       // .matches(/@gmail\.com$/, 'Only gmail.com emails are allowed'), // Specific for gmail
     password: Yup.string()
       .trim()
-      .required('Required')
+      .required(Language.required_field)
       .min(8, 'PasswordsMustContainCharacters')
       .matches(/[A-Z]+/, 'Passwords Must Contain Capital')
       .matches(/\W|_/, 'Passwords Must Contain Symbol')
       .matches(/\d+/, 'Passwords Must Contain Digit'),
     // confirmPassword: Yup.string() // Assuming confirmPassword is not for login
     //   .oneOf([Yup.ref('password')], 'Password Must Match')
-    //   .required('Required'),
+    //   .required(Language.required_field),
   });
 
   const { // Uncommenting used variables from useForm

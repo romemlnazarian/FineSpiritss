@@ -10,6 +10,7 @@ import {
 } from '../../model/Setting/SettingModel';
 import useAuthStore from '../../zustland/AuthStore';
 import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
+import {Language} from '../../utiles/Language/i18n';
 export default function SettingItemLogic() {
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
@@ -130,7 +131,7 @@ export default function SettingItemLogic() {
       age -= 1;
     }
     if (age < 18) {
-      show('Age must be 18 or above', {type: 'error'});
+      show(Language.age_must_be_18, {type: 'error'});
       return;
     }
 

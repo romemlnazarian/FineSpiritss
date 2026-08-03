@@ -13,6 +13,7 @@ import useAuthStore from '../../zustland/AuthStore';
 import {useToast} from '../../utiles/Toast/ToastProvider';
 import useProfileStore from '../../zustland/ProfileStore';
 import {Color} from '../../utiles/color';
+import {Language} from '../../utiles/Language/i18n';
 export default function UpdateFullName({callBack}: {callBack: () => void}) {
   const {Styles} = StyleComponent();
   const {show} = useToast();
@@ -20,7 +21,7 @@ export default function UpdateFullName({callBack}: {callBack: () => void}) {
   const {updateProfile} = useProfileStore();
   const [loading, setLoading] = useState(false);
   const validationSchema = Yup.object().shape({
-    fullName: Yup.string().trim().required('Full name is required'),
+    fullName: Yup.string().trim().required(Language.full_name),
   });
 
   const onSubmit = () => {
@@ -90,7 +91,7 @@ export default function UpdateFullName({callBack}: {callBack: () => void}) {
   return (
     <KeyboardAvoidingView behavior="padding">
       <Text style={[Styles.h5_Medium, Styles.textAlign, styles.title]}>
-        Update Full Name
+        {Language.update_full_name}
       </Text>
 
       <Controller
@@ -102,14 +103,14 @@ export default function UpdateFullName({callBack}: {callBack: () => void}) {
             onChangeText={onChange}
             onBlur={onBlur}
             value={value}
-            placeholder="Full name"
+            placeholder={Language.full_name}
             errorMessage={errors.fullName?.message}
             showPass={true}
           />
         )}
       />
       <BottomCardComponent
-        title={'Save'}
+        title={Language.Save}
         onHandler={handleSubmit(onSubmit)}
         disabled={isSaveDisabled}
         style={[

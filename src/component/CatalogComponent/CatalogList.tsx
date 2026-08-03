@@ -54,7 +54,7 @@ const ProductCard: React.FC<{
   const {Styles} = StyleComponent();
   const [isFavorite, setIsFavorite] = useState(item?.is_favorite);
   const {token, refreshToken, setToken, setRefreshToken} = useAuthStore();
-  const {count, syncedCount, onSubmit, onQuantityChange} =
+  const {count, onSubmit, onQuantityChange} =
     useDebouncedCartActions({
       productId: item.id,
       initialCount: item?.cart_quantity ?? 0,
@@ -160,17 +160,13 @@ const ProductCard: React.FC<{
         </Text>
       </View>
       <View style={styles.footerSection}>
-        {syncedCount === 0 ? (
+        {count === 0 ? (
           <BottomCardComponent
-            title={
-              count > 0
-                ? `${Language.product_detail_add_to_cart} (${count})`
-                : Language.product_detail_add_to_cart
-            }
+            title={Language.product_detail_add_to_cart}
             onHandler={onSubmit}
             style={styles.bottomCardButton}
             textStyle={[Styles.subtitle_Regular, styles.bottomCardButtonText]}
-            icon={<Card />}
+            icon={<Card fill={Color.white} />}
           />
         ) : (
           <AddBottom
@@ -200,7 +196,7 @@ const CatalogList: React.FC<VerticalScrollProps> = ({
     return (
       <View style={[styles.categoryContainer, styles.initialLoader]}>
         <ActivityIndicator size="large" color={Color.primary} />
-        <Text style={styles.loadingText}>Loading products...</Text>
+        <Text style={styles.loadingText}>{Language.catalog_loading_products}</Text>
       </View>
     );
   }
@@ -237,7 +233,7 @@ const CatalogList: React.FC<VerticalScrollProps> = ({
     }
     return (
       <View style={styles.emptyContainer}>
-        <Text style={styles.loadingText}>No products found.</Text>
+        <Text style={styles.loadingText}>{Language.catalog_no_products}</Text>
       </View>
     );
   }, [isInitialLoading]);

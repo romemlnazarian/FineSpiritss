@@ -3,6 +3,7 @@ import React from 'react'
 import {Color} from '../../utiles/color'
 import {StyleComponent} from '../../utiles/styles'
 import BarCode from '../../assets/svg/barcode.svg'
+import {Language} from '../../utiles/Language/i18n';
 export default function BarcodeProfile() {
   const {Styles} = StyleComponent()
   return (
@@ -19,11 +20,11 @@ export default function BarcodeProfile() {
       marginTop:'5%',
     }}>
     <Text style={[Styles.body_Medium]}>
-      Scan at checkout to get a discount
+      {Language.barcode_scan_discount}
     </Text>
     <BarCode />
     <Text style={[Styles.body_Regular]}>
-      Or use the code 562636856714524
+      {Language.barcode_or_use_code} 562636856714524
     </Text>
   </View>
   )

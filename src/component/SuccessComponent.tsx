@@ -4,6 +4,7 @@ import {StyleComponent} from '../utiles/styles';
 import BottomCardComponent from './BottomCard';
 import Check from 'react-native-vector-icons/FontAwesome6';
 import {Color} from '../utiles/color';
+import {Language} from '../utiles/Language/i18n';
 export default function SuccessComponent({
   title,
   discription,
@@ -35,7 +36,7 @@ export default function SuccessComponent({
       </Text>
       {buttomVisible && (
         <BottomCardComponent
-          title="My orders"
+          title={Language.profile_my_orders}
           onHandler={onHandler}
           style={styles.buttonSpacing}
         />

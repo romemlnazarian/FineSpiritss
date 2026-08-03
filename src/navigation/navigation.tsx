@@ -21,13 +21,14 @@ import AppTabs from './TabNavigator';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import GoogleAuthScreen from '../screen/Auth/GoogleAuthScreen';
 import AppleAuthScreen from '../screen/Auth/AppleAthScreen';
+import {Language} from '../utiles/Language/i18n';
 
 const Stack = createNativeStackNavigator();
 
 function OfflineBanner() {
   return (
     <View style={offlineStyles.banner}>
-      <Text style={offlineStyles.text}>No internet connection</Text>
+      <Text style={offlineStyles.text}>{Language.no_internet}</Text>
     </View>
   );
 }

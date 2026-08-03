@@ -13,32 +13,33 @@ export default function HorizontalFlatList({
   onFavoriteToggled?: (id: string, isFavorite: boolean) => void;
   onToggleClick?: (id: number) => void;
 }) {
-  const keyExtractor = useCallback((item: any) => item.id, []);
+  const keyExtractor = useCallback(
+    (item: any, index: number) =>
+      String(item?.id ?? item?.product_id ?? item?.slug ?? index),
+    [],
+  );
 
   return (
     <FlatList
-      data={products}
+      data={Array.isArray(products) ? products : []}
       renderItem={({item}: {item: any}) => (
         <RecomendedComponent
           item={item}
           cardStyle={styles.productCardContainer}
-          onPress={(item: any) => callback?.(item)}
+          onPress={(pressedItem: any) => callback?.(pressedItem)}
           onFavoriteToggled={onFavoriteToggled}
           onToggleClick={onToggleClick}
         />
       )}
       keyExtractor={keyExtractor}
       horizontal
+      nestedScrollEnabled
       showsHorizontalScrollIndicator={false}
       style={styles.productFlatListContainer}
+      contentContainerStyle={styles.contentContainer}
       windowSize={5}
       initialNumToRender={2}
       updateCellsBatchingPeriod={50}
-      getItemLayout={(data, index) => ({
-        length: 255,
-        offset: 255 * index,
-        index,
-      })}
     />
   );
 }
@@ -50,5 +51,9 @@ const styles = StyleSheet.create({
   },
   productFlatListContainer: {
     marginTop: '5%',
+    minHeight: 340,
+  },
+  contentContainer: {
+    paddingRight: 8,
   },
 });

@@ -1,17 +1,18 @@
 import * as Yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
+import {Language} from '../../utiles/Language/i18n';
 
 export default function BilingAddressLogic() {
     const validationSchema = Yup.object().shape({
-      name: Yup.string().trim().required('Required'),
-      street: Yup.string().trim().required('Required'),
-      postalCode: Yup.string().trim().required('Required'),
-      city: Yup.string().trim().required('Required'),
+      name: Yup.string().trim().required(Language.required_field),
+      street: Yup.string().trim().required(Language.required_field),
+      postalCode: Yup.string().trim().required(Language.required_field),
+      city: Yup.string().trim().required(Language.required_field),
         phone: Yup.string().trim(),
         email: Yup.string()
           .trim()
-          .required('Email is required')
+          .required(Language.email_required)
       });
       const {
         control,

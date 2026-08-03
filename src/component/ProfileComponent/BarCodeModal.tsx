@@ -3,6 +3,7 @@ import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import BarCode from '../../assets/svg/barcode.svg';
+import {Language} from '../../utiles/Language/i18n';
 interface ModalCardProps {
   isVisible: boolean;
   onClose: () => void;
@@ -19,14 +20,13 @@ export default function BarCodeModal({isVisible, onClose}: ModalCardProps) {
       <View style={styles.modalOverlay}>
       <View style={styles.cardContainer}>
        <Text style={[Styles.h5_Medium,Styles.textAlign,{width:'70%'}]}>
-       Scan at checkout to 
-       get a discount
+       {Language.barcode_scan_discount}
        </Text>
        <View style={{marginTop:'5%'}}>
        <BarCode width={200} height={50}/>
        </View>
        <Text style={[Styles.body_Regular,Styles.textAlign,{marginTop:'2%'}]}>
-      Or use the code 562636856714524
+      {Language.barcode_or_use_code} 562636856714524
       </Text>
       </View>
    
