@@ -21,6 +21,7 @@ import AppTabs from './TabNavigator';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import GoogleAuthScreen from '../screen/Auth/GoogleAuthScreen';
 import AppleAuthScreen from '../screen/Auth/AppleAthScreen';
+import PaymentResultScreen from '../screen/Payment/PaymentResultScreen';
 import {Language} from '../utiles/Language/i18n';
 
 const Stack = createNativeStackNavigator();
@@ -123,6 +124,11 @@ export default function Navigation() {
               <Stack.Screen
                 name="AppTabs"
                 component={AppTabs}
+                options={{gestureEnabled: false}}
+              />
+              <Stack.Screen
+                name="PaymentResult"
+                component={PaymentResultScreen}
                 options={{gestureEnabled: false}}
               />
             </Stack.Navigator>

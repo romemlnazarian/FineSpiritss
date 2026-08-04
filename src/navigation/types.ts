@@ -24,6 +24,10 @@ export type AuthStackParamList = {
     email: string,
   },
   Wellcome:undefined
+  PaymentResult: {
+    paymentId: string,
+    orderId: number,
+  }
 };
 
 export type ButtonParamList = {

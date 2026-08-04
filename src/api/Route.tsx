@@ -46,6 +46,9 @@
   product_search_suggestions:string
   notification:string
   fcm_token:string
+  checkout:string
+  p24_create:string
+  payment_status:string
 }
 
 export const Route: RouteObj = {
@@ -100,4 +103,7 @@ export const Route: RouteObj = {
      product_search_suggestions:'product/products/search/suggestions/',
      notification:'notification/notifications/',
      fcm_token:'notification/device-token/',
+     checkout:'order/checkout/',
+     p24_create:'payments/p24/create/',
+     payment_status:'payments/', // + `${paymentId}/status/`
 };

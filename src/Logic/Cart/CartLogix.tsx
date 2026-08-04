@@ -5,10 +5,14 @@ import {refreshTokenModel} from '../../model/Auth/RefreshTokenModel';
 import useAddressStore from '../../zustland/GetAddressStore';
 import {useNavigation} from '@react-navigation/native';
 import type {Address} from '../../zustland/GetAddressStore';
-import { Linking } from 'react-native';
 import { getHomeRecommendedModel } from '../../model/Home/HomeAdvertising';
 import { AddFavoriteProductModel, DeleteFavoriteProductModel } from '../../model/Favorite/Favorite';
 import useCartBadgeStore, {getCartItemsCount} from '../../zustland/cartBadgeStore';
+import {
+  checkoutModel,
+  createP24PaymentModel,
+} from '../../model/Payment/PaymentModel';
+import {openP24Checkout} from '../../model/Payment/p24';
 
 type CartLogixReturn = {
   loading: boolean;
@@ -18,6 +22,7 @@ type CartLogixReturn = {
   onSubmitAddress: () => void;
   onSubmit: (id: number) => void;
   onPay: () => void;
+  paying: boolean;
   orderSheetVisible: boolean;
   setOrderSheetVisible: (visible: boolean) => void;
   error: boolean;
@@ -33,7 +38,7 @@ export default function CartLogix(): CartLogixReturn {
   const [refreshKey, setRefreshKey] = useState(0);
   const [error, setError] = useState<boolean>(false);
   const [orderSheetVisible, setOrderSheetVisible] = useState(false);
-  const [pendingCheckoutId, setPendingCheckoutId] = useState<number | null>(null);
+  const [paying, setPaying] = useState<boolean>(false);
   const [recommended, setRecommended] = useState([]);
   const [isFavorite, setIsFavorite] = useState(false);
   useEffect(() => {
@@ -128,25 +133,74 @@ export default function CartLogix(): CartLogixReturn {
     });
   };
 
-  const onSubmit = (id: number) => {
-    if (address?.street === '') {
+  const onSubmit = (_id?: number) => {
+    if (!address?.street) {
       setError(true);
     } else {
       setError(false);
-      setPendingCheckoutId(id);
       setOrderSheetVisible(true);
     }
   };
 
+  // Freeze the cart into an order, register a Przelewy24 payment, open the
+  // hosted checkout, then hand off to the PaymentResult screen which polls the
+  // backend for the authoritative status. We never treat the browser closing
+  // as proof of payment.
+  const startPayment = useCallback(
+    (accessToken: string, onFail: () => void, onUnauthorized?: () => void) => {
+      checkoutModel(
+        accessToken,
+        (order: any) => {
+          createP24PaymentModel(
+            accessToken,
+            order.id,
+            async (payment: any) => {
+              try {
+                await openP24Checkout(payment.payment_url);
+              } catch (e) {
+                console.log('open checkout failed', e);
+              }
+              setPaying(false);
+              setOrderSheetVisible(false);
+              navigation.navigate('PaymentResult', {
+                paymentId: payment.payment_id,
+                orderId: payment.order_id,
+              });
+            },
+            () => onFail(),
+            onUnauthorized,
+          );
+        },
+        () => onFail(),
+        onUnauthorized,
+      );
+    },
+    [navigation],
+  );
+
   const onPay = useCallback(() => {
-    if (pendingCheckoutId == null) {
+    if (paying) {
       return;
     }
-    setOrderSheetVisible(false);
-    Linking.openURL(
-      `https://finespirits.pl/checkout/?user_id=${pendingCheckoutId}`,
-    );
-  }, [pendingCheckoutId]);
+    setPaying(true);
+
+    const fail = () => {
+      setPaying(false);
+    };
+
+    startPayment(token, fail, () => {
+      // Access token expired: refresh and retry once.
+      refreshTokenModel(
+        refreshToken,
+        newTokens => {
+          setToken(newTokens.access);
+          setRefreshToken(newTokens.refresh);
+          startPayment(newTokens.access, fail);
+        },
+        fail,
+      );
+    });
+  }, [paying, token, refreshToken, setToken, setRefreshToken, startPayment]);
 
   const toggleFavorite = (id:number) => {
     if (isFavorite) {
@@ -213,6 +267,7 @@ export default function CartLogix(): CartLogixReturn {
     onSubmitAddress,
     onSubmit,
     onPay,
+    paying,
     orderSheetVisible,
     setOrderSheetVisible,
     error,

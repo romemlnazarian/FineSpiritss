@@ -34,6 +34,7 @@ export default function CardScreen() {
     onSubmitAddress,
     onSubmit,
     onPay,
+    paying,
     orderSheetVisible,
     setOrderSheetVisible,
     error,
@@ -209,7 +210,7 @@ export default function CardScreen() {
                 </View>
                 <TouchableOpacity
                   activeOpacity={0.5}
-                  onPress={() => onSubmit(data?.summary?.checkout_id)}
+                  onPress={() => onSubmit()}
                   style={styles.orderButton}>
                   <View style={[Styles.justifyCenter, {gap: 10}]}>
                     <CartIcon width={24} height={24} fill={Color.white} />
@@ -377,6 +378,8 @@ export default function CardScreen() {
           <BottomCardComponent
             title={Language.setting_pay}
             onHandler={onPay}
+            disabled={paying}
+            loading={paying}
             style={styles.payButton}
           />
         </ScrollView>
