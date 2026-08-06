@@ -440,8 +440,8 @@ export default function CatalogSearch() {
   const keyExtractor = useCallback((item: ProductItem) => item.id, []);
 
   const getTextInputWidthStyle = useCallback((): ViewStyle => {
-    return {width: '80%'};
-  }, []);
+    return {width: isSearching ? '70%' : '78%'};
+  }, [isSearching]);
 
   const historyListMaxHeightStyle = useMemo(() => {
     // Only Search History should scroll (Popular stays in place).
@@ -707,9 +707,7 @@ const styles = StyleSheet.create({
   },
   searchLoader: {
     marginTop: 10,
-    // marginRight: '5%',
-    position: 'absolute',
-    right: 20,
+    // marginLeft: 8,
   },
   textInputContainer: {
     marginTop: 10,
@@ -718,6 +716,8 @@ const styles = StyleSheet.create({
     height: 50,
     color: Color.black,
     marginLeft: 10,
+    paddingHorizontal: 14,
+    paddingRight: 40,
   },
   mainContainer: {
     width: '100%',

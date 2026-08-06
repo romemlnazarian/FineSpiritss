@@ -54,7 +54,7 @@ export default function Navigation() {
           backgroundColor="transparent"
         />
 
-        {isConnected === false && <OfflineBanner />}
+        {/* {isConnected === false && <OfflineBanner />} */}
 
         {/* Only apply safe area to the BOTTOM of the screen */}
         <SafeAreaView style={styles.container} edges={[Platform.OS === 'ios' ? '' : 'bottom']}>

@@ -319,7 +319,7 @@ export default function CardScreen() {
       <BottomSheet
         modalVisible={orderSheetVisible}
         height={480}
-        onClose={() => console.log('close')}>
+        onClose={() => setOrderSheetVisible(false)}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.sheetContent}>
