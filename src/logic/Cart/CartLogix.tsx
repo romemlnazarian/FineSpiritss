@@ -13,6 +13,7 @@ import {
   createP24PaymentModel,
 } from '../../model/Payment/PaymentModel';
 import {openP24Checkout} from '../../model/Payment/p24';
+import {useToast} from '../../utiles/Toast/ToastProvider';
 
 type CartLogixReturn = {
   loading: boolean;
@@ -31,6 +32,7 @@ type CartLogixReturn = {
 };
 export default function CartLogix(): CartLogixReturn {
   const navigation = useNavigation<any>();
+  const {show} = useToast();
   const {token, setToken, refreshToken, setRefreshToken} = useAuthStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<any>(null);
@@ -147,7 +149,11 @@ export default function CartLogix(): CartLogixReturn {
   // backend for the authoritative status. We never treat the browser closing
   // as proof of payment.
   const startPayment = useCallback(
-    (accessToken: string, onFail: () => void, onUnauthorized?: () => void) => {
+    (
+      accessToken: string,
+      onFail: (msg?: string) => void,
+      onUnauthorized?: () => void,
+    ) => {
       checkoutModel(
         accessToken,
         (order: any) => {
@@ -167,11 +173,11 @@ export default function CartLogix(): CartLogixReturn {
                 orderId: payment.order_id,
               });
             },
-            () => onFail(),
+            (msg: string) => onFail(msg),
             onUnauthorized,
           );
         },
-        () => onFail(),
+        (msg: string) => onFail(msg),
         onUnauthorized,
       );
     },
@@ -184,8 +190,11 @@ export default function CartLogix(): CartLogixReturn {
     }
     setPaying(true);
 
-    const fail = () => {
+    const fail = (msg?: string) => {
       setPaying(false);
+      show(msg || 'Unable to start payment. Please try again.', {
+        type: 'error',
+      });
     };
 
     startPayment(token, fail, () => {
@@ -197,10 +206,10 @@ export default function CartLogix(): CartLogixReturn {
           setRefreshToken(newTokens.refresh);
           startPayment(newTokens.access, fail);
         },
-        fail,
+        () => fail('Session expired. Please sign in again.'),
       );
     });
-  }, [paying, token, refreshToken, setToken, setRefreshToken, startPayment]);
+  }, [paying, token, refreshToken, setToken, setRefreshToken, startPayment, show]);
 
   const toggleFavorite = (id:number) => {
     if (isFavorite) {

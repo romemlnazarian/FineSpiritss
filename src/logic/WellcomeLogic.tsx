@@ -6,7 +6,8 @@ import useLocalizationStore, {
   normalizeAppLanguage,
   type AppLanguage,
 } from '../zustland/localizationStore';
-import {Language} from '../utiles/Language/i18n';
+import { Language } from '../utiles/Language/i18n';
+// import {Language} from '../utiles/Language/i18n';
 
 export function WellcomeLogic() {
   const navigation = useNavigation<AuthScreenNavigationProp>();

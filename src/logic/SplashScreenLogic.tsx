@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Language } from '../utiles/Language/i18n';
 import useLocalizationStore, {normalizeAppLanguage} from '../zustland/localizationStore';
 import { RootStackParamList } from '../navigation/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import useAuthStore from '../zustland/AuthStore';
 import {Linking} from 'react-native';
+import { Language } from '../utiles/Language/i18n';
 
 
 export default function SplashScreenLogic() {
