@@ -15,6 +15,7 @@ import CatalogLogic from '../../logic/Catalog/CatalogLogic';
 import {useNavigation} from '@react-navigation/native';
 import {Language} from '../../utiles/Language/i18n';
 import { resolveMediaUrl } from '../../utiles/mediaUrl';
+import AppLoader from '../../component/AppLoader';
 
 const CategoryScreen = memo(() => {
   const {Styles} = StyleComponent();
@@ -59,16 +60,9 @@ const CategoryScreen = memo(() => {
     );
   }, [isLoadingMore]);
 
-  const listEmptyComponent = useMemo(() => {
-    if (!isInitialLoading) {
-      return null;
-    }
-    return (
-      <View style={styles.initialLoader}>
-        <Text style={styles.loadingText}>{Language.catalog_loading_categories}</Text>
-      </View>
-    );
-  }, [isInitialLoading]);
+  if (isInitialLoading) {
+    return <AppLoader />;
+  }
 
   return (
     <View style={[Styles.container]}>
@@ -96,7 +90,6 @@ const CategoryScreen = memo(() => {
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
         ListFooterComponent={listFooter}
-        ListEmptyComponent={listEmptyComponent}
       />
     </View>
   );

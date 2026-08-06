@@ -2,7 +2,6 @@ import {
   ScrollView,
   Text,
   View,
-  ActivityIndicator,
   TouchableOpacity,
   StyleSheet,
   Image,
@@ -18,6 +17,7 @@ import HorizontalFlatList from '../../component/HorizontalFlatList';
 import {useNavigation} from '@react-navigation/native';
 import {Language} from '../../utiles/Language/i18n';
 import { resolveProductImageUrl } from '../../utiles/mediaUrl';
+import AppLoader from '../../component/AppLoader';
 const toDateOnly = (value: unknown): string => {
   if (value == null) {
     return '';
@@ -33,8 +33,12 @@ const toDateOnly = (value: unknown): string => {
 export default function OrderHistoryScreent() {
   const {onHandlerDetail, orderHistory, loading, recommended, refreshAll} =
     OrderHistoryLogic();
-  const {Styles, Height} = StyleComponent();
+  const {Styles} = StyleComponent();
   const navigation = useNavigation<any>();
+
+  if (loading) {
+    return <AppLoader />;
+  }
 
   return (
     <View style={[Styles.container]}>
@@ -53,13 +57,7 @@ export default function OrderHistoryScreent() {
         </View>
       )} */}
       <ScrollView>
-        {loading ? (
-          <ActivityIndicator
-            size="large"
-            color={Color.primary}
-            style={{marginTop: Height / 2.5}}
-          />
-        ) : orderHistory.length === 0 ? (
+        {orderHistory.length === 0 ? (
           <>
             <View
               style={[

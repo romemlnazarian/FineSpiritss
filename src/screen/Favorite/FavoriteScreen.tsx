@@ -1,14 +1,14 @@
-import {ActivityIndicator, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {StyleComponent} from '../../utiles/styles';
-import {Color} from '../../utiles/color';
 import {Language} from '../../utiles/Language/i18n';
 import Gllass from '../../assets/svg/gllass.svg';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
 import CustomHeader from '../../navigation/CustomHeader';
 import FavoriteLogic from '../../logic/Favorite/FavoriteLogic';
 import FavoriteItem from '../../component/FavoriteComponent/FavoriteItem';
+import AppLoader from '../../component/AppLoader';
 
 export default function FavoriteScreen() {
   const {Styles} = StyleComponent();
@@ -16,11 +16,7 @@ export default function FavoriteScreen() {
   const navigation: any = useNavigation();
 
   if (loading) {
-    return (
-      <View style={[Styles.container, Styles.alignCenter, Styles.justifyCenter]}>
-        <ActivityIndicator size="large" color={Color.primary} />
-      </View>
-    );
+    return <AppLoader />;
   }
 
   return (

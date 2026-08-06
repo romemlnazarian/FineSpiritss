@@ -21,6 +21,7 @@ interface ProductItem {
   regular_price?: string;
   quantity: number;
   slug?: string;
+  stock_status?: string;
 }
 
 interface ProductCardInCartProps {
@@ -41,6 +42,8 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
   });
   const hasSalePrice =
     item.sale_price !== null && item.sale_price !== undefined;
+  const isOutOfStock =
+    (item.stock_status ?? '').toLowerCase().replace(/\s/g, '') === 'outofstock';
 
   const openDetail = () => {
     navigation.navigate('CatalogScreen', {
@@ -102,6 +105,13 @@ const ProductCardInCart: React.FC<ProductCardInCartProps> = ({
                 numberOfLines={1}>
                 {hasSalePrice ? `${item.sale_price} zł` : `${item.price} zł`}
               </Text>
+              {isOutOfStock ? (
+                <Text
+                  style={[Styles.subtitle_Regular, styles.outOfStockText]}
+                  numberOfLines={1}>
+                  {Language.cart_out_of_stock}
+                </Text>
+              ) : null}
             </View>
           </View>
         </TouchableOpacity>
@@ -141,13 +151,13 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
   },
   leftSection: {
-    height: 110,
+    minHeight: 110,
     flex: 1,
     minWidth: 0,
     paddingRight: 40,
   },
   productInfo: {
-    height: 110,
+    minHeight: 110,
     justifyContent: 'space-between',
     marginLeft: '5%',
     flex: 1,
@@ -193,6 +203,11 @@ const styles = StyleSheet.create({
   originalPriceText: {
     textDecorationLine: 'line-through',
     color: Color.gray,
+  },
+  outOfStockText: {
+    color: Color.red,
+    fontSize: 13,
+    marginTop: 2,
   },
   productTitle: {
     flexShrink: 1,

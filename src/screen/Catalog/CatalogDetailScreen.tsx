@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  ActivityIndicator,
   BackHandler,
   Image,
 } from 'react-native';
@@ -12,6 +11,7 @@ import React, {useCallback, useMemo} from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import {Color} from '../../utiles/color';
 import CustomHeader from '../../navigation/CustomHeader';
+import AppLoader from '../../component/AppLoader';
 import CatalogDetailLogic from '../../logic/Catalog/CatalogDetailLogic';
 import Heart from '../../assets/svg/Heart.svg';
 import HorizontalFlatList from '../../component/HorizontalFlatList';
@@ -112,7 +112,7 @@ function renderSuggestionIcon(suggestion: any) {
 const BOTTOM_ACTION_BAR_HEIGHT = 60;
 
 export default function CatalogDetailScreen(route: any) {
-  const {Styles, Height} = StyleComponent();
+  const {Styles} = StyleComponent();
   const insets = useSafeAreaInsets();
   const {
     product,
@@ -290,11 +290,7 @@ export default function CatalogDetailScreen(route: any) {
     </View>
   );
   return isLoading ? (
-    <ActivityIndicator
-      size="large"
-      color={Color.primary}
-      style={{marginTop: Height / 2.5}}
-    />
+    <AppLoader />
   ) : (
     <View style={[Styles.container]}>
       <ScrollView

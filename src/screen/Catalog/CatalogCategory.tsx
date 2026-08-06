@@ -1,4 +1,4 @@
-import {ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {StyleComponent} from '../../utiles/styles';
 import CustomHeader from '../../navigation/CustomHeader';
@@ -6,19 +6,15 @@ import CatalogCategoryLogic from '../../logic/Catalog/CatalogCategoryLogic';
 import {Color} from '../../utiles/color';
 import ArrowRight from 'react-native-vector-icons/MaterialIcons';
 import { resolveMediaUrl } from '../../utiles/mediaUrl';
+import AppLoader from '../../component/AppLoader';
 export default function CatalogCategory(route: any) {
   const {Styles} = StyleComponent();
   const {isLoading, catalogDetail, name, onSubmitBack, onSubmit} = CatalogCategoryLogic(route);
+  if (isLoading) {
+    return <AppLoader />;
+  }
   return (
     <View style={[Styles.container]}>
-      {isLoading ? (
-        <ActivityIndicator
-          size="small"
-          color={Color.primary}
-          style={{marginTop: '50%'}}
-        />
-      ) : (
-        <>
         <CustomHeader showBack={true} title={name} onSubmitBack={onSubmitBack}/>
         <ScrollView>
           <TouchableOpacity
@@ -33,7 +29,6 @@ export default function CatalogCategory(route: any) {
                   width: 70,
                   height: 70,
                   backgroundColor: Color.Gray_100,
-                  borderRadius: 10,
                   justifyContent: 'center',
                   alignItems: 'center',
                   borderRadius: 10,
@@ -91,8 +86,6 @@ export default function CatalogCategory(route: any) {
             </TouchableOpacity>
           ))}
         </ScrollView>
-        </>
-      )}
     </View>
   );
 }

@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
@@ -14,6 +13,7 @@ import NotificationLogic, {
   NotificationItem,
 } from '../../logic/Notification/Notification';
 import { Language } from '../../utiles/Language/i18n';
+import AppLoader from '../../component/AppLoader';
 
 function NotificationCard({
   item,
@@ -73,11 +73,7 @@ export default function NotificationScreen() {
   const {notifications, loading} = NotificationLogic();
 
   if (loading) {
-    return (
-      <View style={[styles.container, styles.loader]}>
-        <ActivityIndicator size="large" color={Color.primary} />
-      </View>
-    );
+    return <AppLoader />;
   }
 
   return (

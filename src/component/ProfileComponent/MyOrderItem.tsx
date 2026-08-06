@@ -7,6 +7,18 @@ import {useNavigation} from '@react-navigation/native';
 import HorizontalFlatList from '../HorizontalFlatList';
 import {Language} from '../../utiles/Language/i18n';
 import OrderHistoryLogic from '../../logic/Setting/OrderHistoryLogic';
+import {resolveProductImageUrl} from '../../utiles/mediaUrl';
+
+const MAX_TITLE_LENGTH = 28;
+
+const truncateTitle = (title?: string): string => {
+  if (!title) {
+    return '';
+  }
+  return title.length > MAX_TITLE_LENGTH
+    ? `${title.slice(0, MAX_TITLE_LENGTH)}...`
+    : title;
+};
 
 
 type LocalTabButtonProps = {
@@ -74,7 +86,7 @@ export default function MyOrderItem({data}:{data:any}) {
             active={activeIndex === e.id}
             onPress={() => setActiveIndex(e.id)}
             style={styles.tabButton}
-            image={e?.image_url}
+            image={resolveProductImageUrl(e)}
           />
         ))}
       </View>
@@ -82,8 +94,11 @@ export default function MyOrderItem({data}:{data:any}) {
       <TouchableOpacity
         style={styles.productBlock}
         onPress={() => onSubmit(selected)}>
-        <Text style={[Styles.body_Bold, styles.productTitle]}>
-          {selected?.title || ''}
+        <Text
+          style={[Styles.body_Bold, styles.productTitle]}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {truncateTitle(selected?.title)}
         </Text>
         <View style={styles.productMetaRow}>
           <Text style={[Styles.subtitle_Regular, {color: Color.gray}]}>
@@ -106,8 +121,14 @@ export default function MyOrderItem({data}:{data:any}) {
         </View>
         <View style={styles.divider} />
         <View style={styles.priceRow}>
-          <Text style={[Styles.h6_SemiBold]}>{selected?.regular_price || ''} zł</Text>
-          <Text style={[Styles.subtitle_Regular]}>Quantity x{selected?.quantity || ''}</Text>
+          <Text style={[Styles.h6_SemiBold, styles.priceText]}>
+            {selected?.regular_price || ''} zł
+          </Text>
+          <View style={styles.qtyBadge}>
+            <Text style={[Styles.subtitle_Regular, styles.qtyBadgeText]}>
+              {Language.order_quantity_label}: {selected?.quantity || ''}
+            </Text>
+          </View>
         </View>
         <Arrow
           name="keyboard-arrow-right"
@@ -294,11 +315,23 @@ const styles = StyleSheet.create({
   },
   priceRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: '2%',
     alignItems: 'center',
-    marginLeft: '5%',
-    marginBottom:10,
+    justifyContent: 'space-between',
+    marginTop: '2%',
+    marginHorizontal: '5%',
+    marginBottom: 10,
+  },
+  priceText: {
+    color: Color.primary,
+  },
+  qtyBadge: {
+    backgroundColor: Color.Gray_100,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+  qtyBadgeText: {
+    color: Color.primary,
   },
   arrowIcon: {
     position: 'absolute',

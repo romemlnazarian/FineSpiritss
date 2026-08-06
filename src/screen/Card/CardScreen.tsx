@@ -24,6 +24,7 @@ import {
   useBottomSheetBackHandler,
 } from '../../component/BottomSheet';
 import BottomCardComponent from '../../component/BottomCard';
+import AppLoader from '../../component/AppLoader';
 export default function CardScreen() {
   const {Styles} = StyleComponent();
   const {
@@ -35,6 +36,7 @@ export default function CardScreen() {
     onSubmit,
     onPay,
     paying,
+    hasOutOfStock,
     orderSheetVisible,
     setOrderSheetVisible,
     error,
@@ -56,6 +58,10 @@ export default function CardScreen() {
       return undefined;
     }, [refreshCart]),
   );
+
+  if (loading) {
+    return <AppLoader />;
+  }
 
   return (
     <View style={Styles.container}>
@@ -210,8 +216,12 @@ export default function CardScreen() {
                 </View>
                 <TouchableOpacity
                   activeOpacity={0.5}
+                  disabled={hasOutOfStock}
                   onPress={() => onSubmit()}
-                  style={styles.orderButton}>
+                  style={[
+                    styles.orderButton,
+                    hasOutOfStock && styles.orderButtonDisabled,
+                  ]}>
                   <View style={[Styles.justifyCenter, {gap: 10}]}>
                     <CartIcon width={24} height={24} fill={Color.white} />
                     <Text style={[Styles.title_Regular, styles.whiteText]}>
@@ -359,6 +369,14 @@ export default function CardScreen() {
           </View>
           <View style={styles.rowBetween}>
             <Text style={[Styles.title_Regular, styles.blackText]}>
+              {Language.discount_total}
+            </Text>
+            <Text style={[Styles.title_Medium, styles.blackText]}>
+              {data?.summary?.discount_total} zł
+            </Text>
+          </View>
+          <View style={styles.rowBetween}>
+            <Text style={[Styles.title_Regular, styles.blackText]}>
               {Language.cart_delivery}
             </Text>
             <Text style={[Styles.title_Medium, styles.blackText]}>
@@ -457,6 +475,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 50,
     paddingHorizontal: 10,
+  },
+  orderButtonDisabled: {
+    opacity: 0.5,
   },
   spacer: {
     width: '90%',

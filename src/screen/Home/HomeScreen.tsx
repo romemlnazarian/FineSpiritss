@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   Alert,
   BackHandler,
   Platform,
@@ -15,6 +14,7 @@ import ModalCard from '../../component/ModalCard';
 import HomeLogic from '../../logic/HomeLogic';
 import {Color} from '../../utiles/color';
 import HomeHeader from '../../component/HomeHeader';
+import AppLoader from '../../component/AppLoader';
 import {useFocusEffect} from '@react-navigation/native';
 import Slider from '../../component/HomeCamponent/Slider';
 import HomeCategory from '../../component/HomeCamponent/HomeCategory';
@@ -24,7 +24,7 @@ import Search from '../../assets/svg/SearchGray.svg';
 import {Language} from '../../utiles/Language/i18n';
 
 export default function HomeScreen() {
-  const {Styles, Height} = StyleComponent();
+  const {Styles} = StyleComponent();
   const {
     onSubmitClose,
     categories,
@@ -73,15 +73,7 @@ export default function HomeScreen() {
     isCategoriesLoading || isTopBrandsLoading || isHomeAdvertisingLoading;
 
   if (isPageLoading) {
-    return (
-      <View style={[Styles.container, Styles.alignCenter]}>
-        <ActivityIndicator
-          size="large"
-          color={Color.primary}
-          style={{marginTop: Height / 2.5}}
-        />
-      </View>
-    );
+    return <AppLoader />;
   }
 
   return (

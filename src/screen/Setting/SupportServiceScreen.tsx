@@ -16,17 +16,21 @@ import ThreadsIcon from '../../assets/svg/Threads.svg';
 import PhoneIcon from 'react-native-vector-icons/SimpleLineIcons';
 import WebsiteIcon from 'react-native-vector-icons/Ionicons';
 import {Language} from '../../utiles/Language/i18n';
+import AppLoader from '../../component/AppLoader';
 
 export default function SupportServiceScreen() {
   const {Styles} = StyleComponent();
 const {token,refreshToken, setToken, setRefreshToken} = useAuthStore();
 
 const [support, setSupport] = useState<any>(null);
+const [loading, setLoading] = useState<boolean>(true);
 useEffect(() => {
   getSupportModel(token, (data) => {
     setSupport(data);
+    setLoading(false);
     console.log('dataaaaa =>', data);
   }, (error) => {
+    setLoading(false);
     console.log('error =>', error);
   }, () => {
     refreshTokenModel(refreshToken, (data) => {
@@ -34,10 +38,14 @@ useEffect(() => {
       setRefreshToken(data.refresh);
       getSupportModel(token, (data) => {
         setSupport(data);
+        setLoading(false);
         console.log('dataaaaaa =>', data);
       }, (error) => {
+        setLoading(false);
         console.log('error =>', error);
       });
+    }, () => {
+      setLoading(false);
     });
 
   });
@@ -144,6 +152,10 @@ const onSubmit = (key:string)=>{
       break;
  }
 }
+  if (loading) {
+    return <AppLoader />;
+  }
+
   return (
     <ScrollView style={Styles.container}>
       <CustomHeader showBack={true} subTitle={Language.setting_support_service_title} />
@@ -201,6 +213,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 10,
+      },
+      loaderContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
       },
 
 });

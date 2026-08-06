@@ -14,6 +14,7 @@ import {
 } from '../../model/Payment/PaymentModel';
 import {openP24Checkout} from '../../model/Payment/p24';
 import {useToast} from '../../utiles/Toast/ToastProvider';
+import {Language} from '../../utiles/Language/i18n';
 
 type CartLogixReturn = {
   loading: boolean;
@@ -21,15 +22,21 @@ type CartLogixReturn = {
   address: Address | null;
   refreshCart: () => void;
   onSubmitAddress: () => void;
-  onSubmit: (id: number) => void;
+  onSubmit: (id?: number) => void;
   onPay: () => void;
   paying: boolean;
+  hasOutOfStock: boolean;
   orderSheetVisible: boolean;
   setOrderSheetVisible: (visible: boolean) => void;
   error: boolean;
   recommended: any[];
   toggleFavorite: (id: number) => void;
 };
+
+const isProductOutOfStock = (product: any): boolean =>
+  String(product?.stock_status ?? '')
+    .toLowerCase()
+    .replace(/\s/g, '') === 'outofstock';
 export default function CartLogix(): CartLogixReturn {
   const navigation = useNavigation<any>();
   const {show} = useToast();
@@ -135,7 +142,15 @@ export default function CartLogix(): CartLogixReturn {
     });
   };
 
+  const hasOutOfStock = Array.isArray(data?.products)
+    ? data.products.some(isProductOutOfStock)
+    : false;
+
   const onSubmit = (_id?: number) => {
+    if (hasOutOfStock) {
+      show(Language.cart_remove_out_of_stock, {type: 'error'});
+      return;
+    }
     if (!address?.street) {
       setError(true);
     } else {
@@ -277,6 +292,7 @@ export default function CartLogix(): CartLogixReturn {
     onSubmit,
     onPay,
     paying,
+    hasOutOfStock,
     orderSheetVisible,
     setOrderSheetVisible,
     error,

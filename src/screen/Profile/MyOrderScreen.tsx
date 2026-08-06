@@ -27,6 +27,7 @@ import {useNavigation} from '@react-navigation/native';
 
 import Vector from '../../assets/svg/Vector.svg';
 import {Language} from '../../utiles/Language/i18n';
+import AppLoader from '../../component/AppLoader';
 
 
 export default function MyORderScreen(route: any) {
@@ -125,6 +126,10 @@ export default function MyORderScreen(route: any) {
 
 
 
+  if (isLoading) {
+    return <AppLoader />;
+  }
+
   return (
 
     <View style={Styles.container}>
@@ -133,7 +138,7 @@ export default function MyORderScreen(route: any) {
 
         <CustomHeader showBack={true} subTitle={Language.profile_my_orders} />
 
-        {isLoading ? (
+        {false ? (
 
           <ActivityIndicator
 
