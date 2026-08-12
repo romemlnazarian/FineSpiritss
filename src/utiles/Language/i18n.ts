@@ -125,7 +125,7 @@ export let Language = new LocalizedStrings({
 
     // Favorite
     favorite_wishlist: 'Wishlist',
-    favorite_empty_title: 'There are no drinks in wishlist',
+    favorite_empty_title: 'There are no drinks\nin wishlist',
     favorite_empty_subtitle:
       'Once you add items from a store,\nyour wishlist will appear here',
     favorite_recommendations: 'Recommendations',
@@ -476,7 +476,7 @@ export let Language = new LocalizedStrings({
   
     // Favorite
     favorite_wishlist: 'Lista życzeń',
-    favorite_empty_title: 'Brak trunków na liście życzeń',
+    favorite_empty_title: 'Brak trunków\nna liście życzeń',
     favorite_empty_subtitle: 'Gdy dodasz produkty ze sklepu,\nTwoja lista życzeń pojawi się tutaj',
     favorite_recommendations: 'Rekomendacje',
   

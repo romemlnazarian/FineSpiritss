@@ -679,6 +679,7 @@ const styles = StyleSheet.create({
     marginLeft: '5%',
     width: '85%',
     gap: 2,
+    paddingBottom: 6,
   },
   blockMeta: {
     includeFontPadding: false,

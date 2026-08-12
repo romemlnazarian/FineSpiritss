@@ -180,13 +180,14 @@ const styles = StyleSheet.create({
     borderColor: Color.gray,
   },
   itemText: {
-    marginLeft: '5%',
+    marginLeft: 10,
   },
   checkbox: {
     width: 20,
     height: 20,
     borderWidth: 2,
     borderColor: Color.gray,
+    marginRight: 10
   },
   checkboxSelected: {
     backgroundColor: Color.primary,
