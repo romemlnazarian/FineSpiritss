@@ -428,12 +428,10 @@ export default function CatalogDetailScreen(route: any) {
                     {Language.product_detail_primary}
                   </Text>
                   <View style={styles.blockBody}>
-                    {primaryAroma.name ? (
-                      <Text style={[Styles.title_Medium, styles.blockMeta]}>
-                        {primaryAroma.name}:
-                      </Text>
-                    ) : null}
-                    <Text style={[styles.blockText,{width: '100%'}]}>
+                    <Text style={[Styles.title_Regular, styles.blockText, {width: '100%'}]}>
+                      {primaryAroma.name ? (
+                        <Text style={styles.blockMetaLabel}>{primaryAroma.name}: </Text>
+                      ) : null}
                       {primaryAroma.description}
                     </Text>
                   </View>
@@ -445,12 +443,10 @@ export default function CatalogDetailScreen(route: any) {
                     {Language.product_detail_secondary}
                   </Text>
                   <View style={styles.blockBody}>
-                    {secondaryAroma.name ? (
-                      <Text style={[Styles.title_Medium, styles.blockMeta]}>
-                        {secondaryAroma.name}:
-                      </Text>
-                    ) : null}
                     <Text style={[Styles.title_Regular, styles.blockText]}>
+                      {secondaryAroma.name ? (
+                        <Text style={styles.blockMetaLabel}>{secondaryAroma.name}: </Text>
+                      ) : null}
                       {secondaryAroma.description}
                     </Text>
                   </View>
@@ -462,12 +458,10 @@ export default function CatalogDetailScreen(route: any) {
                     {Language.product_detail_tertiary}
                   </Text>
                   <View style={styles.blockBody}>
-                    {tertiaryAroma.name ? (
-                      <Text style={[Styles.title_Medium, styles.blockMeta]}>
-                        {tertiaryAroma.name}:
-                      </Text>
-                    ) : null}
                     <Text style={[Styles.title_Regular, styles.blockText]}>
+                      {tertiaryAroma.name ? (
+                        <Text style={styles.blockMetaLabel}>{tertiaryAroma.name}: </Text>
+                      ) : null}
                       {tertiaryAroma.description}
                     </Text>
                   </View>
@@ -667,7 +661,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   contentBlock: {
-    marginTop: 15,
+    marginTop: 8,
   },
   blockTitle: {
     marginLeft: '5%',
@@ -679,16 +673,15 @@ const styles = StyleSheet.create({
     marginLeft: '5%',
     width: '85%',
     gap: 2,
-    paddingBottom: 6,
+    paddingBottom: 16,
   },
-  blockMeta: {
-    includeFontPadding: false,
-    lineHeight: 22,
+  blockMetaLabel: {
+    fontSize: 17,
+    fontFamily: 'Satoshi-Bold',
+    color: Color.black,
   },
   blockText: {
     color: Color.black,
-    // includeFontPadding: false,
-    lineHeight: 22,
   },
   paragraphMuted: {
     marginLeft: '5%',

@@ -264,7 +264,7 @@ export let Language = new LocalizedStrings({
 
     // Shipping address screen
     shipping_address_header: 'Shipping Address',
-    street_address_placeholder: 'Street name,home number/appartments',
+    street_address_placeholder: 'Street name, home number/appartments',
     postal_code_placeholder: 'XXXXX',
     city_placeholder: 'Type Your City',
     phone_placeholder: 'Enter Your Phone Number',
@@ -316,7 +316,7 @@ export let Language = new LocalizedStrings({
     order_take_from: 'Take your order from',
     my_code: 'My Code',
     cheers: 'CHEERS!',
-    successfully_registered: 'You have successfully Registered',
+    successfully_registered: 'You have successfully\nRegistered',
     start_shopping: 'Start Shopping',
     card_number: 'Card Number',
     old_password: 'Old Password',
@@ -666,7 +666,7 @@ export let Language = new LocalizedStrings({
     order_take_from: 'Odbierz zamówienie z',
     my_code: 'Mój kod',
     cheers: 'NA ZDROWIE!',
-    successfully_registered: 'Rejestracja zakończyła się sukcesem',
+    successfully_registered: 'Rejestracja zakończyła się\nsukcesem',
     start_shopping: 'Zacznij zakupy',
     card_number: 'Numer karty',
     old_password: 'Stare hasło',

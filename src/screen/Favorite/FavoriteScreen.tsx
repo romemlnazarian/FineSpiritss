@@ -62,7 +62,7 @@ export default function FavoriteScreen() {
 
 const styles = StyleSheet.create({
   emptyStateContainer: {width: '93%', marginTop: '8%'},
-  emptyTitle: {textAlign: 'center', width: '60%'},
+  emptyTitle: {textAlign: 'center', width: '85%'},
   emptySubtitle: {width: '80%', marginTop: '2%'},
   recommendationsContainer: {width: '93%', marginTop: '8%',marginBottom: '3%'},
   recommendationsTitle: {marginLeft: '2%'},
